@@ -40,28 +40,35 @@ const scrollToSection = index => {
 const onWheel = e => {
   if (!horizontalWrapper.value) return;
 
-  const wrapperRect = horizontalWrapper.value.getBoundingClientRect();
+  const rect = horizontalWrapper.value.getBoundingClientRect();
   const windowHeight = window.innerHeight;
 
-  // Проверяем, что мы видим горизонтальный контейнер хотя бы частично
-  const isVisible = wrapperRect.top < windowHeight && wrapperRect.bottom > 0;
-  if (!isVisible) return;
+  // Проверяем, что хотя бы часть горизонтального контейнера видна
+  const isInViewport = rect.bottom > 0 && rect.top < windowHeight;
+  if (!isInViewport) return;
 
   if (isScrolling) return;
 
-  // Горизонтальный скролл только внутри контейнера
-  // NatureSection → горизонтально вправо при скролле вниз
-  if (currentIndex === 0 && e.deltaY > 0) {
-    e.preventDefault();
-    currentIndex = 1;
-    scrollToSection(currentIndex);
+  // NatureSection (first slide)
+  if (currentIndex === 0) {
+    if (e.deltaY > 0) {
+      e.preventDefault();
+      currentIndex = 1;
+      scrollToSection(currentIndex);
+    }
+    // скролл вверх оставляем естественным → ничего не делаем
+    return;
   }
 
-  // WalkCitySection → горизонтально влево при скролле вверх
-  if (currentIndex === 1 && e.deltaY < 0) {
-    e.preventDefault();
-    currentIndex = 0;
-    scrollToSection(currentIndex);
+  // WalkCitySection (second slide)
+  if (currentIndex === 1) {
+    if (e.deltaY < 0) {
+      e.preventDefault();
+      currentIndex = 0;
+      scrollToSection(currentIndex);
+    }
+    // скролл вниз оставляем естественным → ничего не делаем
+    return;
   }
 };
 
@@ -70,19 +77,19 @@ onMounted(() => {
 
   sections = horizontalWrapper.value.querySelectorAll(':scope > *');
 
-  // Слушаем wheel только на контейнере
-  horizontalWrapper.value.addEventListener('wheel', onWheel, { passive: false });
+  // Слушаем wheel на window
+  window.addEventListener('wheel', onWheel, { passive: false });
 });
 
 onBeforeUnmount(() => {
-  if (horizontalWrapper.value) horizontalWrapper.value.removeEventListener('wheel', onWheel);
+  window.removeEventListener('wheel', onWheel);
 });
 </script>
 
 <style scoped>
 .horizontal-wrapper {
   display: flex;
-  width: 200vw; /* две секции */
+  width: 200vw;
   height: 100vh;
   overflow-x: hidden;
   overflow-y: hidden;
