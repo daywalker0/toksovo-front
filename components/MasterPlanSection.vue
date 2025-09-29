@@ -1,3 +1,3 @@
 <template>
-  <div style="height: 100vh">1</div>
+  <div style="height: 100vh; background-color: yellow">1</div>
 </template>

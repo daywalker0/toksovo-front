@@ -9,6 +9,7 @@
   <div ref="horizontalWrapper" class="horizontal-wrapper">
     <NatureSection />
     <WalkCitySection />
+    <!-- можно добавить новые слайды сюда -->
   </div>
 
   <MasterPlanSection />
@@ -49,26 +50,23 @@ const onWheel = e => {
 
   if (isScrolling) return;
 
-  // NatureSection (first slide)
-  if (currentIndex === 0) {
-    if (e.deltaY > 0) {
+  // Горизонтальный скролл влево/вправо
+  if (e.deltaY > 0) {
+    // скролл вниз
+    if (currentIndex < sections.length - 1) {
       e.preventDefault();
-      currentIndex = 1;
+      currentIndex++;
       scrollToSection(currentIndex);
     }
-    // скролл вверх оставляем естественным → ничего не делаем
-    return;
-  }
-
-  // WalkCitySection (second slide)
-  if (currentIndex === 1) {
-    if (e.deltaY < 0) {
+    // если последний слайд, позволяем естественный вертикальный скролл
+  } else if (e.deltaY < 0) {
+    // скролл вверх
+    if (currentIndex > 0) {
       e.preventDefault();
-      currentIndex = 0;
+      currentIndex--;
       scrollToSection(currentIndex);
     }
-    // скролл вниз оставляем естественным → ничего не делаем
-    return;
+    // если первый слайд, вертикальный скролл тоже естественный
   }
 };
 
@@ -77,7 +75,6 @@ onMounted(() => {
 
   sections = horizontalWrapper.value.querySelectorAll(':scope > *');
 
-  // Слушаем wheel на window
   window.addEventListener('wheel', onWheel, { passive: false });
 });
 
@@ -89,7 +86,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .horizontal-wrapper {
   display: flex;
-  width: 200vw;
+  width: 100%; /* 100% ширины контейнера */
   height: 100vh;
   overflow-x: hidden;
   overflow-y: hidden;
