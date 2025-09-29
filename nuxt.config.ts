@@ -4,6 +4,11 @@ import path from 'path';
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-18',
 
+  app: {
+    baseURL: '/toksovo-front/',
+    buildAssetsDir: '/_nuxt/', // <- важно, чтобы пути были короче
+  },
+
   // Глобальные стили
   css: ['@/assets/styles/main.scss'],
 
