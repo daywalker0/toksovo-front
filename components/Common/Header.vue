@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div :class="['header', { 'header--scrolled': scrolled }]" ref="header">
     <div class="header__container container">
       <div class="header__btn-choose">
         <a href="#"> Выбрать квартиру </a>
@@ -78,9 +78,28 @@
   </div>
 </template>
 
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const header = ref(null);
+const scrolled = ref(false);
+
+const handleScroll = () => {
+  scrolled.value = window.scrollY > 50; // меняем 50 на любое нужное значение
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+</script>
+
 <style lang="scss" scoped>
 .header {
-  position: absolute;
+  position: fixed;
   z-index: 1;
   width: 100%;
 
@@ -119,5 +138,17 @@
       margin-left: 4px;
     }
   }
+}
+
+.header__logo {
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.header--scrolled .header__logo {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none; // чтобы не было кликабельным
 }
 </style>

@@ -9,6 +9,8 @@
     <NatureSection />
     <WalkCitySection />
   </div>
+
+  <!-- <MasterPlanSection /> -->
 </template>
 
 <script setup>
@@ -20,6 +22,7 @@ import PrivateHousingSection from '@/components/PrivateHousingSection.vue';
 import LocationsSection from '@/components/LocationsSection.vue';
 import NatureSection from '@/components/NatureSection.vue';
 import WalkCitySection from '@/components/WalkCitySection.vue';
+import MasterPlanSection from '@/components/MasterPlanSection.vue';
 
 const horizontalWrapper = ref(null);
 let currentIndex = 0;
