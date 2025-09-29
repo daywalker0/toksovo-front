@@ -9,10 +9,10 @@
   <div ref="horizontalWrapper" class="horizontal-wrapper">
     <NatureSection />
     <WalkCitySection />
-    <!-- можно добавить новые слайды сюда -->
   </div>
 
   <MasterPlanSection />
+  <FullpageSlider />
 </template>
 
 <script setup>

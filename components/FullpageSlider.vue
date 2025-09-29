@@ -1,84 +1,43 @@
 <template>
-  <div class="fullpage-container" @wheel.prevent="onWheel">
+  <div>
     <section
       v-for="(section, index) in sections"
       :key="index"
       class="fullpage-section"
       :style="{ backgroundImage: `url(${section.img})` }"
     >
-      <div class="slider-indicator">
-        <span v-for="(s, i) in sections" :key="i" :class="{ active: currentIndex === i }"></span>
+      <div class="section-content">
+        <h1>Секция {{ index + 1 }}</h1>
       </div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import liveInStyleItem from '../assets/img/live-in-style-item.jpg';
 
 const sections = [{ img: liveInStyleItem }, { img: liveInStyleItem }, { img: liveInStyleItem }];
-
-const currentIndex = ref(0);
-let isScrolling = false;
-
-const scrollToSection = index => {
-  if (index < 0 || index >= sections.length) return;
-  isScrolling = true;
-  currentIndex.value = index;
-  const top = window.innerHeight * index;
-  window.scrollTo({ top, behavior: 'smooth' });
-  setTimeout(() => (isScrolling = false), 700);
-};
-
-const onWheel = e => {
-  if (isScrolling) return;
-
-  if (e.deltaY > 0 && currentIndex.value < sections.length - 1) {
-    scrollToSection(currentIndex.value + 1);
-  } else if (e.deltaY < 0 && currentIndex.value > 0) {
-    scrollToSection(currentIndex.value - 1);
-  }
-};
 </script>
 
-<style lang="scss" scoped>
-.fullpage-container {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
-
+<style scoped lang="scss">
 .fullpage-section {
   width: 100vw;
   height: 100vh;
   background-size: cover;
   background-position: center;
-  position: relative;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start; /* для плавного прилипания, если контейнер будет snap */
 }
 
-.slider-indicator {
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+body {
+  margin: 0;
 }
 
-.slider-indicator span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  transition: all 0.3s;
-}
-
-.slider-indicator span.active {
-  background: white;
-  transform: scale(1.2);
+.section-content {
+  color: white;
+  font-size: 3rem;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 </style>
