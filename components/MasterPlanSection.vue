@@ -1,3 +1,3 @@
 <template>
-  <div>1</div>
+  <div style="height: 100vh">1</div>
 </template>

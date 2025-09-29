@@ -5,12 +5,13 @@
   <PrivateHousingSection />
   <LocationsSection />
 
+  <!-- Горизонтальный контейнер -->
   <div ref="horizontalWrapper" class="horizontal-wrapper">
     <NatureSection />
     <WalkCitySection />
   </div>
 
-  <!-- <MasterPlanSection /> -->
+  <MasterPlanSection />
 </template>
 
 <script setup>
@@ -33,32 +34,33 @@ const scrollToSection = index => {
   if (!sections[index]) return;
   isScrolling = true;
   sections[index].scrollIntoView({ behavior: 'smooth', inline: 'start' });
-  setTimeout(() => {
-    isScrolling = false;
-  }, 800);
+  setTimeout(() => (isScrolling = false), 800);
 };
 
 const onWheel = e => {
   if (!horizontalWrapper.value) return;
 
-  const rect = horizontalWrapper.value.getBoundingClientRect();
-  const offset = 20;
-  const isAtTop = rect.top >= -offset && rect.top <= offset;
+  const wrapperRect = horizontalWrapper.value.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
 
-  if (!isAtTop) return; // контейнер ещё не достиг верхней позиции → вертикальный скролл работает
-
-  // Если скроллим вверх на первой секции, не блокируем вертикальный скролл
-  if (e.deltaY < 0 && currentIndex === 0) return;
-
-  e.preventDefault(); // блокируем вертикальный скролл внутри контейнера
+  // Проверяем, что мы видим горизонтальный контейнер хотя бы частично
+  const isVisible = wrapperRect.top < windowHeight && wrapperRect.bottom > 0;
+  if (!isVisible) return;
 
   if (isScrolling) return;
 
-  if (e.deltaY > 0 && currentIndex < sections.length - 1) {
-    currentIndex += 1;
+  // Горизонтальный скролл только внутри контейнера
+  // NatureSection → горизонтально вправо при скролле вниз
+  if (currentIndex === 0 && e.deltaY > 0) {
+    e.preventDefault();
+    currentIndex = 1;
     scrollToSection(currentIndex);
-  } else if (e.deltaY < 0 && currentIndex > 0) {
-    currentIndex -= 1;
+  }
+
+  // WalkCitySection → горизонтально влево при скролле вверх
+  if (currentIndex === 1 && e.deltaY < 0) {
+    e.preventDefault();
+    currentIndex = 0;
     scrollToSection(currentIndex);
   }
 };
@@ -66,22 +68,21 @@ const onWheel = e => {
 onMounted(() => {
   if (!horizontalWrapper.value) return;
 
-  // получаем секции внутри контейнера
   sections = horizontalWrapper.value.querySelectorAll(':scope > *');
 
-  // слушаем wheel на window, чтобы поймать скролл
-  window.addEventListener('wheel', onWheel, { passive: false });
+  // Слушаем wheel только на контейнере
+  horizontalWrapper.value.addEventListener('wheel', onWheel, { passive: false });
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('wheel', onWheel);
+  if (horizontalWrapper.value) horizontalWrapper.value.removeEventListener('wheel', onWheel);
 });
 </script>
 
 <style scoped>
 .horizontal-wrapper {
   display: flex;
-  width: 200vw;
+  width: 200vw; /* две секции */
   height: 100vh;
   overflow-x: hidden;
   overflow-y: hidden;
