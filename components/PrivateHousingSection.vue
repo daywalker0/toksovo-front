@@ -238,11 +238,11 @@ const onMouseMove = e => {
 }
 
 .image-half.left {
-  cursor: url('../assets/img/arrow-left-cursor.svg'), auto;
+  cursor: url('../assets/img/cursors/arrow-left-cursor.svg'), auto;
 }
 
 .image-half.right {
-  cursor: url('../assets/img/arrow-right-cursor.svg'), auto;
+  cursor: url('../assets/img/cursors/arrow-right-cursor.svg'), auto;
 }
 
 @keyframes fadeIn {

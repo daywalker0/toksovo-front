@@ -150,6 +150,7 @@ defineExpose({
 
     .menu--open & {
       opacity: 1;
+      cursor: url('../../assets/img/cursors/cursor-close.svg'), auto;
     }
   }
 
