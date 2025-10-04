@@ -19,7 +19,11 @@
   <TextBlockSection :title="sectionFirstSteps.title" :subtitle="sectionFirstSteps.subtitle" />
   <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
 
-  <TextBlockSection :title="sectionFirstSteps.title" :subtitle="sectionFirstSteps.subtitle" />
+  <TextBlockSection :title="sectionLiveNearby.title" :subtitle="sectionLiveNearby.subtitle" />
+  <MapSection />
+
+  <TextBlockSection :title="sectionLiveOwnSpace.title" :subtitle="sectionLiveOwnSpace.subtitle" />
+  <AppsLayoutsSection :apartments="apartments" />
 </template>
 
 <script setup>
@@ -34,6 +38,8 @@ import WalkCitySection from '@/components/WalkCitySection.vue';
 import MasterPlanSection from '@/components/MasterPlanSection.vue';
 import FullpageSlider from '@/components/FullpageSlider.vue';
 import TextBlockSection from '@/components/TextBlockSection.vue';
+import MapSection from '@/components/MapSection.vue';
+import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
 
 import liveInStyleItem1 from '@/assets/img/live-in-style-item-1.png';
 import liveInStyleItem2 from '@/assets/img/live-in-style-item-2.png';
@@ -59,6 +65,44 @@ const sectionFirstSteps = {
     Здесь начинается настроение дома — с комфорта и стиля уже на входе.`,
   sliderImages: [{ img: firstStepsItem1 }, { img: firstStepsItem2 }, { img: firstStepsItem3 }],
 };
+
+const sectionLiveNearby = {
+  title: 'Жить там где все рядом',
+  subtitle: `Инфраструктура района создана для жизни без лишних забот.
+    Рядом с домом — магазины, парки и места для отдыха.
+    Всё необходимое находится на расстоянии прогулки,
+    чтобы комфорт начинался не только дома, но и вокруг него.`,
+};
+
+const sectionLiveOwnSpace = {
+  title: 'Жить в своем пространстве',
+  subtitle: `Продуманные планировки объединяют уют и функциональность.
+    Пространство организовано так, чтобы каждый метр работал на комфорт.
+    Здесь легко найти решение под свой ритм жизни и привычки.`,
+};
+
+const apartments = [
+  {
+    name: '1-К. №14',
+    area: 21.8,
+    floors: '2–9',
+    price: '5 312 660',
+    features: ['Просторная кухня гостиная', 'Дополнительная гардеробная'],
+    imgs: [firstStepsItem1, firstStepsItem1, firstStepsItem1, firstStepsItem1],
+    area1: '15,54', // добавить
+    area2: '10,43', // добавить
+  },
+  {
+    name: '1-К. №14',
+    area: 21.8,
+    floors: '2–9',
+    price: '5 312 660',
+    features: ['Просторная кухня гостиная', 'Дополнительная гардеробная'],
+    imgs: [firstStepsItem1, firstStepsItem1, firstStepsItem1, firstStepsItem1],
+    area1: '15,54', // добавить
+    area2: '10,43', // добавить
+  },
+];
 
 const horizontalWrapper = ref(null);
 let currentIndex = 0;
