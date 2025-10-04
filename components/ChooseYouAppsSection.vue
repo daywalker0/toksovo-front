@@ -5,7 +5,7 @@
         <button class="button light">Генплан</button>
         <div class="content--center">
           <img :src="chooseYourLife" alt="preview" />
-          <div class="text dark">Выберите свою квартиру для жизни</div>
+          <div class="text">Выберите свою квартиру для жизни</div>
         </div>
         <button class="button light">Каталог квартир</button>
       </div>
@@ -16,7 +16,7 @@
         <button class="button dark">Генплан</button>
         <div class="content--center">
           <img :src="chooseYourLife" alt="preview" />
-          <h2 class="text light">Выберите свою квартиру для жизни</h2>
+          <div class="text">Выберите свою квартиру для жизни</div>
         </div>
         <button class="button dark">Каталог квартир</button>
       </div>
@@ -30,7 +30,7 @@ import chooseYourLife from '@/assets/img/choose-your-life.jpg';
 
 <style lang="scss" scoped>
 .choose-your-apps-section {
-  height: 200vh; /* чтобы был скролл */
+  height: 200vh;
   position: relative;
 }
 
@@ -61,28 +61,35 @@ import chooseYourLife from '@/assets/img/choose-your-life.jpg';
   &--center {
     max-width: 650px;
     height: 450px;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
 
     img {
       height: 100%;
+      width: 100%;
+      object-fit: cover;
+      display: block;
     }
   }
 }
 
-.btn.light {
-  color: #000;
-  border-color: #000;
-}
-
-.btn.dark {
-  color: #fff;
-  border-color: #fff;
-}
-
-.text.dark {
-  color: #000;
-}
-
-.text.light {
-  color: #fff;
+.text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: $text-color-white;
+  font-size: 46px;
+  text-align: center;
+  max-width: 400px;
+  z-index: 2;
 }
 </style>
