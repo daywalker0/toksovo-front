@@ -12,7 +12,14 @@
   </div>
 
   <MasterPlanSection />
-  <FullpageSlider />
+
+  <TextBlockSection :title="sectionNewStyle.title" :subtitle="sectionNewStyle.subtitle" />
+  <FullpageSlider :sections="sectionNewStyle.sliderImages" />
+
+  <TextBlockSection :title="sectionFirstSteps.title" :subtitle="sectionFirstSteps.subtitle" />
+  <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
+
+  <TextBlockSection :title="sectionFirstSteps.title" :subtitle="sectionFirstSteps.subtitle" />
 </template>
 
 <script setup>
@@ -25,6 +32,33 @@ import LocationsSection from '@/components/LocationsSection.vue';
 import NatureSection from '@/components/NatureSection.vue';
 import WalkCitySection from '@/components/WalkCitySection.vue';
 import MasterPlanSection from '@/components/MasterPlanSection.vue';
+import FullpageSlider from '@/components/FullpageSlider.vue';
+import TextBlockSection from '@/components/TextBlockSection.vue';
+
+import liveInStyleItem1 from '@/assets/img/live-in-style-item-1.png';
+import liveInStyleItem2 from '@/assets/img/live-in-style-item-2.png';
+import liveInStyleItem3 from '@/assets/img/live-in-style-item-3.png';
+
+import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';
+import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
+import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
+
+const sectionNewStyle = {
+  title: 'Жить в стиле',
+  subtitle: `Современная архитектура комплекса сочетает лаконичные формы и натуральные материалы.
+    Большие окна наполняют квартиры светом,
+    а фасады гармонично вписываются в природное окружение.
+    Каждый дом продуман так, чтобы создавать ощущение уюта и спокойствия.`,
+  sliderImages: [{ img: liveInStyleItem1 }, { img: liveInStyleItem2 }, { img: liveInStyleItem3 }],
+};
+
+const sectionFirstSteps = {
+  title: 'Жить с первых шагов',
+  subtitle: `Лобби встречает жителей тёплой атмосферой и современным дизайном.
+    Натуральные материалы, спокойные линии и продуманное освещение.
+    Здесь начинается настроение дома — с комфорта и стиля уже на входе.`,
+  sliderImages: [{ img: firstStepsItem1 }, { img: firstStepsItem2 }, { img: firstStepsItem3 }],
+};
 
 const horizontalWrapper = ref(null);
 let currentIndex = 0;
