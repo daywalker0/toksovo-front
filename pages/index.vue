@@ -24,6 +24,10 @@
 
   <TextBlockSection :title="sectionLiveOwnSpace.title" :subtitle="sectionLiveOwnSpace.subtitle" />
   <AppsLayoutsSection :apartments="apartments" />
+
+  <ConstructionSection />
+  <NewsSection />
+  <ProjectsSection />
 </template>
 
 <script setup>
@@ -40,6 +44,9 @@ import FullpageSlider from '@/components/FullpageSlider.vue';
 import TextBlockSection from '@/components/TextBlockSection.vue';
 import MapSection from '@/components/MapSection.vue';
 import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
+import ConstructionSection from '@/components/ConstructionSection.vue';
+import NewsSection from '@/components/NewsSection.vue';
+import ProjectsSection from '@/components/ProjectsSection.vue';
 
 import liveInStyleItem1 from '@/assets/img/live-in-style-item-1.png';
 import liveInStyleItem2 from '@/assets/img/live-in-style-item-2.png';

@@ -160,6 +160,7 @@ const switchImage = index => {
   &__container {
     height: 100%;
     padding-top: 84px;
+    padding-bottom: 120px;
     display: flex;
     gap: 160px;
   }
