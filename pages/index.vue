@@ -28,6 +28,9 @@
   <ConstructionSection />
   <NewsSection />
   <ProjectsSection />
+  <ChooseYouAppsSection />
+
+  <TextBlockSection :title="sectionLiveNearby.title" :subtitle="sectionLiveNearby.subtitle" />
 </template>
 
 <script setup>
@@ -47,6 +50,7 @@ import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
 import ConstructionSection from '@/components/ConstructionSection.vue';
 import NewsSection from '@/components/NewsSection.vue';
 import ProjectsSection from '@/components/ProjectsSection.vue';
+import ChooseYouAppsSection from '@/components/ChooseYouAppsSection.vue';
 
 import liveInStyleItem1 from '@/assets/img/live-in-style-item-1.png';
 import liveInStyleItem2 from '@/assets/img/live-in-style-item-2.png';

@@ -6,7 +6,7 @@
         :slides-per-view="slidesPerView"
         :space-between="spaceBetween"
         :pagination="paginationConfig"
-        :loop="loop"
+        :autoplay="autoplayConfig"
         :breakpoints="breakpoints"
         :navigation="navigation"
         :effect="effect"
@@ -32,10 +32,18 @@
 
         <div class="slider--controls">
           <!-- Прогрессбар -->
+          <div class="custom-progressbar">
+            <span class="swiper-pagination-progressbar-fill"></span>
+          </div>
 
           <!-- Навигационные стрелки -->
           <div class="custom-navigation" v-if="showNavigation">
-            <button class="nav-button prev" @click="slidePrev">
+            <button
+              class="nav-button prev"
+              :class="{ disabled: isPrevDisabled }"
+              :disabled="isPrevDisabled"
+              @click="slidePrev"
+            >
               <slot name="prev-button">
                 <svg
                   width="9"
@@ -51,7 +59,12 @@
                 </svg>
               </slot>
             </button>
-            <button class="nav-button next" @click="slideNext">
+            <button
+              class="nav-button next"
+              :class="{ disabled: isNextDisabled }"
+              :disabled="isNextDisabled"
+              @click="slideNext"
+            >
               <slot name="next-button">
                 <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
                   <path
@@ -71,16 +84,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import {
-  Pagination,
-  Autoplay,
-  Navigation,
-  EffectFade,
-  EffectCube,
-  EffectCoverflow,
-} from 'swiper/modules';
-
-// Импорт стилей Swiper
+import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
@@ -89,7 +93,6 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/effect-cube';
 import 'swiper/css/effect-coverflow';
 
-// Props
 const props = defineProps({
   slides: {
     type: Array,
@@ -104,10 +107,6 @@ const props = defineProps({
     type: Number,
     default: 45,
   },
-  loop: {
-    type: Boolean,
-    default: true,
-  },
   autoplay: {
     type: [Boolean, Object],
     default: () => ({ delay: 4000, disableOnInteraction: false }),
@@ -118,8 +117,8 @@ const props = defineProps({
   },
   paginationType: {
     type: String,
-    default: 'text', // 'text', 'number', 'dot', 'default'
-    validator: value => ['text', 'number', 'dot', 'default'].includes(value),
+    default: 'progressbar',
+    validator: value => ['text', 'progressbar', 'number', 'dot', 'default'].includes(value),
   },
   showNavigation: {
     type: Boolean,
@@ -127,7 +126,7 @@ const props = defineProps({
   },
   effect: {
     type: String,
-    default: 'slide', // 'slide', 'fade', 'cube', 'coverflow'
+    default: 'slide',
     validator: value => ['slide', 'fade', 'cube', 'coverflow'].includes(value),
   },
   breakpoints: {
@@ -155,6 +154,10 @@ const props = defineProps({
 
 const activeIndex = ref(0);
 let swiperInstance = null;
+const totalSlides = computed(() => props.slides.length);
+
+const isPrevDisabled = computed(() => activeIndex.value === 0);
+const isNextDisabled = computed(() => activeIndex.value === totalSlides.value - 1);
 
 const onSwiper = swiper => {
   swiperInstance = swiper;
@@ -165,13 +168,13 @@ const onSlideChange = swiper => {
 };
 
 const slidePrev = () => {
-  if (swiperInstance) {
+  if (swiperInstance && !isPrevDisabled.value) {
     swiperInstance.slidePrev();
   }
 };
 
 const slideNext = () => {
-  if (swiperInstance) {
+  if (swiperInstance && !isNextDisabled.value) {
     swiperInstance.slideNext();
   }
 };
@@ -186,11 +189,10 @@ const autoplayConfig = computed(() => {
 });
 
 const paginationConfig = computed(() => {
-  return props.paginationType === 'default'
+  return props.paginationType === 'progressbar'
     ? {
-        clickable: true,
-        bulletClass: 'swiper-pagination-bullet',
-        bulletActiveClass: 'swiper-pagination-bullet-active',
+        type: 'progressbar',
+        el: '.custom-progressbar',
       }
     : false;
 });
@@ -238,8 +240,6 @@ const navigation = computed(() => {
     gap: 32px;
   }
 }
-
-/* Дефолтная верстка слайда */
 .default-slide-content {
   text-align: center;
   color: white;
@@ -267,51 +267,6 @@ const navigation = computed(() => {
   opacity: 0.9;
 }
 
-/* Кастомная пагинация */
-.custom-pagination {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: 10;
-}
-
-.pagination-bullet {
-  padding: 8px 16px;
-  border: none;
-  background: transparent;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #666;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  min-width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pagination-bullet:hover {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-}
-
-.pagination-bullet.active {
-  background: #667eea;
-  color: white;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-}
-
-/* Кастомная навигация */
 .custom-navigation {
   width: 100px;
   display: flex;
@@ -340,54 +295,24 @@ const navigation = computed(() => {
     }
   }
   &.disabled {
+    cursor: not-allowed;
+    opacity: 0.1;
+    pointer-events: none;
   }
 }
 
-:deep(.swiper-pagination) {
-  bottom: 10px !important;
+.custom-progressbar {
+  flex: 1;
+  height: 1px;
+  background: $utility-color-1;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
 }
 
-:deep(.swiper-pagination-bullet) {
-  background: #ccc;
-  opacity: 0.7;
-}
-
-:deep(.swiper-pagination-bullet-active) {
-  background: #667eea;
-  opacity: 1;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-  .default-slider {
-    padding: 0 15px;
-  }
-
-  .default-swiper {
-    height: 250px;
-  }
-
-  .month {
-    font-size: 2rem;
-  }
-
-  .year {
-    font-size: 1.2rem;
-  }
-
-  .custom-pagination {
-    padding: 10px;
-  }
-
-  .pagination-bullet {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-
-  .nav-button {
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-  }
+:deep(.swiper-pagination-progressbar-fill) {
+  background: $text-color-primary;
+  border-radius: 3px;
+  height: 2px;
 }
 </style>
