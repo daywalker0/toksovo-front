@@ -5,7 +5,7 @@
       <DefaultSlider
         :slides="projectsSlides"
         :slides-per-view="2"
-        :space-between="20"
+        :space-between="45"
         :show-navigation="true"
       >
         <template #slide="{ slide, active }">
@@ -24,22 +24,20 @@
               </div>
 
               <div class="content--info">
-                <div v-if="slide.houses">
-                  <span>{{ slide.housese }} дома</span>
+                <div v-if="slide.houses" class="content--info_text">
+                  <span>{{ slide.houses }} дома</span>
                 </div>
-                <div v-if="slide.apps">
-                  <div class="content--info_dot"></div>
+                <div v-if="slide.apps" class="content--info_text">
+                  <div v-if="slide.houses" class="content--info_dot"></div>
                   <span>{{ slide.apps }} квартир</span>
                 </div>
-                <div v-if="slide.floors">
-                  <div class="content--info_dot"></div>
+                <div v-if="slide.floors" class="content--info_text">
+                  <div v-if="slide.apps" class="content--info_dot"></div>
                   <span>{{ slide.floors }} этажей</span>
                 </div>
               </div>
 
-              <div class="content--link-block">
-                <a :href="slide.link" class="content--link">Видео</a>
-              </div>
+              <a :href="slide.link" class="content--button button">Видео</a>
             </div>
           </div>
         </template>
@@ -99,6 +97,9 @@ const projectsSlides = [
 </script>
 
 <style lang="scss" scoped>
+::v-deep(.swiper-slide) {
+  height: 550px !important;
+}
 .projects-section {
   &__container {
     padding-bottom: 120px;
@@ -110,31 +111,59 @@ const projectsSlides = [
   }
 }
 
+.custom-slide {
+  height: 100%;
+}
+
 .content {
   display: flex;
   flex-direction: column;
   margin-top: 24px;
+  max-height: 200px;
+  height: 100%;
 
   &--header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 100%;
   }
 
   &--title {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    font-size: 32px;
+    line-height: 80%;
   }
 
   &--info {
     display: flex;
     align-items: center;
+    font-family: 'Akrobat';
+    font-size: 18px;
+    line-height: 140%;
+    &_text {
+      display: flex;
+      align-items: center;
+    }
     &_dot {
       width: 4px;
       height: 4px;
       border-radius: 50%;
       background-color: $text-color-secondary;
+      margin: 0 8px;
     }
+  }
+  &--button {
+    margin-top: auto;
+  }
+}
+
+.image-container {
+  min-width: 373px;
+  img {
+    width: 100%;
   }
 }
 </style>

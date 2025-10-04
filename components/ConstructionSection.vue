@@ -5,7 +5,7 @@
       <DefaultSlider
         :slides="constructionSlides"
         :slides-per-view="2"
-        :space-between="20"
+        :space-between="45"
         :show-navigation="true"
       >
         <template #slide="{ slide, active }">
@@ -60,6 +60,13 @@ const constructionSlides = [
   }
   &--year {
     font-size: 16px;
+  }
+}
+
+.image-container {
+  min-width: 373px;
+  img {
+    width: 100%;
   }
 }
 </style>

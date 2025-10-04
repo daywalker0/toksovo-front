@@ -102,7 +102,7 @@ const props = defineProps({
   },
   spaceBetween: {
     type: Number,
-    default: 0,
+    default: 45,
   },
   loop: {
     type: Boolean,
@@ -143,7 +143,7 @@ const props = defineProps({
       },
       1024: {
         slidesPerView: 3,
-        spaceBetween: 30,
+        spaceBetween: 45,
       },
     }),
   },
@@ -223,9 +223,7 @@ const navigation = computed(() => {
 
 .slide {
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 300px;
   border: 1px solid $utility-color-1;
   border-radius: 7px;
   padding: 20px;
