@@ -1,5 +1,5 @@
 <template>
-  <div class="private-housing-section section">
+  <div class="private-housing-section section" @mousemove="onMouseMove">
     <div class="private-housing-section__container container">
       <div class="controls-block">
         <div class="controls-block__wrap">
@@ -37,48 +37,85 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <img
-      class="private-housing-section--bg"
-      src="../assets/img/private-housing-section.jpg"
-      alt="bg"
-    />
+      <!-- Две половины для клика по стрелкам -->
+      <div class="image-control">
+        <div class="image-half left" @click="prevItem">
+          <div class="arrow">◀</div>
+        </div>
+        <div class="image-half right" @click="nextItem">
+          <div class="arrow">▶</div>
+        </div>
+
+        <!-- Картинка активного item -->
+        <img
+          class="private-housing-section--bg"
+          :src="activeItem.image"
+          alt="bg"
+          key="activeItem.image"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import privateHousingSection1 from '@/assets/img/private-housing-section.jpg';
+import privateHousingSection2 from '@/assets/img/live-in-style-item-2.png';
 
 const items = ref([
   {
     title: 'Приватный формат жилья',
     content:
       'Пространство, где каждое утро начинается в тишине и уединении. Здесь вы можете наслаждаться личным комфортом без лишнего шума и суеты города.',
+    image: privateHousingSection1,
   },
   {
     title: 'Экология: лес и озеро',
     content:
       'Описание экологических преимуществ - близость к лесу и озеру, чистый воздух и природное окружение.',
+    image: privateHousingSection2,
   },
   {
     title: 'Чистовая отделка',
     content: 'Информация о чистовой отделке помещений по стандартам ХОВЕР.',
+    image: privateHousingSection1,
   },
   {
     title: 'Инфраструктура',
     content: 'Описание доступной инфраструктуры района и жилого комплекса.',
+    image: privateHousingSection2,
   },
   {
     title: '4 этажа',
     content: 'Характеристики четырехэтажного здания, преимущества такой этажности.',
+    image: privateHousingSection1,
   },
 ]);
 
 const activeIndex = ref(0);
 
+const activeItem = computed(() => items.value[activeIndex.value]);
+
 const toggleItem = index => {
   activeIndex.value = activeIndex.value === index ? -1 : index;
+};
+
+const nextItem = () => {
+  activeIndex.value = (activeIndex.value + 1) % items.value.length;
+};
+
+const prevItem = () => {
+  activeIndex.value = (activeIndex.value - 1 + items.value.length) % items.value.length;
+};
+
+const cursorX = ref(0);
+const cursorY = ref(0);
+
+const onMouseMove = e => {
+  cursorX.value = e.clientX;
+  cursorY.value = e.clientY;
 };
 </script>
 
@@ -99,6 +136,8 @@ const toggleItem = index => {
     height: 840px;
     width: 100%;
     object-fit: cover;
+    z-index: 0;
+    transition: all 0.5s ease;
   }
 }
 
@@ -106,7 +145,7 @@ const toggleItem = index => {
   height: 384px;
   width: 421px;
   border-radius: 7px;
-  position: static;
+  position: relative;
   z-index: 5;
   background-color: #fff;
 
@@ -176,6 +215,34 @@ const toggleItem = index => {
 
 .accordion-content {
   animation: fadeIn 0.3s ease;
+}
+
+.image-control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  pointer-events: none;
+
+  .image-half {
+    width: 50%;
+    height: 100%;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+  }
+}
+
+.image-half.left {
+  cursor: url('../assets/img/arrow-left-cursor.svg'), auto;
+}
+
+.image-half.right {
+  cursor: url('../assets/img/arrow-right-cursor.svg'), auto;
 }
 
 @keyframes fadeIn {
