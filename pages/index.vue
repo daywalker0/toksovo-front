@@ -7,8 +7,10 @@
 
   <!-- Горизонтальный контейнер -->
   <div ref="horizontalWrapper" class="horizontal-wrapper">
-    <NatureSection />
-    <WalkCitySection />
+    <div class="horizontal-container">
+      <NatureSection />
+      <WalkCitySection />
+    </div>
   </div>
 
   <MasterPlanSection />
@@ -35,6 +37,8 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@/components/Common/Header.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import EnvironmentSection from '@/components/EnvironmentSection.vue';
@@ -101,8 +105,8 @@ const apartments = [
     price: '5 312 660',
     features: ['Просторная кухня гостиная', 'Дополнительная гардеробная'],
     imgs: [firstStepsItem1, firstStepsItem1, firstStepsItem1, firstStepsItem1],
-    area1: '15,54', // добавить
-    area2: '10,43', // добавить
+    area1: '15,54',
+    area2: '10,43',
   },
   {
     name: '1-К. №14',
@@ -111,78 +115,103 @@ const apartments = [
     price: '5 312 660',
     features: ['Просторная кухня гостиная', 'Дополнительная гардеробная'],
     imgs: [firstStepsItem1, firstStepsItem1, firstStepsItem1, firstStepsItem1],
-    area1: '15,54', // добавить
-    area2: '10,43', // добавить
+    area1: '15,54',
+    area2: '10,43',
   },
 ];
 
 const horizontalWrapper = ref(null);
-let currentIndex = 0;
-let isScrolling = false;
-let sections = [];
 
-const scrollToSection = index => {
-  if (!sections[index]) return;
-  isScrolling = true;
-  sections[index].scrollIntoView({ behavior: 'smooth', inline: 'start' });
-  setTimeout(() => (isScrolling = false), 800);
-};
+gsap.registerPlugin(ScrollTrigger);
 
-const onWheel = e => {
-  if (!horizontalWrapper.value) return;
-
-  const rect = horizontalWrapper.value.getBoundingClientRect();
-  const windowHeight = window.innerHeight;
-
-  // Проверяем, что хотя бы часть горизонтального контейнера видна
-  const isInViewport = rect.bottom > 0 && rect.top < windowHeight;
-  if (!isInViewport) return;
-
-  if (isScrolling) return;
-
-  // Горизонтальный скролл влево/вправо
-  if (e.deltaY > 0) {
-    // скролл вниз
-    if (currentIndex < sections.length - 1) {
-      e.preventDefault();
-      currentIndex++;
-      scrollToSection(currentIndex);
-    }
-    // если последний слайд, позволяем естественный вертикальный скролл
-  } else if (e.deltaY < 0) {
-    // скролл вверх
-    if (currentIndex > 0) {
-      e.preventDefault();
-      currentIndex--;
-      scrollToSection(currentIndex);
-    }
-    // если первый слайд, вертикальный скролл тоже естественный
+const initHorizontalScroll = () => {
+  if (!horizontalWrapper.value) {
+    return;
   }
+
+  const horizontalContainer = horizontalWrapper.value.querySelector('.horizontal-container');
+  const horizontalSections = gsap.utils.toArray('.horizontal-container > *');
+
+  if (horizontalSections.length === 0) {
+    console.error('No horizontal sections found');
+    return;
+  }
+
+  const totalWidth = horizontalSections.length * 100;
+
+  gsap.set(horizontalContainer, {
+    width: `${totalWidth}vw`,
+  });
+
+  // Создаем timeline с четкими шагами для каждой секции
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: horizontalWrapper.value,
+      start: 'top top',
+      end: () => `+=${window.innerHeight * (horizontalSections.length + 1)}`, // Высота окна × количество секций + 1
+      pin: true,
+      scrub: 1,
+      anticipatePin: 1,
+      markers: false,
+    },
+  });
+
+  // Добавляем паузы между анимациями для фиксации
+  horizontalSections.forEach((_, index) => {
+    if (index === 0) return; // Первая секция уже видна
+
+    const position = `-${index * 100}vw`;
+
+    // Добавляем паузу перед анимацией (25% времени)
+    tl.to(horizontalContainer, {
+      duration: 0.25,
+      ease: 'power1.inOut',
+    });
+
+    // Анимация перехода к следующей секции (50% времени)
+    tl.to(horizontalContainer, {
+      x: position,
+      duration: 0.5,
+      ease: 'power1.inOut',
+    });
+
+    // Пауза на секции (25% времени)
+    tl.to(horizontalContainer, {
+      duration: 0.25,
+      ease: 'power1.inOut',
+    });
+  });
+
+  ScrollTrigger.refresh();
 };
 
 onMounted(() => {
-  if (!horizontalWrapper.value) return;
-
-  sections = horizontalWrapper.value.querySelectorAll(':scope > *');
-
-  window.addEventListener('wheel', onWheel, { passive: false });
+  // Ждем следующего тика для гарантии, что DOM полностью обновлен
+  nextTick(() => {
+    initHorizontalScroll();
+  });
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('wheel', onWheel);
+  ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 });
 </script>
 
 <style scoped>
 .horizontal-wrapper {
-  display: flex;
-  width: 100%; /* 100% ширины контейнера */
+  width: 100vw;
   height: 100vh;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow: hidden;
+  position: relative;
 }
 
-.horizontal-wrapper > * {
+.horizontal-container {
+  display: flex;
+  height: 100vh;
+  position: relative;
+}
+
+.horizontal-container > * {
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
