@@ -46,6 +46,8 @@
     color: $text-color-light;
     max-width: 500px;
     text-align: center;
+    position: relative;
+    z-index: 22;
   }
 
   &__subtitle {
@@ -66,13 +68,13 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: 60%;
+    width: 65%;
     height: 100%;
 
     img {
       width: 100%;
       height: 100%;
-      object-fit: none;
+      object-fit: cover;
       object-position: center;
       display: block;
     }

@@ -1,5 +1,5 @@
 <template>
-  <div class="section">
+  <div class="text-block-section section">
     <div class="content">
       <h2 class="title-text">{{ title }}</h2>
       <p class="subtitle-text subtitle-text-section">{{ subtitle }}</p>
@@ -22,8 +22,7 @@ const props = defineProps({
 </script>
 
 <style scoped lang="scss">
-.section {
-  height: 100vh;
+.text-block-section {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,6 +30,8 @@ const props = defineProps({
   text-align: center;
   background-size: cover;
   background-position: center;
+  padding-top: 120px;
+  padding-bottom: 80px;
 }
 
 .content {

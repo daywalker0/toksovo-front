@@ -2,7 +2,7 @@
   <header :class="['header', { 'header--scrolled': scrolled }]" ref="header">
     <div class="header__container container">
       <div class="header__btn-choose">
-        <a href="#"> Выбрать квартиру </a>
+        <a href="#">Выбрать квартиру</a>
       </div>
       <div class="header__logo">
         <a href="#">
@@ -26,7 +26,7 @@
       </div>
       <div class="header__contacts">
         <div class="header__tel">
-          <a href="tel:+333 77 67">
+          <a href="tel:+3337767">
             <div class="header__tel--icon">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <g clip-path="url(#clip0_71_416)">
@@ -60,7 +60,7 @@
           </a>
         </div>
 
-        <div class="header__burger">
+        <div class="header__burger" @click="openMenu">
           <span>Меню</span>
           <div class="header__burger--icon">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -75,17 +75,27 @@
         </div>
       </div>
     </div>
+
+    <Menu ref="menuComponent" />
   </header>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import Menu from './Menu.vue';
 
 const header = ref(null);
 const scrolled = ref(false);
+const menuComponent = ref(null);
 
 const handleScroll = () => {
   scrolled.value = window.scrollY > 50;
+};
+
+const openMenu = () => {
+  if (menuComponent.value) {
+    menuComponent.value.openMenu();
+  }
 };
 
 onMounted(() => {
@@ -100,8 +110,9 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .header {
   position: fixed;
-  z-index: 1;
+  z-index: 100;
   width: 100%;
+  transition: all 0.3s ease;
 
   &__container {
     display: flex;
@@ -112,6 +123,19 @@ onUnmounted(() => {
     text-transform: uppercase;
     font-size: 20px;
     min-height: 70px;
+    padding: 0 20px;
+  }
+
+  &__btn-choose {
+    a {
+      color: #2c322c;
+      text-decoration: none;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #666;
+      }
+    }
   }
 
   &__contacts {
@@ -149,6 +173,6 @@ onUnmounted(() => {
 .header--scrolled .header__logo {
   opacity: 0;
   transform: translateY(-20px);
-  pointer-events: none; // чтобы не было кликабельным
+  pointer-events: none;
 }
 </style>

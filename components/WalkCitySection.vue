@@ -4,15 +4,16 @@
       <div class="walk-city-section__content">
         <h2 class="walk-city-section__title">Гулять без города</h2>
         <div class="walk-city-section__subtitle subtitle-text">
-          Жилой комплекс окружён лесами, озёрами и экотропами, где можно гулять в любое время года.
-          Утренние пробежки, прогулки с детьми и пикники на свежем воздухе становятся частью
-          повседневной жизни. Природа буквально в нескольких шагах от дома.
+          Здесь не нужны долгие поездки ради отдыха: рядом парки, оздоровительные маршруты и
+          живописные тропы. Можно после работы пройтись вдоль озера, покататься на велосипеде или
+          встретить закат на смотровой площадке. Всё лучшее для активного и спокойного отдыха уже
+          рядом.
         </div>
       </div>
     </div>
 
     <div class="walk-city-section__image">
-      <img src="../assets/img/nature-img-1.jpg" alt="nature-img-1" />
+      <img src="../assets/img/walk-city-img.jpg" alt="nature-img-1" />
     </div>
   </div>
 </template>
@@ -25,7 +26,7 @@
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
-  background-color: $accent-color-green;
+  background-color: $accent-color-brown;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -46,6 +47,8 @@
     color: $text-color-light;
     max-width: 500px;
     text-align: center;
+    position: relative;
+    z-index: 22;
   }
 
   &__subtitle {
@@ -66,13 +69,13 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: 60%;
+    width: 65%;
     height: 100%;
 
     img {
       width: 100%;
       height: 100%;
-      object-fit: none;
+      object-fit: cover;
       object-position: center;
       display: block;
     }

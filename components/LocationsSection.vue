@@ -171,7 +171,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .locations-section {
-  padding: 120px 0 180px;
+  padding: 120px 0 260px;
   &__title {
     max-width: 508px;
     text-align: center;
