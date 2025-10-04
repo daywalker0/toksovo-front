@@ -1,5 +1,5 @@
 <template>
-  <div :class="['header', { 'header--scrolled': scrolled }]" ref="header">
+  <header :class="['header', { 'header--scrolled': scrolled }]" ref="header">
     <div class="header__container container">
       <div class="header__btn-choose">
         <a href="#"> Выбрать квартиру </a>
@@ -75,7 +75,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script setup>
@@ -85,7 +85,7 @@ const header = ref(null);
 const scrolled = ref(false);
 
 const handleScroll = () => {
-  scrolled.value = window.scrollY > 50; // меняем 50 на любое нужное значение
+  scrolled.value = window.scrollY > 50;
 };
 
 onMounted(() => {
