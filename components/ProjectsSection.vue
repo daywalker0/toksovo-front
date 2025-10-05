@@ -37,20 +37,27 @@
                 </div>
               </div>
 
-              <a :href="slide.link" class="content--button button">Видео</a>
+              <button @click="openDialogVideo()" class="content--button button">Видео</button>
             </div>
           </div>
         </template>
       </DefaultSlider>
     </div>
+    <Dialog v-model="showDialogVideo">
+      <div>ВИДЕО</div>
+    </Dialog>
   </section>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 import projectItem1 from '@/assets/img/project-item-1.jpg';
 import projectItem2 from '@/assets/img/project-item-2.jpg';
 import projectItem3 from '@/assets/img/project-item-3.jpg';
+import Dialog from './Common/Dialogs/Dialog.vue';
+
+const showDialogVideo = ref(false);
 
 const projectsSlides = [
   {
@@ -94,15 +101,26 @@ const projectsSlides = [
     link: '#',
   },
 ];
+
+const openDialogVideo = () => {
+  showDialogVideo.value = true;
+};
 </script>
 
 <style lang="scss" scoped>
 ::v-deep(.swiper-slide) {
   height: 550px !important;
 }
+::v-deep(.dialog-content) {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 118px;
+}
 .projects-section {
   &__container {
-    padding-bottom: 120px;
   }
   &__title {
     margin: 0 auto;

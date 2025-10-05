@@ -61,7 +61,9 @@
               <span>8 (812) 333 77 67</span>
             </a>
           </div>
-          <button class="footer__callback button">обратный звонок</button>
+          <button @click="openDialogCallback" class="footer__callback button">
+            обратный звонок
+          </button>
         </div>
 
         <div class="footer__section-item right-side">
@@ -94,8 +96,23 @@
         </div>
       </div>
     </div>
+
+    <DialogCallback v-model="showDialogCallback">
+      <div>диалог тут</div>
+    </DialogCallback>
   </footer>
 </template>
+
+<script setup>
+import { ref } from 'vue';
+import DialogCallback from './Common/Dialogs/DialogCallback.vue';
+
+const showDialogCallback = ref(false);
+
+const openDialogCallback = () => {
+  showDialogCallback.value = true;
+};
+</script>
 
 <style lang="scss" scoped>
 .footer {
