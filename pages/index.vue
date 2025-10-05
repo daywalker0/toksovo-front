@@ -1,45 +1,49 @@
 <template>
-  <Header />
-  <HeroSection />
-  <EnvironmentSection />
-  <PrivateHousingSection />
-  <LocationsSection />
+  <AppLoader :loading="loading" />
 
-  <!-- Горизонтальный контейнер -->
-  <div ref="horizontalWrapper" class="horizontal-wrapper">
-    <div class="horizontal-container">
-      <NatureSection />
-      <WalkCitySection />
+  <div :class="{ 'content-hidden': loading }">
+    <AppHeader />
+    <HeroSection />
+    <EnvironmentSection />
+    <PrivateHousingSection />
+    <LocationsSection />
+
+    <!-- Горизонтальный контейнер -->
+    <div ref="horizontalWrapper" class="horizontal-wrapper">
+      <div class="horizontal-container">
+        <NatureSection />
+        <WalkCitySection />
+      </div>
     </div>
+
+    <MasterPlanSection />
+
+    <TextBlockSection :title="sectionNewStyle.title" :subtitle="sectionNewStyle.subtitle" />
+    <FullpageSlider :sections="sectionNewStyle.sliderImages" />
+
+    <TextBlockSection :title="sectionFirstSteps.title" :subtitle="sectionFirstSteps.subtitle" />
+    <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
+
+    <TextBlockSection :title="sectionLiveNearby.title" :subtitle="sectionLiveNearby.subtitle" />
+    <MapSection />
+
+    <TextBlockSection :title="sectionLiveOwnSpace.title" :subtitle="sectionLiveOwnSpace.subtitle" />
+    <AppsLayoutsSection :apartments="apartments" />
+
+    <ConstructionSection />
+    <NewsSection />
+    <ProjectsSection />
+    <ChooseYouAppsSection />
+
+    <Footer />
   </div>
-
-  <MasterPlanSection />
-
-  <TextBlockSection :title="sectionNewStyle.title" :subtitle="sectionNewStyle.subtitle" />
-  <FullpageSlider :sections="sectionNewStyle.sliderImages" />
-
-  <TextBlockSection :title="sectionFirstSteps.title" :subtitle="sectionFirstSteps.subtitle" />
-  <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
-
-  <TextBlockSection :title="sectionLiveNearby.title" :subtitle="sectionLiveNearby.subtitle" />
-  <MapSection />
-
-  <TextBlockSection :title="sectionLiveOwnSpace.title" :subtitle="sectionLiveOwnSpace.subtitle" />
-  <AppsLayoutsSection :apartments="apartments" />
-
-  <ConstructionSection />
-  <NewsSection />
-  <ProjectsSection />
-  <ChooseYouAppsSection />
-
-  <Footer />
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Header from '@/components/Common/Header.vue';
+import AppHeader from '~/components/Common/AppHeader.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import EnvironmentSection from '@/components/EnvironmentSection.vue';
 import PrivateHousingSection from '@/components/PrivateHousingSection.vue';
@@ -56,6 +60,7 @@ import NewsSection from '@/components/NewsSection.vue';
 import ProjectsSection from '@/components/ProjectsSection.vue';
 import ChooseYouAppsSection from '@/components/ChooseYouAppsSection.vue';
 import Footer from '@/components/Footer.vue';
+import AppLoader from '@/components/Common/AppLoader.vue';
 
 import liveInStyleItem1 from '@/assets/img/live-in-style-item-1.png';
 import liveInStyleItem2 from '@/assets/img/live-in-style-item-2.png';
@@ -64,6 +69,8 @@ import liveInStyleItem3 from '@/assets/img/live-in-style-item-3.png';
 import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';
 import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
 import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
+
+const loading = ref(true);
 
 const sectionNewStyle = {
   title: 'Жить в стиле',
@@ -185,7 +192,15 @@ const initHorizontalScroll = () => {
   ScrollTrigger.refresh();
 };
 
+const simulateLoading = () => {
+  // Имитируем загрузку страницы
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000); // 2 секунды для демонстрации
+};
+
 onMounted(() => {
+  simulateLoading();
   // Ждем следующего тика для гарантии, что DOM полностью обновлен
   nextTick(() => {
     initHorizontalScroll();
@@ -215,5 +230,10 @@ onBeforeUnmount(() => {
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
+}
+
+.content-hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 </style>
