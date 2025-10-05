@@ -83,7 +83,7 @@
         <div class="footer__copyright">
           <span class="footer__copy-text">© ПОИНТ ТОКСОВО 2025</span>
         </div>
-        <div ckass="footer__rights">
+        <div class="footer__rights">
           <p>
             Все материалы данного сайта являются объектами авторского права (в том числе дизайн).
             Запрещается копирование, распространение (в том числе путем копирования на другие сайты
@@ -199,7 +199,6 @@ const openDialogCallback = () => {
   }
 
   &__copyright {
-    max-width: 63%;
   }
 
   &__copy-text,
@@ -213,7 +212,7 @@ const openDialogCallback = () => {
   &__rights {
     font-size: 14px;
     line-height: 120%;
-    max-width: 70%;
+    max-width: 73%;
     text-align: center;
   }
 }
