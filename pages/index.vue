@@ -1,7 +1,7 @@
 <template>
-  <AppLoader :loading="loading" />
+  <!-- <AppLoader :loading="loading" /> -->
 
-  <div :class="{ 'content-hidden': loading }">
+  <div>
     <AppHeader />
     <HeroSection />
     <EnvironmentSection />
@@ -18,16 +18,20 @@
 
     <MasterPlanSection />
 
-    <TextBlockSection :title="sectionNewStyle.title" :subtitle="sectionNewStyle.subtitle" />
+    <TextBlockSection 
+      :config="sectionNewStyle.config"
+      :subtitle="sectionNewStyle.subtitle" />
     <FullpageSlider :sections="sectionNewStyle.sliderImages" />
 
-    <TextBlockSection :title="sectionFirstSteps.title" :subtitle="sectionFirstSteps.subtitle" />
+    <TextBlockSection 
+      :config="sectionFirstSteps.config"
+      :subtitle="sectionFirstSteps.subtitle" />
     <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
 
-    <TextBlockSection :title="sectionLiveNearby.title" :subtitle="sectionLiveNearby.subtitle" />
+    <TextBlockSection :config="sectionLiveNearby.config" :subtitle="sectionLiveNearby.subtitle" />
     <MapSection />
 
-    <TextBlockSection :title="sectionLiveOwnSpace.title" :subtitle="sectionLiveOwnSpace.subtitle" />
+    <TextBlockSection :config="sectionLiveOwnSpace.config" :subtitle="sectionLiveOwnSpace.subtitle" />
     <AppsLayoutsSection :apartments="apartments" />
 
     <ConstructionSection />
@@ -73,7 +77,10 @@ import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
 const loading = ref(true);
 
 const sectionNewStyle = {
-  title: 'Жить в стиле',
+  config: [
+    { word: 'Жить', x: 350 },
+    { word: 'в стиле', x: 520 }
+  ],
   subtitle: `Современная архитектура комплекса сочетает лаконичные формы и натуральные материалы.
     Большие окна наполняют квартиры светом,
     а фасады гармонично вписываются в природное окружение.
@@ -82,7 +89,11 @@ const sectionNewStyle = {
 };
 
 const sectionFirstSteps = {
-  title: 'Жить с первых шагов',
+  config: [
+    { word: 'Жить', x: 350 },
+    { word: 'в стиле', x: 520 },
+    { word: 'шагов', x: 460 }
+  ],
   subtitle: `Лобби встречает жителей тёплой атмосферой и современным дизайном.
     Натуральные материалы, спокойные линии и продуманное освещение.
     Здесь начинается настроение дома — с комфорта и стиля уже на входе.`,
@@ -90,7 +101,11 @@ const sectionFirstSteps = {
 };
 
 const sectionLiveNearby = {
-  title: 'Жить там где все рядом',
+  config: [
+    { word: 'Жить там,', x: 150 },
+    { word: 'где все', x: 535 },
+    { word: 'рядом', x: 430 }
+  ],
   subtitle: `Инфраструктура района создана для жизни без лишних забот.
     Рядом с домом — магазины, парки и места для отдыха.
     Всё необходимое находится на расстоянии прогулки,
@@ -98,7 +113,11 @@ const sectionLiveNearby = {
 };
 
 const sectionLiveOwnSpace = {
-  title: 'Жить в своем пространстве',
+  config: [
+    { word: 'Жить', x: 180 },
+    { word: 'в своем', x: 370 },
+    { word: 'пространстве', x: 250 }
+  ],
   subtitle: `Продуманные планировки объединяют уют и функциональность.
     Пространство организовано так, чтобы каждый метр работал на комфорт.
     Здесь легко найти решение под свой ритм жизни и привычки.`,

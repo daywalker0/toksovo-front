@@ -1,7 +1,11 @@
 <template>
   <div class="locations-section section">
     <div class="locations-section__container container">
-      <h2 class="locations-section__title">Локации рядом</h2>
+      <Title :config="[
+          { word: 'Локации', x: 350 },
+          { word: 'рядом', x: 425 },
+        ]" 
+      />
 
       <div class="parallax-block" ref="parallaxSection">
         <div class="parallax-container">
@@ -116,6 +120,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ref, onMounted } from 'vue';
+import Title from './Common/Title.vue';
 
 const parallaxSection = ref(null);
 const leftColumn = ref(null);
@@ -194,6 +199,7 @@ onMounted(() => {
   width: 80%;
   max-width: 1200px;
   gap: 40px;
+  position: relative;
 }
 
 .parallax-column {

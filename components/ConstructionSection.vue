@@ -1,7 +1,11 @@
 <template>
   <section class="construction-section section">
     <div class="construction-section__container container">
-      <h2 class="construction-section__title">Основные месяцы</h2>
+      <Title :config="[
+          { word: 'ход строительства', x: 60 },
+        ]"
+        class="construction-section__title" 
+      />
       <DefaultSlider
         :slides="constructionSlides"
         :slides-per-view="2"
@@ -27,6 +31,7 @@
 <script setup>
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 import constrImg from '@/assets/img/constr-img.jpg';
+import Title from './Common/Title.vue';
 
 const constructionSlides = [
   { title: 'Сентябрь', year: '2024', image: constrImg },

@@ -1,11 +1,12 @@
 <template>
   <div class="environment-section section">
     <div class="environment-section__container container">
-      <h2 class="environment-section__title">
-        Спокойствие <br />
-        свежесть <br />
-        природа
-      </h2>
+      <Title :config="[
+          { word: 'Спокойствие', x: 60 },
+          { word: 'свежесть', x: 700 },
+          { word: 'природа', x: 510 }
+        ]" 
+      />
       <div class="subtitle-text environment-section__subtitle">
         Утро встречает вас чистым воздухом и спокойствием — прогулка, кофе на террасе или время с
         семьёй. Днём вы легко погружаетесь в деловую жизнь города, ведь вся инфраструктура
@@ -49,6 +50,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-coverflow';
 import imgSlide from '../assets/img/private-housing-section.jpg';
 import { Autoplay, EffectCoverflow } from 'swiper/modules';
+import Title from './Common/Title.vue';
 
 const slides = [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
 </script>

@@ -1,7 +1,11 @@
 <template>
   <section class="projects-section section">
     <div class="projects-section__container container">
-      <h2 class="projects-section__title">Другие проекты</h2>
+      <Title :config="[
+          { word: 'Другие проекты', x: 130 },
+        ]"
+        class="projects-section__title"
+      />
       <DefaultSlider
         :slides="projectsSlides"
         :slides-per-view="2"
@@ -56,6 +60,7 @@ import projectItem1 from '@/assets/img/project-item-1.jpg';
 import projectItem2 from '@/assets/img/project-item-2.jpg';
 import projectItem3 from '@/assets/img/project-item-3.jpg';
 import Dialog from './Common/Dialogs/Dialog.vue';
+import Title from './Common/Title.vue';
 
 const showDialogVideo = ref(false);
 
@@ -109,7 +114,7 @@ const openDialogVideo = () => {
 
 <style lang="scss" scoped>
 ::v-deep(.swiper-slide) {
-  height: 550px !important;
+  height: 680px !important;
 }
 ::v-deep(.dialog-content) {
   width: 80%;
