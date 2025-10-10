@@ -18,16 +18,36 @@
           v-for="(pin, index) in pins"
           :key="index"
           class="pin"
-          :class="{ 'pin--active': pin.active }"
+          :class="{ 'pin--active': pin.active, 'pin--hover': pin.active && hoveredPinIndex === index }"
           :style="{
             top: `${pin.y}%`,
             left: `${pin.x}%`,
             transform: `translate(-50%, -50%)`
           }"
-          @click="handlePinClick(pin)"
+          @mouseenter="pin.active && handlePinEnter(pin, index)"
+          @mouseleave="handlePinLeave"
         >
           <div class="pin-dot">{{ pin.id }}</div>
-          <div class="pin-label">{{ pin.label }}</div>
+        </div>
+
+        <!-- Инфо-панель справа от выбранного пина -->
+        <div
+          v-if="hoveredPin"
+          class="pin-info-panel"
+          :style="panelStyle"
+          @mouseenter="handlePanelEnter"
+          @mouseleave="handlePanelLeave"
+        >
+          <div class="pin-info-header">Корпус {{ hoveredPin.buildingNumber }}</div>
+          <ul class="pin-info-list">
+            <li v-for="(offer, i) in hoveredPin.offers" :key="i" class="pin-info-item">
+              <span class="pin-info-type">{{ offer.type }}</span>
+              <span class="pin-info-price">от {{ offer.price }}</span>
+            </li>
+          </ul>
+          <button class="button button--orange pin-info-cta" @click="handleCatalogClick">
+            Каталог квартир
+          </button>
         </div>
       </div>
 
@@ -40,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, computed } from 'vue';
 
 const sectionRef = ref(null);
 const imageMaskRef = ref(null);
@@ -49,28 +69,92 @@ const textRightRef = ref(null);
 const textContentRef = ref(null);
 const showPins = ref(false);
 const showFilterButton = ref(false);
+const hoveredPin = ref(null);
+const hoveredPinIndex = ref(null);
+const isPanelHovered = ref(false);
+let closeTimeoutId = null;
 
 // Данные для пинов
 const pins = ref([
   { id: 1, x: 30, y: 40, label: 'Объект 1', active: true },
-  { id: 1, x: 15, y: 25, label: 'Парк', active: false },
-  { id: 1, x: 45, y: 20, label: 'Школа', active: true },
-  { id: 1, x: 70, y: 35, label: 'Торговый центр', active: true },
-  { id: 1, x: 25, y: 60, label: 'Больница', active: false },
-  { id: 1, x: 55, y: 70, label: 'Спорткомплекс', active: true },
-  { id: 1, x: 80, y: 15, label: 'Детский сад', active: false },
-  { id: 1, x: 10, y: 45, label: 'Библиотека', active: true },
-  { id: 1, x: 65, y: 55, label: 'Кафе', active: false },
-  { id: 1, x: 35, y: 80, label: 'Аптека', active: true },
-  { id: 1, x: 75, y: 25, label: 'Банк', active: false },
-  { id: 1, x: 20, y: 75, label: 'Почта', active: true },
-  { id: 1, x: 50, y: 85, label: 'Автосервис', active: false },
-  { id: 1, x: 85, y: 60, label: 'Салон красоты', active: true },
+  { id: 2, x: 15, y: 25, label: 'Парк', active: false },
+  { id: 3, x: 45, y: 20, label: 'Школа', active: true },
+  { id: 4, x: 70, y: 35, label: 'Торговый центр', active: true },
+  { id: 5, x: 25, y: 60, label: 'Больница', active: false },
+  { id: 6, x: 55, y: 70, label: 'Спорткомплекс', active: true },
+  { id: 7, x: 80, y: 15, label: 'Детский сад', active: false },
+  { id: 8, x: 10, y: 45, label: 'Библиотека', active: true },
+  { id: 9, x: 65, y: 55, label: 'Кафе', active: false },
+  { id: 10, x: 35, y: 80, label: 'Аптека', active: true },
+  { id: 11, x: 75, y: 25, label: 'Банк', active: false },
+  { id: 12, x: 20, y: 75, label: 'Почта', active: true },
+  { id: 13, x: 50, y: 85, label: 'Автосервис', active: false },
+  { id: 14, x: 85, y: 60, label: 'Салон красоты', active: true },
 ]);
 
-const handlePinClick = pin => {
-  console.log('Клик по пину:', pin.label);
-  // Здесь можно добавить логику для показа модального окна или другой реакции
+const defaultOffers = [
+  { type: 'Студия', price: '5 415 000 руб.' },
+  { type: '1-комн.', price: '6 890 000 руб.' },
+  { type: '2-комн.', price: '8 240 000 руб.' },
+  { type: '3-комн.', price: '10 990 000 руб.' },
+];
+
+const handlePinEnter = (pin, index) => {
+  hoveredPinIndex.value = index;
+  hoveredPin.value = {
+    ...pin,
+    buildingNumber: (index ?? 0) + 1,
+    offers: defaultOffers,
+  };
+};
+
+const handlePinLeave = () => {
+  // небольшая задержка, чтобы дать время на переход курсора в панель
+  if (closeTimeoutId) {
+    clearTimeout(closeTimeoutId);
+    closeTimeoutId = null;
+  }
+  closeTimeoutId = setTimeout(() => {
+    if (!isPanelHovered.value) {
+      hoveredPinIndex.value = null;
+      hoveredPin.value = null;
+    }
+    closeTimeoutId = null;
+  }, 120);
+};
+
+const handlePanelEnter = () => {
+  isPanelHovered.value = true;
+  if (closeTimeoutId) {
+    clearTimeout(closeTimeoutId);
+    closeTimeoutId = null;
+  }
+};
+
+const handlePanelLeave = () => {
+  isPanelHovered.value = false;
+  if (closeTimeoutId) {
+    clearTimeout(closeTimeoutId);
+    closeTimeoutId = null;
+  }
+  // закрываем, если курсор ушел с панели и пина
+  hoveredPinIndex.value = null;
+  hoveredPin.value = null;
+};
+
+const panelStyle = computed(() => {
+  if (!hoveredPin.value) return {};
+  const offsetX = 40; // отступ справа от пина
+  const offsetY = 100; // опустить панель ниже пина
+  return {
+    top: `calc(${hoveredPin.value.y}% + ${offsetY}px)`,
+    left: `calc(${hoveredPin.value.x}% + ${offsetX}px)`,
+    transform: 'translateY(-50%)',
+  };
+});
+
+const handleCatalogClick = () => {
+  console.log('Переход в каталог квартир');
 };
 
 const handleFilterClick = () => {
@@ -269,10 +353,6 @@ onMounted(async () => {
   transform-origin: center center;
 }
 
-.pin:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-}
-
 .pin-dot {
   width: 35px;
   height: 35px;
@@ -282,10 +362,12 @@ onMounted(async () => {
   background: $accent-color-orange;
   color: $text-color-white;
   border-radius: 50%;
+  box-sizing: border-box;
   font-family: 'Akrobat';
   font-weight: 900;
   font-size: 18px;
   line-height: 100%;
+  transition: background .3s;
 }
 
 .pin:not(.pin--active) .pin-dot {
@@ -294,23 +376,68 @@ onMounted(async () => {
   -webkit-backdrop-filter: blur(20px);
 }
 
-.pin-label {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+/* Неактивные пины не кликабельны визуально */
+.pin:not(.pin--active) {
+  cursor: default;
 }
 
-.pin:hover .pin-label {
-  opacity: 1;
+
+/* Выделение пина при наведении */
+.pin.pin--hover .pin-dot {
+  background: #FFE8CC;
+  border: 2px solid #FF8A00;
+  color: #FF8A00;
+  transition: background .3s;
+}
+
+/* Инфо-панель для пина */
+.pin-info-panel {
+  position: absolute;
+  z-index: 5;
+  min-width: 240px;
+  max-width: 300px;
+  background: #ffffff;
+  color: $text-color-primary;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  font-family: 'Akrobat';
+}
+
+.pin-info-header {
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.pin-info-list {
+  list-style: none;
+  margin: 0 0 12px 0;
+  padding: 0;
+}
+
+.pin-info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 18px;
+  line-height: 140%;
+  font-weight: 700;
+}
+
+.pin-info-item:last-child {
+  border-bottom: none;
+}
+
+.pin-info-price {
+  color: $text-color-primary;
+}
+
+.pin-info-cta {
+  width: 100%;
+  margin-top: 8px;
 }
 
 @keyframes pulse {
@@ -326,26 +453,29 @@ onMounted(async () => {
 }
 
 /* Кнопка подбора по параметрам */
-.button--filter {
-  position: absolute;
-  bottom: 48px;
-  left: 44px;
-  z-index: 10;
+.button--orange {
   background-color: $accent-color-orange;
   color: $text-color-white;
   border: none;
   font-size: 18px;
   transition: all 0.3s ease;
-  animation: fadeInUp 0.5s ease-out;
 
   &:hover {
-    background-color: darken($accent-color-orange, 10%);
+    background-color: #e66418; /* примерно на 10% темнее $accent-color-orange (#ff7c20) */
     transform: translateY(-2px);
   }
 
   &:active {
     transform: translateY(0);
   }
+}
+
+.button--filter {
+  position: absolute;
+  bottom: 48px;
+  left: 44px;
+  z-index: 10;
+  animation: fadeInUp 0.5s ease-out;
 }
 
 @keyframes fadeInUp {
