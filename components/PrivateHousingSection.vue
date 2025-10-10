@@ -1,5 +1,5 @@
 <template>
-  <div class="private-housing-section section" @mousemove="onMouseMove">
+  <div class="private-housing-section section" @mousemove="onMouseMove" ref="sectionRef">
     <div class="private-housing-section__container container">
       <div class="controls-block">
         <div class="controls-block__wrap">
@@ -40,10 +40,20 @@
 
       <!-- Две половины для клика по стрелкам -->
       <div class="image-control">
-        <div class="image-half left" @click="prevItem">
+        <div
+          class="image-half left"
+          @click="prevItem"
+          @mouseenter="hoverSide = 'left'"
+          @mouseleave="hoverSide = null"
+        >
           <div class="arrow">◀</div>
         </div>
-        <div class="image-half right" @click="nextItem">
+        <div
+          class="image-half right"
+          @click="nextItem"
+          @mouseenter="hoverSide = 'right'"
+          @mouseleave="hoverSide = null"
+        >
           <div class="arrow">▶</div>
         </div>
 
@@ -54,6 +64,20 @@
           alt="bg"
           key="activeItem.image"
         />
+
+        <div
+          v-if="hoverSide"
+          class="custom-cursor"
+          :class="hoverSide"
+          :style="{ left: cursorX + 'px', top: cursorY + 'px' }"
+        >
+          <svg v-if="hoverSide === 'left'" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 5 L7 12 L15 19" fill="none" stroke="#4C5E36" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <svg v-else width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5 L17 12 L9 19" fill="none" stroke="#4C5E36" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
       </div>
     </div>
   </div>
@@ -112,10 +136,15 @@ const prevItem = () => {
 
 const cursorX = ref(0);
 const cursorY = ref(0);
+const hoverSide = ref(null);
+const sectionRef = ref(null);
 
 const onMouseMove = e => {
-  cursorX.value = e.clientX;
-  cursorY.value = e.clientY;
+  const el = sectionRef.value;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  cursorX.value = e.clientX - rect.left;
+  cursorY.value = e.clientY - rect.top;
 };
 </script>
 
@@ -237,13 +266,7 @@ const onMouseMove = e => {
   }
 }
 
-.image-half.left {
-  cursor: url('../assets/img/cursors/arrow-left-cursor.svg'), auto;
-}
-
-.image-half.right {
-  cursor: url('../assets/img/cursors/arrow-right-cursor.svg'), auto;
-}
+/* Remove old cursor images: using DOM-based cursor now */
 
 @keyframes fadeIn {
   from {
@@ -254,5 +277,23 @@ const onMouseMove = e => {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.custom-cursor {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #ffffff; /* no border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.custom-cursor svg {
+  display: block;
 }
 </style>
