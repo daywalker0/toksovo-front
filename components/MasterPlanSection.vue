@@ -2,9 +2,9 @@
   <section ref="sectionRef" class="enhanced-section">
     <div class="sticky-container">
       <!-- Текстовый контент -->
-      <div class="text-content">
-        <div class="text-left">Ген.</div>
-        <div class="text-right">План</div>
+      <div ref="textContentRef" class="text-content">
+        <div ref="textLeftRef" class="text-left">Ген.</div>
+        <div ref="textRightRef" class="text-right">План</div>
       </div>
 
       <!-- Анимируемая картинка -->
@@ -44,6 +44,9 @@ import { ref, onMounted, nextTick } from 'vue';
 
 const sectionRef = ref(null);
 const imageMaskRef = ref(null);
+const textLeftRef = ref(null);
+const textRightRef = ref(null);
+const textContentRef = ref(null);
 const showPins = ref(false);
 const showFilterButton = ref(false);
 
@@ -92,6 +95,12 @@ onMounted(async () => {
       return;
     }
 
+    // Быстрые сеттеры для синхронных обновлений без лагов
+    const setLeftX = textLeftRef.value ? gsap.quickSetter(textLeftRef.value, 'x', 'px') : null;
+    const setRightX = textRightRef.value ? gsap.quickSetter(textRightRef.value, 'x', 'px') : null;
+    const setMaskW = imageMaskRef.value ? gsap.quickSetter(imageMaskRef.value, 'width', 'px') : null;
+    const setMaskH = imageMaskRef.value ? gsap.quickSetter(imageMaskRef.value, 'height', 'px') : null;
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
@@ -114,6 +123,7 @@ onMounted(async () => {
             showFilterButton.value = false;
             console.log('Пины и кнопка фильтра скрыты по прогрессу');
           }
+          // Остальные апдейты выполняются в твине state.t ниже
         },
         onComplete: () => {
           // Убеждаемся что пины и кнопка фильтра показаны после завершения анимации
@@ -137,28 +147,42 @@ onMounted(async () => {
       opacity: 1,
     });
 
-    // Анимация раскрытия картинки - увеличиваем размер до полного экрана от центра
-    tl.to(imageMaskRef.value, {
-      width: '100%',
-      height: '100%',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
+    // Начальные состояния текста: контейнер совпадает с маской, элементы по краям
+    if (textContentRef.value) {
+      gsap.set(textContentRef.value, {
+        width: '422px',
+        height: '563px',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+      });
+    }
+    if (textLeftRef.value && textRightRef.value) {
+      gsap.set([textLeftRef.value, textRightRef.value], { xPercent: 0 });
+    }
+
+    // Общий драйвер анимации, который синхронно обновляет размеры маски и позиции текста
+    const state = { t: 0 };
+    tl.to(state, {
+      t: 1,
       duration: 1,
       ease: 'power2.out',
+      onUpdate: () => {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const w = gsap.utils.interpolate(422, vw, state.t);
+        const h = gsap.utils.interpolate(563, vh, state.t);
+        const gapPx = 24;
+        if (setMaskW) setMaskW(w);
+        if (setMaskH) setMaskH(h);
+        if (setLeftX && setRightX) {
+          setLeftX(-(w / 2 + gapPx));
+          setRightX(w / 2 + gapPx);
+        }
+      },
     });
 
-    // Анимация текста - уходят под фон при раскрытии
-    tl.to(
-      '.text-content',
-      {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.8,
-        ease: 'power2.in',
-      },
-      0.2 // Начинаем немного позже анимации картинки
-    );
+    // Текст не меняет прозрачность и не "наезжает": его раздвигает расширяющийся контейнер
 
   }
 });
@@ -184,9 +208,9 @@ onMounted(async () => {
 .text-content {
   position: absolute;
   top: 50%;
-  left: 52%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: 0; /* Текст под прямоугольником */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -203,6 +227,7 @@ onMounted(async () => {
   font-weight: 900;
   letter-spacing: 0.1em;
   opacity: 0.9;
+  will-change: transform;
 }
 
 .image-mask {
@@ -212,7 +237,7 @@ onMounted(async () => {
   transform: translate(-50%, -50%);
   width: 422px;
   height: 563px;
-  z-index: 3; /* Выше текста, чтобы картинка была поверх */
+  z-index: 2; /* Прямоугольник выше текста, чтобы текст был под ним */
   display: flex;
   align-items: center;
   justify-content: center;
