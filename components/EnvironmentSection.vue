@@ -20,16 +20,8 @@
           :centered-slides="true"
           :space-between="32"
           :initial-slide="2"
-          effect="coverflow"
-          :coverflow-effect="{
-            rotate: 0,
-            stretch: 0,
-            depth: 200,
-            modifier: 1,
-            slideShadows: false,
-          }"
-          :modules="[Autoplay, EffectCoverflow]"
-          navigation
+          :speed="600"
+          :watch-slides-progress="true"
           pagination
           class="environment-section__slider"
         >
@@ -47,9 +39,8 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/effect-coverflow';
 import imgSlide from '../assets/img/private-housing-section.jpg';
-import { Autoplay, EffectCoverflow } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import Title from './Common/Title.vue';
 
 const slides = [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
@@ -58,7 +49,9 @@ const slides = [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
 <style lang="scss" scoped>
 :deep(.swiper-wrapper) {
   justify-content: center;
+  align-items: center;
 }
+
 .environment-section {
   padding: 80px 0;
   &__title {
@@ -79,21 +72,37 @@ const slides = [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
   width: 100%;
 
   .environment-section__slider {
+    width: 100%;
+    :deep(.swiper-button-prev),
+    :deep(.swiper-button-next) {
+      display: none !important;
+    }
     .swiper-slide {
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: 0.5s;
+      transition:
+        width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: width, height, transform;
+      transform-origin: right;
+    }
+
+    .swiper-slide-next,
+    .swiper-slide-active ~ .swiper-slide {
+      transform-origin: left;
     }
 
     .swiper-slide img {
       width: 100%;
-      max-width: 394px;
       height: 100%;
-      transition: 0.5s;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       object-fit: cover;
+      border-radius: 8px;
     }
 
+    // Реальные размеры карточек — DevTools покажет разные ширины, gap будет корректным
     .swiper-slide {
       width: 131px !important;
       height: 198px;
@@ -109,7 +118,9 @@ const slides = [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
     .swiper-slide-active {
       width: 394px !important;
       height: 590px;
+      z-index: 2;
     }
+
   }
 }
 </style>
