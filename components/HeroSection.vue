@@ -1,5 +1,6 @@
 <template>
-  <div class="hero-section section">
+  <div class="hero-section section" ref="sectionEl">
+    <div class="hero-section__sky" ref="skyEl"></div>
     <div class="hero-section__container container">
       <div class="hero-section__content">
         <h1 class="hero-section__title" aria-label="Поинт Токсово">
@@ -35,14 +36,14 @@
         </div>
       </div>
     </div>
-    <div class="hero-section__bg">
+    <div class="hero-section__bg" ref="renderEl">
       <img src="../assets/img/hero-bg.png" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const titleText = 'Поинт Токсово'
 const subtitleText = 'комфорт, который становится частью вашего дня'
@@ -59,12 +60,66 @@ const subtitleLetters = computed(() => Array.from(subtitleText))
 const subtitleStartDelay = computed(
   () => titleStartDelay + titleLetters.value.length * letterDelay + 0.2
 )
+
+// GSAP ScrollTrigger pin + zoom-out
+const sectionEl = ref(null)
+const renderEl = ref(null)
+const skyEl = ref(null)
+
+let gsapInstance = null
+let scrollTrigger = null
+let timeline = null
+
+onMounted(async () => {
+  try {
+    const { default: gsap } = await import('gsap')
+    const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+    gsap.registerPlugin(ScrollTrigger)
+    gsapInstance = gsap
+
+    // Moderate initial zoom so text stays readable
+    const renderStartScale = 1.4
+    const skyStartScale = 1.06
+
+    gsap.set(renderEl.value, { transformOrigin: 'center bottom', scale: renderStartScale })
+    gsap.set(skyEl.value, { transformOrigin: 'center bottom', scale: skyStartScale })
+
+    timeline = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: sectionEl.value,
+        start: 'top top',
+        end: () => `+=${window.innerHeight}`,
+        scrub: 1,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        refreshPriority: 1
+      }
+    })
+
+    timeline
+      .to(renderEl.value, { scale: 1 }, 0)
+      .to(skyEl.value, { scale: 1 }, 0)
+  } catch (e) {
+    // If GSAP not available, silently skip
+    console.error(e)
+  }
+})
+
+onBeforeUnmount(() => {
+  try {
+    if (timeline) timeline.kill()
+    if (scrollTrigger) scrollTrigger.kill()
+  } catch {}
+})
 </script>
 
 <style lang="scss" scoped>
 .hero-section {
   position: relative;
-  background: url('../assets/img/bg-sky.jpg') top center/100% auto no-repeat;
+  background: none;
   min-height: 100vh;
 
   &__container {
@@ -76,6 +131,8 @@ const subtitleStartDelay = computed(
     padding-top: 100px;
     max-width: 660px;
     text-align: center;
+    position: relative;
+    z-index: 1;
   }
 
   &__subtitle {
@@ -89,8 +146,23 @@ const subtitleStartDelay = computed(
   &__bg {
     position: absolute;
     bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    transform-origin: center bottom;
+    will-change: transform;
     // transform: scale(2.9);
   }
+}
+
+.hero-section__sky {
+  position: absolute;
+  inset: 0;
+  background: url('../assets/img/bg-sky.jpg') top center/100% auto no-repeat;
+  transform-origin: center bottom;
+  will-change: transform;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .char {

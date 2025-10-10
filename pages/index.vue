@@ -1,7 +1,7 @@
 <template>
-  <!-- <AppLoader :loading="loading" /> -->
+  <AppLoader :loading="loading" />
 
-  <div>
+  <div :class="{ 'content-hidden': loading }">
     <AppHeader />
     <HeroSection />
     <EnvironmentSection />
