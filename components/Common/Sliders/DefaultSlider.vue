@@ -14,6 +14,8 @@
         onSlideChange
         @swiper="onSwiper"
         @slide-change="onSlideChange"
+        @resize="onResize"
+        @breakpoint="onBreakpoint"
       >
         <SwiperSlide
           v-for="(slide, index) in slides"
@@ -156,15 +158,28 @@ const activeIndex = ref(0);
 let swiperInstance = null;
 const totalSlides = computed(() => props.slides.length);
 
-const isPrevDisabled = computed(() => activeIndex.value === 0);
-const isNextDisabled = computed(() => activeIndex.value === totalSlides.value - 1);
+const isPrevDisabled = ref(true);
+const isNextDisabled = ref(true);
 
 const onSwiper = swiper => {
   swiperInstance = swiper;
+  updateNavigationState();
 };
 
 const onSlideChange = swiper => {
   activeIndex.value = swiper.realIndex;
+  updateNavigationState();
+};
+
+const updateNavigationState = () => {
+  if (swiperInstance) {
+    const currentIndex = swiperInstance.realIndex ?? swiperInstance.activeIndex ?? 0;
+    const visible = getCurrentSlidesPerView();
+    const lastStartIndex = Math.max(0, totalSlides.value - visible);
+
+    isPrevDisabled.value = currentIndex <= 0;
+    isNextDisabled.value = currentIndex >= lastStartIndex;
+  }
 };
 
 const slidePrev = () => {
@@ -205,6 +220,24 @@ const navigation = computed(() => {
       }
     : false;
 });
+
+// Helpers to determine current slidesPerView considering breakpoints and responsive changes
+const getCurrentSlidesPerView = () => {
+  if (!swiperInstance) return Number(props.slidesPerView) || 1;
+  // Swiper resolves breakpoints and stores params in params.slidesPerView
+  const resolved = swiperInstance.params?.slidesPerView;
+  const val = typeof resolved === 'number' ? resolved : Number(props.slidesPerView) || 1;
+  // Cap to total slides to avoid negative lastStartIndex
+  return Math.max(1, Math.min(val, totalSlides.value));
+};
+
+const onResize = () => {
+  updateNavigationState();
+};
+
+const onBreakpoint = () => {
+  updateNavigationState();
+};
 </script>
 
 <style lang="scss" scoped>
