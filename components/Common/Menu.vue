@@ -1,6 +1,11 @@
 <template>
-  <nav :class="['menu', { 'menu--open': isOpen }]">
-    <div class="menu__overlay" @click="closeMenu"></div>
+  <nav :class="['menu', { 'menu--open': isOpen }]" ref="menuRef" @mousemove="onMouseMove">
+    <div
+      class="menu__overlay"
+      @click="closeMenu"
+      @mouseenter="hoverOverlay = true"
+      @mouseleave="hoverOverlay = false"
+    ></div>
 
     <div class="menu__content">
       <div class="left-column">
@@ -76,6 +81,19 @@
         <a href="#" class="right-column__constr menu--doc-link"> РАЗРЕШЕНИЕ НА СТРОИТЕЛЬСТВО </a>
       </div>
     </div>
+    <div
+      v-if="isOpen && hoverOverlay"
+      class="menu__cursor"
+      :style="{ left: cursorX + 'px', top: cursorY + 'px' }"
+      aria-hidden="true"
+    >
+      <svg width="20" height="20" viewBox="0 0 14 14" fill="none">
+        <path
+          d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+          fill="#4C5E36"
+        />
+      </svg>
+    </div>
   </nav>
 </template>
 
@@ -83,6 +101,10 @@
 import { ref } from 'vue';
 
 const isOpen = ref(false);
+const menuRef = ref(null);
+const hoverOverlay = ref(false);
+const cursorX = ref(0);
+const cursorY = ref(0);
 
 const menuItems = [
   { id: 1, title: 'ГЛАВНАЯ', link: '#' },
@@ -103,6 +125,14 @@ const openMenu = () => {
 const closeMenu = () => {
   isOpen.value = false;
   document.body.style.overflow = '';
+};
+
+const onMouseMove = e => {
+  const el = menuRef.value;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  cursorX.value = e.clientX - rect.left;
+  cursorY.value = e.clientY - rect.top;
 };
 
 // Экспортируем методы для использования в родительском компоненте
@@ -150,7 +180,7 @@ defineExpose({
 
     .menu--open & {
       opacity: 1;
-      cursor: url('../../assets/img/cursors/cursor-close.svg'), auto;
+      cursor: none; /* use DOM-based cursor */
     }
   }
 
@@ -197,6 +227,20 @@ defineExpose({
     font-weight: 700;
     line-height: 100%;
   }
+}
+
+.menu__cursor {
+  position: fixed;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1001; /* above overlay */
 }
 
 .left-column {
