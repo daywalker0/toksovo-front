@@ -37,7 +37,6 @@ const props = defineProps({
   background-position: center;
   padding-top: 120px;
   max-width: 450px;
-  padding-bottom: 80px;
 }
 
 .content {

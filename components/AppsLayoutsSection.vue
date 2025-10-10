@@ -45,6 +45,7 @@
             v-for="(apps, index) in apartmentTypes"
             :key="apps.id"
             class="apps-switcher--item"
+            :class="{ active: currentType === apps.id }"
             @click="switchApartmentType(apps.id)"
           >
             <template v-if="apps.id === 0"> Студии </template>
@@ -104,7 +105,7 @@ const apartmentTypes = ref([
     floors: '2-9',
     price: '312 660',
     features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-    images: [appsItem1, liveInStyleItem1, liveInStyleItem2],
+    images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 1,
@@ -113,7 +114,7 @@ const apartmentTypes = ref([
     floors: '2-9',
     price: '312 660',
     features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-    images: [appsItem1, liveInStyleItem1, liveInStyleItem2],
+    images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 2,
@@ -122,7 +123,7 @@ const apartmentTypes = ref([
     floors: '2-8',
     price: '285 400',
     features: ['Компактная планировка', 'Балкон с панорамным видом', 'Современная отделка'],
-    images: [appsItem1, liveInStyleItem1, liveInStyleItem2],
+    images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 3,
@@ -131,7 +132,7 @@ const apartmentTypes = ref([
     floors: '3-10',
     price: '345 200',
     features: ['Большая гостиная', 'Две спальни', 'Отдельная кухня', 'Два санузла'],
-    images: [appsItem1, liveInStyleItem1, liveInStyleItem2],
+    images: [appsItem1, appsItem1, appsItem1],
   },
 ]);
 
@@ -170,6 +171,7 @@ const switchImage = index => {
   width: 420px;
   background-color: $bg-color-2;
   border-radius: 7px;
+  min-height: 600px; // Фиксируем минимальную высоту
 
   &__wrap {
     padding: 24px;
@@ -178,6 +180,7 @@ const switchImage = index => {
     justify-content: space-between;
     align-items: flex-start;
     height: 100%;
+    min-height: 600px; // Фиксируем минимальную высоту для внутреннего контейнера
   }
 }
 
@@ -239,6 +242,7 @@ const switchImage = index => {
 
 .apartment-features {
   margin-bottom: 100px;
+  min-height: 200px; // Фиксируем минимальную высоту для секции особенностей
   &--title {
     margin-bottom: 20px;
   }
@@ -262,19 +266,19 @@ const switchImage = index => {
   gap: 8px;
 
   &--item {
-    min-width: 41px;
-    height: 41px;
+    min-width: 54px;
+    height: 54px;
     border-radius: 50px;
     border: 1px solid $utility-color-1;
     display: flex;
     justify-content: center;
     align-items: center;
     color: $text-color-secondary;
-    font-size: 14px;
+    font-size: 18px;
     font-family: 'Akrobat';
     font-weight: 700;
     transition: 0.3s;
-    padding: 10px 12px;
+    padding: 14px 16px;
     cursor: pointer;
     background-color: transparent;
 
@@ -286,6 +290,8 @@ const switchImage = index => {
     }
     &.active {
       background-color: $text-color-primary;
+      border-color: $text-color-primary;
+      color: $text-color-white;
     }
   }
 }
@@ -360,7 +366,7 @@ const switchImage = index => {
 
 .main-image {
   width: 100%;
-  height: 400px;
+  height: 100%;
   display: flex;
   justify-content: center;
 }
@@ -391,8 +397,8 @@ const switchImage = index => {
 }
 
 .thumbnail {
-  flex: 0 0 80px;
-  height: 60px;
+  flex: 0 0 180px;
+  height: 120px;
   border-radius: 0.375rem;
   overflow: hidden;
   cursor: pointer;
@@ -401,7 +407,6 @@ const switchImage = index => {
 }
 
 .thumbnail.active {
-  border-color: $text-color-secondary;
 }
 
 .thumbnail:hover {

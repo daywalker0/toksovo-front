@@ -207,7 +207,7 @@ function selectPin(pin) {
   .map__image {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     filter: grayscale(100%) brightness(95%) contrast(90%);
     position: relative;
   }
