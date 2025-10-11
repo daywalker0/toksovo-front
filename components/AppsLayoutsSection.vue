@@ -83,8 +83,6 @@
 <script setup>
 import { ref, computed } from 'vue';
 import appsItem1 from '@/assets/img/apps-item-1.png';
-import liveInStyleItem1 from '@/assets/img/live-in-style-item-1.png';
-import liveInStyleItem2 from '@/assets/img/live-in-style-item-2.png';
 
 defineProps({
   apartments: {
@@ -160,7 +158,6 @@ const switchImage = index => {
 
   &__container {
     height: 100%;
-    padding-top: 84px;
     padding-bottom: 120px;
     display: flex;
     gap: 160px;

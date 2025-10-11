@@ -15,7 +15,11 @@
           Генплан
         </button>
 
-        <div class="content--center" ref="imageContainer">
+        <div
+          class="content--center"
+          ref="imageContainer"
+          :style="{ transform: `scale(${imageScale})` }"
+        >
           <div class="image-overlay" :style="{ opacity: overlayOpacity }"></div>
           <img :src="chooseYourLife" alt="preview" />
           <div class="text" :style="{ opacity: textOpacity }">Выберите свою квартиру для жизни</div>
@@ -45,6 +49,7 @@ const isOnDarkBg = ref(false);
 const textOpacity = ref(0);
 const buttonsOpacity = ref(0);
 const overlayOpacity = ref(0);
+const imageScale = ref(0.95);
 
 const handleScroll = () => {
   if (!section.value || !darkBg.value || !imageContainer.value || !content.value) return;
@@ -58,14 +63,36 @@ const handleScroll = () => {
     Math.min(1, -sectionRect.top / (sectionRect.height - windowHeight))
   );
 
-  // Разделяем на 3 фазы:
-  // Фаза 1 (0 - 0.3): уменьшение картинки
-  // Фаза 2 (0.3 - 0.5): появление текста и кнопок
-  // Фаза 3 (0.5 - 1): анимация смены цвета (длинная, медленная)
+  // Разделяем на 4 фазы:
+  // Фаза 0 (0 - 0.1): масштабирование картинки от 0.95 до 1
+  // Фаза 1 (0.1 - 0.4): уменьшение картинки
+  // Фаза 2 (0.4 - 0.6): появление текста и кнопок
+  // Фаза 3 (0.6 - 1): анимация смены цвета
 
-  if (sectionProgress <= 0.3) {
+  if (sectionProgress <= 0.1) {
+    // ===== ФАЗА 0: масштабирование картинки =====
+    const scaleProgress = sectionProgress / 0.1; // 0 -> 1
+
+    // Масштабирование от 0.95 до 1
+    imageScale.value = 0.95 + 0.05 * scaleProgress;
+
+    // Картинка на весь экран
+    imageContainer.value.style.width = '100vw';
+    imageContainer.value.style.height = '100vh';
+    imageContainer.value.style.maxWidth = 'none';
+    imageContainer.value.style.transform = `scale(${imageScale.value})`;
+
+    // Текст и кнопки скрыты
+    textOpacity.value = 0;
+    buttonsOpacity.value = 0;
+    overlayOpacity.value = 0;
+
+    // Фон светлый
+    darkBg.value.style.transform = 'translateY(0)';
+    isOnDarkBg.value = false;
+  } else if (sectionProgress > 0.1 && sectionProgress <= 0.4) {
     // ===== ФАЗА 1: ТОЛЬКО уменьшение картинки =====
-    const shrinkProgress = sectionProgress / 0.3; // 0 -> 1
+    const shrinkProgress = (sectionProgress - 0.1) / 0.3; // 0 -> 1
 
     // Размеры картинки: от 100vw x 100vh до 650px x 450px
     const currentWidth = 100 - (100 - (650 / window.innerWidth) * 100) * shrinkProgress;
@@ -75,6 +102,7 @@ const handleScroll = () => {
     imageContainer.value.style.width = `${currentWidth}vw`;
     imageContainer.value.style.height = `${currentHeight}vh`;
     imageContainer.value.style.maxWidth = 'none';
+    imageContainer.value.style.transform = 'scale(1)'; // убираем scale
 
     // Текст и кнопки скрыты
     textOpacity.value = 0;
@@ -86,7 +114,7 @@ const handleScroll = () => {
     // Фон светлый - темный фон на своей позиции (внизу)
     darkBg.value.style.transform = 'translateY(0)';
     isOnDarkBg.value = false;
-  } else if (sectionProgress > 0.3 && sectionProgress <= 0.5) {
+  } else if (sectionProgress > 0.4 && sectionProgress <= 0.6) {
     // ===== ФАЗА 2: появление текста и кнопок =====
 
     // Картинка в финальном размере
@@ -95,7 +123,7 @@ const handleScroll = () => {
     imageContainer.value.style.maxWidth = '650px';
 
     // Прогресс второй фазы (0 -> 1)
-    const phase2Progress = (sectionProgress - 0.3) / 0.2;
+    const phase2Progress = (sectionProgress - 0.4) / 0.2;
 
     // Появление текста (с начала фазы 2 до 50% фазы 2)
     if (phase2Progress <= 0.5) {
@@ -139,15 +167,15 @@ const handleScroll = () => {
     overlayOpacity.value = 1;
 
     // Прогресс третьей фазы (0 -> 1)
-    const phase3Progress = (sectionProgress - 0.5) / 0.5;
+    const phase3Progress = (sectionProgress - 0.6) / 0.4;
 
     // Плавное поднятие фона от 0 до -100vh
     // Фон на top: 200vh, поднимается до 100vh (покрывает sticky-content)
     const bgTranslateY = -100 * phase3Progress;
     darkBg.value.style.transform = `translateY(${bgTranslateY}vh)`;
 
-    // Смена цвета текста/кнопок (когда фон достигает середины экрана)
-    isOnDarkBg.value = phase3Progress > 0.5;
+    // Смена цвета текста/кнопок (когда фон начинает покрывать экран)
+    isOnDarkBg.value = phase3Progress > 0.4;
   }
 };
 
@@ -229,8 +257,6 @@ onUnmounted(() => {
     height: 100vh;
     max-width: none;
     position: absolute;
-    left: 50%;
-    top: 50%;
     transform: translate(-50%, -50%);
     overflow: hidden;
     transition:
@@ -263,7 +289,7 @@ onUnmounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   color: $text-color-white;
-  font-size: 46px;
+  font-size: 40px;
   text-align: center;
   max-width: 400px;
   z-index: 2;
