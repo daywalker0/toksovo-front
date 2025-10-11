@@ -1,8 +1,8 @@
 <template>
-  <section class="environment-section" ref="sectionRef" @mousemove="onMouseMove">
+  <section class="environment-section" ref="sectionRef">
     <div class="environment-section__gallery" ref="galleryRef">
       <div v-for="(img, i) in slides" :key="i" class="gallery-item">
-        <img :src="i === Math.floor(slides.length / 2) ? activeItem.image : img" alt="" />
+        <img :src="i === Math.floor(slides.length / 2) ? slides[currentIndex] : img" alt="" />
       </div>
     </div>
 
@@ -43,8 +43,19 @@
         </div>
       </div>
 
+      <!-- Фоновые картинки -->
+      <div class="slides-wrapper" ref="slidesWrapper">
+        <img
+          v-for="(slide, idx) in slides"
+          :key="idx"
+          :src="slide"
+          :class="['slide-bg', { active: idx === currentIndex }]"
+          alt="bg"
+        />
+      </div>
+
       <!-- Две половины для клика по стрелкам -->
-      <div class="image-control">
+      <div class="image-control" v-if="isContentVisible" @mousemove="onMouseMove">
         <div
           class="image-half left"
           @click="goToPrevSlide"
@@ -57,17 +68,6 @@
           @mouseenter="hoverSide = 'right'"
           @mouseleave="hoverSide = null"
         />
-
-        <!-- Фоновые картинки -->
-        <div class="slides-wrapper" ref="slidesWrapper">
-          <img
-            v-for="(slide, idx) in slides"
-            :key="idx"
-            :src="slide"
-            :class="['slide-bg', { active: idx === currentIndex }]"
-            alt="bg"
-          />
-        </div>
 
         <div
           v-if="hoverSide"
@@ -136,6 +136,11 @@ const {
   onMouseMove: handleMouseMove,
 } = usePrivateHousingData();
 
+// Функция для прямой установки активного индекса
+const setActiveIndex = index => {
+  activeIndex.value = index;
+};
+
 // Обёртка для toggleItem, чтобы синхронизировать с currentIndex
 const toggleItem = index => {
   originalToggleItem(index);
@@ -154,8 +159,6 @@ const slides = computed(() => {
 });
 
 const onMouseMove = e => {
-  const el = sectionRef.value;
-  if (!el) return;
   handleMouseMove(e);
 };
 
@@ -167,7 +170,7 @@ const goToNextSlide = () => {
   animateSlide(nextIndex, 'right');
 
   // Синхронизируем аккордеон
-  originalToggleItem(nextIndex);
+  setActiveIndex(nextIndex);
 };
 
 // Переход к предыдущему слайду
@@ -178,7 +181,7 @@ const goToPrevSlide = () => {
   animateSlide(prevIndex, 'left');
 
   // Синхронизируем аккордеон
-  originalToggleItem(prevIndex);
+  setActiveIndex(prevIndex);
 };
 
 // Анимация смены слайда
@@ -243,6 +246,12 @@ onMounted(async () => {
   const centerImg = centerItem?.querySelector('img');
 
   if (!centerItem || !centerImg) return;
+
+  // Синхронизируем начальное состояние: всё начинается с индекса 0
+  currentIndex.value = 0;
+
+  // Устанавливаем активный элемент аккордеона на 0
+  setActiveIndex(0);
 
   // Скрываем контент
   gsap.set(content, {
