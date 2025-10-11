@@ -6,7 +6,6 @@
       </div>
     </div>
 
-    <!-- Контент из PrivateHousingSection -->
     <div class="environment-content" ref="contentRef">
       <div class="controls-block">
         <div class="controls-block__wrap">
@@ -344,9 +343,9 @@ onMounted(async () => {
 
 .gallery-item {
   flex: 0 0 auto;
-  width: 200px;
-  height: 300px;
-  border-radius: 8px;
+  width: 131px;
+  height: 198px;
+  border-radius: 0;
   overflow: hidden;
   transition: transform 0.3s ease;
   position: relative;
@@ -360,9 +359,17 @@ onMounted(async () => {
     display: block;
   }
 
+  // Центральный слайд (третий)
   &:nth-child(3) {
     width: 400px;
     height: 600px;
+    z-index: 3;
+  }
+
+  &:nth-child(2),
+  &:nth-child(4) {
+    width: 262px;
+    height: 394px;
     z-index: 2;
   }
 }
