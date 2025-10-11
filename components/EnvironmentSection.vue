@@ -48,30 +48,27 @@
       <div class="image-control">
         <div
           class="image-half left"
-          :style="{ cursor: 'none' }"
-          @click="prevItem"
+          @click="goToPrevSlide"
           @mouseenter="hoverSide = 'left'"
           @mouseleave="hoverSide = null"
-        >
-          <div class="arrow">◀</div>
-        </div>
+        />
         <div
           class="image-half right"
-          :style="{ cursor: 'none' }"
-          @click="nextItem"
+          @click="goToNextSlide"
           @mouseenter="hoverSide = 'right'"
           @mouseleave="hoverSide = null"
-        >
-          <div class="arrow">▶</div>
-        </div>
-
-        <!-- Картинка активного item -->
-        <img
-          class="environment-section--bg"
-          :src="activeItem.image"
-          alt="bg"
-          :key="activeItem.image"
         />
+
+        <!-- Фоновые картинки -->
+        <div class="slides-wrapper" ref="slidesWrapper">
+          <img
+            v-for="(slide, idx) in slides"
+            :key="idx"
+            :src="slide"
+            :class="['slide-bg', { active: idx === currentIndex }]"
+            alt="bg"
+          />
+        </div>
 
         <div
           v-if="hoverSide"
@@ -123,7 +120,10 @@ gsap.registerPlugin(ScrollTrigger);
 const sectionRef = ref(null);
 const galleryRef = ref(null);
 const contentRef = ref(null);
+const slidesWrapper = ref(null);
 const isContentVisible = ref(false);
+const currentIndex = ref(0);
+const isAnimating = ref(false);
 
 // Используем композабл для данных
 const {
@@ -133,19 +133,23 @@ const {
   cursorX,
   cursorY,
   hoverSide,
-  toggleItem,
-  nextItem: originalNextItem,
-  prevItem: originalPrevItem,
+  toggleItem: originalToggleItem,
   onMouseMove: handleMouseMove,
 } = usePrivateHousingData();
 
-const nextItem = originalNextItem;
-const prevItem = originalPrevItem;
+// Обёртка для toggleItem, чтобы синхронизировать с currentIndex
+const toggleItem = index => {
+  originalToggleItem(index);
+  if (currentIndex.value !== index && !isAnimating.value) {
+    const direction = index > currentIndex.value ? 'right' : 'left';
+    animateSlide(index, direction);
+  }
+};
 
-// Используем картинки из items вместо статического массива
+// Слайды
 const slides = computed(() => {
   if (!items.value || !Array.isArray(items.value)) {
-    return [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide]; // fallback
+    return [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
   }
   return items.value.map(item => item.image);
 });
@@ -156,35 +160,91 @@ const onMouseMove = e => {
   handleMouseMove(e);
 };
 
+// Переход к следующему слайду
+const goToNextSlide = () => {
+  if (isAnimating.value) return;
+
+  const nextIndex = (currentIndex.value + 1) % slides.value.length;
+  animateSlide(nextIndex, 'right');
+
+  // Синхронизируем аккордеон
+  originalToggleItem(nextIndex);
+};
+
+// Переход к предыдущему слайду
+const goToPrevSlide = () => {
+  if (isAnimating.value) return;
+
+  const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
+  animateSlide(prevIndex, 'left');
+
+  // Синхронизируем аккордеон
+  originalToggleItem(prevIndex);
+};
+
+// Анимация смены слайда
+const animateSlide = (newIndex, direction) => {
+  if (!slidesWrapper.value) return;
+
+  isAnimating.value = true;
+
+  const allSlides = slidesWrapper.value.querySelectorAll('.slide-bg');
+  const currentSlide = allSlides[currentIndex.value];
+  const nextSlide = allSlides[newIndex];
+
+  if (!currentSlide || !nextSlide) {
+    isAnimating.value = false;
+    return;
+  }
+
+  // Устанавливаем начальные позиции
+  gsap.set(nextSlide, {
+    x: direction === 'right' ? '100%' : '-100%',
+    zIndex: 2,
+  });
+
+  // Анимируем оба слайда
+  gsap.to(currentSlide, {
+    x: direction === 'right' ? '-100%' : '100%',
+    duration: 0.6,
+    ease: 'power2.inOut',
+  });
+
+  gsap.to(nextSlide, {
+    x: '0%',
+    duration: 0.6,
+    ease: 'power2.inOut',
+    onComplete: () => {
+      // Сбрасываем позиции после анимации
+      gsap.set(currentSlide, { x: '0%', zIndex: 0 });
+      gsap.set(nextSlide, { x: '0%', zIndex: 1 });
+
+      currentIndex.value = newIndex;
+      isAnimating.value = false;
+    },
+  });
+};
+
 onMounted(async () => {
   await nextTick();
-
-  // Дополнительная задержка для гарантии готовности DOM
   await new Promise(resolve => setTimeout(resolve, 100));
 
   const section = sectionRef.value;
   const gallery = galleryRef.value;
   const content = contentRef.value;
 
-  // Проверяем, что все элементы существуют
-  if (!section || !gallery || !content) {
-    return;
-  }
+  if (!section || !gallery || !content) return;
 
   const galleryItems = gallery.querySelectorAll('.gallery-item');
-  if (galleryItems.length === 0) {
-    return;
-  }
+  if (galleryItems.length === 0) return;
 
   const centerIndex = Math.floor(galleryItems.length / 2);
   const centerItem = galleryItems[centerIndex];
   const centerImg = centerItem?.querySelector('img');
 
-  if (!centerItem || !centerImg) {
-    return;
-  }
+  if (!centerItem || !centerImg) return;
 
-  // Сначала скрываем контент
+  // Скрываем контент
   gsap.set(content, {
     opacity: 0,
     y: 20,
@@ -242,7 +302,7 @@ onMounted(async () => {
     0.2
   );
 
-  // Контент появляется плавно в процессе анимации
+  // Контент появляется плавно
   tl.to(
     content,
     {
@@ -319,7 +379,7 @@ onMounted(async () => {
   pointer-events: none;
   will-change: transform, opacity;
   backface-visibility: hidden;
-  transform: translateZ(0); // Принудительное GPU ускорение
+  transform: translateZ(0);
 
   .controls-block {
     height: 384px;
@@ -331,7 +391,7 @@ onMounted(async () => {
     pointer-events: auto;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    transform: translateZ(0); // GPU ускорение
+    transform: translateZ(0);
 
     &__wrap {
       padding: 36px;
@@ -422,15 +482,31 @@ onMounted(async () => {
     }
   }
 
-  .environment-section--bg {
+  .slides-wrapper {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100vh;
     width: 100%;
-    object-fit: cover;
+    height: 100%;
+    overflow: hidden;
     z-index: 0;
-    transition: all 0.5s ease;
+  }
+
+  .slide-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform;
+
+    &.active {
+      opacity: 1;
+      z-index: 1;
+    }
   }
 
   .custom-cursor {
