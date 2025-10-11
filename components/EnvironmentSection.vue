@@ -197,26 +197,27 @@ const animateSlide = (newIndex, direction) => {
     return;
   }
 
-  // Устанавливаем начальные позиции
+  // Делаем следующий слайд видимым
   gsap.set(nextSlide, {
+    opacity: 1,
     x: direction === 'right' ? '100%' : '-100%',
     zIndex: 2,
   });
 
-  // Анимируем оба слайда
+  // Анимируем оба слайда одновременно с более плавным easing
   gsap.to(currentSlide, {
     x: direction === 'right' ? '-100%' : '100%',
-    duration: 0.6,
-    ease: 'power2.inOut',
+    duration: 0.9,
+    ease: 'power3.inOut',
   });
 
   gsap.to(nextSlide, {
     x: '0%',
-    duration: 0.6,
-    ease: 'power2.inOut',
+    duration: 0.9,
+    ease: 'power3.inOut',
     onComplete: () => {
       // Сбрасываем позиции после анимации
-      gsap.set(currentSlide, { x: '0%', zIndex: 0 });
+      gsap.set(currentSlide, { x: '0%', opacity: 0, zIndex: 0 });
       gsap.set(nextSlide, { x: '0%', zIndex: 1 });
 
       currentIndex.value = newIndex;
