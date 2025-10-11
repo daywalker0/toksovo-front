@@ -18,11 +18,14 @@
           v-for="(pin, index) in pins"
           :key="index"
           class="pin"
-          :class="{ 'pin--active': pin.active, 'pin--hover': pin.active && hoveredPinIndex === index }"
+          :class="{
+            'pin--active': pin.active,
+            'pin--hover': pin.active && hoveredPinIndex === index,
+          }"
           :style="{
             top: `${pin.y}%`,
             left: `${pin.x}%`,
-            transform: `translate(-50%, -50%)`
+            transform: `translate(-50%, -50%)`,
           }"
           @mouseenter="pin.active && handlePinEnter(pin, index)"
           @mouseleave="handlePinLeave"
@@ -35,6 +38,7 @@
           v-if="hoveredPin"
           class="pin-info-panel"
           :style="panelStyle"
+          :data-position="getOptimalPanelPosition(hoveredPin).position"
           @mouseenter="handlePanelEnter"
           @mouseleave="handlePanelLeave"
         >
@@ -52,7 +56,11 @@
       </div>
 
       <!-- Кнопка подбора по параметрам -->
-      <button v-if="showFilterButton" class="button button--orange button--filter" @click="handleFilterClick">
+      <button
+        v-if="showFilterButton"
+        class="button button--orange button--filter"
+        @click="handleFilterClick"
+      >
         Подбор по параметрам
       </button>
     </div>
@@ -142,13 +150,71 @@ const handlePanelLeave = () => {
   hoveredPin.value = null;
 };
 
+// Функция для определения оптимальной позиции плашки
+const getOptimalPanelPosition = pin => {
+  if (!pin) return { position: 'right', x: 0, y: 0 };
+
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  // Адаптивные размеры панели
+  const isMobile = viewportWidth <= 768;
+  const panelWidth = isMobile ? 280 : 300;
+  const panelHeight = isMobile ? 180 : 200;
+  const offset = isMobile ? 20 : 40;
+
+  // Конвертируем проценты в пиксели
+  const pinX = (pin.x / 100) * viewportWidth;
+  const pinY = (pin.y / 100) * viewportHeight;
+
+  // Проверяем доступное место справа
+  const rightSpace = viewportWidth - pinX;
+  const canFitRight = rightSpace >= panelWidth + offset;
+
+  // Проверяем доступное место слева
+  const leftSpace = pinX;
+  const canFitLeft = leftSpace >= panelWidth + offset;
+
+  // Проверяем доступное место сверху
+  const topSpace = pinY;
+  const canFitTop = topSpace >= panelHeight + offset;
+
+  // Проверяем доступное место снизу
+  const bottomSpace = viewportHeight - pinY;
+  const canFitBottom = bottomSpace >= panelHeight + offset;
+
+  // Логика выбора позиции с приоритетом
+  if (canFitRight && canFitBottom) {
+    return { position: 'right', x: pinX + offset, y: pinY };
+  } else if (canFitLeft && canFitBottom) {
+    return { position: 'left', x: pinX - panelWidth - offset, y: pinY };
+  } else if (canFitRight && canFitTop) {
+    return { position: 'right-top', x: pinX + offset, y: pinY - panelHeight };
+  } else if (canFitLeft && canFitTop) {
+    return { position: 'left-top', x: pinX - panelWidth - offset, y: pinY - panelHeight };
+  } else if (canFitRight) {
+    return { position: 'right', x: pinX + offset, y: pinY };
+  } else if (canFitLeft) {
+    return { position: 'left', x: pinX - panelWidth - offset, y: pinY };
+  } else {
+    // Fallback - центрируем по вертикали и горизонтали
+    const centerX = Math.max(10, Math.min(viewportWidth - panelWidth - 10, pinX - panelWidth / 2));
+    const centerY = Math.max(
+      10,
+      Math.min(viewportHeight - panelHeight - 10, pinY - panelHeight / 2)
+    );
+    return { position: 'right', x: centerX, y: centerY };
+  }
+};
+
 const panelStyle = computed(() => {
   if (!hoveredPin.value) return {};
-  const offsetX = 40; // отступ справа от пина
-  const offsetY = 100; // опустить панель ниже пина
+
+  const position = getOptimalPanelPosition(hoveredPin.value);
+
   return {
-    top: `calc(${hoveredPin.value.y}% + ${offsetY}px)`,
-    left: `calc(${hoveredPin.value.x}% + ${offsetX}px)`,
+    top: `${position.y}px`,
+    left: `${position.x}px`,
     transform: 'translateY(-50%)',
   };
 });
@@ -167,12 +233,12 @@ onMounted(async () => {
     // Динамически импортируем GSAP только на клиенте
     const { gsap } = await import('gsap');
     const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-    
+
     gsap.registerPlugin(ScrollTrigger);
-    
+
     // Ждем следующий тик для гарантии что DOM готов
     await nextTick();
-    
+
     // Проверяем что элементы существуют
     if (!sectionRef.value || !imageMaskRef.value) {
       console.error('Элементы не найдены');
@@ -182,8 +248,12 @@ onMounted(async () => {
     // Быстрые сеттеры для синхронных обновлений без лагов
     const setLeftX = textLeftRef.value ? gsap.quickSetter(textLeftRef.value, 'x', 'px') : null;
     const setRightX = textRightRef.value ? gsap.quickSetter(textRightRef.value, 'x', 'px') : null;
-    const setMaskW = imageMaskRef.value ? gsap.quickSetter(imageMaskRef.value, 'width', 'px') : null;
-    const setMaskH = imageMaskRef.value ? gsap.quickSetter(imageMaskRef.value, 'height', 'px') : null;
+    const setMaskW = imageMaskRef.value
+      ? gsap.quickSetter(imageMaskRef.value, 'width', 'px')
+      : null;
+    const setMaskH = imageMaskRef.value
+      ? gsap.quickSetter(imageMaskRef.value, 'height', 'px')
+      : null;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -267,7 +337,6 @@ onMounted(async () => {
     });
 
     // Текст не меняет прозрачность и не "наезжает": его раздвигает расширяющийся контейнер
-
   }
 });
 </script>
@@ -302,7 +371,7 @@ onMounted(async () => {
   color: $text-color-primary;
   font-size: 118px;
   font-weight: 400;
-  pointer-events: none
+  pointer-events: none;
 }
 
 .text-left,
@@ -367,7 +436,7 @@ onMounted(async () => {
   font-weight: 900;
   font-size: 18px;
   line-height: 100%;
-  transition: background .3s;
+  transition: background 0.3s;
 }
 
 .pin:not(.pin--active) .pin-dot {
@@ -381,13 +450,12 @@ onMounted(async () => {
   cursor: default;
 }
 
-
 /* Выделение пина при наведении */
 .pin.pin--hover .pin-dot {
-  background: #FFE8CC;
-  border: 2px solid #FF8A00;
-  color: #FF8A00;
-  transition: background .3s;
+  background: #ffe8cc;
+  border: 2px solid #ff8a00;
+  color: #ff8a00;
+  transition: background 0.3s;
 }
 
 /* Инфо-панель для пина */
@@ -402,6 +470,43 @@ onMounted(async () => {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   padding: 24px;
   font-family: 'Akrobat';
+
+  /* Стрелочка, указывающая на пин */
+  &::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+  }
+
+  /* Стрелочка справа (по умолчанию) */
+  &::before {
+    left: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-right-color: #ffffff;
+  }
+
+  /* Стрелочка слева */
+  &[data-position='left']::before {
+    left: auto;
+    right: -16px;
+    border-right-color: transparent;
+    border-left-color: #ffffff;
+  }
+
+  /* Стрелочка сверху */
+  &[data-position='right-top']::before,
+  &[data-position='left-top']::before {
+    top: auto;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-top-color: #ffffff;
+  }
 }
 
 .pin-info-header {
@@ -510,6 +615,47 @@ onMounted(async () => {
     left: 1rem;
     padding: 12px 20px;
     font-size: 14px;
+  }
+
+  /* Адаптивные стили для плашки пина */
+  .pin-info-panel {
+    min-width: 200px;
+    max-width: 280px;
+    padding: 16px;
+    font-size: 14px;
+  }
+
+  .pin-info-header {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .pin-info-item {
+    font-size: 14px;
+    padding: 2px 0;
+  }
+
+  .pin-info-cta {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  /* Уменьшенные стрелочки на мобильных */
+  .pin-info-panel::before {
+    border-width: 6px;
+  }
+
+  .pin-info-panel::before {
+    left: -12px;
+  }
+
+  .pin-info-panel[data-position='left']::before {
+    right: -12px;
+  }
+
+  .pin-info-panel[data-position='right-top']::before,
+  .pin-info-panel[data-position='left-top']::before {
+    bottom: -12px;
   }
 }
 </style>
