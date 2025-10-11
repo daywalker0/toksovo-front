@@ -301,10 +301,10 @@ onMounted(async () => {
       opacity: 1,
     });
 
-    // Начальные состояния текста: контейнер совпадает с маской, элементы по краям
+    // Начальные состояния текста: контейнер шире маски, элементы по краям
     if (textContentRef.value) {
       gsap.set(textContentRef.value, {
-        width: '422px',
+        width: '580px', // Ширина контейнера больше маски
         height: '563px',
         top: '50%',
         left: '50%',
@@ -312,7 +312,9 @@ onMounted(async () => {
       });
     }
     if (textLeftRef.value && textRightRef.value) {
-      gsap.set([textLeftRef.value, textRightRef.value], { xPercent: 0 });
+      // Позиционируем текст по краям контейнера
+      gsap.set(textLeftRef.value, { x: -160 }); // Левый текст слева от маски
+      gsap.set(textRightRef.value, { x: 260 }); // Правый текст справа от маски
     }
 
     // Общий драйвер анимации, который синхронно обновляет размеры маски и позиции текста
@@ -332,6 +334,11 @@ onMounted(async () => {
         if (setLeftX && setRightX) {
           setLeftX(-(w / 2 + gapPx));
           setRightX(w / 2 + gapPx);
+        }
+
+        // Поднимаем z-index прямоугольника во время анимации
+        if (imageMaskRef.value) {
+          imageMaskRef.value.style.zIndex = 2 + state.t; // От 2 до 3
         }
       },
     });
@@ -363,7 +370,7 @@ onMounted(async () => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 0; /* Текст под прямоугольником */
+  z-index: 1; /* Текст выше прямоугольника изначально */
   display: flex;
   justify-content: space-between;
   align-items: center;
