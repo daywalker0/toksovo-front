@@ -1,126 +1,131 @@
 <template>
-  <div class="environment-section section">
-    <div class="environment-section__container container">
-      <Title :config="[
-          { word: 'Спокойствие', x: 60 },
-          { word: 'свежесть', x: 700 },
-          { word: 'природа', x: 510 }
-        ]" 
-      />
-      <div class="subtitle-text environment-section__subtitle">
-        Утро встречает вас чистым воздухом и спокойствием — прогулка, кофе на террасе или время с
-        семьёй. Днём вы легко погружаетесь в деловую жизнь города, ведь вся инфраструктура
-        и удобства находятся неподалёку. Вечером же Токсово возвращает ощущение свободы, когда можно
-        насладиться тишиной, уединением и красотой природы.
-      </div>
-
-      <div class="environment-section__slider-wrapper">
-        <Swiper
-          :slides-per-view="5"
-          :centered-slides="true"
-          :space-between="32"
-          :initial-slide="2"
-          :speed="600"
-          :watch-slides-progress="true"
-          pagination
-          class="environment-section__slider"
-        >
-          <SwiperSlide v-for="(slide, index) in slides" :key="index">
-            <img :src="slide" alt="" />
-          </SwiperSlide>
-        </Swiper>
+  <section class="environment-section" ref="sectionRef">
+    <div class="environment-section__gallery" ref="galleryRef">
+      <div v-for="(img, i) in slides" :key="i" class="gallery-item">
+        <img :src="img" alt="" />
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { ref, onMounted, nextTick } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import imgSlide from '../assets/img/private-housing-section.jpg';
-import { Autoplay } from 'swiper/modules';
-import Title from './Common/Title.vue';
 
+gsap.registerPlugin(ScrollTrigger);
+
+const sectionRef = ref(null);
+const galleryRef = ref(null);
 const slides = [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
+
+onMounted(async () => {
+  await nextTick();
+
+  const section = sectionRef.value;
+  const gallery = galleryRef.value;
+  const items = gallery.querySelectorAll('.gallery-item');
+  const centerIndex = Math.floor(items.length / 2);
+  const centerItem = items[centerIndex];
+  const centerImg = centerItem.querySelector('img');
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'center center',
+      end: '+=2000',
+      scrub: true,
+      pin: true,
+    },
+  });
+
+  // Уезжают соседи в стороны
+  tl.to(
+    items,
+    {
+      x: i => {
+        if (i < centerIndex) return '-150%';
+        if (i > centerIndex) return '150%';
+        return '0%';
+      },
+      opacity: i => (i === centerIndex ? 1 : 0),
+      ease: 'power2.inOut',
+      duration: 1,
+    },
+    0
+  );
+
+  // Центральный блок просто растёт
+  tl.to(
+    centerItem,
+    {
+      width: '100vw',
+      height: '100vh',
+      borderRadius: 0,
+      ease: 'power2.inOut',
+      duration: 1.2,
+    },
+    0.2
+  );
+
+  tl.to(
+    centerImg,
+    {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      ease: 'power2.inOut',
+      duration: 1.2,
+    },
+    0.2
+  );
+});
 </script>
 
-<style lang="scss" scoped>
-:deep(.swiper-wrapper) {
-  justify-content: center;
-  align-items: center;
-}
-
+<style scoped lang="scss">
 .environment-section {
-  padding: 80px 0;
-  &__title {
-    margin: 0 auto;
-    width: fit-content;
-    text-align: center;
-  }
-  &__subtitle {
-    max-width: 395px;
-    margin: 60px auto 80px;
-  }
-  &__slider {
-    height: 590px;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #fff;
+  padding: 0;
+  margin: 0;
+
+  &__gallery {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    height: 100%;
+    width: 100%;
+    position: relative;
   }
 }
 
-.environment-section__slider-wrapper {
-  width: 100%;
+.gallery-item {
+  flex: 0 0 auto;
+  width: 200px;
+  height: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 1;
 
-  .environment-section__slider {
+  img {
     width: 100%;
-    :deep(.swiper-button-prev),
-    :deep(.swiper-button-next) {
-      display: none !important;
-    }
-    .swiper-slide {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition:
-        width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-        height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: width, height, transform;
-      transform-origin: right;
-    }
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    display: block;
+  }
 
-    .swiper-slide-next,
-    .swiper-slide-active ~ .swiper-slide {
-      transform-origin: left;
-    }
-
-    .swiper-slide img {
-      width: 100%;
-      height: 100%;
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    // Реальные размеры карточек — DevTools покажет разные ширины, gap будет корректным
-    .swiper-slide {
-      width: 131px !important;
-      height: 198px;
-      align-self: center;
-    }
-
-    .swiper-slide-prev,
-    .swiper-slide-next {
-      width: 262px !important;
-      height: 394px;
-    }
-
-    .swiper-slide-active {
-      width: 394px !important;
-      height: 590px;
-      z-index: 2;
-    }
-
+  &:nth-child(3) {
+    width: 400px;
+    height: 600px;
+    z-index: 2;
   }
 }
 </style>

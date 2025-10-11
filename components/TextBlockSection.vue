@@ -1,7 +1,7 @@
 <template>
   <div class="text-block-section section">
     <div class="content">
-      <Title :config="config"/>
+      <Title :config="config" />
       <p class="subtitle-text subtitle-text-section">{{ subtitle }}</p>
     </div>
   </div>
@@ -11,10 +11,6 @@
 import Title from './Common/Title.vue';
 
 const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
   subtitle: {
     type: String,
     required: false,
@@ -22,8 +18,8 @@ const props = defineProps({
   },
   config: {
     type: Array,
-    required: true, 
-  }
+    required: true,
+  },
 });
 </script>
 
