@@ -52,18 +52,6 @@ let lastScrollTs = 0;
 let hasAnchoredOnEnter = false;
 let scrollAccumulator = 0;
 
-function lockBodyScroll(locked) {
-  if (locked) {
-    if (document.body.style.overflow !== 'hidden') {
-      document.body.style.overflow = 'hidden';
-    }
-  } else {
-    if (document.body.style.overflow === 'hidden') {
-      document.body.style.overflow = 'scroll';
-    }
-  }
-}
-
 function onWheel(e) {
   if (isScrolling) return;
 
@@ -74,7 +62,6 @@ function onWheel(e) {
   const sliderIsActive = rect.top <= 0 && rect.bottom > 0;
   if (!sliderIsActive) {
     // Если слайдер неактивен, разрешаем нативный скролл и сбрасываем аккумулятор
-    lockBodyScroll(false);
     scrollAccumulator = 0; // Сбрасываем аккумулятор, когда слайдер неактивен
     return;
   }
@@ -90,7 +77,6 @@ function onWheel(e) {
 
   if (!scrollingUpAtBoundary && !scrollingDownAtBoundary) {
     e.preventDefault();
-    lockBodyScroll(true);
     scrollAccumulator += e.deltaY;
 
     const threshold = 100; // Увеличенный порог для тачпадов
@@ -107,7 +93,6 @@ function onWheel(e) {
       scrollAccumulator = 0;
     }
   } else {
-    lockBodyScroll(false);
     scrollAccumulator = 0;
   }
 }
@@ -133,9 +118,6 @@ function goToSection(index) {
     isScrolling = false;
     const atFirst = currentIndex.value === 0;
     const atLast = currentIndex.value === props.sections.length - 1;
-    if (atFirst || atLast) {
-      lockBodyScroll(false);
-    }
   }, 800); // Соответствует времени антидребезга или чуть больше
 }
 
@@ -147,11 +129,9 @@ onMounted(() => {
         if (entry.isIntersecting && !hasAnchoredOnEnter && !isScrolling) {
           anchorToNearestSection();
           hasAnchoredOnEnter = true;
-          lockBodyScroll(true);
         }
         if (!entry.isIntersecting) {
           hasAnchoredOnEnter = false;
-          lockBodyScroll(false);
         }
       });
     },
@@ -169,7 +149,6 @@ onMounted(() => {
     observer.disconnect();
     window.removeEventListener('scroll', handleScrollAnimation);
     window.removeEventListener('resize', handleScrollAnimation);
-    lockBodyScroll(false); // Убедимся, что скролл разблокирован при размонтировании
   });
 });
 
@@ -229,15 +208,6 @@ function handleScrollAnimation() {
   background-size: cover;
   background-position: center;
   transition: transform 0.3s ease-out;
-}
-
-/* Сохраняем скроллбар всегда видимым */
-:global(html) {
-  scrollbar-gutter: stable;
-}
-
-:global(body) {
-  overflow-y: scroll !important;
 }
 
 .previews {
