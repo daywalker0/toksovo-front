@@ -5,17 +5,12 @@
       <div class="map__sidebar-content">
         <h3 class="map__sidebar-title" @click="toggleSidebar">
           Локации
-          <span
-            class="map__m"
-            :class="{ 'map__m--open': isSidebarOpen }"
-          >
-            ▼
-          </span>
+          <span class="map__m" :class="{ 'map__m--open': isSidebarOpen }"> ▼ </span>
         </h3>
         <ul v-show="isSidebarOpen" class="map__categories">
           <li v-for="cat in categories" :key="cat.name" class="map__category">
             <div class="map__category-name">
-              <img :src="cat.icon" alt="" class="map__icon">
+              <img :src="cat.icon" alt="" class="map__icon" />
               <span>{{ cat.name }}</span>
             </div>
             <span class="map__category-count">{{ cat.count }}</span>
@@ -30,11 +25,17 @@
         <img src="../assets/img/map-bg.png" alt="Map" class="map__image" />
 
         <!-- Пины -->
-        <div v-for="pin in pins" :key="pin.id" class="map__pin" :style="{
-          top: `${pin.y}%`,
-          left: `${pin.x}%`,
-          transform: `translate(-50%, -100%)`
-        }" @click="selectPin(pin)">
+        <div
+          v-for="pin in pins"
+          :key="pin.id"
+          class="map__pin"
+          :style="{
+            top: `${pin.y}%`,
+            left: `${pin.x}%`,
+            transform: `translate(-50%, -100%)`,
+          }"
+          @click="selectPin(pin)"
+        >
           <img :src="pin.icon" :alt="pin.category" class="map__pin-icon" />
         </div>
       </div>
@@ -49,24 +50,24 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import culture from "../assets/img/icons/locations/culture.svg";
-import medicine from "../assets/img/icons/locations/med.svg";
-import education from "../assets/img/icons/locations/education.svg";
-import finance from "../assets/img/icons/locations/finance.svg";
-import torg from "../assets/img/icons/locations/torg.svg";
-import food from "../assets/img/icons/locations/food.svg";
-import sport from "../assets/img/icons/locations/sport.svg";
-import services from "../assets/img/icons/locations/services.svg";
+import { ref } from 'vue';
+import culture from '../assets/img/icons/locations/culture.svg';
+import medicine from '../assets/img/icons/locations/med.svg';
+import education from '../assets/img/icons/locations/education.svg';
+import finance from '../assets/img/icons/locations/finance.svg';
+import torg from '../assets/img/icons/locations/torg.svg';
+import food from '../assets/img/icons/locations/food.svg';
+import sport from '../assets/img/icons/locations/sport.svg';
+import services from '../assets/img/icons/locations/services.svg';
 
 // import culturePin from "../assets/img/icons/locations/pins/culture.svg";
 // import medicinePin from "../assets/img/icons/locations/pins/medicine.svg";
 // import educationPin from "../assets/img/icons/locations/pins/education.svg";
-import financePin from "../assets/img/icons/locations/pins/finance.svg";
-import torgPin from "../assets/img/icons/locations/pins/torg.svg";
-import foodPin from "../assets/img/icons/locations/pins/food.svg";
-import sportPin from "../assets/img/icons/locations/pins/sport.svg";
-import servicesPin from "../assets/img/icons/locations/pins/services.svg";
+import financePin from '../assets/img/icons/locations/pins/finance.svg';
+import torgPin from '../assets/img/icons/locations/pins/torg.svg';
+import foodPin from '../assets/img/icons/locations/pins/food.svg';
+import sportPin from '../assets/img/icons/locations/pins/sport.svg';
+import servicesPin from '../assets/img/icons/locations/pins/services.svg';
 
 const zoom = ref(1);
 
@@ -84,23 +85,23 @@ function zoomOut() {
 }
 
 const categories = [
-  { name: "Культура и отдых", count: 12, icon: culture, category: 'culture' },
-  { name: "Медицина", count: 7, icon: medicine, category: 'medicine' },
-  { name: "Образование", count: 9, icon: education, category: 'education' },
-  { name: "Финансы", count: 4, icon: finance, category: 'finance' },
-  { name: "Торговля", count: 23, icon: torg, category: 'torg' },
-  { name: "Еда", count: 19, icon: food, category: 'food' },
-  { name: "Спорт", count: 8, icon: sport, category: 'sport' },
-  { name: "Услуги", count: 20, icon: services, category: 'services' }
+  { name: 'Культура и отдых', count: 12, icon: culture, category: 'culture' },
+  { name: 'Медицина', count: 7, icon: medicine, category: 'medicine' },
+  { name: 'Образование', count: 9, icon: education, category: 'education' },
+  { name: 'Финансы', count: 4, icon: finance, category: 'finance' },
+  { name: 'Торговля', count: 23, icon: torg, category: 'torg' },
+  { name: 'Еда', count: 19, icon: food, category: 'food' },
+  { name: 'Спорт', count: 8, icon: sport, category: 'sport' },
+  { name: 'Услуги', count: 20, icon: services, category: 'services' },
 ];
 
 const pins = [
-  { id: 0, x: 47, y: 16, icon: sportPin, category: "sport" },
-  { id: 1, x: 48, y: 42, icon: torgPin, category: "torg" },
-  { id: 2, x: 53, y: 41, icon: financePin, category: "finance" },
-  { id: 3, x: 54, y: 43, icon: servicesPin, category: "services" },
-  { id: 4, x: 46, y: 50, icon: torgPin, category: "torg" },
-  { id: 5, x: 38, y: 59, icon: foodPin, category: "food" }
+  { id: 0, x: 47, y: 16, icon: sportPin, category: 'sport' },
+  { id: 1, x: 48, y: 42, icon: torgPin, category: 'torg' },
+  { id: 2, x: 53, y: 41, icon: financePin, category: 'finance' },
+  { id: 3, x: 54, y: 43, icon: servicesPin, category: 'services' },
+  { id: 4, x: 46, y: 50, icon: torgPin, category: 'torg' },
+  { id: 5, x: 38, y: 59, icon: foodPin, category: 'food' },
 ];
 
 function selectPin(pin) {
@@ -159,7 +160,9 @@ function selectPin(pin) {
     list-style: none;
     margin: 0;
     padding: 0;
-    transition: opacity 0.3s ease, max-height 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      max-height 0.3s ease;
     overflow: hidden;
     margin-top: 20px;
   }
@@ -208,7 +211,7 @@ function selectPin(pin) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(100%) brightness(95%) contrast(90%);
+    filter: grayscale(100%) brightness(100%) contrast(100%);
     position: relative;
   }
 
