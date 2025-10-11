@@ -141,8 +141,9 @@ const handleScroll = () => {
     // Прогресс третьей фазы (0 -> 1)
     const phase3Progress = (sectionProgress - 0.5) / 0.5;
 
-    // Плавное поднятие фона от 0 до -50vh
-    const bgTranslateY = -50 * phase3Progress;
+    // Плавное поднятие фона от 0 до -100vh
+    // Фон на top: 200vh, поднимается до 100vh (покрывает sticky-content)
+    const bgTranslateY = -100 * phase3Progress;
     darkBg.value.style.transform = `translateY(${bgTranslateY}vh)`;
 
     // Смена цвета текста/кнопок (когда фон достигает середины экрана)
@@ -169,7 +170,8 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .choose-your-apps-section {
-  height: 200vh;
+  height: 300vh;
+  margin-top: 200px;
   position: relative;
 }
 
@@ -178,24 +180,24 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   width: 100%;
-  height: 200vh;
+  height: 300vh;
   overflow: hidden;
 }
 
 .background {
   position: absolute;
   width: 100%;
-  height: 100vh;
+  height: 200vh;
   left: 0;
 
   &.background-light {
     top: 0;
     background: $bg-color-1;
-    z-index: 1;
+    z-index: 3;
   }
 
   &.background-dark {
-    top: 150vh;
+    top: 200vh;
     background: $accent-color-brown;
     z-index: 2;
     transform: translateY(0);
