@@ -71,11 +71,31 @@
           :class="hoverSide"
           :style="{ left: cursorX + 'px', top: cursorY + 'px' }"
         >
-          <svg v-if="hoverSide === 'left'" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M15 5 L7 12 L15 19" fill="none" stroke="#4C5E36" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          <svg
+            v-if="hoverSide === 'left'"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M15 5 L7 12 L15 19"
+              fill="none"
+              stroke="#4C5E36"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           <svg v-else width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 5 L17 12 L9 19" fill="none" stroke="#4C5E36" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M9 5 L17 12 L9 19"
+              fill="none"
+              stroke="#4C5E36"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </div>
       </div>
@@ -84,67 +104,29 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import privateHousingSection1 from '@/assets/img/private-housing-section.jpg';
-import privateHousingSection2 from '@/assets/img/live-in-style-item-2.png';
+import { ref } from 'vue';
+import { usePrivateHousingData } from '@/composables/usePrivateHousingData';
 
-const items = ref([
-  {
-    title: 'Приватный формат жилья',
-    content:
-      'Пространство, где каждое утро начинается в тишине и уединении. Здесь вы можете наслаждаться личным комфортом без лишнего шума и суеты города.',
-    image: privateHousingSection1,
-  },
-  {
-    title: 'Экология: лес и озеро',
-    content:
-      'Описание экологических преимуществ - близость к лесу и озеру, чистый воздух и природное окружение.',
-    image: privateHousingSection2,
-  },
-  {
-    title: 'Чистовая отделка',
-    content: 'Информация о чистовой отделке помещений по стандартам ХОВЕР.',
-    image: privateHousingSection1,
-  },
-  {
-    title: 'Инфраструктура',
-    content: 'Описание доступной инфраструктуры района и жилого комплекса.',
-    image: privateHousingSection2,
-  },
-  {
-    title: '4 этажа',
-    content: 'Характеристики четырехэтажного здания, преимущества такой этажности.',
-    image: privateHousingSection1,
-  },
-]);
-
-const activeIndex = ref(0);
-
-const activeItem = computed(() => items.value[activeIndex.value]);
-
-const toggleItem = index => {
-  activeIndex.value = activeIndex.value === index ? -1 : index;
-};
-
-const nextItem = () => {
-  activeIndex.value = (activeIndex.value + 1) % items.value.length;
-};
-
-const prevItem = () => {
-  activeIndex.value = (activeIndex.value - 1 + items.value.length) % items.value.length;
-};
-
-const cursorX = ref(0);
-const cursorY = ref(0);
-const hoverSide = ref(null);
 const sectionRef = ref(null);
+
+// Используем композабл для данных
+const {
+  items,
+  activeIndex,
+  activeItem,
+  cursorX,
+  cursorY,
+  hoverSide,
+  toggleItem,
+  nextItem,
+  prevItem,
+  onMouseMove: handleMouseMove,
+} = usePrivateHousingData();
 
 const onMouseMove = e => {
   const el = sectionRef.value;
   if (!el) return;
-  const rect = el.getBoundingClientRect();
-  cursorX.value = e.clientX - rect.left;
-  cursorY.value = e.clientY - rect.top;
+  handleMouseMove(e);
 };
 </script>
 
@@ -265,8 +247,6 @@ const onMouseMove = e => {
     cursor: none;
   }
 }
-
-/* Remove old cursor images: using DOM-based cursor now */
 
 @keyframes fadeIn {
   from {

@@ -6,7 +6,6 @@
     <HeroSection />
     <TextBlockSection :config="sectionEnvironment.config" :subtitle="sectionEnvironment.subtitle" />
     <EnvironmentSection />
-    <PrivateHousingSection />
     <LocationsSection />
 
     <!-- Горизонтальный контейнер -->
@@ -50,7 +49,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import AppHeader from '~/components/Common/AppHeader.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import EnvironmentSection from '@/components/EnvironmentSection.vue';
-import PrivateHousingSection from '@/components/PrivateHousingSection.vue';
 import LocationsSection from '@/components/LocationsSection.vue';
 import NatureSection from '@/components/NatureSection.vue';
 import WalkCitySection from '@/components/WalkCitySection.vue';

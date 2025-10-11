@@ -1,34 +1,195 @@
 <template>
-  <section class="environment-section" ref="sectionRef">
+  <section class="environment-section" ref="sectionRef" @mousemove="onMouseMove">
     <div class="environment-section__gallery" ref="galleryRef">
       <div v-for="(img, i) in slides" :key="i" class="gallery-item">
-        <img :src="img" alt="" />
+        <img :src="i === Math.floor(slides.length / 2) ? activeItem.image : img" alt="" />
+      </div>
+    </div>
+
+    <!-- Контент из PrivateHousingSection -->
+    <div class="environment-content" ref="contentRef">
+      <div class="controls-block">
+        <div class="controls-block__wrap">
+          <div class="accordion">
+            <div
+              v-for="(item, index) in items"
+              :key="index"
+              class="accordion-item"
+              :class="{ active: activeIndex === index }"
+            >
+              <div class="accordion-header" @click="toggleItem(index)">
+                <div class="icon">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="6.5" stroke="#E6DFD8" stroke-width="3" />
+                    <mask id="path-2-inside-1_306_1521" fill="white">
+                      <path
+                        d="M8 0C9.26248 1.5055e-08 10.507 0.298792 11.6319 0.871948C12.7568 1.4451 13.7301 2.27635 14.4721 3.29772C15.2142 4.31909 15.704 5.50158 15.9015 6.74852C16.099 7.99546 15.9986 9.27144 15.6085 10.4721L12.7629 9.54756C13.0071 8.79592 13.07 7.99716 12.9463 7.21658C12.8227 6.43599 12.5161 5.69575 12.0516 5.05637C11.587 4.41699 10.9778 3.89663 10.2736 3.53784C9.56941 3.17904 8.79031 2.992 8 2.992V0Z"
+                      />
+                    </mask>
+                    <path
+                      d="M8 0C9.26248 1.5055e-08 10.507 0.298792 11.6319 0.871948C12.7568 1.4451 13.7301 2.27635 14.4721 3.29772C15.2142 4.31909 15.704 5.50158 15.9015 6.74852C16.099 7.99546 15.9986 9.27144 15.6085 10.4721L12.7629 9.54756C13.0071 8.79592 13.07 7.99716 12.9463 7.21658C12.8227 6.43599 12.5161 5.69575 12.0516 5.05637C11.587 4.41699 10.9778 3.89663 10.2736 3.53784C9.56941 3.17904 8.79031 2.992 8 2.992V0Z"
+                      stroke="#4C5E36"
+                      stroke-width="6"
+                      mask="url(#path-2-inside-1_306_1521)"
+                    />
+                  </svg>
+                </div>
+                <span>{{ item.title }}</span>
+              </div>
+              <div v-show="activeIndex === index" class="accordion-content">
+                <p>{{ item.content }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Две половины для клика по стрелкам -->
+      <div class="image-control">
+        <div
+          class="image-half left"
+          :style="{ cursor: 'none' }"
+          @click="prevItem"
+          @mouseenter="hoverSide = 'left'"
+          @mouseleave="hoverSide = null"
+        >
+          <div class="arrow">◀</div>
+        </div>
+        <div
+          class="image-half right"
+          :style="{ cursor: 'none' }"
+          @click="nextItem"
+          @mouseenter="hoverSide = 'right'"
+          @mouseleave="hoverSide = null"
+        >
+          <div class="arrow">▶</div>
+        </div>
+
+        <!-- Картинка активного item -->
+        <img
+          class="environment-section--bg"
+          :src="activeItem.image"
+          alt="bg"
+          :key="activeItem.image"
+        />
+
+        <div
+          v-if="hoverSide"
+          class="custom-cursor"
+          :class="hoverSide"
+          :style="{ left: cursorX + 'px', top: cursorY + 'px' }"
+        >
+          <svg
+            v-if="hoverSide === 'left'"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M15 5 L7 12 L15 19"
+              fill="none"
+              stroke="#4C5E36"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <svg v-else width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 5 L17 12 L9 19"
+              fill="none"
+              stroke="#4C5E36"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, computed } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { usePrivateHousingData } from '@/composables/usePrivateHousingData';
 import imgSlide from '../assets/img/private-housing-section.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const sectionRef = ref(null);
 const galleryRef = ref(null);
-const slides = [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
+const contentRef = ref(null);
+const isContentVisible = ref(false);
+
+// Используем композабл для данных
+const {
+  items,
+  activeIndex,
+  activeItem,
+  cursorX,
+  cursorY,
+  hoverSide,
+  toggleItem,
+  nextItem: originalNextItem,
+  prevItem: originalPrevItem,
+  onMouseMove: handleMouseMove,
+} = usePrivateHousingData();
+
+const nextItem = originalNextItem;
+const prevItem = originalPrevItem;
+
+// Используем картинки из items вместо статического массива
+const slides = computed(() => {
+  if (!items.value || !Array.isArray(items.value)) {
+    return [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide]; // fallback
+  }
+  return items.value.map(item => item.image);
+});
+
+const onMouseMove = e => {
+  const el = sectionRef.value;
+  if (!el) return;
+  handleMouseMove(e);
+};
 
 onMounted(async () => {
   await nextTick();
 
+  // Дополнительная задержка для гарантии готовности DOM
+  await new Promise(resolve => setTimeout(resolve, 100));
+
   const section = sectionRef.value;
   const gallery = galleryRef.value;
-  const items = gallery.querySelectorAll('.gallery-item');
-  const centerIndex = Math.floor(items.length / 2);
-  const centerItem = items[centerIndex];
-  const centerImg = centerItem.querySelector('img');
+  const content = contentRef.value;
+
+  // Проверяем, что все элементы существуют
+  if (!section || !gallery || !content) {
+    return;
+  }
+
+  const galleryItems = gallery.querySelectorAll('.gallery-item');
+  if (galleryItems.length === 0) {
+    return;
+  }
+
+  const centerIndex = Math.floor(galleryItems.length / 2);
+  const centerItem = galleryItems[centerIndex];
+  const centerImg = centerItem?.querySelector('img');
+
+  if (!centerItem || !centerImg) {
+    return;
+  }
+
+  // Сначала скрываем контент
+  gsap.set(content, {
+    opacity: 0,
+    y: 20,
+    scale: 0.98,
+  });
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -42,7 +203,7 @@ onMounted(async () => {
 
   // Уезжают соседи в стороны
   tl.to(
-    items,
+    galleryItems,
     {
       x: i => {
         if (i < centerIndex) return '-150%';
@@ -56,7 +217,7 @@ onMounted(async () => {
     0
   );
 
-  // Центральный блок просто растёт
+  // Центральный блок растёт
   tl.to(
     centerItem,
     {
@@ -79,6 +240,22 @@ onMounted(async () => {
       duration: 1.2,
     },
     0.2
+  );
+
+  // Контент появляется плавно в процессе анимации
+  tl.to(
+    content,
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      ease: 'power2.out',
+      duration: 0.8,
+      onComplete: () => {
+        isContentVisible.value = true;
+      },
+    },
+    1.4
   );
 });
 </script>
@@ -126,6 +303,163 @@ onMounted(async () => {
     width: 400px;
     height: 600px;
     z-index: 2;
+  }
+}
+
+.environment-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  display: flex;
+  align-items: flex-end;
+  padding: 44px;
+  pointer-events: none;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0); // Принудительное GPU ускорение
+
+  .controls-block {
+    height: 384px;
+    width: 421px;
+    border-radius: 7px;
+    position: relative;
+    z-index: 5;
+    background-color: #fff;
+    pointer-events: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    transform: translateZ(0); // GPU ускорение
+
+    &__wrap {
+      padding: 36px;
+    }
+  }
+
+  .accordion {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .accordion-item {
+    font-family: 'Akrobat';
+    padding-bottom: 8px;
+  }
+
+  .accordion-item.active {
+    padding: 0 0 30px;
+  }
+
+  .accordion-item.active:not(:first-child) {
+    padding: 30px 0;
+  }
+
+  .accordion-header {
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: $text-color-primary;
+    font-size: 24px;
+    font-weight: 700;
+    width: fit-content;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    &:hover {
+      opacity: 1;
+    }
+    .icon {
+      margin-right: 12px;
+      width: 0;
+      opacity: 0;
+    }
+  }
+
+  .accordion-item.active .accordion-header {
+    font-size: 28px;
+    opacity: 1;
+    color: $accent-color-green;
+    .icon {
+      opacity: 1;
+      width: fit-content;
+    }
+  }
+
+  .accordion-content p {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 140%;
+    opacity: 0.8;
+    color: $text-color-primary;
+    margin-top: 10px;
+  }
+
+  .accordion-content {
+    animation: fadeIn 0.3s ease;
+  }
+
+  .image-control {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    pointer-events: none;
+    cursor: none;
+
+    .image-half {
+      width: 50%;
+      height: 100%;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: none;
+    }
+  }
+
+  .environment-section--bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: all 0.5s ease;
+  }
+
+  .custom-cursor {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .custom-cursor svg {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>
