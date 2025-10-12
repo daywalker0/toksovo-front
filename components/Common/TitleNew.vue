@@ -222,7 +222,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .title-new {
   width: 100%;

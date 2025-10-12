@@ -155,8 +155,8 @@ const handlePanelLeave = () => {
 const getOptimalPanelPosition = pin => {
   if (!pin) return { position: 'right', x: 0, y: 0 };
 
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
+  const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+  const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
 
   // Адаптивные размеры панели
   const isMobile = viewportWidth <= 768;
@@ -315,8 +315,8 @@ onMounted(async () => {
       duration: 1,
       ease: 'power2.out',
       onUpdate: () => {
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
+        const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
+        const vh = typeof window !== 'undefined' ? window.innerHeight : 800;
         const w = gsap.utils.interpolate(422, vw, state.t);
         const h = gsap.utils.interpolate(563, vh, state.t);
         const gapPx = 24;
@@ -339,7 +339,8 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .enhanced-section {
   height: 200vh; /* Достаточно места для скролла */

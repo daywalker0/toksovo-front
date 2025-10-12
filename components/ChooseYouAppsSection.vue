@@ -55,7 +55,7 @@ const handleScroll = () => {
   if (!section.value || !darkBg.value || !imageContainer.value || !content.value) return;
 
   const sectionRect = section.value.getBoundingClientRect();
-  const windowHeight = window.innerHeight;
+  const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
 
   // Прогресс скролла секции (0 - начало, 1 - конец)
   const sectionProgress = Math.max(
@@ -95,7 +95,10 @@ const handleScroll = () => {
     const shrinkProgress = (sectionProgress - 0.1) / 0.3; // 0 -> 1
 
     // Размеры картинки: от 100vw x 100vh до 650px x 450px
-    const currentWidth = 100 - (100 - (650 / window.innerWidth) * 100) * shrinkProgress;
+    const currentWidth =
+      100 -
+      (100 - (650 / (typeof window !== 'undefined' ? window.innerWidth : 1200)) * 100) *
+        shrinkProgress;
     const currentHeight = 100 - (100 - (450 / windowHeight) * 100) * shrinkProgress;
 
     // Картинка центрирована и игнорирует padding
@@ -185,18 +188,23 @@ onMounted(() => {
     darkBg.value.style.transform = 'translateY(0)';
   }
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  window.addEventListener('resize', handleScroll);
-  handleScroll(); // начальная проверка
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    handleScroll(); // начальная проверка
+  }
 });
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-  window.removeEventListener('resize', handleScroll);
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener('resize', handleScroll);
+  }
 });
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .choose-your-apps-section {
   height: 300vh;

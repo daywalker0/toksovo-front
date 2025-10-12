@@ -89,7 +89,7 @@ const scrolled = ref(false);
 const menuComponent = ref(null);
 
 const handleScroll = () => {
-  scrolled.value = window.scrollY > 50;
+  scrolled.value = typeof window !== 'undefined' ? window.scrollY > 50 : false;
 };
 
 const openMenu = () => {
@@ -99,11 +99,15 @@ const openMenu = () => {
 };
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handleScroll);
+  }
 });
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScroll);
+  }
 });
 </script>
 

@@ -390,10 +390,6 @@ onMounted(async () => {
     border: 1px solid $utility-color-1;
     margin-right: 8px;
   }
-
-  &:hover {
-    color: darken($text-color-primary, 20%);
-  }
 }
 
 .news-article {
@@ -593,10 +589,6 @@ onMounted(async () => {
   cursor: pointer;
   margin-top: 20px;
   transition: background-color 0.3s ease;
-
-  &:hover {
-    background: darken($accent-color-orange, 10%);
-  }
 }
 
 /* Блок "Другие новости" */
