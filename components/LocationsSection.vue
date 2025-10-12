@@ -1,10 +1,11 @@
 <template>
   <div class="locations-section section">
     <div class="locations-section__container container">
-      <Title :config="[
+      <Title
+        :config="[
           { word: 'Локации', x: 350 },
           { word: 'рядом', x: 425 },
-        ]" 
+        ]"
       />
 
       <div class="parallax-block" ref="parallaxSection">
@@ -189,7 +190,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-top: 160px;
+  margin-top: 170px;
 }
 
 .parallax-container {
