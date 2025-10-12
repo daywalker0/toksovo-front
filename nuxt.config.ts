@@ -7,7 +7,6 @@ export default defineNuxtConfig({
   // GitHub Pages
   app: {
     baseURL: '/toksovo-front/', // обязательно с /
-    buildAssetsDir: '_nuxt/', // Nuxt сам добавит / при необходимости
   },
 
   ssr: false,
