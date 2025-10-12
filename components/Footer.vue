@@ -11,7 +11,7 @@
 
         <div class="footer__section-item center">
           <div class="footer__logo">
-            <a href="#">
+            <a @click="router.push('/')" href="#" style="cursor: pointer">
               <svg
                 width="244"
                 height="50"
@@ -116,7 +116,10 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import DialogCallback from './Common/Dialogs/DialogCallback.vue';
+
+const router = useRouter();
 
 const showDialogCallback = ref(false);
 
