@@ -76,13 +76,20 @@
       </div>
     </div>
 
-    <Menu ref="menuComponent" />
+    <Menu ref="menuComponent" :active-section="activeSection" />
   </header>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import Menu from './Menu.vue';
+
+const props = defineProps({
+  activeSection: {
+    type: String,
+    default: 'hero',
+  },
+});
 
 const header = ref(null);
 const scrolled = ref(false);

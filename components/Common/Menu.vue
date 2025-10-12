@@ -41,7 +41,26 @@
         </div>
         <ul class="menu__list">
           <li class="menu__item" v-for="item in menuItems" :key="item.id">
-            <a :href="item.link" class="menu__link" @click.prevent="scrollToSection(item.link)">
+            <a
+              :href="item.link"
+              class="menu__link"
+              :class="{ 'menu__link--active': isActiveSection(item.link) }"
+              @click.prevent="scrollToSection(item.link)"
+            >
+              <span v-if="isActiveSection(item.link)" class="menu__arrow"
+                ><svg
+                  width="15"
+                  height="30"
+                  viewBox="0 0 15 30"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.62786 29.27L0.0371094 27.6792L11.9194 15.797C12.1309 15.5832 12.2479 15.302 12.2479 15.0005C12.2479 14.699 12.1309 14.4177 11.9194 14.204L0.0371094 2.32171L1.62786 0.730957L13.5101 12.6132C14.1469 13.25 14.4979 14.0982 14.4979 15.0005C14.4979 15.9027 14.1469 16.7487 13.5101 17.3877L1.62786 29.27Z"
+                    fill="#F8F3ED"
+                  />
+                </svg>
+              </span>
               {{ item.title }}
             </a>
           </li>
@@ -107,6 +126,13 @@
 <script setup>
 import { ref } from 'vue';
 
+const props = defineProps({
+  activeSection: {
+    type: String,
+    default: 'hero',
+  },
+});
+
 const isOpen = ref(false);
 const menuRef = ref(null);
 const hoverOverlay = ref(false);
@@ -138,6 +164,11 @@ const closeMenu = () => {
   }
 };
 
+const isActiveSection = link => {
+  const sectionId = link.replace('#', '');
+  return props.activeSection === sectionId;
+};
+
 const scrollToSection = link => {
   if (link.startsWith('#')) {
     const targetId = link.substring(1);
@@ -148,6 +179,11 @@ const scrollToSection = link => {
         behavior: 'smooth',
         block: 'start',
       });
+
+      // Обновляем URL hash
+      const newUrl = `${window.location.pathname}#${targetId}`;
+      window.history.replaceState(null, '', newUrl);
+
       closeMenu(); // Закрываем меню после клика
     }
   }
@@ -243,6 +279,9 @@ defineExpose({
     padding: 0;
     margin: 55px 0 40px 0;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
   }
 
@@ -254,7 +293,21 @@ defineExpose({
     font-size: 40px;
     font-weight: 700;
     line-height: 100%;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &--active {
+      opacity: 0.5;
+    }
   }
+}
+
+.menu__arrow {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 100%;
 }
 
 .menu__cursor {

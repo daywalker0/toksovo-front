@@ -2,7 +2,7 @@
   <AppLoader :loading="loading" />
 
   <div :class="{ 'content-hidden': loading }">
-    <AppHeader />
+    <AppHeader :active-section="activeSection" />
     <section id="hero">
       <HeroSection />
     </section>
@@ -53,6 +53,43 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Функция для обновления hash в URL
+const updateUrlHash = () => {
+  const sections = [
+    { id: 'hero', element: document.getElementById('hero') },
+    { id: 'about', element: document.getElementById('about') },
+    { id: 'master-plan', element: document.getElementById('master-plan') },
+    { id: 'architecture', element: document.getElementById('architecture') },
+    { id: 'infrastructure', element: document.getElementById('infrastructure') },
+    { id: 'layouts', element: document.getElementById('layouts') },
+    { id: 'construction', element: document.getElementById('construction') },
+    { id: 'news', element: document.getElementById('news') },
+  ];
+
+  let currentSection = null;
+  let maxVisibleRatio = 0;
+
+  sections.forEach(({ id, element }) => {
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Простая логика: секция активна если её верхняя часть видна
+      const isVisible = rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5;
+
+      if (isVisible) {
+        currentSection = id;
+      }
+    }
+  });
+
+  if (currentSection && activeSection.value !== currentSection) {
+    activeSection.value = currentSection;
+    const newUrl = `${window.location.pathname}#${currentSection}`;
+    window.history.replaceState(null, '', newUrl);
+  }
+};
 import AppHeader from '~/components/Common/AppHeader.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import EnvironmentSection from '@/components/EnvironmentSection.vue';
@@ -60,7 +97,7 @@ import LocationsSection from '@/components/LocationsSection.vue';
 import NatureSection from '@/components/NatureSection.vue';
 import WalkCitySection from '@/components/WalkCitySection.vue';
 import MasterPlanSection from '@/components/MasterPlanSection.vue';
-import FullpageSlider from '@/components/FullpageSlider.vue';
+import FullpageSlider from '@/components/FullPageSlider.vue';
 import TextBlockSection from '@/components/TextBlockSection.vue';
 import MapSection from '@/components/MapSection.vue';
 import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
@@ -80,6 +117,7 @@ import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
 import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
 
 const loading = ref(true);
+const activeSection = ref('hero');
 
 const sectionEnvironment = {
   text: 'Спокойствие свежесть природа',
@@ -230,6 +268,42 @@ onMounted(() => {
   // Ждем следующего тика для гарантии, что DOM полностью обновлен
   nextTick(() => {
     initHorizontalScroll();
+
+    // Добавляем обработчик скролла для обновления hash
+    let scrollTimeout;
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(updateUrlHash, 100);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Обработка hash при загрузке страницы
+    if (window.location.hash) {
+      const targetElement = document.querySelector(window.location.hash);
+      if (targetElement) {
+        setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+          activeSection.value = window.location.hash.replace('#', '');
+        }, 500);
+      }
+    }
+
+    // Обработчик изменения hash
+    const handleHashChange = () => {
+      if (window.location.hash) {
+        const newSection = window.location.hash.replace('#', '');
+        activeSection.value = newSection;
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Обработчик для очистки при размонтировании
+    onBeforeUnmount(() => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('hashchange', handleHashChange);
+    });
   });
 });
 
