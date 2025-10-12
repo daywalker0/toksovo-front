@@ -248,9 +248,18 @@ onUnmounted(() => {
   justify-content: center;
   transition: all 0.3s ease;
 
+  svg {
+    transition: transform 0.3s ease;
+  }
+
   &:hover {
     background: #f5f5f5;
     border-color: #999;
+    transform: scale(0.9);
+
+    svg {
+      transform: rotate(180deg);
+    }
   }
 }
 
