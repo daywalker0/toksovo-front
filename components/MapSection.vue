@@ -110,7 +110,8 @@ function selectPin(pin) {
 }
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .map {
   position: relative;
@@ -246,6 +247,7 @@ function selectPin(pin) {
     flex-direction: column;
     justify-content: center;
     z-index: 20;
+    gap: 1px;
   }
 
   &__button {
@@ -256,21 +258,24 @@ function selectPin(pin) {
     font-size: 18px;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-    transition: background 0.2s ease;
+    transition: 0.2s ease;
+
+    &:hover {
+      transition: 0.2s ease;
+      color: #ff6b35;
+    }
   }
 
   .button-plus {
+    border-bottom: 1px solid #d9d9d9;
     border-top-left-radius: 50%;
     border-top-right-radius: 50%;
   }
 
   .button-minus {
+    border-top: 1px solid #d9d9d9;
     border-bottom-left-radius: 50%;
     border-bottom-right-radius: 50%;
-  }
-
-  &__button:hover {
-    background: #f0f0f0;
   }
 }
 </style>
