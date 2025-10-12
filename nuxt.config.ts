@@ -6,7 +6,7 @@ export default defineNuxtConfig({
 
   // GitHub Pages
   app: {
-    baseURL: '/toksovo-front/', // обязательно с /
+    // baseURL: '/toksovo-front/', // отключено для локального тестирования
   },
 
   ssr: false,
