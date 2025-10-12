@@ -12,12 +12,8 @@ export default defineNuxtConfig({
 
   ssr: false,
   target: 'static',
-
   nitro: {
     preset: 'static',
-    prerender: {
-      routes: ['/', '/404.html'], // 👈 важно для GitHub Pages, чтобы открывался 404
-    },
   },
 
   modules: ['@pinia/nuxt'],
