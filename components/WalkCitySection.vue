@@ -2,13 +2,7 @@
   <div class="walk-city-section section horizontal-section">
     <div class="walk-city-section__container container">
       <div class="walk-city-section__content">
-        <Title :config="[
-            { word: 'Гулять', x: -50 },
-            { word: 'без', x: -220 },
-            { word: 'города', x: -100 }
-          ]"
-          class="walk-city-section__title"
-        />
+        <h2 class="walk-city-section__title">Гулять без города</h2>
         <div class="walk-city-section__subtitle subtitle-text">
           Здесь не нужны долгие поездки ради отдыха: рядом парки, оздоровительные маршруты и
           живописные тропы. Можно после работы пройтись вдоль озера, покататься на велосипеде или
@@ -24,9 +18,7 @@
   </div>
 </template>
 
-<script setup>
-import Title from './Common/Title.vue';
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .walk-city-section {
@@ -53,6 +45,12 @@ import Title from './Common/Title.vue';
 
   &__title {
     color: $text-color-light;
+    line-height: 80%;
+    margin: 0;
+    text-align: center;
+    max-width: 510px;
+    position: relative;
+    z-index: 10;
   }
 
   &__subtitle {

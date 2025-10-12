@@ -2,13 +2,7 @@
   <div class="nature-section section horizontal-section">
     <div class="nature-section__container container">
       <div class="nature-section__content">
-        <Title :config="[
-            { word: 'Жить', x: -50 },
-            { word: 'среди', x: -220 },
-            { word: 'природы', x: -100 }
-          ]"
-          class="nature-section__title" 
-        />
+        <h2 class="nature-section__title">Жить среди природы</h2>
         <div class="nature-section__subtitle subtitle-text">
           Жилой комплекс окружён лесами, озёрами и экотропами, где можно гулять в любое время года.
           Утренние пробежки, прогулки с детьми и пикники на свежем воздухе становятся частью
@@ -23,9 +17,7 @@
   </div>
 </template>
 
-<script setup>
-import Title from './Common/Title.vue';
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .nature-section {
@@ -52,6 +44,12 @@ import Title from './Common/Title.vue';
 
   &__title {
     color: $text-color-light;
+    position: relative;
+    z-index: 10;
+    line-height: 80%;
+    margin: 0;
+    text-align: center;
+    max-width: 510px;
   }
 
   &__subtitle {
@@ -72,7 +70,7 @@ import Title from './Common/Title.vue';
     top: 0;
     right: 0;
     bottom: 0;
-    width: 65%;
+    width: 60%;
     height: 100%;
 
     img {

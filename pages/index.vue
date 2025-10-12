@@ -4,7 +4,7 @@
   <div :class="{ 'content-hidden': loading }">
     <AppHeader />
     <HeroSection />
-    <TextBlockSection :config="sectionEnvironment.config" :subtitle="sectionEnvironment.subtitle" />
+    <TextBlockSection :text="sectionEnvironment.text" :subtitle="sectionEnvironment.subtitle" />
     <EnvironmentSection />
     <LocationsSection />
 
@@ -18,19 +18,16 @@
 
     <MasterPlanSection />
 
-    <TextBlockSection :config="sectionNewStyle.config" :subtitle="sectionNewStyle.subtitle" />
+    <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
     <FullpageSlider :sections="sectionNewStyle.sliderImages" />
 
-    <TextBlockSection :config="sectionFirstSteps.config" :subtitle="sectionFirstSteps.subtitle" />
+    <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
     <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
 
-    <TextBlockSection :config="sectionLiveNearby.config" :subtitle="sectionLiveNearby.subtitle" />
+    <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
     <MapSection />
 
-    <TextBlockSection
-      :config="sectionLiveOwnSpace.config"
-      :subtitle="sectionLiveOwnSpace.subtitle"
-    />
+    <TextBlockSection :text="sectionLiveOwnSpace.text" :subtitle="sectionLiveOwnSpace.subtitle" />
     <AppsLayoutsSection :apartments="apartments" />
 
     <ConstructionSection />
@@ -75,22 +72,15 @@ import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
 const loading = ref(true);
 
 const sectionEnvironment = {
-  config: [
-    { word: 'Спокойствие', x: 60 },
-    { word: 'свежесть', x: 700 },
-    { word: 'природа', x: 510 },
-  ],
-  subtitle: `Утро встречает вас чистым воздухом и спокойствием — прогулка, кофе на террасе или время с
-    семьёй. Днём вы легко погружаетесь в деловую жизнь города, ведь вся инфраструктура
-    и удобства находятся неподалёку. Вечером же Токсово возвращает ощущение свободы, когда можно
-    насладиться тишиной, уединением и красотой природы.`,
+  text: 'Спокойствие свежесть природа',
+  subtitle: `Утро встречает вас чистым воздухом и спокойствием — прогулка, кофе на террасе или время с
+    семьёй. Днём вы легко погружаетесь в деловую жизнь города, ведь вся инфраструктура
+    и удобства находятся неподалёку. Вечером же Токсово возвращает ощущение свободы, когда можно
+    насладиться тишиной, уединением и красотой природы.`,
 };
 
 const sectionNewStyle = {
-  config: [
-    { word: 'Жить', x: 350 },
-    { word: 'в стиле', x: 520 },
-  ],
+  text: 'Жить в стиле',
   subtitle: `Современная архитектура комплекса сочетает лаконичные формы и натуральные материалы.
     Большие окна наполняют квартиры светом,
     а фасады гармонично вписываются в природное окружение.
@@ -99,11 +89,7 @@ const sectionNewStyle = {
 };
 
 const sectionFirstSteps = {
-  config: [
-    { word: 'Жить', x: 350 },
-    { word: 'в стиле', x: 520 },
-    { word: 'шагов', x: 460 },
-  ],
+  text: 'Жить в стиле шагов',
   subtitle: `Лобби встречает жителей тёплой атмосферой и современным дизайном.
     Натуральные материалы, спокойные линии и продуманное освещение.
     Здесь начинается настроение дома — с комфорта и стиля уже на входе.`,
@@ -111,11 +97,7 @@ const sectionFirstSteps = {
 };
 
 const sectionLiveNearby = {
-  config: [
-    { word: 'Жить там,', x: 150 },
-    { word: 'где все', x: 535 },
-    { word: 'рядом', x: 430 },
-  ],
+  text: 'Жить там, где все рядом',
   subtitle: `Инфраструктура района создана для жизни без лишних забот.
     Рядом с домом — магазины, парки и места для отдыха.
     Всё необходимое находится на расстоянии прогулки,
@@ -123,14 +105,10 @@ const sectionLiveNearby = {
 };
 
 const sectionLiveOwnSpace = {
-  config: [
-    { word: 'Жить', x: 180 },
-    { word: 'в своем', x: 370 },
-    { word: 'пространстве', x: 250 },
-  ],
+  text: 'Жить в своем пространстве',
   subtitle: `Продуманные планировки объединяют уют и функциональность.
     Пространство организовано так, чтобы каждый метр работал на комфорт.
-    Здесь легко найти решение под свой ритм жизни и привычки.`,
+    Здесь легко найти решение под свой ритм жизни и привычки.`,
 };
 
 const apartments = [

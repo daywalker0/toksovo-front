@@ -1,11 +1,7 @@
 <template>
   <section class="news-section section">
     <div class="news-section__container container">
-      <Title :config="[
-          { word: 'Новости', x: 330 },
-        ]"
-        class="news-section__title" 
-      />
+      <TitleNew text="Новости" class="news-section__title" />
       <DefaultSlider
         :slides="newsSlides"
         :slides-per-view="2"
@@ -34,7 +30,7 @@
 </template>
 
 <script setup>
-import Title from './Common/Title.vue';
+import TitleNew from './Common/TitleNew.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
 const newsSlides = [

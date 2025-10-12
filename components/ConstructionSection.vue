@@ -1,7 +1,7 @@
 <template>
   <section class="construction-section section">
     <div class="construction-section__container container">
-      <Title :config="[{ word: 'ход строительства', x: 60 }]" class="construction-section__title" />
+      <TitleNew text="ход строительства" class="construction-section__title" />
       <DefaultSlider
         :slides="constructionSlides"
         :slides-per-view="2"
@@ -31,7 +31,7 @@
 import { ref } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 import constrImg from '@/assets/img/constr-img.jpg';
-import Title from './Common/Title.vue';
+import TitleNew from './Common/TitleNew.vue';
 import GalleryDialog from './Common/Dialogs/GalleryDialog.vue';
 import testImg from '@/assets/img/live-in-style-item-1.png';
 import galleryTestImg from '@/assets/img/gallery-test-img.png';
