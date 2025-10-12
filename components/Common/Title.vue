@@ -51,7 +51,7 @@ onMounted(async () => {
     return;
   }
 
-  const screenWidth = window.innerWidth || 1200;
+  const screenWidth = process.client ? window.innerWidth || 1200 : 1200;
 
   // стартовое положение — за экраном
   gsap.set(titleWords, {

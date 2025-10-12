@@ -280,7 +280,9 @@ const showCopyNotification = ref(false);
 
 const copyLink = async () => {
   try {
-    await navigator.clipboard.writeText(window.location.href);
+    if (process.client && navigator.clipboard) {
+      await navigator.clipboard.writeText(window.location.href);
+    }
     showCopyNotification.value = true;
     setTimeout(() => {
       showCopyNotification.value = false;
@@ -291,23 +293,27 @@ const copyLink = async () => {
 };
 
 const shareEmail = () => {
+  if (!process.client) return;
   const subject = encodeURIComponent(newsItem.value?.title || 'Новость');
   const body = encodeURIComponent(`${newsItem.value?.title}\n\n${window.location.href}`);
   window.open(`mailto:?subject=${subject}&body=${body}`);
 };
 
 const shareVK = () => {
+  if (!process.client) return;
   const url = encodeURIComponent(window.location.href);
   const title = encodeURIComponent(newsItem.value?.title || '');
   window.open(`https://vk.com/share.php?url=${url}&title=${title}`, '_blank');
 };
 
 const shareWhatsApp = () => {
+  if (!process.client) return;
   const text = encodeURIComponent(`${newsItem.value?.title}\n\n${window.location.href}`);
   window.open(`https://wa.me/?text=${text}`, '_blank');
 };
 
 const shareTelegram = () => {
+  if (!process.client) return;
   const text = encodeURIComponent(`${newsItem.value?.title}\n\n${window.location.href}`);
   window.open(`https://t.me/share/url?url=${window.location.href}&text=${text}`, '_blank');
 };

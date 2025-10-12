@@ -36,7 +36,7 @@ const lines = ref([]);
 let scrollTrigger = null;
 
 const splitTextIntoLines = (text, maxWidth) => {
-  if (!titleRef.value || typeof document === 'undefined') return [text];
+  if (!process.client || !titleRef.value) return [text];
 
   const words = text.split(' ');
   const lines = [];
@@ -56,8 +56,9 @@ const splitTextIntoLines = (text, maxWidth) => {
     const word = words[i];
     const testLine = currentLine ? `${currentLine} ${word}` : word;
     tempElement.textContent = testLine;
+    const width = tempElement.offsetWidth;
 
-    if (tempElement.offsetWidth <= maxWidth) {
+    if (width <= maxWidth) {
       currentLine = testLine;
     } else {
       if (currentLine) {

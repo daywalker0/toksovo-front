@@ -6,13 +6,17 @@ export default defineNuxtConfig({
 
   // GitHub Pages
   app: {
-    // baseURL: '/toksovo-front/', // отключено для локального тестирования
+    baseURL: '/toksovo-front/', // обязательно с /
   },
 
   ssr: false,
   target: 'static',
   nitro: {
     preset: 'static',
+    prerender: {
+      crawl: false,
+      routes: [],
+    },
   },
 
   modules: ['@pinia/nuxt'],

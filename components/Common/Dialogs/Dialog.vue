@@ -58,11 +58,13 @@ let scrollLocked = false;
 const lockScroll = () => {
   if (scrollLocked) return;
 
-  scrollY = window.scrollY;
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${scrollY}px`;
-  document.body.style.width = '100%';
-  document.body.style.overflow = 'hidden';
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+  }
   scrollLocked = true;
 };
 
@@ -70,11 +72,13 @@ const lockScroll = () => {
 const unlockScroll = () => {
   if (!scrollLocked) return;
 
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.width = '';
-  document.body.style.overflow = '';
-  window.scrollTo(0, scrollY);
+  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, scrollY);
+  }
   scrollLocked = false;
 };
 
@@ -96,7 +100,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .dialog-overlay {
   position: fixed;

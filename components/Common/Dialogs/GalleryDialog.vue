@@ -151,13 +151,17 @@ const handleKeydown = event => {
 
 // Функции для блокировки скролла
 const lockScroll = () => {
-  document.body.style.overflow = 'hidden';
-  document.body.style.paddingRight = '0px'; // Компенсация для скроллбара
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '0px'; // Компенсация для скроллбара
+  }
 };
 
 const unlockScroll = () => {
-  document.body.style.overflow = '';
-  document.body.style.paddingRight = '';
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
 };
 
 // Следим за изменениями modelValue
@@ -182,16 +186,21 @@ watch(
 );
 
 onMounted(() => {
-  document.addEventListener('keydown', handleKeydown);
+  if (typeof document !== 'undefined') {
+    document.addEventListener('keydown', handleKeydown);
+  }
 });
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown);
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('keydown', handleKeydown);
+  }
   unlockScroll(); // Убеждаемся что скролл разблокирован при размонтировании
 });
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .gallery-overlay {
   position: fixed;

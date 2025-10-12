@@ -119,12 +119,16 @@ const menuItems = [
 
 const openMenu = () => {
   isOpen.value = true;
-  document.body.style.overflow = 'hidden';
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = 'hidden';
+  }
 };
 
 const closeMenu = () => {
   isOpen.value = false;
-  document.body.style.overflow = '';
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = '';
+  }
 };
 
 const onMouseMove = e => {
@@ -142,7 +146,8 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .menu {
   font-family: 'Akrobat', sans-serif;

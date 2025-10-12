@@ -96,7 +96,7 @@ const digit3 = ref(null);
 
 // Функция для возврата назад
 const goBack = () => {
-  if (window.history.length > 1) {
+  if (process.client && window.history.length > 1) {
     window.history.back();
   } else {
     navigateTo('/');
