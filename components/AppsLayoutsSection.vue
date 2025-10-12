@@ -404,13 +404,6 @@ const switchImage = index => {
   transition: all 0.3s ease;
 }
 
-.thumbnail.active {
-}
-
-.thumbnail:hover {
-  border-color: #666;
-}
-
 .thumbnail img {
   width: 100%;
   height: 100%;

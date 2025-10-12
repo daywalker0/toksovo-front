@@ -97,7 +97,7 @@ import LocationsSection from '@/components/LocationsSection.vue';
 import NatureSection from '@/components/NatureSection.vue';
 import WalkCitySection from '@/components/WalkCitySection.vue';
 import MasterPlanSection from '@/components/MasterPlanSection.vue';
-import FullpageSlider from '@/components/FullPageSlider.vue';
+import FullPageSlider from '@/components/FullPageSlider.vue';
 import TextBlockSection from '@/components/TextBlockSection.vue';
 import MapSection from '@/components/MapSection.vue';
 import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
