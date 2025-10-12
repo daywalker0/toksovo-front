@@ -110,7 +110,8 @@ function selectPin(pin) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 .map {
   position: relative;
   width: 100%;

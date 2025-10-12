@@ -1,7 +1,8 @@
+@use './variables.scss';
 @use './fonts.scss';
 @use './reset.scss';
 @use './typography.scss';
 
 html:root {
-    scroll-behavior: auto !important; // prevent conflict with ScrollTrigger pinning
-  }
+  scroll-behavior: auto !important; // prevent conflict with ScrollTrigger pinning
+}

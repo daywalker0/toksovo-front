@@ -130,7 +130,8 @@ const onMouseMove = e => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 .private-housing-section {
   position: relative;
   height: 840px;

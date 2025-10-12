@@ -48,14 +48,5 @@ export default defineNuxtConfig({
         '@pages': path.resolve(__dirname, 'pages'),
       },
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: `
-            @use "@/assets/styles/variables.scss" as *;
-          `,
-        },
-      },
-    },
   },
 });

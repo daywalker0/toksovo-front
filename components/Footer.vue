@@ -126,6 +126,7 @@ const openDialogCallback = () => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 .footer {
   font-family: 'Akrobat', sans-serif;
   background-color: $utility-color-1;

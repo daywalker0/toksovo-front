@@ -22,7 +22,8 @@
 import walkCityImg from '@/assets/img/walk-city-img.jpg';
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 .walk-city-section {
   position: relative;
   width: 100vw;

@@ -329,7 +329,8 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="scss">@use '@/assets/styles/variables.scss' as *;
+
 .environment-section {
   position: relative;
   width: 100%;

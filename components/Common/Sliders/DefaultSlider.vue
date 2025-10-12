@@ -240,7 +240,8 @@ const onBreakpoint = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 .default-slider {
   width: 100%;
   margin: 0 auto;

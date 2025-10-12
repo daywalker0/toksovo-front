@@ -22,6 +22,7 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 .nature-section {
   position: relative;
   width: 100vw;

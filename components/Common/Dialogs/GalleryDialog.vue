@@ -191,7 +191,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 .gallery-overlay {
   position: fixed;
   top: 0;

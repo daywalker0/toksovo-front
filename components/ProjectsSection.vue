@@ -108,7 +108,8 @@ const openDialogVideo = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 ::v-deep(.swiper-slide) {
   height: 680px !important;
 }

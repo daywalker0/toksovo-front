@@ -196,7 +196,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 .choose-your-apps-section {
   height: 300vh;
   margin-top: 200px;

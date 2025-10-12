@@ -106,7 +106,8 @@ const handleSubmit = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+
 .callback-dialog {
   max-width: 460px;
   width: 100%;
