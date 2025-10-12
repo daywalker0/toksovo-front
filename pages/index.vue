@@ -24,10 +24,10 @@
 
     <section id="architecture">
       <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
-      <FullPageSlider :sections="sectionNewStyle.sliderImages" />
+      <FullpageSlider :sections="sectionNewStyle.sliderImages" />
 
       <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
-      <FullPageSlider :sections="sectionFirstSteps.sliderImages" />
+      <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
     </section>
 
     <section id="infrastructure">
@@ -97,7 +97,7 @@ import LocationsSection from '@/components/LocationsSection.vue';
 import NatureSection from '@/components/NatureSection.vue';
 import WalkCitySection from '@/components/WalkCitySection.vue';
 import MasterPlanSection from '@/components/MasterPlanSection.vue';
-import FullPageSlider from '@/components/FullPageSlider.vue';
+import FullpageSlider from '@/components/FullpageSlider.vue';
 import TextBlockSection from '@/components/TextBlockSection.vue';
 import MapSection from '@/components/MapSection.vue';
 import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
