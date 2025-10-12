@@ -151,11 +151,11 @@ const switchImage = index => {
 };
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .apartments-section {
   min-height: 100vh;
-  background-color: #ffffff;
 
   &__container {
     height: 100%;
