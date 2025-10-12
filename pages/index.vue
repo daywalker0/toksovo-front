@@ -85,7 +85,11 @@ const sectionNewStyle = {
     Большие окна наполняют квартиры светом,
     а фасады гармонично вписываются в природное окружение.
     Каждый дом продуман так, чтобы создавать ощущение уюта и спокойствия.`,
-  sliderImages: [{ img: liveInStyleItem1 }, { img: liveInStyleItem2 }, { img: liveInStyleItem3 }],
+  sliderImages: [
+    { image: liveInStyleItem1 },
+    { image: liveInStyleItem2 },
+    { image: liveInStyleItem3 },
+  ],
 };
 
 const sectionFirstSteps = {
@@ -93,7 +97,11 @@ const sectionFirstSteps = {
   subtitle: `Лобби встречает жителей тёплой атмосферой и современным дизайном.
     Натуральные материалы, спокойные линии и продуманное освещение.
     Здесь начинается настроение дома — с комфорта и стиля уже на входе.`,
-  sliderImages: [{ img: firstStepsItem1 }, { img: firstStepsItem2 }, { img: firstStepsItem3 }],
+  sliderImages: [
+    { image: firstStepsItem1 },
+    { image: firstStepsItem2 },
+    { image: firstStepsItem3 },
+  ],
 };
 
 const sectionLiveNearby = {
