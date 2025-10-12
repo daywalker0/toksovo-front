@@ -1,15 +1,15 @@
-name: Deploy Nuxt app to GitHub Pages
+name: Deploy Nuxt 3 app to GitHub Pages
 
 on:
   push:
     branches:
-      - main # или master — в зависимости от твоей основной ветки
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # чтобы можно было пушить в gh-pages
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,11 +22,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project
-        run: npm run build
+      - name: Generate static site
+        run: npx nuxi generate
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .output/public # для Nuxt 4 (Nitro static output)
+          publish_dir: .output/public
