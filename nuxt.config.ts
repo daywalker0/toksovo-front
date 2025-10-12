@@ -7,6 +7,30 @@ export default defineNuxtConfig({
   // Базовый URL для GitHub Pages
   app: {
     baseURL: '/toksovo-front/', // обязательно с /
+    head: {
+      title: 'ПОИНТ ТОКСОВО',
+      titleTemplate: '%s - Жилой комплекс в Токсово',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          name: 'description',
+          content:
+            'Современный жилой комплекс ПОИНТ ТОКСОВО в Токсово. Квартиры, планировки, инфраструктура. Удобное расположение рядом с природой.',
+        },
+        {
+          name: 'keywords',
+          content: 'Токсово, жилой комплекс, квартиры, новостройки, Ленинградская область',
+        },
+        { property: 'og:title', content: 'ПОИНТ ТОКСОВО - Жилой комплекс в Токсово' },
+        {
+          property: 'og:description',
+          content:
+            'Современный жилой комплекс ПОИНТ ТОКСОВО в Токсово. Квартиры, планировки, инфраструктура.',
+        },
+        { property: 'og:type', content: 'website' },
+      ],
+    },
   },
 
   // Отключаем SSR
