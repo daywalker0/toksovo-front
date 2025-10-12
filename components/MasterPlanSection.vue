@@ -84,20 +84,20 @@ let closeTimeoutId = null;
 
 // Данные для пинов
 const pins = ref([
-  { id: 1, x: 30, y: 40, label: 'Объект 1', active: true },
-  { id: 2, x: 15, y: 25, label: 'Парк', active: false },
-  { id: 3, x: 45, y: 20, label: 'Школа', active: true },
-  { id: 4, x: 70, y: 35, label: 'Торговый центр', active: true },
-  { id: 5, x: 25, y: 60, label: 'Больница', active: false },
-  { id: 6, x: 55, y: 70, label: 'Спорткомплекс', active: true },
-  { id: 7, x: 80, y: 15, label: 'Детский сад', active: false },
-  { id: 8, x: 10, y: 45, label: 'Библиотека', active: true },
-  { id: 9, x: 65, y: 55, label: 'Кафе', active: false },
-  { id: 10, x: 35, y: 80, label: 'Аптека', active: true },
-  { id: 11, x: 75, y: 25, label: 'Банк', active: false },
-  { id: 12, x: 20, y: 75, label: 'Почта', active: true },
-  { id: 13, x: 50, y: 85, label: 'Автосервис', active: false },
-  { id: 14, x: 85, y: 60, label: 'Салон красоты', active: true },
+  { id: 1, x: 13, y: 22, label: 'Объект 1', active: true },
+  { id: 2, x: 18, y: 15, label: 'Парк', active: false },
+  { id: 3, x: 30, y: 20, label: 'Школа', active: true },
+  { id: 4, x: 38, y: 15, label: 'Торговый центр', active: true },
+  { id: 5, x: 50, y: 12, label: 'Больница', active: false },
+  { id: 6, x: 62, y: 9, label: 'Спорткомплекс', active: true },
+  { id: 7, x: 35, y: 40, label: 'Детский сад', active: false },
+  { id: 8, x: 50, y: 35, label: 'Библиотека', active: true },
+  { id: 9, x: 60, y: 25, label: 'Кафе', active: false },
+  { id: 10, x: 75, y: 20, label: 'Аптека', active: true },
+  { id: 11, x: 50, y: 65, label: 'Банк', active: false },
+  { id: 12, x: 67, y: 48, label: 'Почта', active: true },
+  { id: 13, x: 75, y: 40, label: 'Автосервис', active: false },
+  { id: 14, x: 87, y: 32, label: 'Салон красоты', active: true },
 ]);
 
 const defaultOffers = [
