@@ -9,7 +9,7 @@
         :show-navigation="true"
       >
         <template #slide="{ slide, active }">
-          <div :class="['custom-slide', { active }]">
+          <div :class="['custom-slide', { active }]" @click="handleNewsClick(slide.id)">
             <div class="content">
               <div class="content--text">{{ slide.text }}</div>
               <div class="content--date">
@@ -30,36 +30,30 @@
 </template>
 
 <script setup>
+import { onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useNewsStore } from '~/stores/news';
 import TitleNew from './Common/TitleNew.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
-const newsSlides = [
-  {
-    text: 'ООО СЗ «Меридиан» утвердило политику по недопущению дискриминации и по противодействию коррупции в своей деятельности',
-    year: '2024',
-    number: '17',
-    month: 'сентября',
-  },
-  {
-    text: 'Короткая новость',
-    year: '2024',
-    number: '17',
-    month: 'сентября',
-  },
-  {
-    text: `ООО СЗ «Меридиан» утвердило политику по недопущению дискриминации и по противодействию коррупции
-      в своей деятельности утвердило политику по недопущению дискриминации и по противодействию коррупции в своей деятельности`,
-    year: '2024',
-    number: '17',
-    month: 'сентября',
-  },
-  {
-    text: 'Короткая новость',
-    year: '2024',
-    number: '17',
-    month: 'сентября',
-  },
-];
+const router = useRouter();
+const newsStore = useNewsStore();
+
+const handleNewsClick = newsId => {
+  router.push(`/news/${newsId}`);
+};
+
+// Получаем новости из store
+const newsSlides = computed(() => {
+  return newsStore.getLatestNews(4);
+});
+
+// Загружаем новости при монтировании компонента
+onMounted(async () => {
+  if (!newsStore.isNewsLoaded) {
+    await newsStore.fetchNews();
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -117,5 +111,14 @@ const newsSlides = [
 
 .custom-slide {
   height: 100%;
+  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
 }
 </style>

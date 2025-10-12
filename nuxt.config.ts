@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     buildAssetsDir: '/_nuxt/', // <- важно, чтобы пути были короче
   },
 
+  // Модули
+  modules: ['@pinia/nuxt'],
+
   // Глобальные стили
   css: ['@/assets/styles/main.scss'],
 

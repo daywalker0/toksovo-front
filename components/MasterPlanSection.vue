@@ -241,7 +241,6 @@ onMounted(async () => {
 
     // Проверяем что элементы существуют
     if (!sectionRef.value || !imageMaskRef.value) {
-      console.error('Элементы не найдены');
       return;
     }
 
@@ -262,20 +261,14 @@ onMounted(async () => {
         end: '+=100%', // Анимация занимает 100% высоты секции
         scrub: 1,
         markers: false,
-        onEnter: () => {
-          console.log('Секция вошла в поле зрения');
-        },
         onUpdate: self => {
-          console.log('ScrollTrigger progress:', self.progress);
           // Показываем пины и кнопку фильтра когда анимация завершена на 90%
           if (self.progress > 0.9 && !showPins.value) {
             showPins.value = true;
             showFilterButton.value = true;
-            console.log('Пины и кнопка фильтра показаны по прогрессу');
           } else if (self.progress <= 0.9 && showPins.value) {
             showPins.value = false;
             showFilterButton.value = false;
-            console.log('Пины и кнопка фильтра скрыты по прогрессу');
           }
           // Остальные апдейты выполняются в твине state.t ниже
         },
@@ -283,9 +276,6 @@ onMounted(async () => {
           // Убеждаемся что пины и кнопка фильтра показаны после завершения анимации
           showPins.value = true;
           showFilterButton.value = true;
-        },
-        onLeave: () => {
-          console.log('Секция покинула поле зрения');
         },
       },
     });

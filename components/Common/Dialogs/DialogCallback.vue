@@ -96,8 +96,6 @@ const formatPhone = event => {
 };
 
 const handleSubmit = () => {
-  console.log('Форма отправлена:', form.value);
-
   emit('update:modelValue', false);
 
   form.value = {

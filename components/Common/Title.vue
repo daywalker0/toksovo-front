@@ -41,7 +41,6 @@ onMounted(async () => {
   await nextTick();
 
   if (!titleWrapper.value) {
-    console.warn('❌ Title: Missing titleWrapper');
     return;
   }
 
@@ -49,11 +48,8 @@ onMounted(async () => {
   const titleWords = titleWrapper.value.querySelectorAll('.title__word');
 
   if (titleWords.length === 0) {
-    console.warn('❌ Title: No words found');
     return;
   }
-
-  console.log('✅ Title: Found', titleWords.length, 'words');
 
   const screenWidth = window.innerWidth || 1200;
 
