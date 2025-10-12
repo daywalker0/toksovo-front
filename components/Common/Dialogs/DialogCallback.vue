@@ -45,14 +45,14 @@
           </label>
         </div>
 
-        <button type="submit" class="submit-button">ОТПРАВИТЬ</button>
+        <button type="submit" class="submit-button" :disabled="!isFormValid">ОТПРАВИТЬ</button>
       </form>
     </div>
   </Dialog>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import Dialog from './Dialog.vue';
 
 const props = defineProps({
@@ -68,6 +68,13 @@ const form = ref({
   name: '',
   phone: '',
   agreement: false,
+});
+
+// Computed свойство для проверки, можно ли отправить форму
+const isFormValid = computed(() => {
+  return (
+    form.value.name.trim() !== '' && form.value.phone.trim() !== '' && form.value.agreement === true
+  );
 });
 
 const formatPhone = event => {
@@ -96,6 +103,11 @@ const formatPhone = event => {
 };
 
 const handleSubmit = () => {
+  // Проверяем валидность формы перед отправкой
+  if (!isFormValid.value) {
+    return;
+  }
+
   emit('update:modelValue', false);
 
   form.value = {
@@ -248,13 +260,20 @@ const handleSubmit = () => {
   font-family: 'Akrobat';
   transition: all 0.3s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: darken($accent-color-orange, 10%);
     transform: scale(1.02);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(1px);
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
   }
 }
 </style>
