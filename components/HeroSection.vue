@@ -105,7 +105,7 @@ onMounted(async () => {
       scrollTrigger: {
         trigger: sectionEl.value,
         start: 'top top',
-        end: () => `+=${window.innerHeight}`,
+        end: () => `+=${typeof window !== 'undefined' ? window.innerHeight : 1000}`,
         scrub: 1,
         invalidateOnRefresh: true,
         refreshPriority: 1,

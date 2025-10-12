@@ -162,7 +162,8 @@ const initHorizontalScroll = () => {
     scrollTrigger: {
       trigger: horizontalWrapper.value,
       start: 'top top',
-      end: () => `+=${window.innerHeight * (horizontalSections.length + 1)}`, // Высота окна × количество секций + 1
+      end: () =>
+        `+=${typeof window !== 'undefined' ? window.innerHeight * (horizontalSections.length + 1) : 1000}`, // Высота окна × количество секций + 1
       pin: true,
       scrub: 1,
       anticipatePin: 1,

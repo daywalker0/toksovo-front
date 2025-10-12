@@ -141,14 +141,18 @@ onMounted(() => {
   if (sliderWrapper.value) observer.observe(sliderWrapper.value);
 
   // Добавляем обработчик скролла для анимации масштабирования
-  window.addEventListener('scroll', handleScrollAnimation, { passive: true });
-  window.addEventListener('resize', handleScrollAnimation);
-  handleScrollAnimation(); // Начальная проверка
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', handleScrollAnimation, { passive: true });
+    window.addEventListener('resize', handleScrollAnimation);
+    handleScrollAnimation(); // Начальная проверка
+  }
 
   onUnmounted(() => {
     observer.disconnect();
-    window.removeEventListener('scroll', handleScrollAnimation);
-    window.removeEventListener('resize', handleScrollAnimation);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('scroll', handleScrollAnimation);
+      window.removeEventListener('resize', handleScrollAnimation);
+    }
   });
 });
 
@@ -173,7 +177,7 @@ function handleScrollAnimation() {
 
   const wrapperRect = sliderWrapper.value.getBoundingClientRect();
   const firstSectionRect = sectionsRefs.value[0].getBoundingClientRect();
-  const windowHeight = window.innerHeight;
+  const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 1000;
 
   // Проверяем, находится ли слайдер в области видимости
   const sliderIsVisible = wrapperRect.top <= 0 && wrapperRect.bottom > 0;
