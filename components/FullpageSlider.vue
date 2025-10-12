@@ -155,6 +155,41 @@ onMounted(() => {
         lastUpdateTime = now;
       }
     }, 50); // Уменьшаем задержку для быстрого отклика
+
+    // Анимация масштабирования для активной секции
+    updateScaleAnimation();
+  };
+
+  // Функция для обновления анимации масштабирования только для первой картинки
+  const updateScaleAnimation = () => {
+    // Только для первой секции (индекс 0)
+    const firstElement = document.getElementById(`section-${sliderId.value}-0`);
+    if (firstElement) {
+      const rect = firstElement.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Проверяем, видна ли половина первой секции
+      const isHalfVisible = rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5;
+
+      if (isHalfVisible) {
+        // Вычисляем прогресс анимации на основе позиции скролла
+        // 0 = секция вверху экрана, 1 = секция внизу экрана
+        const scrollProgress = Math.max(
+          0,
+          Math.min(1, (windowHeight * 0.5 - rect.top) / (windowHeight * 0.5))
+        );
+
+        // Масштабируем от 0.95 до 1.0 при скролле вниз
+        // И от 1.0 до 0.95 при скролле вверх
+        const scale = 0.95 + scrollProgress * 0.05;
+
+        const bgElement = firstElement.querySelector('.section-bg');
+        if (bgElement) {
+          bgElement.style.transform = `scale(${scale})`;
+          bgElement.style.transition = 'transform 0.3s ease-out';
+        }
+      }
+    }
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
@@ -194,12 +229,12 @@ onUnmounted(() => {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform: scale(1.1);
+  transform: scale(1);
 }
 
-.section-active .section-bg {
-  transform: scale(1);
+/* Только для первой секции */
+.fullscreen-section:first-child .section-bg {
+  transform: scale(0.95) !important;
 }
 
 /* Анимации для вертикальных переходов фоновых изображений */
