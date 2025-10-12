@@ -72,7 +72,11 @@
           </p>
           <div class="footer__documents">
             <a href="#" class="footer__section-item_text footer__doc-link">Проектная декларация</a>
-            <a href="#" class="footer__section-item_text footer__doc-link"
+            <a
+              href="/constructionDecision.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer__section-item_text footer__doc-link"
               >Разрешение на строительство</a
             >
           </div>
@@ -92,7 +96,14 @@
           </p>
         </div>
         <div class="footer__development">
-          <span>РАЗРАБОТКА</span>
+          <a
+            href="https://daniil-petrov.ru/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer__development-link"
+          >
+            РАЗРАБОТКА
+          </a>
         </div>
       </div>
     </div>
@@ -198,15 +209,23 @@ const openDialogCallback = () => {
     justify-content: space-between;
   }
 
-  &__copyright {
-  }
-
   &__copy-text,
   &__development {
     display: block;
     font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
+  }
+
+  &__development-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
   }
 
   &__rights {

@@ -149,12 +149,26 @@ const handleKeydown = event => {
   }
 };
 
+// Функции для блокировки скролла
+const lockScroll = () => {
+  document.body.style.overflow = 'hidden';
+  document.body.style.paddingRight = '0px'; // Компенсация для скроллбара
+};
+
+const unlockScroll = () => {
+  document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
+};
+
 // Следим за изменениями modelValue
 watch(
   () => props.modelValue,
   newValue => {
     if (newValue) {
       currentIndex.value = 0;
+      lockScroll(); // Блокируем скролл при открытии
+    } else {
+      unlockScroll(); // Разблокируем скролл при закрытии
     }
   }
 );
@@ -173,6 +187,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);
+  unlockScroll(); // Убеждаемся что скролл разблокирован при размонтировании
 });
 </script>
 
