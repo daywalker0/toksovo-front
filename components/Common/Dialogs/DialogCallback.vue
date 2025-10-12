@@ -38,7 +38,9 @@
             <span class="checkbox-custom"></span>
             <span class="checkbox-text">
               Соглашаюсь на получение обратного звонка и с
-              <a href="#" class="privacy-link">политикой конфиденциальности</a>
+              <a href="/privacy" class="privacy-link" target="_blank" rel="noopener noreferrer"
+                >политикой конфиденциальности</a
+              >
             </span>
           </label>
         </div>
