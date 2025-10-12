@@ -4,16 +4,20 @@ import path from 'path';
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-18',
 
-  // GitHub Pages
+  // Базовый URL для GitHub Pages
   app: {
     baseURL: '/toksovo-front/', // обязательно с /
   },
 
+  // Отключаем SSR
   ssr: false,
+
+  // Статическая сборка
   target: 'static',
   nitro: {
     preset: 'static',
     prerender: {
+      // отключаем сканирование сайта
       crawl: false,
       routes: [],
     },
@@ -36,6 +40,7 @@ export default defineNuxtConfig({
 
   vite: {
     build: {
+      // Папка для ассетов
       assetsDir: '_nuxt',
     },
     resolve: {
