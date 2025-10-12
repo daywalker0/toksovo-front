@@ -262,6 +262,12 @@ const onBreakpoint = () => {
   border: 1px solid $utility-color-1;
   border-radius: 7px;
   padding: 20px;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: $text-color-white;
+    transition: 0.3s;
+  }
 }
 
 .slider {
