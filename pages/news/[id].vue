@@ -345,6 +345,8 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
+
 .news-page {
   min-height: 100vh;
   background: $bg-color-1;
