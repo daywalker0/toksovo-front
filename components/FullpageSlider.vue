@@ -9,6 +9,7 @@
         :class="{ active: index === currentSection }"
         :data-section="index"
         :data-current="currentSection"
+        :data-slider-id="sliderId"
         @click="scrollToSection(index)"
       >
         <img :src="section.image" />
@@ -50,51 +51,30 @@ const sliderId = ref(`slider-${Math.random().toString(36).substr(2, 9)}`);
 
 const currentSection = ref(0);
 const isIndicatorVisible = ref(false);
-const isTransitioning = ref(false);
 const isInSlider = ref(false);
+let lastUpdateTime = 0;
 
 let observer;
 
 const scrollToSection = index => {
-  if (isTransitioning.value || index === currentSection.value) return;
-
-  isTransitioning.value = true;
-
-  // Определяем направление анимации
-  const direction = index > currentSection.value ? 'down' : 'up';
-
-  // Применяем классы для анимации к фоновым изображениям
-  const currentElement = document.getElementById(
-    `section-${sliderId.value}-${currentSection.value}`
-  );
+  // Простая навигация через scrollIntoView
   const targetElement = document.getElementById(`section-${sliderId.value}-${index}`);
 
-  if (currentElement && targetElement) {
-    const currentBg = currentElement.querySelector('.section-bg');
-    const targetBg = targetElement.querySelector('.section-bg');
-
-    if (currentBg && targetBg) {
-      // Добавляем классы для анимации к фоновым изображениям
-      currentBg.classList.add(direction === 'down' ? 'slide-out-up' : 'slide-out-down');
-      targetBg.classList.add(direction === 'down' ? 'slide-in-down' : 'slide-in-up');
-    }
+  if (targetElement) {
+    targetElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
 
     // Обновляем текущую секцию
     currentSection.value = index;
-
-    // Убираем классы анимации после завершения
-    setTimeout(() => {
-      if (currentBg) currentBg.classList.remove('slide-out-up', 'slide-out-down');
-      if (targetBg) targetBg.classList.remove('slide-in-down', 'slide-in-up');
-      isTransitioning.value = false;
-    }, 1000);
+  } else {
   }
 };
 
 onMounted(() => {
   // Инициализируем currentSection
   currentSection.value = 0;
-  console.log('Slider initialized with currentSection:', currentSection.value);
 
   // Создаем отдельный observer для определения активности слайдера
   const sliderObserver = new IntersectionObserver(
@@ -117,67 +97,64 @@ onMounted(() => {
     sliderObserver.observe(sliderContainer);
   }
 
-  // Создаем observer для секций
+  // Создаем observer для секций - только для определения активности слайдера
   observer = new IntersectionObserver(
     entries => {
-      entries.forEach(entry => {
-        // Парсим ID с учетом нового формата: section-${sliderId}-${index}
-        const idParts = entry.target.id.split('-');
-        const sectionIndex = parseInt(idParts[idParts.length - 1]);
-
-        // Проверяем, что индекс валидный
-        if (isNaN(sectionIndex) || sectionIndex < 0 || sectionIndex >= sections.value.length) {
-          console.warn('Invalid section index:', sectionIndex, 'for ID:', entry.target.id);
-          return;
-        }
-
-        // Проверяем, полностью ли секция в viewport
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.8) {
-          if (!isTransitioning.value) {
-            currentSection.value = sectionIndex;
-            console.log('Active section changed to:', sectionIndex);
-          }
-        }
-      });
+      // Этот observer только для определения, что слайдер активен
+      // Не обновляем currentSection здесь
     },
     {
-      threshold: [0, 0.8], // Срабатывает при 0% и 80% видимости
-      rootMargin: '0px', // Убираем отступы для более точного определения
+      threshold: 0.3, // Срабатывает при 30% видимости
+      rootMargin: '0px',
     }
   );
 
   // Наблюдаем за всеми секциями
   sections.value.forEach((_, index) => {
     const element = document.getElementById(`section-${sliderId.value}-${index}`);
-    if (element) observer.observe(element);
+    if (element) {
+      observer.observe(element);
+    } else {
+    }
   });
 
-  // Добавляем обработчик скролла для плавного перехода
+  // Добавляем обработчик скролла для более точного отслеживания
   let scrollTimeout;
   const handleScroll = () => {
-    if (isTransitioning.value || !isInSlider.value) return;
+    if (!isInSlider.value) return;
 
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(() => {
-      // Проверяем, что скролл происходит в области этого слайдера
-      const sliderRect = sliderContainer?.getBoundingClientRect();
-      if (!sliderRect) return;
+      // Находим секцию, которая больше всего видна
+      let maxVisibleRatio = 0;
+      let mostVisibleIndex = 0;
 
-      const isInViewport = sliderRect.top <= 0 && sliderRect.bottom >= window.innerHeight;
-      if (!isInViewport) return;
+      sections.value.forEach((_, index) => {
+        const element = document.getElementById(`section-${sliderId.value}-${index}`);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+          const visibleRatio = visibleHeight / window.innerHeight;
 
-      const scrollY = window.scrollY;
-      const sectionHeight = window.innerHeight;
-      const newSection = Math.round(scrollY / sectionHeight);
+          if (visibleRatio > maxVisibleRatio) {
+            maxVisibleRatio = visibleRatio;
+            mostVisibleIndex = index;
+          }
+        }
+      });
 
+      // Обновляем только если новая секция видна значительно больше
+      const now = Date.now();
       if (
-        newSection !== currentSection.value &&
-        newSection >= 0 &&
-        newSection < sections.value.length
+        maxVisibleRatio > 0.3 &&
+        mostVisibleIndex !== currentSection.value &&
+        now - lastUpdateTime > 100
       ) {
-        scrollToSection(newSection);
+        // Не чаще чем раз в 100мс
+        currentSection.value = mostVisibleIndex;
+        lastUpdateTime = now;
       }
-    }, 100);
+    }, 50); // Уменьшаем задержку для быстрого отклика
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
