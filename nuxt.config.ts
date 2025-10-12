@@ -4,32 +4,26 @@ import path from 'path';
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-18',
 
-  // Настройки для GitHub Pages
+  // GitHub Pages
   app: {
-    baseURL: '/toksovo-front/',
-    buildAssetsDir: '_nuxt/',
+    baseURL: '/toksovo-front/', // обязательно с /
+    buildAssetsDir: '_nuxt/', // Nuxt сам добавит / при необходимости
   },
 
-  // Отключаем SSR для статической генерации
   ssr: false,
-
-  // Настройки для статической генерации
   target: 'static',
 
-  // Настройки для GitHub Pages
   nitro: {
+    preset: 'static',
     prerender: {
-      routes: ['/'],
+      routes: ['/', '/404.html'], // 👈 важно для GitHub Pages, чтобы открывался 404
     },
   },
 
-  // Модули
   modules: ['@pinia/nuxt'],
 
-  // Глобальные стили
   css: ['@/assets/styles/main.scss'],
 
-  // PostCSS
   postcss: {
     plugins: {
       autoprefixer: {},
@@ -41,9 +35,8 @@ export default defineNuxtConfig({
     },
   },
 
-  // Настройки Vite для GitHub Pages
   vite: {
-    base: '/toksovo-front/',
+    base: '/toksovo-front/', // 👈 без этого GitHub ищет файлы по корню
     build: {
       assetsDir: '_nuxt',
     },
