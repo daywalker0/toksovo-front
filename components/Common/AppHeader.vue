@@ -131,6 +131,8 @@ onUnmounted(() => {
       color: #2c322c;
       text-decoration: none;
       transition: color 0.3s ease;
+      outline: none;
+      border: none;
 
       &:hover {
         color: #666;

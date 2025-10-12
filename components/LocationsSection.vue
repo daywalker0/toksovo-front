@@ -192,7 +192,6 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
   max-width: 1200px;
   gap: 40px;
   position: relative;
@@ -205,11 +204,13 @@ onMounted(() => {
 
 .card {
   margin-bottom: 80px;
+  width: 366px;
+  flex-shrink: 0;
 }
 
 .card-img {
   width: 100%;
-  height: 563px;
+  height: 488px;
   object-fit: cover;
 }
 
@@ -217,12 +218,12 @@ onMounted(() => {
   margin-top: 20px;
   &__title {
     display: flex;
-    align-items: center;
     justify-content: space-between;
     font-size: 28px;
     font-weight: 700;
     text-transform: uppercase;
     font-family: 'Akrobat';
+    line-height: 80%;
   }
 
   &__subtitle {
@@ -233,13 +234,12 @@ onMounted(() => {
     opacity: 0.8;
   }
 
-  &--name {
-  }
   &--distance {
     font-family: 'Bona Nova SC';
     font-size: 22px;
     font-weight: 400;
     line-height: 80%;
+    white-space: nowrap;
   }
 }
 </style>
