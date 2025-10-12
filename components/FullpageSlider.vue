@@ -359,27 +359,6 @@ onUnmounted(() => {
   }
 }
 
-/* Параллакс эффект для фона */
-.section-bg::before {
-  content: '';
-  position: absolute;
-  top: -10%;
-  left: -10%;
-  width: 120%;
-  height: 120%;
-  background: inherit;
-  background-size: cover;
-  background-position: center;
-  filter: blur(1px);
-  opacity: 0.3;
-  transition: all 1.5s ease;
-}
-
-.section-active .section-bg::before {
-  transform: scale(1.05);
-  opacity: 0.1;
-}
-
 .previews {
   position: fixed;
   bottom: 44px;
