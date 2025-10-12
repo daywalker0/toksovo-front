@@ -110,10 +110,6 @@ const openDialogVideo = () => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/variables.scss' as *;
-
-::v-deep(.swiper-slide) {
-  height: 720px !important;
-}
 ::v-deep(.dialog-content) {
   width: 80%;
   height: 80%;
@@ -179,6 +175,7 @@ const openDialogVideo = () => {
   &--button {
     margin-top: auto;
     transition: 0.3s;
+    margin: 24px 0;
 
     &:hover {
       background-color: $accent-color-orange;

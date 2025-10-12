@@ -77,7 +77,14 @@ const unlockScroll = () => {
     document.body.style.top = '';
     document.body.style.width = '';
     document.body.style.overflow = '';
-    window.scrollTo(0, scrollY);
+
+    // Плавное восстановление позиции скролла
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: scrollY,
+        behavior: 'instant', // Мгновенное восстановление без анимации
+      });
+    });
   }
   scrollLocked = false;
 };
@@ -89,7 +96,10 @@ watch(
     if (newValue) {
       lockScroll();
     } else {
-      unlockScroll();
+      // Задержка перед разблокировкой скролла, чтобы анимация закрытия завершилась
+      setTimeout(() => {
+        unlockScroll();
+      }, 400); // 400ms = время анимации закрытия
     }
   }
 );
@@ -159,7 +169,7 @@ onUnmounted(() => {
 /* Анимации */
 .dialog-enter-active,
 .dialog-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 .dialog-enter-from,
@@ -170,13 +180,17 @@ onUnmounted(() => {
 .dialog-enter-active .dialog-content,
 .dialog-leave-active .dialog-content {
   transition:
-    transform 0.3s ease,
-    opacity 0.3s ease;
+    transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.4s ease;
 }
 
-.dialog-enter-from .dialog-content,
+.dialog-enter-from .dialog-content {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
 .dialog-leave-to .dialog-content {
-  transform: scale(0.9);
+  transform: translateY(100%);
   opacity: 0;
 }
 </style>

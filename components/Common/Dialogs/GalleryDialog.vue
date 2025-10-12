@@ -385,7 +385,7 @@ onUnmounted(() => {
 /* Анимации */
 .gallery-enter-active,
 .gallery-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 .gallery-enter-from,
@@ -396,13 +396,17 @@ onUnmounted(() => {
 .gallery-enter-active .gallery-content,
 .gallery-leave-active .gallery-content {
   transition:
-    transform 0.3s ease,
-    opacity 0.3s ease;
+    transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.4s ease;
 }
 
-.gallery-enter-from .gallery-content,
+.gallery-enter-from .gallery-content {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
 .gallery-leave-to .gallery-content {
-  transform: scale(0.9);
+  transform: translateY(100%);
   opacity: 0;
 }
 

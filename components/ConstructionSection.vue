@@ -9,12 +9,12 @@
         :show-navigation="true"
       >
         <template #slide="{ slide, active }">
-          <div :class="['custom-slide', { active }]">
+          <div :class="['custom-slide', { active }]" @click="openGallery(slide)">
             <div class="image-container">
               <img :src="slide.image" :alt="slide.title" class="slide-image" />
             </div>
             <div class="content">
-              <div @click="openGallery(slide)" class="content--title">{{ slide.title }}</div>
+              <div class="content--title">{{ slide.title }}</div>
               <div class="content--year">{{ slide.year }}</div>
             </div>
           </div>
@@ -104,6 +104,10 @@ const openGallery = slide => {
   }
 }
 
+.custom-slide {
+  cursor: pointer;
+}
+
 .content {
   display: flex;
   justify-content: space-between;
@@ -125,10 +129,6 @@ const openGallery = slide => {
     height: 100%;
     object-fit: cover;
   }
-}
-
-.content--title {
-  cursor: pointer;
 }
 
 .image-container {
