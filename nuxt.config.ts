@@ -36,7 +36,6 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    base: '/toksovo-front/', // 👈 без этого GitHub ищет файлы по корню
     build: {
       assetsDir: '_nuxt',
     },
