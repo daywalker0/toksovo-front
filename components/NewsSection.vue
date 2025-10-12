@@ -45,7 +45,9 @@ const handleNewsClick = newsId => {
 
 // Получаем новости из store
 const newsSlides = computed(() => {
-  return newsStore.getLatestNews(4);
+  const news = newsStore.getLatestNews(4);
+  // Убеждаемся, что возвращается массив
+  return Array.isArray(news) ? news : [];
 });
 
 // Загружаем новости при монтировании компонента

@@ -9,7 +9,7 @@
 
       <!-- Анимируемая картинка -->
       <div ref="imageMaskRef" class="image-mask">
-        <img src="../assets/img/gen-plan.jpg" alt="Main image" class="reveal-image" />
+        <img :src="genPlanImg" alt="Main image" class="reveal-image" />
       </div>
 
       <!-- Пинсы которые появляются после раскрытия -->
@@ -69,6 +69,7 @@
 
 <script setup>
 import { ref, onMounted, nextTick, computed } from 'vue';
+import genPlanImg from '@/assets/img/gen-plan.jpg';
 
 const sectionRef = ref(null);
 const imageMaskRef = ref(null);

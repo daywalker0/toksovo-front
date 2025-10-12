@@ -39,7 +39,13 @@ export const useNewsStore = defineStore('news', {
         // Пытаемся загрузить из API
         const newsApi = useNewsApi();
         const apiNews = await newsApi.fetchAllNews();
-        this.news = apiNews;
+
+        // Проверяем, что API вернул массив, а не HTML
+        if (Array.isArray(apiNews)) {
+          this.news = apiNews;
+        } else {
+          throw new Error('API вернул неверный формат данных');
+        }
       } catch (apiError) {
         console.warn('API недоступен, используем моковые данные:', apiError);
 
@@ -138,7 +144,13 @@ export const useNewsStore = defineStore('news', {
         try {
           const newsApi = useNewsApi();
           const apiNews = await newsApi.fetchNewsById(id);
-          this.currentNews = apiNews;
+
+          // Проверяем, что API вернул объект, а не HTML
+          if (apiNews && typeof apiNews === 'object' && !apiNews.startsWith) {
+            this.currentNews = apiNews;
+          } else {
+            throw new Error('API вернул неверный формат данных');
+          }
 
           // Добавляем в общий список, если его там нет
           const existingInList = this.news.find(news => news.id === id);

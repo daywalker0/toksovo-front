@@ -12,7 +12,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "predeploy": "nuxi generate",
-    "deploy": "gh-pages -d .output/public"
+    "deploy": "gh-pages -d .output/public --dotfiles"
   },
   "dependencies": {
     "gsap": "^3.13.0",

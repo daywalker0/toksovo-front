@@ -6,8 +6,21 @@ export default defineNuxtConfig({
 
   app: {
     baseURL: '/toksovo-front/',
-    buildAssetsDir: '/_nuxt/', // <- важно, чтобы пути были короче
+    buildAssetsDir: '_nuxt/',
   },
+
+  // Настройки для GitHub Pages
+  nitro: {
+    prerender: {
+      routes: ['/'],
+    },
+  },
+
+  // Отключаем SSR для статической генерации
+  ssr: false,
+
+  // Настройки для статической генерации
+  target: 'static',
 
   // Модули
   modules: ['@pinia/nuxt'],

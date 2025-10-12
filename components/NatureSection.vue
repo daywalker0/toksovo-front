@@ -12,12 +12,14 @@
     </div>
 
     <div class="nature-section__image">
-      <img src="../assets/img/nature-img-1.jpg" alt="nature-img-1" />
+      <img :src="natureImg" alt="nature-img-1" />
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import natureImg from '@/assets/img/nature-img-1.jpg';
+</script>
 
 <style lang="scss" scoped>
 .nature-section {

@@ -22,7 +22,7 @@
     <!-- Контейнер карты -->
     <div class="map__container">
       <div class="map__content" :style="{ transform: `scale(${zoom})` }">
-        <img src="../assets/img/map-bg.png" alt="Map" class="map__image" />
+        <img :src="mapBgImg" alt="Map" class="map__image" />
 
         <!-- Пины -->
         <div
@@ -51,6 +51,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import mapBgImg from '@/assets/img/map-bg.png';
 import culture from '../assets/img/icons/locations/culture.svg';
 import medicine from '../assets/img/icons/locations/med.svg';
 import education from '../assets/img/icons/locations/education.svg';

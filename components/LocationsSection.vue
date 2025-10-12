@@ -8,7 +8,7 @@
           <!-- Левая колонка -->
           <div class="parallax-column left-column" ref="leftColumn">
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Ресторан «ЛетоБар»</div>
@@ -19,7 +19,7 @@
             </div>
 
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Конный клуб</div>
@@ -28,7 +28,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Экотропа</div>
@@ -42,7 +42,7 @@
           <!-- Центральная колонка -->
           <div class="parallax-column center-column" ref="centerColumn">
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Песочный пляж</div>
@@ -52,7 +52,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Учебно-тренировочный центр</div>
@@ -62,7 +62,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Парк семейного отдыха</div>
@@ -76,7 +76,7 @@
           <!-- Правая колонка -->
           <div class="parallax-column right-column" ref="rightColumn">
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Ресторан «ЛетоБар»</div>
@@ -86,7 +86,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Ресторан «ЛетоБар»</div>
@@ -96,7 +96,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" src="../assets/img/location-card.png" alt="card" />
+              <img class="card-img" :src="locationCardImg" alt="card" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Ресторан «ЛетоБар»</div>
@@ -117,6 +117,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ref, onMounted } from 'vue';
 import TitleNew from './Common/TitleNew.vue';
+import locationCardImg from '@/assets/img/location-card.png';
 
 const parallaxSection = ref(null);
 const leftColumn = ref(null);

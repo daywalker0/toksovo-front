@@ -41,16 +41,18 @@
       </div>
     </div>
     <div class="hero-section__sky" ref="skyEl">
-      <img src="../assets/img/bg-sky.jpg" />
+      <img :src="bgSkyImg" />
     </div>
     <div class="hero-section__bg" ref="renderEl">
-      <img src="../assets/img/hero-bg.png" />
+      <img :src="heroBgImg" />
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import bgSkyImg from '@/assets/img/bg-sky.jpg';
+import heroBgImg from '@/assets/img/hero-bg.png';
 
 const titleText = 'Поинт Токсово';
 const subtitleText = 'комфорт, который становится частью вашего дня';

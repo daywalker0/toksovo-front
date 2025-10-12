@@ -13,12 +13,14 @@
     </div>
 
     <div class="walk-city-section__image">
-      <img src="../assets/img/walk-city-img.jpg" alt="nature-img-1" />
+      <img :src="walkCityImg" alt="nature-img-1" />
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import walkCityImg from '@/assets/img/walk-city-img.jpg';
+</script>
 
 <style lang="scss" scoped>
 .walk-city-section {
