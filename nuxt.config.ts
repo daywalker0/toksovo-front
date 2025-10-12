@@ -4,16 +4,10 @@ import path from 'path';
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-18',
 
+  // Настройки для GitHub Pages
   app: {
     baseURL: '/toksovo-front/',
     buildAssetsDir: '_nuxt/',
-  },
-
-  // Настройки для GitHub Pages
-  nitro: {
-    prerender: {
-      routes: ['/'],
-    },
   },
 
   // Отключаем SSR для статической генерации
@@ -21,6 +15,13 @@ export default defineNuxtConfig({
 
   // Настройки для статической генерации
   target: 'static',
+
+  // Настройки для GitHub Pages
+  nitro: {
+    prerender: {
+      routes: ['/'],
+    },
+  },
 
   // Модули
   modules: ['@pinia/nuxt'],
@@ -40,8 +41,12 @@ export default defineNuxtConfig({
     },
   },
 
-  // Алиасы для Vite
+  // Настройки Vite для GitHub Pages
   vite: {
+    base: '/toksovo-front/',
+    build: {
+      assetsDir: '_nuxt',
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname),
