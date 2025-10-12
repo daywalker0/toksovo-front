@@ -1,5 +1,5 @@
 <template>
-  <section class="news-section section">
+  <section class="news-section section" id="news">
     <div class="news-section__container container">
       <TitleNew text="Новости" class="news-section__title" />
       <DefaultSlider
@@ -58,7 +58,8 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 ::v-deep(.swiper-slide) {
   height: 300px !important;

@@ -14,7 +14,7 @@
         </div>
 
         <div class="left-column__declaration menu--doc-link">
-          <a href="#">Проектная декларация</a>
+          <a href="#" target="_blank" rel="noopener noreferrer">Проектная декларация</a>
         </div>
       </div>
 
@@ -41,7 +41,7 @@
         </div>
         <ul class="menu__list">
           <li class="menu__item" v-for="item in menuItems" :key="item.id">
-            <a :href="item.link" class="menu__link" @click="closeMenu">
+            <a :href="item.link" class="menu__link" @click.prevent="scrollToSection(item.link)">
               {{ item.title }}
             </a>
           </li>
@@ -78,7 +78,14 @@
           </div>
         </div>
 
-        <a href="#" class="right-column__constr menu--doc-link"> РАЗРЕШЕНИЕ НА СТРОИТЕЛЬСТВО </a>
+        <a
+          href="/constructionDecision.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="right-column__constr menu--doc-link"
+        >
+          РАЗРЕШЕНИЕ НА СТРОИТЕЛЬСТВО
+        </a>
       </div>
     </div>
     <div
@@ -107,14 +114,14 @@ const cursorX = ref(0);
 const cursorY = ref(0);
 
 const menuItems = [
-  { id: 1, title: 'ГЛАВНАЯ', link: '#' },
-  { id: 2, title: 'О ПРОЕКТЕ', link: '#' },
-  { id: 3, title: 'ГЕНПЛАН', link: '#' },
-  { id: 4, title: 'АРХИТЕКТУРА И ЛОББИ', link: '#' },
-  { id: 5, title: 'ИНФРАСТРУКТУРА', link: '#' },
-  { id: 6, title: 'ПЛАНИРОВКИ', link: '#' },
-  { id: 7, title: 'ХОД СТРОИТЕЛЬСТВА', link: '#' },
-  { id: 8, title: 'НОВОСТИ', link: '#' },
+  { id: 1, title: 'ГЛАВНАЯ', link: '#hero' },
+  { id: 2, title: 'О ПРОЕКТЕ', link: '#about' },
+  { id: 3, title: 'ГЕНПЛАН', link: '#master-plan' },
+  { id: 4, title: 'АРХИТЕКТУРА И ЛОББИ', link: '#architecture' },
+  { id: 5, title: 'ИНФРАСТРУКТУРА', link: '#infrastructure' },
+  { id: 6, title: 'ПЛАНИРОВКИ', link: '#layouts' },
+  { id: 7, title: 'ХОД СТРОИТЕЛЬСТВА', link: '#construction' },
+  { id: 8, title: 'НОВОСТИ', link: '#news' },
 ];
 
 const openMenu = () => {
@@ -128,6 +135,21 @@ const closeMenu = () => {
   isOpen.value = false;
   if (typeof document !== 'undefined') {
     document.body.style.overflow = '';
+  }
+};
+
+const scrollToSection = link => {
+  if (link.startsWith('#')) {
+    const targetId = link.substring(1);
+    const targetElement = document.getElementById(targetId);
+
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+      closeMenu(); // Закрываем меню после клика
+    }
   }
 };
 

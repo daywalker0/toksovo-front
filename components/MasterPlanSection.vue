@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" class="enhanced-section">
+  <section ref="sectionRef" class="enhanced-section" id="master-plan">
     <div class="sticky-container">
       <!-- Текстовый контент -->
       <div ref="textContentRef" class="text-content">

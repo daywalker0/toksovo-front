@@ -1,5 +1,5 @@
 <template>
-  <section class="construction-section section">
+  <section class="construction-section section" id="construction">
     <div class="construction-section__container container">
       <TitleNew text="ход строительства" class="construction-section__title" />
       <DefaultSlider
@@ -90,7 +90,8 @@ const openGallery = slide => {
 };
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .construction-section {
   &__container {

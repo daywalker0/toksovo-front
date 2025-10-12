@@ -1,5 +1,5 @@
 <template>
-  <section class="projects-section section">
+  <section class="projects-section section" id="projects">
     <div class="projects-section__container container">
       <TitleNew text="Другие проекты" class="projects-section__title" />
       <DefaultSlider
@@ -108,7 +108,8 @@ const openDialogVideo = () => {
 };
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 ::v-deep(.swiper-slide) {
   height: 680px !important;

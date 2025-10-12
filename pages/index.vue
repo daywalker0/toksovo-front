@@ -3,10 +3,14 @@
 
   <div :class="{ 'content-hidden': loading }">
     <AppHeader />
-    <HeroSection />
-    <TextBlockSection :text="sectionEnvironment.text" :subtitle="sectionEnvironment.subtitle" />
-    <EnvironmentSection />
-    <LocationsSection />
+    <section id="hero">
+      <HeroSection />
+    </section>
+    <section id="about">
+      <TextBlockSection :text="sectionEnvironment.text" :subtitle="sectionEnvironment.subtitle" />
+      <EnvironmentSection />
+      <LocationsSection />
+    </section>
 
     <!-- Горизонтальный контейнер -->
     <div ref="horizontalWrapper" class="horizontal-wrapper">
@@ -18,17 +22,23 @@
 
     <MasterPlanSection />
 
-    <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
-    <FullpageSlider :sections="sectionNewStyle.sliderImages" />
+    <section id="architecture">
+      <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
+      <FullpageSlider :sections="sectionNewStyle.sliderImages" />
 
-    <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
-    <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
+      <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
+      <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
+    </section>
 
-    <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
-    <MapSection />
+    <section id="infrastructure">
+      <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
+      <MapSection />
+    </section>
 
-    <TextBlockSection :text="sectionLiveOwnSpace.text" :subtitle="sectionLiveOwnSpace.subtitle" />
-    <AppsLayoutsSection :apartments="apartments" />
+    <section id="layouts">
+      <TextBlockSection :text="sectionLiveOwnSpace.text" :subtitle="sectionLiveOwnSpace.subtitle" />
+      <AppsLayoutsSection :apartments="apartments" />
+    </section>
 
     <ConstructionSection />
     <NewsSection />
