@@ -140,10 +140,19 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+
+  svg {
+    transition: transform 0.3s ease;
+  }
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(0.9);
+
+    svg {
+      transform: rotate(180deg);
+    }
   }
 }
 
