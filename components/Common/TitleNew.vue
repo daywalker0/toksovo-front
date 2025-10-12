@@ -138,7 +138,7 @@ onUnmounted(() => {
 .title-line {
   font-size: 118px;
   font-weight: 400;
-  line-height: 1;
+  line-height: 0.8;
   color: $text-color-primary;
   white-space: nowrap;
 }
