@@ -10,19 +10,17 @@
 
       <form class="callback-form" @submit.prevent="handleSubmit">
         <div class="form-group">
-          <label for="name" class="form-label">Имя</label>
           <input
             id="name"
             v-model="form.name"
             type="text"
             class="form-input"
-            placeholder="Введите ваше имя"
+            placeholder="Имя"
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="phone" class="form-label">Телефон</label>
           <input
             id="phone"
             v-model="form.phone"
@@ -106,7 +104,8 @@ const handleSubmit = () => {
 };
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .callback-dialog {
   max-width: 460px;
@@ -114,20 +113,21 @@ const handleSubmit = () => {
 }
 
 .callback-title {
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 16px;
-  color: #333;
-  text-transform: uppercase;
+  font-size: 46px;
+  font-weight: 400;
+  line-height: 90%;
+  text-align: left;
+  margin-bottom: 20px;
+  font-family: 'Bona Nova SC';
 }
 
 .callback-description {
-  text-align: center;
-  color: #666;
+  text-align: left;
   line-height: 1.4;
-  margin-bottom: 24px;
-  font-size: 14px;
+  margin-bottom: 60px;
+  font-weight: 500;
+  font-size: 22px;
+  font-family: 'Akrobat';
 }
 
 .callback-form {
@@ -149,19 +149,28 @@ const handleSubmit = () => {
 }
 
 .form-input {
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid $utility-color-1;
+  border-radius: 0;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Akrobat';
+  line-height: 1.4;
+  background: transparent;
   transition: border-color 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: #007bff;
+    border-bottom-color: $accent-color-orange;
   }
 
   &::placeholder {
     color: #999;
+    font-family: 'Akrobat';
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.4;
   }
 }
 
@@ -207,11 +216,14 @@ const handleSubmit = () => {
 }
 
 .checkbox-text {
-  color: #666;
+  color: $text-color-secondary;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .privacy-link {
-  color: #007bff;
+  color: $accent-color-green;
   text-decoration: none;
 
   &:hover {
@@ -220,19 +232,23 @@ const handleSubmit = () => {
 }
 
 .submit-button {
-  background-color: #007bff;
+  background-color: $accent-color-orange;
   color: white;
   border: none;
   padding: 14px 24px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
   cursor: pointer;
   text-transform: uppercase;
-  transition: background-color 0.3s ease;
+
+  font-family: 'Akrobat';
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: darken($accent-color-orange, 10%);
+    transform: scale(1.02);
   }
 
   &:active {
