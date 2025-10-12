@@ -24,10 +24,10 @@
 
     <section id="architecture">
       <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
-      <FullpageSlider :sections="sectionNewStyle.sliderImages" />
+      <FullPageSlider :sections="sectionNewStyle.sliderImages" />
 
       <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
-      <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
+      <FullPageSlider :sections="sectionFirstSteps.sliderImages" />
     </section>
 
     <section id="infrastructure">
