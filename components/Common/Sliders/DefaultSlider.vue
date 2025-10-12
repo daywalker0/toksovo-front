@@ -347,11 +347,19 @@ const onBreakpoint = () => {
   border-radius: 3px;
   overflow: hidden;
   position: relative;
+  min-width: 200px; /* Минимальная ширина для видимости */
 }
 
 :deep(.swiper-pagination-progressbar-fill) {
   background: $text-color-primary;
   border-radius: 3px;
   height: 2px;
+  min-width: 0; /* Позволяет прогресс-бару быть видимым даже когда нет прогресса */
+}
+
+/* Принудительно показываем прогресс-бар даже когда нет прогресса */
+:deep(.swiper-pagination-progressbar) {
+  display: block !important;
+  opacity: 1 !important;
 }
 </style>
