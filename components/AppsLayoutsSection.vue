@@ -154,7 +154,7 @@ const switchImage = index => {
 <style lang="scss" scoped>
 .apartments-section {
   min-height: 100vh;
-  background-color: $bg-color-1;
+  background-color: #ffffff;
 
   &__container {
     height: 100%;
