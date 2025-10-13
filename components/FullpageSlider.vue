@@ -439,7 +439,7 @@ onUnmounted(() => {
   left: -10px;
   width: 86px;
   height: 68px;
-  border: 3px solid #ffffff;
+  border: 1px solid #ffffff;
   border-radius: 6px;
   z-index: 10;
   pointer-events: none;
