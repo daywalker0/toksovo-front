@@ -1,10 +1,6 @@
 <template>
   <Transition name="dialog">
-    <div
-      v-if="modelValue"
-      class="dialog-overlay"
-      @click="closeOnOverlay && $emit('update:modelValue', false)"
-    >
+    <div v-if="isVisible" class="dialog-overlay" @click="closeOnOverlay && closeDialog()">
       <div class="dialog-content" @click.stop>
         <!-- Слот для контента -->
         <slot></slot>
@@ -13,7 +9,7 @@
       <button
         v-if="showCloseButton"
         class="dialog-close"
-        @click="$emit('update:modelValue', false)"
+        @click="closeDialog()"
         aria-label="Закрыть"
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -28,7 +24,7 @@
 </template>
 
 <script setup>
-import { watch, onUnmounted } from 'vue';
+import { watch, onUnmounted, ref } from 'vue';
 
 const props = defineProps({
   // Двусторонняя привязка для отображения/скрытия
@@ -48,7 +44,11 @@ const props = defineProps({
   },
 });
 
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
+
+// Внутреннее состояние для контроля анимации
+const isVisible = ref(false);
+const isAnimating = ref(false);
 
 // Переменные для хранения состояния скролла
 let scrollY = 0;
@@ -89,11 +89,26 @@ const unlockScroll = () => {
   scrollLocked = false;
 };
 
+// Функция для закрытия диалога с анимацией
+const closeDialog = () => {
+  if (isAnimating.value) return;
+
+  isAnimating.value = true;
+  isVisible.value = false;
+
+  // Ждем завершения анимации, затем обновляем modelValue
+  setTimeout(() => {
+    emit('update:modelValue', false);
+    isAnimating.value = false;
+  }, 400); // 400ms = время анимации закрытия
+};
+
 // Следим за изменениями modelValue
 watch(
   () => props.modelValue,
   newValue => {
     if (newValue) {
+      isVisible.value = true;
       lockScroll();
     } else {
       // Задержка перед разблокировкой скролла, чтобы анимация закрытия завершилась
@@ -169,19 +184,11 @@ onUnmounted(() => {
 /* Анимации */
 .dialog-enter-active,
 .dialog-leave-active {
-  transition: opacity 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.dialog-enter-from,
-.dialog-leave-to {
+.dialog-enter-from {
   opacity: 0;
-}
-
-.dialog-enter-active .dialog-content,
-.dialog-leave-active .dialog-content {
-  transition:
-    transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    opacity 0.4s ease;
 }
 
 .dialog-enter-from .dialog-content {
@@ -189,8 +196,17 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+.dialog-leave-to {
+  opacity: 0;
+}
+
 .dialog-leave-to .dialog-content {
   transform: translateY(100%);
   opacity: 0;
+}
+
+.dialog-enter-active .dialog-content,
+.dialog-leave-active .dialog-content {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 </style>

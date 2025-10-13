@@ -142,6 +142,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
+
 .error-page {
   min-height: 100vh;
   display: flex;

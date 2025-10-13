@@ -204,7 +204,9 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
+
 .sections-container {
   position: relative;
   overflow: hidden;
