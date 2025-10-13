@@ -260,7 +260,7 @@ defineExpose({
     top: 0;
     left: 0;
     width: 100%;
-    height: 70vh;
+    height: 85vh;
     background: $accent-color-brown;
     transform: translateY(-100%);
     transition: transform 0.3s ease-in-out;
