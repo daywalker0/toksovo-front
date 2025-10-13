@@ -666,9 +666,9 @@ onBeforeUnmount(() => {
       opacity: 1;
     }
     .icon {
-      margin-right: 12px;
       width: 0;
       opacity: 0;
+      margin-right: 0;
     }
   }
 
@@ -679,6 +679,7 @@ onBeforeUnmount(() => {
     .icon {
       opacity: 1;
       width: fit-content;
+      margin-right: 12px;
     }
   }
 
