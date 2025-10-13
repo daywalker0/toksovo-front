@@ -88,19 +88,28 @@ onMounted(async () => {
 
     // Адаптивные параметры для мобильных устройств
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
-    const renderStartScale = isMobile ? 2.2 : 2.7;
-    const skyStartScale = isMobile ? 1.02 : 1.06;
-    const translateY = isMobile ? 50 : 85;
+    const renderStartScale = isMobile ? 3.1 : 3.6;
+    const skyStartScale = isMobile ? 1.1 : 1.2;
 
+    // Устанавливаем рендер внизу секции с большим масштабом
     gsap.set(renderEl.value, {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
       transformOrigin: 'center bottom',
       scale: renderStartScale,
-      translateY: translateY,
+      zIndex: 1,
     });
+
     gsap.set(skyEl.value, {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
       transformOrigin: 'center bottom',
       scale: skyStartScale,
-      translateY: isMobile ? 25 : 50,
+      zIndex: 0,
     });
 
     timeline = gsap.timeline({
@@ -109,15 +118,29 @@ onMounted(async () => {
         trigger: sectionEl.value,
         start: 'top top',
         end: () => `+=${typeof window !== 'undefined' ? window.innerHeight : 1000}`,
-        scrub: 1,
+        scrub: 0.3,
         invalidateOnRefresh: true,
         refreshPriority: 1,
       },
     });
 
     timeline
-      .to(renderEl.value, { scale: 1, translateY: 0 }, 0)
-      .to(skyEl.value, { scale: 1, translateY: 0 }, 0.1);
+      .to(
+        renderEl.value,
+        {
+          scale: 1,
+          ease: 'power2.out',
+        },
+        0
+      )
+      .to(
+        skyEl.value,
+        {
+          scale: 1,
+          ease: 'power2.out',
+        },
+        0
+      );
   } catch (e) {
     console.error(e);
   }
@@ -137,7 +160,7 @@ onBeforeUnmount(() => {
 .hero-section {
   position: relative;
   background: none;
-  min-height: 140vh;
+  min-height: 200vh;
   overflow: hidden;
 
   @media (max-width: $breakpoint-x) {
@@ -145,7 +168,7 @@ onBeforeUnmount(() => {
   }
 
   &__container {
-    min-height: 140vh;
+    min-height: 200vh;
 
     @media (max-width: $breakpoint-x) {
       min-height: 100svh;
@@ -209,11 +232,6 @@ onBeforeUnmount(() => {
     z-index: 1;
     transform-origin: center bottom;
     will-change: transform;
-    // transform: scale(2.9);
-
-    @media (max-width: $breakpoint-x) {
-      bottom: 10%;
-    }
 
     img {
       width: 100%;
@@ -234,10 +252,12 @@ onBeforeUnmount(() => {
     right: 0;
     z-index: 0;
     pointer-events: none;
-    height: 100vh;
+    height: 200vh;
+    transform-origin: center bottom;
+    will-change: transform;
 
     @media (max-width: $breakpoint-x) {
-      height: 100svh;
+      height: 200vh;
     }
 
     img {
