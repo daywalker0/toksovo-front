@@ -5,7 +5,20 @@
       <div class="map__sidebar-content">
         <h3 class="map__sidebar-title" @click="toggleSidebar">
           Локации
-          <span class="map__m" :class="{ 'map__m--open': isSidebarOpen }"> ▼ </span>
+          <span class="map__m" :class="{ 'map__m--open': isSidebarOpen }">
+            <svg
+              width="11"
+              height="8"
+              viewBox="0 0 11 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.71429 0.497991C5.11466 -0.0105564 5.88534 -0.0105563 6.28572 0.497991L10.7209 6.13141C11.2373 6.78739 10.7701 7.75 9.93517 7.75L1.06483 7.75C0.229947 7.75 -0.237333 6.78739 0.279119 6.13141L4.71429 0.497991Z"
+                fill="#4C5E36"
+              />
+            </svg>
+          </span>
         </h3>
         <ul v-show="isSidebarOpen" class="map__categories">
           <li v-for="cat in categories" :key="cat.name" class="map__category">
@@ -159,7 +172,7 @@ function selectPin(pin) {
     color: #666;
 
     &--open {
-      transform: rotate(90deg);
+      transform: rotate(180deg);
     }
   }
 
