@@ -8,13 +8,15 @@
 
           <!-- Информация о квартире -->
           <div class="apartment-info">
-            <div class="info-item">
-              <div class="info-label">Площадь</div>
-              <div class="info-value">{{ currentApartment.area }} М²</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">Этажность</div>
-              <div class="info-value">{{ currentApartment.floors }}</div>
+            <div class="info-row">
+              <div class="info-item">
+                <div class="info-label">Площадь</div>
+                <div class="info-value">{{ currentApartment.area }} М²</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Этажность</div>
+                <div class="info-value">{{ currentApartment.floors }}</div>
+              </div>
             </div>
             <div class="info-item info-item-price">
               <div class="info-label">Стоимость</div>
@@ -220,6 +222,22 @@ const switchImage = index => {
 .apartment-info {
   display: flex;
   flex-direction: column;
+  width: 100%;
+}
+
+.info-row {
+  display: flex;
+  gap: 40px;
+  border-bottom: 1px solid $utility-color-1;
+  padding-bottom: 24px;
+  margin-bottom: 12px;
+  width: 100%;
+
+  @media (max-width: $breakpoint-lg) {
+    gap: 20px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+  }
 }
 
 .info-item {
@@ -232,6 +250,13 @@ const switchImage = index => {
   @media (max-width: $breakpoint-lg) {
     padding-bottom: 16px;
     margin-bottom: 8px;
+  }
+
+  .info-row & {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    flex: 1;
   }
 }
 

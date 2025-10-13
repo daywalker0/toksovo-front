@@ -221,7 +221,7 @@ const initHorizontalScroll = () => {
       end: () =>
         `+=${typeof window !== 'undefined' ? window.innerHeight * horizontalSections.length * 0.7 : 1000}`, // Немного увеличиваем длину скролла
       pin: true,
-      scrub: 1,
+      scrub: 1.5,
       anticipatePin: 1,
       markers: false,
       onUpdate: self => {
@@ -253,20 +253,20 @@ const initHorizontalScroll = () => {
     // Добавляем паузу перед анимацией (25% времени)
     tl.to(horizontalContainer, {
       duration: 0.25,
-      ease: 'power1.inOut',
+      ease: 'power2.inOut',
     });
 
     // Анимация перехода к следующей секции (50% времени)
     tl.to(horizontalContainer, {
       x: position,
       duration: 0.5,
-      ease: 'power1.inOut',
+      ease: 'power2.inOut',
     });
 
     // Пауза на секции (25% времени)
     tl.to(horizontalContainer, {
       duration: 0.25,
-      ease: 'power1.inOut',
+      ease: 'power2.inOut',
     });
   });
 
@@ -346,6 +346,9 @@ onBeforeUnmount(() => {
   display: flex;
   height: 100vh;
   position: relative;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 
   @media (max-width: $breakpoint-x) {
     height: 100svh;
