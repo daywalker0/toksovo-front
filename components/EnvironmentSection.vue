@@ -3,7 +3,7 @@
     <!-- Старая реализация для десктопа -->
     <div class="environment-section__gallery" ref="galleryRef" v-if="!isMobile">
       <div v-for="(img, i) in slides" :key="i" class="gallery-item">
-        <img :src="i === Math.floor(slides.length / 2) ? slides[currentIndex] : img" alt="" />
+        <img :src="img" alt="" />
       </div>
     </div>
 
@@ -96,17 +96,6 @@
         </div>
       </div>
 
-      <!-- Фоновые картинки -->
-      <div class="slides-wrapper" ref="slidesWrapper">
-        <img
-          v-for="(slide, idx) in slides"
-          :key="idx"
-          :src="slide"
-          :class="['slide-bg', { active: idx === currentIndex }]"
-          alt="bg"
-        />
-      </div>
-
       <!-- Две половины для клика по стрелкам -->
       <div class="image-control" v-if="isContentVisible" @mousemove="onMouseMove">
         <div
@@ -187,7 +176,6 @@ const {
 const sectionRef = ref(null);
 const galleryRef = ref(null);
 const contentRef = ref(null);
-const slidesWrapper = ref(null);
 const isContentVisible = ref(false);
 const currentIndex = ref(0);
 const isAnimating = ref(false);
@@ -267,46 +255,29 @@ const goToPrevSlide = () => {
 
 // Анимация смены слайда для десктопа
 const animateSlide = (newIndex, direction) => {
-  if (!slidesWrapper.value) return;
+  if (isAnimating.value) return;
 
   isAnimating.value = true;
 
-  const allSlides = slidesWrapper.value.querySelectorAll('.slide-bg');
-  const currentSlide = allSlides[currentIndex.value];
-  const nextSlide = allSlides[newIndex];
+  // Обновляем индекс и активный элемент
+  currentIndex.value = newIndex;
+  setActiveIndex(newIndex);
 
-  if (!currentSlide || !nextSlide) {
-    isAnimating.value = false;
-    return;
+  // Обновляем галерею - меняем центральную картинку
+  if (galleryRef.value) {
+    const galleryItems = galleryRef.value.querySelectorAll('.gallery-item');
+    const centerIndex = Math.floor(galleryItems.length / 2);
+    const centerItem = galleryItems[centerIndex];
+    const centerImg = centerItem?.querySelector('img');
+
+    if (centerImg) {
+      centerImg.src = slides.value[newIndex];
+    }
   }
 
-  // Делаем следующий слайд видимым
-  gsap.set(nextSlide, {
-    opacity: 1,
-    x: direction === 'right' ? '100%' : '-100%',
-    zIndex: 2,
-  });
-
-  // Анимируем оба слайда одновременно с более плавным easing
-  gsap.to(currentSlide, {
-    x: direction === 'right' ? '-100%' : '100%',
-    duration: 0.9,
-    ease: 'power3.inOut',
-  });
-
-  gsap.to(nextSlide, {
-    x: '0%',
-    duration: 0.9,
-    ease: 'power3.inOut',
-    onComplete: () => {
-      // Сбрасываем позиции после анимации
-      gsap.set(currentSlide, { x: '0%', opacity: 0, zIndex: 0 });
-      gsap.set(nextSlide, { x: '0%', zIndex: 1 });
-
-      currentIndex.value = newIndex;
-      isAnimating.value = false;
-    },
-  });
+  setTimeout(() => {
+    isAnimating.value = false;
+  }, 300);
 };
 
 onMounted(async () => {
@@ -356,9 +327,9 @@ onMounted(async () => {
 
   // Скрываем контент
   gsap.set(content, {
-    opacity: 0,
-    y: 20,
-    scale: 0.98,
+    y: 40,
+    scale: 0.8,
+    display: 'none',
   });
 
   const tl = gsap.timeline({
@@ -371,16 +342,15 @@ onMounted(async () => {
     },
   });
 
-  // Уезжают соседи в стороны
+  // Уезжают соседи в стороны (кроме центрального)
   tl.to(
     galleryItems,
     {
       x: i => {
         if (i < centerIndex) return '-150%';
         if (i > centerIndex) return '150%';
-        return '0%';
+        return '0%'; // Центральный элемент остается на месте
       },
-      opacity: i => (i === centerIndex ? 1 : 0),
       ease: 'power2.inOut',
       duration: 1,
     },
@@ -394,6 +364,7 @@ onMounted(async () => {
       width: '100vw',
       height: '100vh',
       borderRadius: 0,
+      x: 0, // Явно фиксируем позицию по X
       ease: 'power2.inOut',
       duration: 1.2,
     },
@@ -406,26 +377,33 @@ onMounted(async () => {
       width: '100%',
       height: '100%',
       objectFit: 'cover',
+      x: 0, // Явно фиксируем позицию по X
       ease: 'power2.inOut',
       duration: 1.2,
     },
     0.2
   );
 
-  // Контент появляется плавно
+  // Контент появляется на 80% анимации увеличения картинки
   tl.to(
     content,
     {
-      opacity: 1,
+      display: 'flex',
       y: 0,
       scale: 1,
-      ease: 'power2.out',
-      duration: 0.8,
-      onComplete: () => {
-        isContentVisible.value = true;
-      },
+      ease: 'power3.out',
+      duration: 1.2,
     },
-    1.4
+    0.96 // 80% от 1.2 (длительность анимации увеличения картинки)
+  );
+
+  // Курсоры появляются сразу при появлении контента
+  tl.call(
+    () => {
+      isContentVisible.value = true;
+    },
+    null,
+    0.96
   );
 });
 
@@ -633,9 +611,6 @@ onBeforeUnmount(() => {
   align-items: flex-end;
   padding: 44px;
   pointer-events: none;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-  transform: translateZ(0);
 
   @media (max-width: $breakpoint-x) {
     display: none;
@@ -649,9 +624,8 @@ onBeforeUnmount(() => {
     z-index: 5;
     background-color: #fff;
     pointer-events: auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
-    transform: translateZ(0);
 
     &__wrap {
       padding: 36px;
@@ -739,33 +713,6 @@ onBeforeUnmount(() => {
       align-items: center;
       justify-content: center;
       cursor: none;
-    }
-  }
-
-  .slides-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: 0;
-  }
-
-  .slide-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    pointer-events: none;
-    will-change: transform;
-
-    &.active {
-      opacity: 1;
-      z-index: 1;
     }
   }
 
