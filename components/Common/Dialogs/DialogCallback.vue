@@ -261,7 +261,6 @@ const handleSubmit = () => {
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background-color: darken($accent-color-orange, 10%);
     transform: scale(1.02);
   }
 

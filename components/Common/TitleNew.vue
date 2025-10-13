@@ -99,11 +99,16 @@ const initAnimation = () => {
 
   if (chars.length === 0) return;
 
-  // Устанавливаем начальное состояние - все буквы скрыты
+  // Определяем смещение в зависимости от размера экрана
+  const isMobile = window.innerWidth <= 768;
+  const isSmallMobile = window.innerWidth <= 480;
+  const initialY = isSmallMobile ? 40 : isMobile ? 60 : 100;
+
+  // Устанавливаем начальное состояние - все буквы скрыты и смещены вниз
   gsap.set(chars, {
-    y: 100,
-    opacity: 0,
-    scale: 0.8,
+    clipPath: 'inset(100% 0 0 0)',
+    y: initialY,
+    scale: 1,
     transformOrigin: 'center center',
   });
 
@@ -111,11 +116,17 @@ const initAnimation = () => {
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: titleRef.value,
-      start: 'top 85%',
-      end: 'top 15%',
-      scrub: 1.8, // Еще более плавная привязка к скроллу
+      start: 'top 80%', // Начинаем анимацию
+      end: 'top 20%', // Заканчиваем анимацию
+      scrub: 0.3, // Очень отзывчивая привязка к скроллу для пошагового эффекта
       markers: false,
       invalidateOnRefresh: true,
+      refreshPriority: -1, // Приоритет обновления
+      onUpdate: self => {
+        // Дополнительная логика при обновлении скролла
+        const progress = self.progress;
+        // Можно добавить дополнительные эффекты на основе прогресса
+      },
     },
   });
 
@@ -146,26 +157,25 @@ const initAnimation = () => {
       lineStart
     );
 
-    // Анимируем буквы в строке с более медленной последовательностью
-    tl.to(
-      lineChars,
-      {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 1.8, // Увеличиваем длительность еще больше
-        stagger: {
-          amount: 1.2, // Увеличиваем общее время stagger
-          from: 'start',
+    // Анимируем каждую букву отдельно как ступеньку
+    lineChars.forEach((char, charIndex) => {
+      const charStart = lineStart + 0.1 + charIndex * 0.15; // Каждая буква через 0.15 секунды
+
+      tl.to(
+        char,
+        {
+          clipPath: 'inset(0% 0 0 0)',
+          y: 0,
+          duration: 0.8, // Короткая анимация для каждой буквы
+          ease: 'power2.out',
         },
-        ease: 'back.out(1.4)', // Более мягкий bounce
-      },
-      lineStart + 0.1 // Небольшая задержка после появления строки
-    );
+        charStart
+      );
+    });
 
     // Обновляем время окончания текущей строки для следующей
-    const lineDuration = 1.8 + 1.2; // Длительность анимации + stagger
-    previousLineEnd = lineStart + lineDuration + 0.5; // Увеличиваем паузу между строками
+    const lineDuration = 0.1 + lineChars.length * 0.15 + 0.8; // Время на все буквы + анимация последней
+    previousLineEnd = lineStart + lineDuration + 0.2; // Небольшая пауза между строками
   });
 
   scrollTrigger = tl.scrollTrigger;
@@ -228,7 +238,6 @@ onUnmounted(() => {
 
 .title-new {
   width: 100%;
-  max-width: 600px;
   margin: 0 auto;
   text-align: center;
   min-height: 200px; /* Увеличиваем высоту для анимации */
@@ -260,17 +269,23 @@ onUnmounted(() => {
   /* Изначально скрыты для анимации */
   opacity: 0;
   transform: translateY(0);
+  /* Ограничиваем ширину строки чтобы скрыть буквы снизу */
+  width: 100%;
+  overflow: hidden;
 }
 
 .title-char {
   display: inline-block;
-  transform: translateY(100px) scale(0.8); /* Начальное положение и масштаб */
-  opacity: 0; /* Буквы изначально прозрачные */
-  will-change: transform, opacity;
+  clip-path: inset(100% 0 0 0); /* Начальное состояние - обрезано снизу */
+  transform: translateY(100px); /* Начальное смещение вниз */
+  will-change: clip-path, transform;
   /* Убедимся что буквы не обрезаются */
   overflow: visible;
   position: relative;
   backface-visibility: hidden; /* Улучшает производительность */
+  /* Оптимизация для скролла */
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 /* Адаптивность */
@@ -286,7 +301,8 @@ onUnmounted(() => {
   }
 
   .title-char {
-    transform: translateY(60px) scale(0.8); /* Меньшее смещение для мобильных */
+    clip-path: inset(100% 0 0 0); /* Начальное состояние - обрезано снизу */
+    transform: translateY(60px); /* Меньшее смещение для мобильных */
   }
 }
 
@@ -301,7 +317,8 @@ onUnmounted(() => {
   }
 
   .title-char {
-    transform: translateY(40px) scale(0.8);
+    clip-path: inset(100% 0 0 0); /* Начальное состояние - обрезано снизу */
+    transform: translateY(40px); /* Еще меньшее смещение для маленьких экранов */
   }
 }
 
