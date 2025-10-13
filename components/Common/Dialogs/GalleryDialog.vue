@@ -17,13 +17,16 @@
             @click="$emit('update:modelValue', false)"
             aria-label="Закрыть галерею"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
-                d="M18 6L6 18M6 6L18 18"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+                fill="#F8F3ED"
               />
             </svg>
           </button>
@@ -253,12 +256,9 @@ onUnmounted(() => {
   }
 
   &:hover {
-    background: #f5f5f5;
-    border-color: #999;
-    transform: scale(0.9);
-
+    background-color: rgba(255, 255, 255, 0.1);
     svg {
-      transform: rotate(90deg);
+      transform: rotate(90deg) scale(0.8, 0.8);
     }
   }
 }

@@ -156,8 +156,8 @@ onUnmounted(() => {
   position: absolute;
   top: 24px;
   right: 24px;
-  width: 30px;
-  height: 30px;
+  width: 48px;
+  height: 48px;
   border: 1px solid $text-color-white;
   border-radius: 50px;
   background: transparent;
@@ -173,10 +173,9 @@ onUnmounted(() => {
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    transform: scale(0.9);
 
     svg {
-      transform: rotate(90deg);
+      transform: rotate(90deg) scale(0.8, 0.8);
     }
   }
 }
