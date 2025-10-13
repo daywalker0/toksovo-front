@@ -199,7 +199,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   max-width: 1200px;
-  gap: 40px;
+  gap: 43px;
   position: relative;
 
   @media (max-width: $breakpoint-lg) {
@@ -261,6 +261,7 @@ onMounted(() => {
     text-transform: uppercase;
     font-family: 'Akrobat';
     line-height: 80%;
+    margin-bottom: 4px;
 
     @media (max-width: 1240px) {
       font-size: 24px;
@@ -297,7 +298,7 @@ onMounted(() => {
 
   &--distance {
     font-family: 'Bona Nova SC';
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 400;
     line-height: 80%;
     white-space: nowrap;
