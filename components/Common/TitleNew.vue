@@ -116,7 +116,7 @@ const initAnimation = () => {
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: titleRef.value,
-      start: 'top 80%', // Начинаем анимацию
+      start: isMobile ? 'top 90%' : 'top 80%', // Раньше для мобильных
       end: 'top 20%', // Заканчиваем анимацию
       scrub: 0.3, // Очень отзывчивая привязка к скроллу для пошагового эффекта
       markers: false,
@@ -159,14 +159,15 @@ const initAnimation = () => {
 
     // Анимируем каждую букву отдельно как ступеньку
     lineChars.forEach((char, charIndex) => {
-      const charStart = lineStart + 0.1 + charIndex * 0.15; // Каждая буква через 0.15 секунды
+      const charDelay = isMobile ? 0.08 : 0.15; // Быстрее для мобильных
+      const charStart = lineStart + 0.1 + charIndex * charDelay;
 
       tl.to(
         char,
         {
           clipPath: 'inset(0% 0 0 0)',
           y: 0,
-          duration: 0.8, // Короткая анимация для каждой буквы
+          duration: isMobile ? 0.6 : 0.8, // Быстрее для мобильных
           ease: 'power2.out',
         },
         charStart
@@ -174,8 +175,10 @@ const initAnimation = () => {
     });
 
     // Обновляем время окончания текущей строки для следующей
-    const lineDuration = 0.1 + lineChars.length * 0.15 + 0.8; // Время на все буквы + анимация последней
-    previousLineEnd = lineStart + lineDuration + 0.2; // Небольшая пауза между строками
+    const charDelay = isMobile ? 0.08 : 0.15;
+    const charDuration = isMobile ? 0.6 : 0.8;
+    const lineDuration = 0.1 + lineChars.length * charDelay + charDuration; // Время на все буквы + анимация последней
+    previousLineEnd = lineStart + lineDuration + (isMobile ? 0.1 : 0.2); // Меньшая пауза для мобильных
   });
 
   scrollTrigger = tl.scrollTrigger;

@@ -56,6 +56,7 @@ const handleScroll = () => {
 
   const sectionRect = section.value.getBoundingClientRect();
   const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
   // Прогресс скролла секции (0 - начало, 1 - конец)
   const sectionProgress = Math.max(
@@ -121,32 +122,43 @@ const handleScroll = () => {
     // ===== ФАЗА 2: появление текста и кнопок =====
 
     // Картинка в финальном размере
-    imageContainer.value.style.width = '650px';
-    imageContainer.value.style.height = '450px';
-    imageContainer.value.style.maxWidth = '650px';
+    if (isMobile) {
+      imageContainer.value.style.width = '100%';
+      imageContainer.value.style.height = '300px';
+      imageContainer.value.style.maxWidth = '100%';
+    } else {
+      imageContainer.value.style.width = '650px';
+      imageContainer.value.style.height = '450px';
+      imageContainer.value.style.maxWidth = '650px';
+    }
 
     // Прогресс второй фазы (0 -> 1)
     const phase2Progress = (sectionProgress - 0.4) / 0.2;
 
-    // Появление текста (с начала фазы 2 до 50% фазы 2)
-    if (phase2Progress <= 0.5) {
-      textOpacity.value = phase2Progress / 0.5;
+    // Для мобильных устройств делаем анимацию более ранней
+    const textStartProgress = isMobile ? 0.3 : 0.5;
+    const buttonsStartProgress = isMobile ? 0.1 : 0.2;
+
+    // Появление текста
+    if (phase2Progress <= textStartProgress) {
+      textOpacity.value = phase2Progress / textStartProgress;
     } else {
       textOpacity.value = 1;
     }
 
-    // Появление кнопок (с 20% до 100% фазы 2)
-    if (phase2Progress < 0.2) {
+    // Появление кнопок
+    if (phase2Progress < buttonsStartProgress) {
       buttonsOpacity.value = 0;
-    } else if (phase2Progress >= 0.2 && phase2Progress <= 1) {
-      buttonsOpacity.value = (phase2Progress - 0.2) / 0.8;
+    } else if (phase2Progress >= buttonsStartProgress && phase2Progress <= 1) {
+      buttonsOpacity.value = (phase2Progress - buttonsStartProgress) / (1 - buttonsStartProgress);
     } else {
       buttonsOpacity.value = 1;
     }
 
     // Затемнение картинки появляется вместе с текстом
-    if (phase2Progress <= 0.5) {
-      overlayOpacity.value = phase2Progress / 0.5;
+    const overlayStartProgress = isMobile ? 0.3 : 0.5;
+    if (phase2Progress <= overlayStartProgress) {
+      overlayOpacity.value = phase2Progress / overlayStartProgress;
     } else {
       overlayOpacity.value = 1;
     }
@@ -158,9 +170,15 @@ const handleScroll = () => {
     // ===== ФАЗА 3: ТОЛЬКО анимация смены цвета =====
 
     // Картинка в финальном размере
-    imageContainer.value.style.width = '650px';
-    imageContainer.value.style.height = '450px';
-    imageContainer.value.style.maxWidth = '650px';
+    if (isMobile) {
+      imageContainer.value.style.width = '100%';
+      imageContainer.value.style.height = '300px';
+      imageContainer.value.style.maxWidth = '100%';
+    } else {
+      imageContainer.value.style.width = '650px';
+      imageContainer.value.style.height = '450px';
+      imageContainer.value.style.maxWidth = '650px';
+    }
 
     // Текст и кнопки полностью видны
     textOpacity.value = 1;
