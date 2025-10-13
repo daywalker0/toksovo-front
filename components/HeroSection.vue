@@ -97,7 +97,6 @@ onMounted(async () => {
     gsap.set(skyEl.value, {
       transformOrigin: 'center bottom',
       scale: skyStartScale,
-      translateY: 0,
     });
 
     timeline = gsap.timeline({
@@ -112,9 +111,7 @@ onMounted(async () => {
       },
     });
 
-    timeline
-      .to(renderEl.value, { scale: 1, translateY: 0 }, 0)
-      .to(skyEl.value, { scale: 1, translateY: 250 }, 0.1);
+    timeline.to(renderEl.value, { scale: 1, translateY: 0 }, 0).to(skyEl.value, { scale: 1 }, 0.1);
   } catch (e) {
     console.error(e);
   }
@@ -129,6 +126,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
+
 .hero-section {
   position: relative;
   background: none;
@@ -153,6 +152,10 @@ onBeforeUnmount(() => {
     max-width: 460px;
     margin: 0 auto;
     padding-top: 30px;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 30px;
+    }
   }
 
   &__bg {
@@ -168,9 +171,19 @@ onBeforeUnmount(() => {
 
   &__sky {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 0;
     pointer-events: none;
+    height: 100%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 }
 

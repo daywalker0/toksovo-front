@@ -272,6 +272,10 @@ onUnmounted(() => {
   /* Ограничиваем ширину строки чтобы скрыть буквы снизу */
   width: 100%;
   overflow: hidden;
+
+  @media (max-width: $breakpoint-lg) {
+    font-size: 88px;
+  }
 }
 
 .title-char {

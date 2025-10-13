@@ -149,20 +149,32 @@ const openDialogCallback = () => {
   &__section-item {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 10px !important;
     text-align: center;
+
+    @media (max-width: $breakpoint-lg) {
+      gap: 20px !important;
+    }
 
     &_title {
       font-size: 16px;
       font-weight: 500;
       margin: 0;
       color: $text-color-primary;
+
+      @media (max-width: $breakpoint-lg) {
+        font-size: 14px;
+      }
     }
 
     &_text {
       font-size: 22px;
       font-weight: 600;
       line-height: 120%;
+
+      @media (max-width: $breakpoint-lg) {
+        font-size: 20px;
+      }
     }
   }
 
@@ -171,6 +183,12 @@ const openDialogCallback = () => {
     line-height: 1.4;
     margin: 0;
     color: $text-color-secondary;
+  }
+
+  &__logo svg {
+    @media (max-width: $breakpoint-lg) {
+      width: 195px;
+    }
   }
 
   &__phone {
@@ -237,6 +255,10 @@ const openDialogCallback = () => {
     line-height: 120%;
     max-width: 73%;
     text-align: center;
+
+    @media (max-width: $breakpoint-lg) {
+      max-width: 60%;
+    }
   }
 }
 

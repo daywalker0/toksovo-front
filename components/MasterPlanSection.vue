@@ -263,11 +263,11 @@ onMounted(async () => {
         scrub: 1,
         markers: false,
         onUpdate: self => {
-          // Показываем пины и кнопку фильтра когда анимация завершена на 90%
-          if (self.progress > 0.9 && !showPins.value) {
+          // Показываем пины и кнопку фильтра когда анимация завершена на 80%
+          if (self.progress > 0.5 && !showPins.value) {
             showPins.value = true;
             showFilterButton.value = true;
-          } else if (self.progress <= 0.9 && showPins.value) {
+          } else if (self.progress <= 0.5 && showPins.value) {
             showPins.value = false;
             showFilterButton.value = false;
           }
@@ -377,10 +377,14 @@ onMounted(async () => {
 .text-left,
 .text-right {
   font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 900;
+  font-weight: 400;
   letter-spacing: 0.1em;
   opacity: 0.9;
   will-change: transform;
+
+  @media (max-width: $breakpoint-lg) {
+    font-size: 98px;
+  }
 }
 
 .image-mask {
@@ -563,13 +567,29 @@ onMounted(async () => {
   color: $text-color-white;
   border: none;
   font-size: 18px;
-  transition:
-    all 0.3s ease,
-    border-radius 0.2s ease-out;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: $text-color-primary;
+    transition: left 0.3s ease;
+    z-index: -1;
+  }
 
   &:hover {
     transform: translateY(-2px);
-    border-radius: 7px;
+    color: $text-color-white;
+
+    &::before {
+      left: 0;
+    }
   }
 
   &:active {

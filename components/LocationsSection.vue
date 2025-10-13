@@ -172,6 +172,8 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+@use '@/assets/styles/variables.scss' as *;
+
 .locations-section {
   padding: 120px 0 260px;
   &__title {
@@ -196,6 +198,15 @@ onMounted(() => {
   max-width: 1200px;
   gap: 40px;
   position: relative;
+
+  @media (max-width: $breakpoint-lg) {
+    gap: 36px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    gap: 15px;
+    max-width: 800px;
+  }
 }
 
 .parallax-column {
@@ -207,12 +218,32 @@ onMounted(() => {
   margin-bottom: 80px;
   width: 366px;
   flex-shrink: 0;
+
+  @media (max-width: 1200px) {
+    width: 300px;
+    margin-bottom: 50px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    width: 240px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    width: 180px;
+    margin-bottom: 30px;
+  }
 }
 
 .card-img {
   width: 100%;
   height: 488px;
   object-fit: cover;
+
+  @media (max-width: $breakpoint-sm) {
+    height: 300px;
+    margin-bottom: 30px;
+  }
 }
 
 .card-content {
@@ -225,6 +256,18 @@ onMounted(() => {
     text-transform: uppercase;
     font-family: 'Akrobat';
     line-height: 80%;
+
+    @media (max-width: 1240px) {
+      font-size: 24px;
+    }
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 20px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 18px;
+    }
   }
 
   &__subtitle {
@@ -233,6 +276,18 @@ onMounted(() => {
     font-size: 18px;
     line-height: 140%;
     opacity: 0.8;
+
+    @media (max-width: 1240px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 14px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 12px;
+    }
   }
 
   &--distance {
@@ -241,6 +296,18 @@ onMounted(() => {
     font-weight: 400;
     line-height: 80%;
     white-space: nowrap;
+
+    @media (max-width: 1240px) {
+      font-size: 20px;
+    }
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 16px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 14px;
+    }
   }
 }
 </style>

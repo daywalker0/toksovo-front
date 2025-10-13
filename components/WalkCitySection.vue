@@ -22,7 +22,8 @@
 import walkCityImg from '@/assets/img/walk-city-img.jpg';
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .walk-city-section {
   position: relative;
@@ -44,6 +45,10 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
     margin-left: 250px;
     position: static;
     z-index: 3;
+
+    @media (max-width: $breakpoint-lg) {
+      margin-left: 80px;
+    }
   }
 
   &__title {
@@ -67,6 +72,10 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
     font-weight: 500;
     font-size: 20px;
     line-height: 140%;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 18px;
+    }
   }
 
   &__image {

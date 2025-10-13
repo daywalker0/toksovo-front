@@ -303,6 +303,10 @@ onUnmounted(() => {
   max-width: 400px;
   z-index: 2;
   transition: opacity 0.3s ease-out;
+
+  @media (max-width: $breakpoint-lg) {
+    font-size: 38px;
+  }
 }
 
 .button {

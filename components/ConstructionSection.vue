@@ -106,6 +106,10 @@ const openGallery = slide => {
 
 .custom-slide {
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 450px;
 }
 
 .content {
@@ -117,24 +121,51 @@ const openGallery = slide => {
 
   &--title {
     font-size: 28px;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 24px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 20px;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      font-size: 18px;
+    }
   }
+
   &--year {
     font-size: 16px;
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 14px;
+    }
   }
 }
 
 .image-container {
   height: 373px;
-  img {
-    height: 100%;
-    object-fit: cover;
-  }
-}
+  overflow: hidden;
+  border-radius: 8px;
 
-.image-container {
-  min-width: 373px;
   img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    height: 300px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    height: 250px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    height: 200px;
   }
 }
 </style>

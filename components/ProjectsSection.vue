@@ -128,14 +128,16 @@ const openDialogVideo = () => {
 
 .custom-slide {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
 }
 
 .content {
   display: flex;
   flex-direction: column;
   margin-top: 24px;
-  max-height: 200px;
-  height: 100%;
+  flex: 1;
 
   &--header {
     display: flex;
@@ -144,12 +146,28 @@ const openDialogVideo = () => {
     margin-bottom: 20px;
     font-size: 16px;
     line-height: 100%;
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 14px;
+    }
   }
 
   &--title {
     margin-bottom: 16px;
     font-size: 32px;
     line-height: 80%;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 28px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 24px;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      font-size: 20px;
+    }
   }
 
   &--info {
@@ -158,6 +176,15 @@ const openDialogVideo = () => {
     font-family: 'Akrobat';
     font-size: 18px;
     line-height: 140%;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 16px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 14px;
+    }
+
     &_text {
       display: flex;
       align-items: center;
@@ -173,7 +200,9 @@ const openDialogVideo = () => {
   &--button {
     margin-top: auto;
     transition: 0.3s;
-    margin: 24px 0;
+    margin-bottom: 0;
+    min-height: 48px;
+    padding: 12px 24px;
 
     &:hover {
       background-color: $accent-color-orange;
@@ -185,9 +214,27 @@ const openDialogVideo = () => {
 }
 
 .image-container {
-  min-width: 373px;
+  height: 373px;
+  overflow: hidden;
+  border-radius: 8px;
+
   img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    height: 300px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    height: 250px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    height: 200px;
   }
 }
 </style>
