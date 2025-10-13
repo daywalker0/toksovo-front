@@ -140,7 +140,8 @@ onMounted(() => {
         trigger: parallaxSection.value,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
       },
     });
 
@@ -152,7 +153,8 @@ onMounted(() => {
         trigger: parallaxSection.value,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
       },
     });
 
@@ -164,7 +166,8 @@ onMounted(() => {
         trigger: parallaxSection.value,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
       },
     });
   }
@@ -212,6 +215,8 @@ onMounted(() => {
 .parallax-column {
   flex: 1;
   opacity: 1;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .card {
