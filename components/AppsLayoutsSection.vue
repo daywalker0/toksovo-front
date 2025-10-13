@@ -208,9 +208,8 @@ const switchImage = index => {
 
 .apartment-title {
   font-size: 42px;
-  padding-bottom: 48px;
+  padding-bottom: 38px;
   width: 100%;
-  border-bottom: 1px solid $utility-color-1;
   margin-bottom: 12px;
 
   @media (max-width: $breakpoint-lg) {
@@ -253,6 +252,8 @@ const switchImage = index => {
   }
 
   .info-row & {
+    border-top: 1px solid $utility-color-1;
+    padding-top: 12px;
     border-bottom: none;
     padding-bottom: 0;
     margin-bottom: 0;
@@ -262,6 +263,7 @@ const switchImage = index => {
 
 .info-item-price {
   padding-bottom: 48px;
+  border-bottom: none;
 
   @media (max-width: $breakpoint-lg) {
     padding-bottom: 24px;
