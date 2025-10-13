@@ -2,7 +2,11 @@
   <div class="nature-section section horizontal-section">
     <div class="nature-section__container container">
       <div class="nature-section__content">
-        <h2 class="nature-section__title">Жить среди природы</h2>
+        <h2 class="nature-section__title">
+          <span class="title-word title-word--right">Жить</span>
+          <span class="title-word title-word--left">среди</span>
+          <span class="title-word title-word--right">природы</span>
+        </h2>
         <div class="nature-section__subtitle subtitle-text">
           Жилой комплекс окружён лесами, озёрами и экотропами, где можно гулять в любое время года.
           Утренние пробежки, прогулки с детьми и пикники на свежем воздухе становятся частью
@@ -44,7 +48,7 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
 
   &__content {
     margin-top: 200px;
-    margin-left: 250px;
+    margin-left: 0px;
     position: static;
     z-index: 3;
 
@@ -65,6 +69,34 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
     margin: 0;
     text-align: center;
     max-width: 510px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .title-word {
+      display: block;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+
+      &--right {
+        text-align: right;
+        margin-left: auto;
+        max-width: 70%;
+
+        &:last-child {
+          margin-left: 20%;
+          max-width: 70%;
+        }
+      }
+
+      &--left {
+        text-align: left;
+        margin-right: auto;
+        max-width: 60%;
+      }
+    }
   }
 
   &__subtitle {

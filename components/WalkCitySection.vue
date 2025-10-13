@@ -2,7 +2,11 @@
   <div class="walk-city-section section horizontal-section">
     <div class="walk-city-section__container container">
       <div class="walk-city-section__content">
-        <h2 class="walk-city-section__title">Гулять без города</h2>
+        <h2 class="walk-city-section__title">
+          <span class="title-word title-word--right">Гулять</span>
+          <span class="title-word title-word--left">без</span>
+          <span class="title-word title-word--right">города</span>
+        </h2>
         <div class="walk-city-section__subtitle subtitle-text">
           Здесь не нужны долгие поездки ради отдыха: рядом парки, оздоровительные маршруты и
           живописные тропы. Можно после работы пройтись вдоль озера, покататься на велосипеде или
@@ -46,7 +50,7 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
 
   &__content {
     margin-top: 200px;
-    margin-left: 250px;
+    margin-left: 0px;
     position: static;
     z-index: 3;
 
@@ -63,6 +67,34 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
     max-width: 510px;
     position: relative;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .title-word {
+      display: block;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+
+      &--right {
+        text-align: right;
+        margin-left: auto;
+        max-width: 58%;
+
+        &:last-child {
+          margin-left: 41%;
+          max-width: 70%;
+        }
+      }
+
+      &--left {
+        text-align: left;
+        margin-right: auto;
+        max-width: 60%;
+      }
+    }
   }
 
   &__subtitle {
