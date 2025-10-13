@@ -159,7 +159,7 @@ function selectPin(pin) {
     color: #666;
 
     &--open {
-      transform: rotate(180deg);
+      transform: rotate(90deg);
     }
   }
 
