@@ -240,7 +240,8 @@ const onBreakpoint = () => {
 };
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .default-slider {
   width: 100%;
@@ -266,6 +267,7 @@ const onBreakpoint = () => {
   transition: 0.3s;
 
   &:hover {
+    border: 1px solid $text-color-white;
     background-color: $text-color-white;
     transition: 0.3s;
   }
