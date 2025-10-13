@@ -519,6 +519,15 @@ const switchImage = index => {
   cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.3s ease;
+  opacity: 0.6;
+
+  &.active {
+    opacity: 1;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
 
   @media (max-width: 1240px) {
     flex: 0 0 150px;
