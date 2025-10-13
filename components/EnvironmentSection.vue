@@ -368,7 +368,7 @@ onMounted(async () => {
       start: 'center center',
       end: '+=2000',
       scrub: true,
-      pin: true,
+      pin: !isMobile.value,
     },
   });
 
