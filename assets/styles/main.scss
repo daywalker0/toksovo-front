@@ -3,38 +3,33 @@
 @use './typography.scss';
 
 html:root {
-  scroll-behavior: smooth !important; // smooth scrolling for all elements
+  scroll-behavior: auto; // Отключаем smooth scroll для GSAP
 }
 
-/* Дополнительные настройки для супер плавного скролла */
+/* Базовые настройки скролла */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto; // Отключаем smooth scroll для GSAP
   scroll-padding-top: 0;
 }
 
 body {
-  scroll-behavior: smooth;
+  scroll-behavior: auto; // Отключаем smooth scroll для GSAP
   -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
-  transition: scroll-behavior 0.6s ease-in-out;
 }
 
-/* Плавный скролл для всех элементов */
-* {
-  scroll-behavior: smooth;
-  transition: all 0.4s ease-in-out;
+/* Убираем transition для элементов с GSAP анимацией */
+.gsap-animated,
+[data-gsap],
+.horizontal-wrapper,
+.environment-section {
+  transition: none !important;
 }
 
-/* Дополнительные настройки для более медленного скролла */
-html {
-  scroll-snap-type: none;
-  scroll-padding: 0;
-}
-
-/* Плавные переходы для всех элементов при скролле */
-section,
-div,
-article {
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/* Плавные переходы только для обычных элементов */
+section:not(.gsap-animated):not([data-gsap]),
+div:not(.gsap-animated):not([data-gsap]):not(.horizontal-wrapper):not(.environment-section),
+article:not(.gsap-animated):not([data-gsap]) {
+  transition: transform 0.3s ease;
 }
 
 /* Общие стили для всех кнопок закрытия в диалогах */
