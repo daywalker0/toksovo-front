@@ -3,7 +3,11 @@ import path from 'path';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-18',
-
+  runtimeConfig: {
+    public: {
+      YANDEX_MAPS_API_KEY: process.env.NUXT_PUBLIC_YANDEX_MAPS_API_KEY || '',
+    },
+  },
   // Базовый URL для GitHub Pages
   app: {
     baseURL: '/toksovo-front/', // обязательно с /
