@@ -139,10 +139,10 @@ onUnmounted(() => {
 
 .dialog-close {
   position: absolute;
-  top: 44px;
-  right: 44px;
-  width: 48px;
-  height: 48px;
+  top: 24px;
+  right: 24px;
+  width: 30px;
+  height: 30px;
   border: 1px solid $text-color-white;
   border-radius: 50px;
   background: transparent;

@@ -47,6 +47,10 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
     @media (max-width: $breakpoint-lg) {
       margin-left: 80px;
     }
+
+    @media (max-width: $breakpoint-sm) {
+      margin-left: 0px;
+    }
   }
 
   &__title {
@@ -90,6 +94,10 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
       object-fit: cover;
       object-position: center;
       display: block;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      width: 50%;
     }
   }
 }

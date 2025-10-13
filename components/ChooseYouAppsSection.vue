@@ -210,6 +210,10 @@ onUnmounted(() => {
   height: 300vh;
   margin-top: 200px;
   position: relative;
+
+  @media (max-width: $breakpoint-sm) {
+    margin-top: 100px;
+  }
 }
 
 .background-wrapper {
@@ -261,6 +265,13 @@ onUnmounted(() => {
   gap: 40px;
   padding: 0 40px;
 
+  @media (max-width: $breakpoint-sm) {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+  }
+
   &--center {
     width: 100vw;
     height: 100vh;
@@ -271,6 +282,13 @@ onUnmounted(() => {
     transition:
       width 0.05s ease-out,
       height 0.05s ease-out;
+
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+      height: 300px;
+      max-width: 100%;
+      order: 2;
+    }
 
     img {
       height: 100%;
@@ -307,6 +325,10 @@ onUnmounted(() => {
   @media (max-width: $breakpoint-lg) {
     font-size: 38px;
   }
+
+  @media (max-width: $breakpoint-sm) {
+    opacity: 1 !important;
+  }
 }
 
 .button {
@@ -327,6 +349,30 @@ onUnmounted(() => {
   &.dark {
     color: $text-color-white;
     border: 1px solid $text-color-white;
+  }
+
+  @media (min-width: 769px) {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    position: static !important;
+    transform: none !important;
+    margin: 0;
+    width: 200px;
+    opacity: 1 !important;
+
+    &.button-left {
+      left: auto !important;
+      order: 1;
+    }
+
+    &.button-right {
+      right: auto !important;
+      order: 3;
+    }
   }
 }
 </style>

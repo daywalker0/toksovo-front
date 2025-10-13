@@ -300,36 +300,13 @@ onUnmounted(() => {
   }
 
   .title-line {
-    font-size: 48px;
+    font-size: 72px;
     transform: translateY(0);
   }
 
   .title-char {
     clip-path: inset(100% 0 0 0); /* Начальное состояние - обрезано снизу */
     transform: translateY(60px); /* Меньшее смещение для мобильных */
-  }
-}
-
-@media (max-width: 480px) {
-  .title-new {
-    min-height: 150px;
-  }
-
-  .title-line {
-    font-size: 32px;
-    transform: translateY(0);
-  }
-
-  .title-char {
-    clip-path: inset(100% 0 0 0); /* Начальное состояние - обрезано снизу */
-    transform: translateY(40px); /* Еще меньшее смещение для маленьких экранов */
-  }
-}
-
-/* Для очень высоких заголовков */
-@media (max-height: 600px) {
-  .title-new {
-    min-height: 250px;
   }
 }
 </style>

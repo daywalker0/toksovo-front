@@ -137,6 +137,11 @@ const openDialogCallback = () => {
   &__container {
     padding-top: 80px;
     padding-bottom: 20px;
+
+    @media (max-width: $breakpoint-sm) {
+      padding-top: 40px;
+      padding-bottom: 20px;
+    }
   }
 
   &__content {
@@ -144,6 +149,12 @@ const openDialogCallback = () => {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 40px;
     margin-bottom: 60px;
+
+    @media (max-width: $breakpoint-sm) {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
   }
 
   &__section-item {
@@ -156,6 +167,11 @@ const openDialogCallback = () => {
       gap: 20px !important;
     }
 
+    @media (max-width: $breakpoint-sm) {
+      gap: 15px !important;
+      text-align: center;
+    }
+
     &_title {
       font-size: 16px;
       font-weight: 500;
@@ -164,6 +180,10 @@ const openDialogCallback = () => {
 
       @media (max-width: $breakpoint-lg) {
         font-size: 14px;
+      }
+
+      @media (max-width: $breakpoint-sm) {
+        font-size: 12px;
       }
     }
 
@@ -174,6 +194,10 @@ const openDialogCallback = () => {
 
       @media (max-width: $breakpoint-lg) {
         font-size: 20px;
+      }
+
+      @media (max-width: $breakpoint-sm) {
+        font-size: 16px;
       }
     }
   }
@@ -188,6 +212,11 @@ const openDialogCallback = () => {
   &__logo svg {
     @media (max-width: $breakpoint-lg) {
       width: 195px;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      width: 150px;
+      height: auto;
     }
   }
 
@@ -211,6 +240,11 @@ const openDialogCallback = () => {
     font-size: 28px;
     font-weight: 700;
     text-transform: uppercase;
+
+    @media (max-width: $breakpoint-sm) {
+      font-size: 20px;
+      gap: 6px;
+    }
   }
 
   &__callback {
@@ -229,6 +263,12 @@ const openDialogCallback = () => {
   &__bottom {
     display: flex;
     justify-content: space-between;
+
+    @media (max-width: $breakpoint-sm) {
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
   }
 
   &__copy-text,
@@ -237,6 +277,10 @@ const openDialogCallback = () => {
     font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
+
+    @media (max-width: $breakpoint-sm) {
+      font-size: 12px;
+    }
   }
 
   &__development-link {
@@ -259,19 +303,38 @@ const openDialogCallback = () => {
     @media (max-width: $breakpoint-lg) {
       max-width: 60%;
     }
+
+    @media (max-width: $breakpoint-sm) {
+      font-size: 12px;
+      max-width: 100%;
+      line-height: 140%;
+    }
   }
 }
 
 .left-side {
   text-align: start;
   max-width: 320px;
+
+  @media (max-width: $breakpoint-sm) {
+    text-align: center;
+    max-width: 100%;
+  }
 }
 
 .right-side {
   text-align: end;
+
+  @media (max-width: $breakpoint-sm) {
+    text-align: center;
+  }
 }
 
 .center {
   gap: 32px;
+
+  @media (max-width: $breakpoint-sm) {
+    gap: 20px;
+  }
 }
 </style>

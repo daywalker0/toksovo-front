@@ -181,6 +181,10 @@ onMounted(() => {
     text-align: center;
     margin: 0 auto;
   }
+
+  @media (max-width: $breakpoint-sm) {
+    padding: 40px 0 100px;
+  }
 }
 
 .parallax-block {

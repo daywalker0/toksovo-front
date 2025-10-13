@@ -131,6 +131,10 @@ const openDialogVideo = () => {
   display: flex;
   flex-direction: column;
   min-height: 500px;
+
+  @media (max-width: $breakpoint-sm) {
+    min-height: 390px;
+  }
 }
 
 .content {

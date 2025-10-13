@@ -162,6 +162,10 @@ const switchImage = index => {
     padding-bottom: 120px;
     display: flex;
     gap: 160px;
+
+    @media (max-width: $breakpoint-sm) {
+      gap: 40px;
+    }
   }
 }
 

@@ -24,6 +24,7 @@ const props = defineProps({
 </script>
 
 <style scoped lang="scss">
+@use '@/assets/styles/variables.scss' as *;
 .text-block-section {
   display: flex;
   justify-content: center;
@@ -34,6 +35,11 @@ const props = defineProps({
   padding-top: 120px;
   padding-bottom: 80px;
   max-width: 940px;
+
+  @media (max-width: $breakpoint-sm) {
+    padding-top: 40px;
+    padding-bottom: 0px;
+  }
 }
 
 .content {
@@ -46,5 +52,9 @@ const props = defineProps({
   max-width: 422px;
   text-align: start;
   margin: 60px auto 0;
+
+  @media (max-width: $breakpoint-sm) {
+    margin: 40px auto 0;
+  }
 }
 </style>
