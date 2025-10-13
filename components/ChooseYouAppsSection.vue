@@ -56,7 +56,7 @@ const handleScroll = () => {
 
   const sectionRect = section.value.getBoundingClientRect();
   const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
 
   // Прогресс скролла секции (0 - начало, 1 - конец)
   const sectionProgress = Math.max(
@@ -78,7 +78,6 @@ const handleScroll = () => {
     imageScale.value = 0.95 + 0.05 * scaleProgress;
 
     // Картинка на весь экран
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
     imageContainer.value.style.width = '100vw';
     imageContainer.value.style.height = isMobile ? '100svh' : '100vh';
     imageContainer.value.style.maxWidth = 'none';
@@ -97,7 +96,6 @@ const handleScroll = () => {
     const shrinkProgress = (sectionProgress - 0.1) / 0.3; // 0 -> 1
 
     // Размеры картинки: от 100vw x 100vh до 650px x 450px
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
     const currentWidth =
       100 -
       (100 - (650 / (typeof window !== 'undefined' ? window.innerWidth : 1200)) * 100) *
@@ -194,7 +192,6 @@ const handleScroll = () => {
 
     // Плавное поднятие фона от 0 до -100vh
     // Фон на top: 200vh, поднимается до 100vh (покрывает sticky-content)
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
     const bgTranslateY = -100 * phase3Progress;
     darkBg.value.style.transform = `translateY(${bgTranslateY}vh)`;
 

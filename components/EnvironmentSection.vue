@@ -313,7 +313,6 @@ onMounted(async () => {
   // Определяем мобильное устройство
   const checkMobile = () => {
     isMobile.value = typeof window !== 'undefined' && window.innerWidth <= 599;
-    console.log('EnvironmentSection - isMobile:', isMobile.value, 'width:', window.innerWidth);
   };
 
   checkMobile();

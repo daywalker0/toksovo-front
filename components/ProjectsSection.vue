@@ -43,7 +43,7 @@
         </template>
       </DefaultSlider>
     </div>
-    <Dialog v-model="showDialogVideo">
+    <Dialog v-model="showDialogVideo" :close-on-overlay="true">
       <div>ВИДЕО</div>
     </Dialog>
   </section>
