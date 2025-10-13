@@ -294,6 +294,9 @@ const switchImage = index => {
 }
 
 .apartment-features {
+  border-top: 1px solid $utility-color-1;
+  width: 100%;
+  padding-top: 12px;
   margin-bottom: 100px;
   min-height: 200px; // Фиксируем минимальную высоту для секции особенностей
   &--title {
