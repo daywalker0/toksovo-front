@@ -119,6 +119,10 @@ function selectPin(pin) {
   height: 100vh;
   overflow: hidden;
   background: #f5f5f5;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
   font-family: 'Akrobat';
 
   &__sidebar {

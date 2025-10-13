@@ -146,6 +146,10 @@ onUnmounted(() => {
   }
 
   &__btn-choose {
+    @media (max-width: $breakpoint-x) {
+      display: none;
+    }
+
     a {
       color: #2c322c;
       text-decoration: none;
@@ -193,6 +197,10 @@ onUnmounted(() => {
   svg {
     @media (max-width: $breakpoint-lg) {
       width: 155px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      width: 135px;
     }
   }
 }

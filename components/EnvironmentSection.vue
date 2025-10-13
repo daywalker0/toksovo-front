@@ -1,12 +1,65 @@
 <template>
   <section class="environment-section" ref="sectionRef">
-    <div class="environment-section__gallery" ref="galleryRef">
+    <!-- Старая реализация для десктопа -->
+    <div class="environment-section__gallery" ref="galleryRef" v-if="!isMobile">
       <div v-for="(img, i) in slides" :key="i" class="gallery-item">
         <img :src="i === Math.floor(slides.length / 2) ? slides[currentIndex] : img" alt="" />
       </div>
     </div>
 
-    <div class="environment-content" ref="contentRef">
+    <!-- Новая реализация для мобильных -->
+    <template v-if="isMobile">
+      <!-- Фоновое изображение -->
+      <div class="environment-section__bg">
+        <img :src="currentSlide" alt="Environment background" />
+      </div>
+
+      <!-- Белый блок с контентом -->
+      <div class="environment-section__content">
+        <div class="content-block">
+          <h2 class="content-title">{{ activeItem?.title || 'Заголовок' }}</h2>
+          <p class="content-text">{{ activeItem?.content || 'Описание' }}</p>
+
+          <!-- Кнопки навигации -->
+          <div class="navigation-buttons">
+            <button
+              class="nav-button nav-button--prev"
+              @click="goToPrevSlide"
+              :disabled="isAnimating"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M15 5 L7 12 L15 19"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+
+            <button
+              class="nav-button nav-button--next"
+              @click="goToNextSlide"
+              :disabled="isAnimating"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M9 5 L17 12 L9 19"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Контент для десктопа -->
+    <div class="environment-content" ref="contentRef" v-if="!isMobile">
       <div class="controls-block">
         <div class="controls-block__wrap">
           <div class="accordion">
@@ -108,7 +161,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrivateHousingData } from '@/composables/usePrivateHousingData';
@@ -116,13 +169,8 @@ import imgSlide from '../assets/img/private-housing-section.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const sectionRef = ref(null);
-const galleryRef = ref(null);
-const contentRef = ref(null);
-const slidesWrapper = ref(null);
-const isContentVisible = ref(false);
-const currentIndex = ref(0);
-const isAnimating = ref(false);
+// Определяем мобильное устройство
+const isMobile = ref(false);
 
 // Используем композабл для данных
 const {
@@ -135,6 +183,14 @@ const {
   toggleItem: originalToggleItem,
   onMouseMove: handleMouseMove,
 } = usePrivateHousingData();
+
+const sectionRef = ref(null);
+const galleryRef = ref(null);
+const contentRef = ref(null);
+const slidesWrapper = ref(null);
+const isContentVisible = ref(false);
+const currentIndex = ref(0);
+const isAnimating = ref(false);
 
 // Функция для прямой установки активного индекса
 const setActiveIndex = index => {
@@ -158,6 +214,11 @@ const slides = computed(() => {
   return items.value.map(item => item.image);
 });
 
+// Текущий слайд для мобильных
+const currentSlide = computed(() => {
+  return slides.value[currentIndex.value] || slides.value[0];
+});
+
 const onMouseMove = e => {
   handleMouseMove(e);
 };
@@ -166,25 +227,45 @@ const onMouseMove = e => {
 const goToNextSlide = () => {
   if (isAnimating.value) return;
 
-  const nextIndex = (currentIndex.value + 1) % slides.value.length;
-  animateSlide(nextIndex, 'right');
-
-  // Синхронизируем аккордеон
-  setActiveIndex(nextIndex);
+  if (isMobile.value) {
+    // Простая логика для мобильных
+    isAnimating.value = true;
+    const nextIndex = (currentIndex.value + 1) % slides.value.length;
+    currentIndex.value = nextIndex;
+    activeIndex.value = nextIndex;
+    setTimeout(() => {
+      isAnimating.value = false;
+    }, 300);
+  } else {
+    // Оригинальная логика для десктопа
+    const nextIndex = (currentIndex.value + 1) % slides.value.length;
+    animateSlide(nextIndex, 'right');
+    setActiveIndex(nextIndex);
+  }
 };
 
 // Переход к предыдущему слайду
 const goToPrevSlide = () => {
   if (isAnimating.value) return;
 
-  const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
-  animateSlide(prevIndex, 'left');
-
-  // Синхронизируем аккордеон
-  setActiveIndex(prevIndex);
+  if (isMobile.value) {
+    // Простая логика для мобильных
+    isAnimating.value = true;
+    const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
+    currentIndex.value = prevIndex;
+    activeIndex.value = prevIndex;
+    setTimeout(() => {
+      isAnimating.value = false;
+    }, 300);
+  } else {
+    // Оригинальная логика для десктопа
+    const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
+    animateSlide(prevIndex, 'left');
+    setActiveIndex(prevIndex);
+  }
 };
 
-// Анимация смены слайда
+// Анимация смены слайда для десктопа
 const animateSlide = (newIndex, direction) => {
   if (!slidesWrapper.value) return;
 
@@ -229,6 +310,27 @@ const animateSlide = (newIndex, direction) => {
 };
 
 onMounted(async () => {
+  // Определяем мобильное устройство
+  const checkMobile = () => {
+    isMobile.value = typeof window !== 'undefined' && window.innerWidth <= 599;
+    console.log('EnvironmentSection - isMobile:', isMobile.value, 'width:', window.innerWidth);
+  };
+
+  checkMobile();
+
+  // Слушаем изменения размера окна
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', checkMobile);
+  }
+
+  // Если мобильное устройство, не инициализируем GSAP
+  if (isMobile.value) {
+    currentIndex.value = 0;
+    setActiveIndex(0);
+    return;
+  }
+
+  // Оригинальная инициализация для десктопа
   await nextTick();
   await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -327,6 +429,15 @@ onMounted(async () => {
     1.4
   );
 });
+
+// Очистка слушателя при размонтировании
+onBeforeUnmount(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', () => {
+      isMobile.value = window.innerWidth <= 599;
+    });
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -337,17 +448,145 @@ onMounted(async () => {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  padding: 0;
-  margin: 0;
 
-  &__gallery {
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
+
+  &__bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: block;
+
+    @media (min-width: 600px) {
+      display: none;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  &__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: 40px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 32px;
-    height: 100%;
-    width: 100%;
-    position: relative;
+
+    @media (max-width: $breakpoint-x) {
+      padding: 10px;
+      bottom: 0;
+    }
+
+    @media (min-width: 600px) {
+      display: none;
+    }
+  }
+}
+
+.content-block {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+
+  @media (max-width: $breakpoint-x) {
+    padding: 20px 15px;
+    max-width: 100%;
+    border-radius: 8px;
+  }
+}
+
+.content-title {
+  font-family: 'Akrobat', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: $accent-color-green;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 24px;
+    margin: 0 0 15px 0;
+  }
+}
+
+.content-text {
+  font-family: 'Akrobat', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 140%;
+  color: $text-color-primary;
+  margin: 0 0 30px 0;
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 16px;
+    margin: 0 0 20px 0;
+  }
+}
+
+.navigation-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.nav-button {
+  width: 48px;
+  height: 48px;
+  border: 2px solid $accent-color-green;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: $accent-color-green;
+
+  &:hover:not(:disabled) {
+    background: $accent-color-green;
+    color: white;
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Стили для десктопной версии
+.environment-section__gallery {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  @media (max-width: $breakpoint-x) {
+    display: none;
   }
 }
 
@@ -398,6 +637,10 @@ onMounted(async () => {
   will-change: transform, opacity;
   backface-visibility: hidden;
   transform: translateZ(0);
+
+  @media (max-width: $breakpoint-x) {
+    display: none;
+  }
 
   .controls-block {
     height: 384px;

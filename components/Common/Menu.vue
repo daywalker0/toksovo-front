@@ -222,6 +222,10 @@ defineExpose({
   z-index: 1000;
   visibility: hidden;
 
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
+
   &--open {
     visibility: visible;
   }

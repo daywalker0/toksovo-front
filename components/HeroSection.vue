@@ -86,17 +86,21 @@ onMounted(async () => {
     gsap.registerPlugin(ScrollTrigger);
     gsapInstance = gsap;
 
-    const renderStartScale = 2.7;
-    const skyStartScale = 1.06;
+    // Адаптивные параметры для мобильных устройств
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
+    const renderStartScale = isMobile ? 2.2 : 2.7;
+    const skyStartScale = isMobile ? 1.02 : 1.06;
+    const translateY = isMobile ? 50 : 85;
 
     gsap.set(renderEl.value, {
       transformOrigin: 'center bottom',
       scale: renderStartScale,
-      translateY: 250,
+      translateY: translateY,
     });
     gsap.set(skyEl.value, {
       transformOrigin: 'center bottom',
       scale: skyStartScale,
+      translateY: isMobile ? 25 : 50,
     });
 
     timeline = gsap.timeline({
@@ -111,7 +115,9 @@ onMounted(async () => {
       },
     });
 
-    timeline.to(renderEl.value, { scale: 1, translateY: 0 }, 0).to(skyEl.value, { scale: 1 }, 0.1);
+    timeline
+      .to(renderEl.value, { scale: 1, translateY: 0 }, 0)
+      .to(skyEl.value, { scale: 1, translateY: 0 }, 0.1);
   } catch (e) {
     console.error(e);
   }
@@ -132,9 +138,18 @@ onBeforeUnmount(() => {
   position: relative;
   background: none;
   min-height: 140vh;
+  overflow: hidden;
+
+  @media (max-width: $breakpoint-x) {
+    min-height: 100svh;
+  }
 
   &__container {
     min-height: 140vh;
+
+    @media (max-width: $breakpoint-x) {
+      min-height: 100svh;
+    }
   }
 
   &__content {
@@ -144,6 +159,28 @@ onBeforeUnmount(() => {
     text-align: center;
     position: relative;
     z-index: 1;
+
+    @media (max-width: $breakpoint-x) {
+      padding-top: 100px;
+      max-width: 90%;
+    }
+  }
+
+  &__title {
+    font-size: 120px;
+    font-weight: 400;
+    line-height: 0.8;
+    margin: 0;
+    color: $text-color-primary;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 100px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 60px;
+      line-height: 0.9;
+    }
   }
 
   &__subtitle {
@@ -156,6 +193,12 @@ onBeforeUnmount(() => {
     @media (max-width: $breakpoint-lg) {
       font-size: 30px;
     }
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 22px;
+      max-width: 250px;
+      padding-top: 20px;
+    }
   }
 
   &__bg {
@@ -167,6 +210,21 @@ onBeforeUnmount(() => {
     transform-origin: center bottom;
     will-change: transform;
     // transform: scale(2.9);
+
+    @media (max-width: $breakpoint-x) {
+      bottom: 10%;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      object-position: center bottom;
+
+      @media (max-width: $breakpoint-x) {
+        object-position: center 70%;
+      }
+    }
   }
 
   &__sky {
@@ -174,10 +232,13 @@ onBeforeUnmount(() => {
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
     z-index: 0;
     pointer-events: none;
-    height: 100%;
+    height: 100vh;
+
+    @media (max-width: $breakpoint-x) {
+      height: 100svh;
+    }
 
     img {
       width: 100%;
@@ -195,6 +256,11 @@ onBeforeUnmount(() => {
   animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   animation-delay: var(--delay);
   will-change: transform, opacity;
+
+  @media (max-width: $breakpoint-x) {
+    transform: translateY(60%);
+    animation-duration: 0.4s;
+  }
 }
 
 .word {

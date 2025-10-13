@@ -353,6 +353,10 @@ onMounted(async () => {
   height: 100vh;
   display: flex;
   align-items: center;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
   justify-content: center;
   overflow: hidden;
   background: #e6dfd8;

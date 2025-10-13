@@ -329,24 +329,37 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 .horizontal-wrapper {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   position: relative;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
 }
 
 .horizontal-container {
   display: flex;
   height: 100vh;
   position: relative;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
 }
 
 .horizontal-container > * {
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
 }
 
 .content-hidden {

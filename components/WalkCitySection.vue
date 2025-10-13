@@ -31,6 +31,10 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
   height: 100vh;
   flex-shrink: 0;
   background-color: $accent-color-brown;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
   display: flex;
   align-items: center;
   overflow: hidden;

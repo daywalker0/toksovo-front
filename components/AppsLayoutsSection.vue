@@ -157,6 +157,10 @@ const switchImage = index => {
 .apartments-section {
   min-height: 100vh;
 
+  @media (max-width: $breakpoint-x) {
+    min-height: 100svh;
+  }
+
   &__container {
     height: 100%;
     padding-bottom: 120px;

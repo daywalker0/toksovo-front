@@ -29,6 +29,10 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
   height: 100vh;
   flex-shrink: 0;
   background-color: $accent-color-green;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
   display: flex;
   align-items: center;
   overflow: hidden;

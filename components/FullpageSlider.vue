@@ -214,6 +214,10 @@ onUnmounted(() => {
   height: 100vh;
   width: 100%;
   position: relative;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
   display: flex;
   align-items: center;
   justify-content: center;

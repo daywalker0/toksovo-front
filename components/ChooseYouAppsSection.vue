@@ -78,8 +78,9 @@ const handleScroll = () => {
     imageScale.value = 0.95 + 0.05 * scaleProgress;
 
     // Картинка на весь экран
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
     imageContainer.value.style.width = '100vw';
-    imageContainer.value.style.height = '100vh';
+    imageContainer.value.style.height = isMobile ? '100svh' : '100vh';
     imageContainer.value.style.maxWidth = 'none';
     imageContainer.value.style.transform = `scale(${imageScale.value})`;
 
@@ -96,6 +97,7 @@ const handleScroll = () => {
     const shrinkProgress = (sectionProgress - 0.1) / 0.3; // 0 -> 1
 
     // Размеры картинки: от 100vw x 100vh до 650px x 450px
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
     const currentWidth =
       100 -
       (100 - (650 / (typeof window !== 'undefined' ? window.innerWidth : 1200)) * 100) *
@@ -192,6 +194,7 @@ const handleScroll = () => {
 
     // Плавное поднятие фона от 0 до -100vh
     // Фон на top: 200vh, поднимается до 100vh (покрывает sticky-content)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
     const bgTranslateY = -100 * phase3Progress;
     darkBg.value.style.transform = `translateY(${bgTranslateY}vh)`;
 
@@ -273,6 +276,10 @@ onUnmounted(() => {
   justify-content: center;
   z-index: 10;
   overflow: hidden;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
 }
 
 .content {
@@ -306,6 +313,10 @@ onUnmounted(() => {
       height: 300px;
       max-width: 100%;
       order: 2;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      height: 100svh;
     }
 
     img {

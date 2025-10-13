@@ -357,6 +357,10 @@ onMounted(async () => {
   min-height: 100vh;
   background: $bg-color-1;
   display: flex;
+
+  @media (max-width: $breakpoint-x) {
+    min-height: 100svh;
+  }
   flex-direction: column;
   padding-top: 0; /* Убираем отступ сверху, так как есть хедер */
 }

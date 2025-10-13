@@ -159,6 +159,10 @@ const currentDate = computed(() => {
 .privacy-page {
   min-height: 100vh;
   background-color: #f8f9fa;
+
+  @media (max-width: $breakpoint-x) {
+    min-height: 100svh;
+  }
 }
 
 .privacy-content {

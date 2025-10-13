@@ -248,6 +248,10 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
+
+  @media (max-width: $breakpoint-x) {
+    max-width: 100%;
+  }
 }
 
 .title-lines {
@@ -279,6 +283,11 @@ onUnmounted(() => {
   @media (max-width: $breakpoint-lg) {
     font-size: 88px;
   }
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 50px;
+    justify-content: flex-start;
+  }
 }
 
 .title-char {
@@ -299,7 +308,6 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .title-new {
     min-height: 200px;
-    max-width: 90%;
   }
 
   .title-line {

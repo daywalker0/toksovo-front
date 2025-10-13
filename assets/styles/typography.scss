@@ -20,6 +20,10 @@ h1 {
   @media (max-width: $breakpoint-lg) {
     font-size: 138px;
   }
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 72px;
+  }
 }
 
 h2 {
