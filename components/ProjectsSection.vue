@@ -127,7 +127,7 @@ const openDialogVideo = () => {
 }
 
 .custom-slide {
-  height: 100%;
+  height: 600px;
   display: flex;
   flex-direction: column;
   min-height: 500px;
@@ -203,8 +203,8 @@ const openDialogVideo = () => {
   }
   &--button {
     margin-top: auto;
-    transition: 0.3s;
     margin-bottom: 0;
+    transition: 0.3s;
     min-height: 48px;
     padding: 12px 24px;
 

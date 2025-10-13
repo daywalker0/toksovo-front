@@ -172,8 +172,6 @@ onUnmounted(() => {
   }
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-
     svg {
       transform: rotate(90deg) scale(0.8, 0.8);
     }
