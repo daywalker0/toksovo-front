@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <button class="social-share__button" @click="copyLink">
+      <button class="social-share__button social-share__button--copy" @click="copyLink">
         <div class="social-share__icon">
           <svg
             width="18"
@@ -470,27 +470,25 @@ onMounted(async () => {
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     transition: all 0.3s ease;
     overflow: hidden;
-    padding: 0 12px;
+    position: relative;
 
     &:hover {
-      width: 190px;
+      width: 120px;
       border-radius: 25px;
       background: $accent-color-orange;
       border-color: $accent-color-orange;
 
       .social-share__text {
         opacity: 1;
-        transform: translateX(0);
       }
 
       svg path {
         fill: white;
       }
 
-      // Специальные стили для иконки ВКонтакте
       svg g path:first-child {
         fill: white;
       }
@@ -498,6 +496,10 @@ onMounted(async () => {
       svg g path:last-child {
         fill: white;
       }
+    }
+
+    &--copy:hover {
+      width: 13rem;
     }
   }
 
@@ -508,16 +510,23 @@ onMounted(async () => {
     justify-content: center;
     width: 24px;
     height: 24px;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
   }
 
   .social-share__text {
-    margin-left: 8px;
+    position: absolute;
+    left: 48px;
+    top: 50%;
+    transform: translateY(-50%);
     font-size: 16px;
     font-weight: 700;
     font-family: 'Akrobat';
     color: white;
     opacity: 0;
-    transform: translateX(-10px);
     transition: all 0.3s ease;
     white-space: nowrap;
   }
