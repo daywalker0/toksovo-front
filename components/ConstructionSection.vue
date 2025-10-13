@@ -109,11 +109,6 @@ const openGallery = slide => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 450px;
-
-  @media (max-width: $breakpoint-sm) {
-    min-height: 200px;
-  }
 }
 
 .content {
