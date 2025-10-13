@@ -122,6 +122,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 .header {
   position: fixed;
   z-index: 100;
@@ -138,6 +139,10 @@ onUnmounted(() => {
     font-size: 20px;
     min-height: 70px;
     padding: 0 20px;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 18px;
+    }
   }
 
   &__btn-choose {
@@ -184,6 +189,12 @@ onUnmounted(() => {
   transition:
     opacity 0.3s,
     transform 0.3s;
+
+  svg {
+    @media (max-width: $breakpoint-lg) {
+      width: 155px;
+    }
+  }
 }
 
 .header--scrolled .header__logo {

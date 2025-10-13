@@ -202,6 +202,11 @@ const switchImage = index => {
   width: 100%;
   border-bottom: 1px solid $utility-color-1;
   margin-bottom: 12px;
+
+  @media (max-width: $breakpoint-lg) {
+    padding-bottom: 24px;
+    font-size: 36px;
+  }
 }
 
 .apartment-info {
@@ -215,10 +220,19 @@ const switchImage = index => {
   border-bottom: 1px solid $utility-color-1;
   padding-bottom: 24px;
   margin-bottom: 12px;
+
+  @media (max-width: $breakpoint-lg) {
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+  }
 }
 
 .info-item-price {
   padding-bottom: 48px;
+
+  @media (max-width: $breakpoint-lg) {
+    padding-bottom: 24px;
+  }
 }
 
 .info-label {
@@ -226,11 +240,17 @@ const switchImage = index => {
   font-family: 'Akrobat';
   margin-bottom: 8px;
   color: $text-color-secondary;
+  @media (max-width: $breakpoint-lg) {
+    font-size: 14px;
+  }
 }
 
 .info-value {
   font-size: 32px;
   color: $text-color-primary;
+  @media (max-width: $breakpoint-lg) {
+    font-size: 26px;
+  }
 }
 
 .info-value.price {
@@ -244,6 +264,10 @@ const switchImage = index => {
   &--title {
     margin-bottom: 20px;
   }
+
+  @media (max-width: $breakpoint-lg) {
+    margin-bottom: 30px;
+  }
 }
 
 .apartment-features ul {
@@ -251,6 +275,9 @@ const switchImage = index => {
   font-size: 22px;
   font-family: 'Akrobat';
   padding: 0 20px;
+  @media (max-width: $breakpoint-lg) {
+    font-size: 18px;
+  }
 }
 
 .apartment-features li {
@@ -279,6 +306,12 @@ const switchImage = index => {
     padding: 14px 16px;
     cursor: pointer;
     background-color: transparent;
+
+    @media (max-width: $breakpoint-lg) {
+      min-width: 41px;
+      height: 41px;
+      font-size: 14px;
+    }
 
     &:hover {
       background-color: $text-color-primary;
@@ -385,11 +418,39 @@ const switchImage = index => {
   height: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
+
+  @media (max-width: 1240px) {
+    max-height: 400px;
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    max-height: 350px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    max-height: 300px;
+  }
 }
 
 .main-image img {
   max-width: 100%;
-  height: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+
+  @media (max-width: 1240px) {
+    max-height: 400px;
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    max-height: 350px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    max-height: 300px;
+  }
 }
 
 .thumbnails {
@@ -420,6 +481,21 @@ const switchImage = index => {
   cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.3s ease;
+
+  @media (max-width: 1240px) {
+    flex: 0 0 150px;
+    height: 100px;
+  }
+
+  @media (max-width: $breakpoint-lg) {
+    flex: 0 0 120px;
+    height: 80px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    flex: 0 0 100px;
+    height: 70px;
+  }
 }
 
 .thumbnail img {
