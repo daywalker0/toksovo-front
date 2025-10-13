@@ -219,11 +219,28 @@ const initHorizontalScroll = () => {
       trigger: horizontalWrapper.value,
       start: 'top top',
       end: () =>
-        `+=${typeof window !== 'undefined' ? window.innerHeight * (horizontalSections.length + 1) : 1000}`, // Высота окна × количество секций + 1
+        `+=${typeof window !== 'undefined' ? window.innerHeight * horizontalSections.length * 0.7 : 1000}`, // Немного увеличиваем длину скролла
       pin: true,
       scrub: 1,
       anticipatePin: 1,
       markers: false,
+      onUpdate: self => {
+        // Получаем прогресс скролла
+        const progress = self.progress;
+        const direction = self.direction;
+
+        // Увеличиваем длину скролла для переходов между секциями
+        if (progress > 0.3 && progress < 0.7) {
+          // В середине анимации - увеличиваем чувствительность
+          const currentProgress = (progress - 0.3) / 0.4; // Нормализуем к 0-1
+          const multiplier = 0.7 + currentProgress * 0.3; // От 0.7 до 1.0
+
+          // Применяем динамическое изменение
+          if (self.scrollTrigger) {
+            self.scrollTrigger.vars.end = `+=${window.innerHeight * horizontalSections.length * multiplier}`;
+          }
+        }
+      },
     },
   });
 

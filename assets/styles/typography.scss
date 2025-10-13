@@ -65,4 +65,10 @@ h2 {
   border-radius: 50px;
   width: fit-content;
   text-transform: uppercase;
+  transition: border-radius 0.2s ease-out;
+  cursor: pointer;
+
+  &:hover {
+    border-radius: 7px;
+  }
 }

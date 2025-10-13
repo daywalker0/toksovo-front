@@ -354,12 +354,17 @@ const switchImage = index => {
   color: $text-color-white;
   font-size: 18px;
   width: 100%;
-  transition: 0.3s;
+  transition:
+    0.3s,
+    border-radius 0.2s ease-out;
+  cursor: pointer;
 }
 
 .more-btn:hover {
-  background-color: #333;
-  transition: 0.3s;
+  border-radius: 7px;
+  transition:
+    0.3s,
+    border-radius 0.2s ease-out;
 }
 
 .main-image {

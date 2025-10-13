@@ -563,11 +563,13 @@ onMounted(async () => {
   color: $text-color-white;
   border: none;
   font-size: 18px;
-  transition: all 0.3s ease;
+  transition:
+    all 0.3s ease,
+    border-radius 0.2s ease-out;
 
   &:hover {
-    background-color: #e66418; /* примерно на 10% темнее $accent-color-orange (#ff7c20) */
     transform: translateY(-2px);
+    border-radius: 7px;
   }
 
   &:active {
