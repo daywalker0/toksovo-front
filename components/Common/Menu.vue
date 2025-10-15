@@ -140,7 +140,7 @@ const openMenu = () => {
       menuContent.offsetHeight;
 
       // Запускаем анимацию с плавным easing
-      menuContent.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      menuContent.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
       menuContent.style.transform = 'translateY(0)';
     }
 
@@ -148,7 +148,7 @@ const openMenu = () => {
       menuOverlay.style.opacity = '0';
       menuOverlay.style.transition = 'none';
       menuOverlay.offsetHeight;
-      menuOverlay.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s';
+      menuOverlay.style.transition = 'opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s';
       menuOverlay.style.opacity = '1';
     }
 
@@ -163,9 +163,9 @@ const openMenu = () => {
           link.style.transition = 'none';
           link.offsetHeight;
 
-          // Каждый элемент появляется с задержкой 0.1s после предыдущего
-          const delay = 0.5 + index * 0.1;
-          link.style.transition = `opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
+          // Каждый элемент появляется с задержкой 0.05s после предыдущего
+          const delay = 0.3 + index * 0.05;
+          link.style.transition = `opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
           link.style.opacity = '1';
           link.style.transform = 'translateX(0)';
         }
@@ -178,7 +178,7 @@ const openMenu = () => {
       link.style.transition = 'none';
       link.offsetHeight;
       link.style.transition =
-        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s';
+        'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s';
       link.style.opacity = '1';
       link.style.transform = 'translateX(0)';
     });
@@ -204,9 +204,9 @@ const closeMenu = () => {
         if (link) {
           // Элементы исчезают в обратном порядке (снизу вверх)
           const reverseIndex = menuItems.length - 1 - index;
-          const delay = reverseIndex * 0.05; // Быстрее исчезают
+          const delay = reverseIndex * 0.03; // Быстрее исчезают
 
-          link.style.transition = `opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
+          link.style.transition = `opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
           link.style.opacity = '0';
           link.style.transform = 'translateX(-50px)';
         }
@@ -215,7 +215,7 @@ const closeMenu = () => {
 
     menuDocLinks.forEach(link => {
       link.style.transition =
-        'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        'opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
       link.style.opacity = '0';
       link.style.transform = 'translateX(-30px)';
     });
@@ -223,17 +223,17 @@ const closeMenu = () => {
     // Анимация фона (исчезает вторым)
     if (menuOverlay) {
       setTimeout(() => {
-        menuOverlay.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        menuOverlay.style.transition = 'opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
         menuOverlay.style.opacity = '0';
-      }, 200);
+      }, 100);
     }
 
     // Анимация контента (поднимается последним)
     if (menuContent) {
       setTimeout(() => {
-        menuContent.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        menuContent.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         menuContent.style.transform = 'translateY(-100%)';
-      }, 400);
+      }, 200);
     }
   }
 
@@ -252,7 +252,7 @@ const closeMenu = () => {
 
     // Эмитим событие о закрытии меню
     emit('menu-closed');
-  }, 1000); // Ждем 1 секунду для завершения всей анимации (0.4s задержка + 0.6s анимация)
+  }, 600); // Ждем 0.6 секунды для завершения всей анимации (0.2s задержка + 0.4s анимация)
 };
 
 const isActiveSection = link => {
