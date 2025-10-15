@@ -408,7 +408,7 @@ defineExpose({
   }
 
   &__item {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
 
   &__link {
