@@ -9,6 +9,7 @@
     @click="handleClick"
     v-bind="$attrs"
   >
+    <slot v-if="iconPosition === 'left'" name="icon"></slot>
     <span class="animated-link__text">
       <span class="animated-link__text-inner">
         <span
@@ -31,6 +32,7 @@
         </span>
       </span>
     </span>
+    <slot v-if="iconPosition === 'right'" name="icon"></slot>
   </component>
 </template>
 
@@ -70,6 +72,11 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  iconPosition: {
+    type: String,
+    default: 'left',
+    validator: value => ['left', 'right'].includes(value),
+  },
 });
 
 const emit = defineEmits(['click']);
@@ -87,10 +94,12 @@ const handleClick = event => {
 
 <style lang="scss" scoped>
 .animated-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+  gap: 8px;
 
   &__text {
     position: relative;
