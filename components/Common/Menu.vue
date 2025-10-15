@@ -118,6 +118,12 @@ const openMenu = () => {
   isOpen.value = true;
   menuOpenTime.value = Date.now();
 
+  if (typeof document !== 'undefined') {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+  }
+
   // Принудительно применяем начальные стили для анимации открытия
   if (menuRef.value) {
     const menuContent = menuRef.value.querySelector('.menu__content');
@@ -220,6 +226,12 @@ const closeMenu = () => {
     if (menuRef.value) {
       menuRef.value.classList.remove('menu--closing');
     }
+
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
     // Эмитим событие о закрытии меню
     emit('menu-closed');
   }, 2000); // Ждем 2 секунды для завершения всей анимации (0.8s задержка + 1.2s анимация)
@@ -311,7 +323,7 @@ defineExpose({
     top: 0;
     left: 0;
     width: 100%;
-    height: 65vh;
+    height: 60vh;
     background: $accent-color-brown;
     transform: translateY(-100%);
     overflow-y: auto;
