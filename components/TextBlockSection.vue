@@ -54,6 +54,9 @@ const props = defineProps({
   max-width: 422px;
   text-align: start;
   margin: 60px auto 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
 
   @media (max-width: $breakpoint-sm) {
     margin: 40px auto 0;

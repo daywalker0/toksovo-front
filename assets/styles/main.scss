@@ -6,6 +6,12 @@ html:root {
   scroll-behavior: auto; // Отключаем smooth scroll для GSAP
 }
 
+* {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+
 /* Базовые настройки скролла */
 html {
   scroll-behavior: auto; // Отключаем smooth scroll для GSAP

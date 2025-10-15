@@ -8,6 +8,9 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 h1 {
@@ -16,6 +19,9 @@ h1 {
   font-weight: 400;
   line-height: 80%;
   color: $text-color-primary;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
 
   @media (max-width: $breakpoint-lg) {
     font-size: 138px;
@@ -33,6 +39,9 @@ h2 {
   line-height: 80%;
   color: $text-color-primary;
   width: fit-content;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
 
   @media (max-width: $breakpoint-lg) {
     font-size: 88px;
@@ -45,6 +54,9 @@ h2 {
   font-weight: 400;
   line-height: 80%;
   width: fit-content;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 .subtitle-text {
@@ -53,6 +65,9 @@ h2 {
   font-weight: 500;
   line-height: 140%;
   color: $text-color-primary;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
 
   @media (max-width: $breakpoint-lg) {
     font-size: 20px;
@@ -89,6 +104,9 @@ h2 {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
 
   &::before {
     content: '';
@@ -109,4 +127,26 @@ h2 {
       left: 0;
     }
   }
+}
+
+p,
+span,
+div,
+a,
+li,
+td,
+th,
+label,
+input,
+textarea,
+select {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+
+.long-text {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  hyphens: none;
 }

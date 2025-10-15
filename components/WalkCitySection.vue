@@ -107,6 +107,9 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
     font-family: 'Akrobat';
     font-weight: 500;
     font-size: 20px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
     line-height: 140%;
 
     @media (max-width: $breakpoint-lg) {

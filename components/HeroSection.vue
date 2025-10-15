@@ -29,14 +29,7 @@
           class="subtitle-text hero-section__subtitle"
           aria-label="комфорт, который становится частью вашего дня"
         >
-          <span
-            v-for="(ch, i) in subtitleLetters"
-            :key="`s-${i}`"
-            class="char"
-            :class="{ space: ch === ' ' }"
-            :style="{ '--delay': `${subtitleStartDelay + i * letterDelay}s` }"
-            v-html="ch === ' ' ? '&nbsp;' : ch"
-          />
+          <span class="subtitle-animated">{{ subtitleText }}</span>
         </div>
       </div>
     </div>
@@ -66,11 +59,6 @@ const titleLetters = computed(() => Array.from(titleText));
 const [firstWord, secondWord] = titleText.split(' ');
 const firstWordLetters = computed(() => Array.from(firstWord));
 const secondWordLetters = computed(() => Array.from(secondWord));
-const subtitleLetters = computed(() => Array.from(subtitleText));
-
-const subtitleStartDelay = computed(
-  () => titleStartDelay + titleLetters.value.length * letterDelay + 0.2
-);
 
 // Pure JavaScript scroll animation
 const sectionEl = ref(null);
@@ -270,6 +258,9 @@ onBeforeUnmount(() => {
     line-height: 0.8;
     margin: 0;
     color: $text-color-primary;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 100px;
@@ -287,6 +278,9 @@ onBeforeUnmount(() => {
     max-width: 460px;
     margin: 0 auto;
     padding-top: 30px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 30px;
@@ -373,8 +367,20 @@ onBeforeUnmount(() => {
   overflow: hidden; // clip letters so they slide in from below
 }
 
-.space {
-  width: 0.5ch;
+.subtitle-animated {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 1.5s; // Задержка после заголовка
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+
+  @media (max-width: $breakpoint-x) {
+    transform: translateY(20px);
+    animation-duration: 0.6s;
+  }
 }
 
 @keyframes fadeInUp {
@@ -386,6 +392,12 @@ onBeforeUnmount(() => {
 
 @media (prefers-reduced-motion: reduce) {
   .char {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .subtitle-animated {
     animation: none;
     opacity: 1;
     transform: none;

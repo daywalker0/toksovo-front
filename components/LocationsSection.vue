@@ -282,6 +282,9 @@ onMounted(() => {
     font-size: 18px;
     line-height: 140%;
     opacity: 0.8;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
 
     @media (max-width: 1240px) {
       font-size: 16px;
