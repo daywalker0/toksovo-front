@@ -414,7 +414,7 @@ defineExpose({
   &__link {
     font-size: 40px;
     font-weight: 700;
-    line-height: 100%;
+    line-height: 120%;
     transition: opacity 0.3s ease;
     display: flex;
     align-items: center;
