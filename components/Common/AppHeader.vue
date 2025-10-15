@@ -266,8 +266,6 @@ onUnmounted(() => {
 
 /* Стили для открытого меню */
 .header--menu-open {
-  background: rgba(0, 0, 0, 0.1); /* Легкий фон для лучшей видимости */
-
   .header__btn-choose a {
     color: $text-color-light;
   }
