@@ -40,11 +40,13 @@
         </div>
       </div>
     </div>
-    <div class="hero-section__sky" ref="skyEl">
-      <img :src="bgSkyImg" />
-    </div>
-    <div class="hero-section__bg" ref="renderEl">
-      <img :src="heroBgImg" />
+    <div class="hero-section__parallax-container" ref="parallaxContainer">
+      <div class="hero-section__sky" ref="skyEl">
+        <img :src="bgSkyImg" />
+      </div>
+      <div class="hero-section__bg" ref="renderEl">
+        <img :src="heroBgImg" />
+      </div>
     </div>
   </div>
 </template>
@@ -70,87 +72,160 @@ const subtitleStartDelay = computed(
   () => titleStartDelay + titleLetters.value.length * letterDelay + 0.2
 );
 
-// GSAP ScrollTrigger pin + zoom-out
+// Pure JavaScript scroll animation
 const sectionEl = ref(null);
 const renderEl = ref(null);
 const skyEl = ref(null);
+const parallaxContainer = ref(null);
 
-let gsapInstance = null;
-let scrollTrigger = null;
-let timeline = null;
+let scrollHandler = null;
+let animationId = null;
+let currentContainerY = 0;
+let currentRenderScale = 0;
+let currentSkyScale = 0;
+let targetContainerY = 0;
+let targetRenderScale = 0;
+let targetSkyScale = 0;
 
-onMounted(async () => {
-  try {
-    const { default: gsap } = await import('gsap');
-    const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-    gsap.registerPlugin(ScrollTrigger);
-    gsapInstance = gsap;
+onMounted(() => {
+  // Адаптивные параметры
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
+  const renderStartScale = isMobile ? 3.1 : 3.6;
+  const skyStartScale = isMobile ? 1.1 : 1.2;
 
-    // Адаптивные параметры для мобильных устройств
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
-    const renderStartScale = isMobile ? 3.1 : 3.6;
-    const skyStartScale = isMobile ? 1.1 : 1.2;
-
-    // Устанавливаем рендер внизу секции с большим масштабом
-    gsap.set(renderEl.value, {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      transformOrigin: 'center bottom',
-      scale: renderStartScale,
-      zIndex: 1,
-    });
-
-    gsap.set(skyEl.value, {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      transformOrigin: 'center bottom',
-      scale: skyStartScale,
-      zIndex: 0,
-    });
-
-    timeline = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: {
-        trigger: sectionEl.value,
-        start: 'top top',
-        end: () => `+=${typeof window !== 'undefined' ? window.innerHeight : 1000}`,
-        scrub: 0.3,
-        invalidateOnRefresh: true,
-        refreshPriority: 1,
-      },
-    });
-
-    timeline
-      .to(
-        renderEl.value,
-        {
-          scale: 1,
-          ease: 'power2.out',
-        },
-        0
-      )
-      .to(
-        skyEl.value,
-        {
-          scale: 1,
-          ease: 'power2.out',
-        },
-        0
-      );
-  } catch (e) {
-    console.error(e);
+  // Устанавливаем начальные позиции
+  if (renderEl.value) {
+    renderEl.value.style.position = 'absolute';
+    renderEl.value.style.bottom = '0';
+    renderEl.value.style.left = '0';
+    renderEl.value.style.right = '0';
+    renderEl.value.style.transformOrigin = 'center bottom';
+    renderEl.value.style.transform = `scale(${renderStartScale})`;
+    renderEl.value.style.zIndex = '1';
   }
+
+  if (skyEl.value) {
+    skyEl.value.style.position = 'absolute';
+    skyEl.value.style.top = '0';
+    skyEl.value.style.left = '0';
+    skyEl.value.style.right = '0';
+    skyEl.value.style.transformOrigin = 'center bottom';
+    skyEl.value.style.transform = `scale(${skyStartScale})`;
+    skyEl.value.style.zIndex = '0';
+  }
+
+  // Инициализируем текущие значения
+  currentContainerY = 0;
+  currentRenderScale = renderStartScale;
+  currentSkyScale = skyStartScale;
+  targetContainerY = 0;
+  targetRenderScale = renderStartScale;
+  targetSkyScale = skyStartScale;
+
+  // Функция плавной анимации
+  const animate = () => {
+    console.log('animate() called');
+    const lerpFactor = 0.15; // Скорость плавности (0.1 = медленно, 0.3 = быстро)
+
+    // Плавно приближаемся к целевому значению
+    currentContainerY += (targetContainerY - currentContainerY) * lerpFactor;
+    currentRenderScale += (targetRenderScale - currentRenderScale) * lerpFactor;
+    currentSkyScale += (targetSkyScale - currentSkyScale) * lerpFactor;
+
+    // Применяем изменения
+    if (parallaxContainer.value) {
+      parallaxContainer.value.style.transform = `translate3d(0px, ${currentContainerY}px, 0px)`;
+    }
+    if (renderEl.value) {
+      // Рендер остается прижатым к низу, компенсируя движение контейнера
+      const renderY = -currentContainerY;
+      renderEl.value.style.transform = `translate3d(0px, ${renderY}px, 0px) scale(${currentRenderScale})`;
+    }
+    if (skyEl.value) {
+      skyEl.value.style.transform = `translate3d(0px, 0px, 0px) scale(${currentSkyScale})`;
+    }
+
+    // Отладка анимации
+    if (Math.abs(targetContainerY - currentContainerY) > 0.1) {
+      console.log('Animating:', currentContainerY, '->', targetContainerY);
+    }
+
+    // Продолжаем анимацию если есть разница
+    if (
+      Math.abs(targetContainerY - currentContainerY) > 0.001 ||
+      Math.abs(targetRenderScale - currentRenderScale) > 0.001 ||
+      Math.abs(targetSkyScale - currentSkyScale) > 0.001
+    ) {
+      animationId = requestAnimationFrame(animate);
+    } else {
+      // Анимация завершена
+      animationId = null;
+    }
+  };
+
+  // Функция обработки скролла
+  const handleScroll = () => {
+    if (!sectionEl.value) return;
+
+    const rect = sectionEl.value.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const sectionHeight = windowHeight;
+
+    // Вычисляем прогресс (0 = начало, 1 = конец)
+    let progress = 0;
+
+    // Если секция видна и находится в области анимации
+    if (rect.top <= 0 && rect.bottom >= windowHeight) {
+      // Прогресс от 0 до 1 при скролле вниз
+      progress = Math.abs(rect.top) / sectionHeight;
+      progress = Math.min(progress, 1);
+    } else if (rect.bottom < windowHeight) {
+      // Если секция полностью прокручена - анимация завершена
+      progress = 1;
+    }
+
+    // Вычисляем целевые значения
+    // Контейнер двигается вниз (от 0 до -580px)
+    targetContainerY = -580 * progress;
+
+    // Масштабы уменьшаются (от большого к нормальному)
+    targetRenderScale = renderStartScale - (renderStartScale - 1) * progress;
+    targetSkyScale = skyStartScale - (skyStartScale - 1) * progress;
+
+    // Отладка
+    console.log(
+      'Progress:',
+      progress,
+      'ContainerY:',
+      targetContainerY,
+      'RenderScale:',
+      targetRenderScale
+    );
+
+    // Запускаем плавную анимацию
+    if (!animationId) {
+      console.log('Starting animation');
+      animationId = requestAnimationFrame(animate);
+    }
+  };
+
+  // Добавляем обработчик скролла
+  scrollHandler = handleScroll;
+  window.addEventListener('scroll', scrollHandler, { passive: true });
+  window.addEventListener('resize', scrollHandler, { passive: true });
+
+  // Вызываем сразу для начальной позиции
+  handleScroll();
 });
 
 onBeforeUnmount(() => {
-  try {
-    if (timeline) timeline.kill();
-    if (scrollTrigger) scrollTrigger.kill();
-  } catch {}
+  if (scrollHandler) {
+    window.removeEventListener('scroll', scrollHandler);
+    window.removeEventListener('resize', scrollHandler);
+  }
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+  }
 });
 </script>
 
@@ -222,6 +297,15 @@ onBeforeUnmount(() => {
       max-width: 250px;
       padding-top: 20px;
     }
+  }
+
+  &__parallax-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    will-change: transform;
   }
 
   &__bg {

@@ -1,7 +1,5 @@
 <template>
-  <AppLoader :loading="loading" />
-
-  <div :class="{ 'content-hidden': loading }">
+  <div>
     <AppHeader :active-section="activeSection" />
     <section id="hero">
       <HeroSection />
@@ -116,7 +114,6 @@ import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';
 import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
 import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
 
-const loading = ref(true);
 const activeSection = ref('hero');
 
 const sectionEnvironment = {
@@ -273,15 +270,7 @@ const initHorizontalScroll = () => {
   ScrollTrigger.refresh();
 };
 
-const simulateLoading = () => {
-  // Имитируем загрузку страницы
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000); // 2 секунды для демонстрации
-};
-
 onMounted(() => {
-  simulateLoading();
   // Ждем следующего тика для гарантии, что DOM полностью обновлен
   nextTick(() => {
     initHorizontalScroll();
