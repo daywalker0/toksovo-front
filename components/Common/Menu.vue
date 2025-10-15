@@ -470,6 +470,40 @@ defineExpose({
       transform: translateY(100%);
     }
   }
+
+  // Быстрое появление при hover
+  &__link:hover {
+    .menu__link-text-inner {
+      .menu__link-letter {
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: var(--letter-delay, 0s);
+      }
+    }
+
+    .menu__link-text-inner--hover {
+      .menu__link-letter {
+        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: var(--letter-delay, 0s);
+      }
+    }
+  }
+
+  // Быстрое исчезновение при убирании hover
+  &__link:not(:hover) {
+    .menu__link-text-inner {
+      .menu__link-letter {
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: var(--letter-delay, 0s);
+      }
+    }
+
+    .menu__link-text-inner--hover {
+      .menu__link-letter {
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: var(--letter-delay, 0s);
+      }
+    }
+  }
 }
 
 .menu__arrow {
