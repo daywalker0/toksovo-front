@@ -5,7 +5,7 @@
     :to="to"
     :target="target"
     :rel="rel"
-    :class="['animated-link', customClass]"
+    :class="['animated-link', customClass, { 'animated-link--no-animation': disableAnimation }]"
     @click="handleClick"
     v-bind="$attrs"
   >
@@ -77,6 +77,10 @@ const props = defineProps({
     default: 'left',
     validator: value => ['left', 'right'].includes(value),
   },
+  disableAnimation: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(['click']);
@@ -129,8 +133,8 @@ const handleClick = event => {
     }
   }
 
-  // Быстрое появление при hover
-  &:hover {
+  // Быстрое появление при hover (только если анимация не отключена)
+  &:hover:not(.animated-link--no-animation) {
     .animated-link__text-inner {
       .animated-link__letter {
         transform: translateY(-100%);

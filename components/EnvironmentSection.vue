@@ -86,7 +86,11 @@
                     />
                   </svg>
                 </div>
-                <AnimatedLink :text="item.title" customClass="accordion-header__text" />
+                <AnimatedLink
+                  :text="item.title"
+                  customClass="accordion-header__text"
+                  :disableAnimation="activeIndex === index"
+                />
               </div>
               <div v-show="activeIndex === index" class="accordion-content">
                 <p>{{ item.content }}</p>
@@ -671,10 +675,6 @@ onBeforeUnmount(() => {
       width: 0;
       opacity: 0;
       margin-right: 0;
-    }
-
-    &__text {
-      // Стили теперь наследуются от AnimatedLink
     }
   }
 

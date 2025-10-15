@@ -28,7 +28,11 @@
                   </svg>
                 </div>
 
-                <AnimatedLink :text="item.title" customClass="accordion-header__text" />
+                <AnimatedLink
+                  :text="item.title"
+                  customClass="accordion-header__text"
+                  :disableAnimation="activeIndex === index"
+                />
               </div>
               <div v-show="activeIndex === index" class="accordion-content">
                 <p>{{ item.content }}</p>
