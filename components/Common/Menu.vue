@@ -62,26 +62,25 @@
 
       <div class="right-column">
         <div class="left-column__declaration menu--doc-link">
-          <a
+          <AnimatedLink
             href="#"
             target="_blank"
             rel="noopener noreferrer"
+            text="Проектная декларация"
             @mouseenter="isHoveringActiveElement = true"
             @mouseleave="isHoveringActiveElement = false"
-            >Проектная декларация</a
-          >
+          />
         </div>
 
-        <a
+        <AnimatedLink
           href="/constructionDecision.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          class="right-column__constr menu--doc-link"
+          text="РАЗРЕШЕНИЕ НА СТРОИТЕЛЬСТВО"
+          customClass="right-column__constr menu--doc-link"
           @mouseenter="isHoveringActiveElement = true"
           @mouseleave="isHoveringActiveElement = false"
-        >
-          РАЗРЕШЕНИЕ НА СТРОИТЕЛЬСТВО
-        </a>
+        />
       </div>
     </div>
     <div
@@ -103,6 +102,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import AnimatedLink from './AnimatedLink.vue';
 
 const router = useRouter();
 

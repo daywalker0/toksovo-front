@@ -5,7 +5,7 @@
   >
     <div class="header__container container">
       <div class="header__btn-choose">
-        <a href="#">Выбрать квартиру</a>
+        <AnimatedLink href="#" text="Выбрать квартиру" />
       </div>
       <div class="header__logo">
         <a @click="router.push('/')" href="#" style="cursor: pointer">
@@ -93,6 +93,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Menu from './Menu.vue';
+import AnimatedLink from './AnimatedLink.vue';
 
 const router = useRouter();
 

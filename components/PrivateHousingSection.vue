@@ -28,7 +28,28 @@
                   </svg>
                 </div>
 
-                <span>{{ item.title }}</span>
+                <span class="accordion-header__text">
+                  <span class="accordion-header__text-inner">
+                    <span
+                      v-for="(letter, letterIndex) in item.title.split('')"
+                      :key="`original-${letterIndex}`"
+                      class="accordion-header__letter"
+                      :style="{ '--letter-delay': `${letterIndex * 0.02}s` }"
+                    >
+                      {{ letter === ' ' ? '\u00A0' : letter }}
+                    </span>
+                  </span>
+                  <span class="accordion-header__text-inner accordion-header__text-inner--hover">
+                    <span
+                      v-for="(letter, letterIndex) in item.title.split('')"
+                      :key="`hover-${letterIndex}`"
+                      class="accordion-header__letter"
+                      :style="{ '--letter-delay': `${letterIndex * 0.02}s` }"
+                    >
+                      {{ letter === ' ' ? '\u00A0' : letter }}
+                    </span>
+                  </span>
+                </span>
               </div>
               <div v-show="activeIndex === index" class="accordion-content">
                 <p>{{ item.content }}</p>
@@ -130,7 +151,8 @@ const onMouseMove = e => {
 };
 </script>
 
-<style lang="scss" scoped>@use '@/assets/styles/variables.scss' as *;
+<style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
 
 .private-housing-section {
   position: relative;
@@ -204,6 +226,53 @@ const onMouseMove = e => {
     width: 0;
     opacity: 0;
   }
+
+  &__text {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  &__text-inner {
+    display: block;
+
+    &--hover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+  }
+
+  &__letter {
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0, 0, 0.1, 1);
+    transform: translateY(0);
+    transition-delay: var(--letter-delay, 0s);
+
+    .accordion-header__text-inner--hover & {
+      transform: translateY(100%);
+    }
+  }
+
+  // Анимация для всех элементов при hover
+  &:hover {
+    .accordion-header__text-inner {
+      .accordion-header__letter {
+        transform: translateY(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: var(--letter-delay, 0s);
+      }
+    }
+
+    .accordion-header__text-inner--hover {
+      .accordion-header__letter {
+        transform: translateY(0);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition-delay: var(--letter-delay, 0s);
+      }
+    }
+  }
 }
 
 .accordion-item.active .accordion-header {
@@ -213,6 +282,23 @@ const onMouseMove = e => {
   .icon {
     opacity: 1;
     width: fit-content;
+  }
+
+  // Отключаем анимацию для активных элементов
+  &:hover {
+    .accordion-header__text-inner {
+      .accordion-header__letter {
+        transform: translateY(0) !important;
+        transition: none !important;
+      }
+    }
+
+    .accordion-header__text-inner--hover {
+      .accordion-header__letter {
+        transform: translateY(100%) !important;
+        transition: none !important;
+      }
+    }
   }
 }
 

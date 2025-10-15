@@ -71,14 +71,18 @@
             Материалы, представленные на сайте, не являются публичной офертой
           </p>
           <div class="footer__documents">
-            <a href="#" class="footer__section-item_text footer__doc-link">Проектная декларация</a>
-            <a
+            <AnimatedLink
+              href="#"
+              text="Проектная декларация"
+              customClass="footer__section-item_text footer__doc-link"
+            />
+            <AnimatedLink
               href="/constructionDecision.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              class="footer__section-item_text footer__doc-link"
-              >Разрешение на строительство</a
-            >
+              text="Разрешение на строительство"
+              customClass="footer__section-item_text footer__doc-link"
+            />
           </div>
         </div>
       </div>
@@ -96,14 +100,13 @@
           </p>
         </div>
         <div class="footer__development">
-          <a
+          <AnimatedLink
             href="https://daniil-petrov.ru/"
             target="_blank"
             rel="noopener noreferrer"
-            class="footer__development-link"
-          >
-            РАЗРАБОТКА
-          </a>
+            text="РАЗРАБОТКА"
+            customClass="footer__development-link"
+          />
         </div>
       </div>
     </div>
@@ -118,6 +121,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import DialogCallback from './Common/Dialogs/DialogCallback.vue';
+import AnimatedLink from './Common/AnimatedLink.vue';
 
 const router = useRouter();
 
@@ -287,11 +291,6 @@ const openDialogCallback = () => {
     color: inherit;
     text-decoration: none;
     cursor: pointer;
-    transition: opacity 0.2s ease;
-
-    &:hover {
-      opacity: 0.7;
-    }
   }
 
   &__rights {
