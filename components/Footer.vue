@@ -37,7 +37,7 @@
             </a>
           </div>
           <div class="footer__phone">
-            <a href="tel:88123337767" class="footer__phone-link">
+            <div class="footer__phone-link">
               <svg width="19" height="18" viewBox="0 0 19 18" fill="none">
                 <path
                   fill-rule="evenodd"
@@ -58,8 +58,8 @@
                   fill="#2C322C"
                 />
               </svg>
-              <span>8 (812) 333 77 67</span>
-            </a>
+              <AnimatedLink href="tel:88123337767" text="8 (812) 333 77 67" />
+            </div>
           </div>
           <button @click="openDialogCallback" class="footer__callback button">
             обратный звонок

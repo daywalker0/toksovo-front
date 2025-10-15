@@ -62,7 +62,10 @@
         </div>
 
         <div class="header__burger" @click="handleMenuToggle">
-          <span class="header__burger--text">{{ isMenuOpen ? 'Закрыть' : 'Меню' }}</span>
+          <AnimatedLink
+            :text="isMenuOpen ? 'Закрыть' : 'Меню'"
+            customClass="header__burger--text"
+          />
           <div class="header__burger--icon">
             <svg v-if="!isMenuOpen" width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path
