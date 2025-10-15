@@ -462,7 +462,7 @@ defineExpose({
 
   &__link-letter {
     display: inline-block;
-    transition: transform 0.2s cubic-bezier(0, 0, 0.1, 0.5);
+    transition: transform 0.2s cubic-bezier(0, 0, 0.1, 3);
     transform: translateY(0);
     transition-delay: var(--letter-delay, 0s);
 
