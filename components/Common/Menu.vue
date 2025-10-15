@@ -133,7 +133,7 @@ const openMenu = () => {
 
     if (menuContent) {
       // Устанавливаем начальное состояние
-      menuContent.style.transform = 'translateY(-100%)';
+      menuContent.style.transform = 'translateY(-150%)';
       menuContent.style.transition = 'none';
 
       // Принудительно перерисовываем
@@ -232,7 +232,7 @@ const closeMenu = () => {
     if (menuContent) {
       setTimeout(() => {
         menuContent.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        menuContent.style.transform = 'translateY(-100%)';
+        menuContent.style.transform = 'translateY(-150%)';
       }, 200);
     }
   }
