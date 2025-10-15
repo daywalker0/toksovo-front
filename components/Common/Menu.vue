@@ -33,7 +33,12 @@
                   />
                 </svg>
               </span>
-              {{ item.title }}
+              <span class="menu__link-text">
+                <span class="menu__link-text-inner">{{ item.title }}</span>
+                <span class="menu__link-text-inner menu__link-text-inner--hover">{{
+                  item.title
+                }}</span>
+              </span>
             </a>
           </li>
         </ul>
@@ -400,9 +405,41 @@ defineExpose({
     gap: 10px;
     opacity: 0;
     transform: translateX(-50px);
+    text-decoration: none;
+    color: inherit;
 
     &--active {
       opacity: 0.5 !important;
+    }
+
+    &:hover {
+      .menu__link-text-inner {
+        transform: translateY(-100%);
+      }
+
+      .menu__link-text-inner--hover {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  &__link-text {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  &__link-text-inner {
+    display: block;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+
+    &--hover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      transform: translateY(100%);
     }
   }
 }
