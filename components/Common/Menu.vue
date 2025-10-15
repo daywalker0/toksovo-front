@@ -136,8 +136,8 @@ const openMenu = () => {
       // Принудительно перерисовываем
       menuContent.offsetHeight;
 
-      // Запускаем анимацию
-      menuContent.style.transition = 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      // Запускаем анимацию с плавным easing
+      menuContent.style.transition = 'transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
       menuContent.style.transform = 'translateY(0)';
     }
 
@@ -145,7 +145,7 @@ const openMenu = () => {
       menuOverlay.style.opacity = '0';
       menuOverlay.style.transition = 'none';
       menuOverlay.offsetHeight;
-      menuOverlay.style.transition = 'opacity 0.3s ease-in-out 1.2s';
+      menuOverlay.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 1.2s';
       menuOverlay.style.opacity = '1';
     }
 
@@ -154,7 +154,8 @@ const openMenu = () => {
       menuList.style.transform = 'translateY(20px)';
       menuList.style.transition = 'none';
       menuList.offsetHeight;
-      menuList.style.transition = 'opacity 0.4s ease-out 1.5s, transform 0.4s ease-out 1.5s';
+      menuList.style.transition =
+        'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s';
       menuList.style.opacity = '1';
       menuList.style.transform = 'translateY(0)';
     }
@@ -164,7 +165,8 @@ const openMenu = () => {
       link.style.transform = 'translateY(20px)';
       link.style.transition = 'none';
       link.offsetHeight;
-      link.style.transition = 'opacity 0.4s ease-out 1.5s, transform 0.4s ease-out 1.5s';
+      link.style.transition =
+        'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s';
       link.style.opacity = '1';
       link.style.transform = 'translateY(0)';
     });
@@ -184,13 +186,15 @@ const closeMenu = () => {
 
     // Анимация элементов меню (исчезают первыми)
     if (menuList) {
-      menuList.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+      menuList.style.transition =
+        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
       menuList.style.opacity = '0';
       menuList.style.transform = 'translateY(20px)';
     }
 
     menuDocLinks.forEach(link => {
-      link.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+      link.style.transition =
+        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
       link.style.opacity = '0';
       link.style.transform = 'translateY(20px)';
     });
@@ -198,17 +202,17 @@ const closeMenu = () => {
     // Анимация фона (исчезает вторым)
     if (menuOverlay) {
       setTimeout(() => {
-        menuOverlay.style.transition = 'opacity 0.3s ease-in-out';
+        menuOverlay.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         menuOverlay.style.opacity = '0';
-      }, 300);
+      }, 400);
     }
 
     // Анимация контента (поднимается последним)
     if (menuContent) {
       setTimeout(() => {
-        menuContent.style.transition = 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        menuContent.style.transition = 'transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
         menuContent.style.transform = 'translateY(-100%)';
-      }, 600);
+      }, 800);
     }
   }
 
@@ -224,7 +228,7 @@ const closeMenu = () => {
     }
     // Эмитим событие о закрытии меню
     emit('menu-closed');
-  }, 1600); // Ждем 1.6 секунды для завершения всей анимации
+  }, 2000); // Ждем 2 секунды для завершения всей анимации (0.8s задержка + 1.2s анимация)
 };
 
 const isActiveSection = link => {
@@ -293,33 +297,6 @@ defineExpose({
     visibility: visible;
   }
 
-  &--closing {
-    .menu__list,
-    .menu--doc-link {
-      opacity: 0 !important;
-      transform: translateY(20px) !important;
-      transition:
-        opacity 0.3s ease-out,
-        transform 0.3s ease-out !important;
-    }
-
-    .menu__overlay {
-      opacity: 0 !important;
-      transition: opacity 0.3s ease-in-out 0.3s !important; /* Задержка 0.3s */
-    }
-
-    .menu__content {
-      transform: translateY(-100%) !important;
-      transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s !important; /* Задержка 0.6s */
-    }
-  }
-
-  /* Дополнительный селектор для гарантии применения */
-  &.menu--closing .menu__content {
-    transform: translateY(-100%) !important;
-    transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s !important;
-  }
-
   &__overlay {
     position: absolute;
     top: 0;
@@ -328,12 +305,10 @@ defineExpose({
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     opacity: 0;
-    transition: opacity 0.3s ease-in-out; /* Плавная анимация для закрытия */
 
     .menu--open & {
       opacity: 1;
       cursor: none; /* use DOM-based cursor */
-      transition: opacity 0.3s ease-in-out 1.2s; /* Задержка только при открытии */
     }
   }
 
@@ -345,18 +320,12 @@ defineExpose({
     height: 65vh;
     background: $accent-color-brown;
     transform: translateY(-100%);
-    transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
     overflow-y: auto;
     padding: 26px 44px 44px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
-
-    .menu--open & {
-      transform: translateY(0) !important;
-      transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-    }
   }
 
   &__list {
@@ -369,17 +338,6 @@ defineExpose({
     text-align: center;
     opacity: 0;
     transform: translateY(20px);
-    transition:
-      opacity 0.4s ease-out,
-      transform 0.4s ease-out; /* Плавная анимация для закрытия */
-
-    .menu--open & {
-      opacity: 1;
-      transform: translateY(0);
-      transition:
-        opacity 0.4s ease-out 1s,
-        transform 0.4s ease-out 1s; /* Задержка только при открытии */
-    }
   }
 
   &__item {
@@ -447,13 +405,5 @@ defineExpose({
   line-height: 120%;
   opacity: 0;
   transform: translateY(20px);
-  transition:
-    opacity 0.4s ease-out 0.4s,
-    transform 0.4s ease-out 0.4s;
-
-  .menu--open & {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 </style>
