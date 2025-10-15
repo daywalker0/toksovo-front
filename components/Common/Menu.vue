@@ -482,7 +482,7 @@ defineExpose({
 
     .menu__link-text-inner--hover {
       .menu__link-letter {
-        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         transition-delay: var(--letter-delay, 0s);
       }
     }
