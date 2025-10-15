@@ -64,7 +64,7 @@
         </div>
 
         <div class="header__burger" @click="handleMenuToggle">
-          <span>{{ isMenuOpen ? 'Закрыть' : 'Меню' }}</span>
+          <span class="header__burger--text">{{ isMenuOpen ? 'Закрыть' : 'Меню' }}</span>
           <div class="header__burger--icon">
             <svg v-if="!isMenuOpen" width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path
@@ -220,6 +220,12 @@ onUnmounted(() => {
     margin-left: 20px;
     display: flex;
     align-items: center;
+    min-width: 120px;
+    justify-content: flex-end;
+    &--text {
+      min-width: 60px;
+      text-align: right;
+    }
     &--icon {
       margin-left: 4px;
     }
@@ -227,6 +233,7 @@ onUnmounted(() => {
 }
 
 .header__logo {
+  margin-left: 60px;
   position: relative;
   z-index: 9999;
   transition:

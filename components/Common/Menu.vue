@@ -117,9 +117,6 @@ const menuItems = [
 const openMenu = () => {
   isOpen.value = true;
   menuOpenTime.value = Date.now();
-  if (typeof document !== 'undefined') {
-    document.body.style.overflow = 'hidden';
-  }
 
   // Принудительно применяем начальные стили для анимации открытия
   if (menuRef.value) {
@@ -222,9 +219,6 @@ const closeMenu = () => {
     showCustomCursor.value = false;
     if (menuRef.value) {
       menuRef.value.classList.remove('menu--closing');
-    }
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = '';
     }
     // Эмитим событие о закрытии меню
     emit('menu-closed');
