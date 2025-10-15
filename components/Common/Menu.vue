@@ -168,6 +168,16 @@ const openMenu = () => {
           link.style.transition = `opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`;
           link.style.opacity = '1';
           link.style.transform = 'translateX(0)';
+
+          // Восстанавливаем активную секцию после анимации
+          setTimeout(
+            () => {
+              if (link.classList.contains('menu__link--active')) {
+                link.style.opacity = '0.5';
+              }
+            },
+            delay * 1000 + 500
+          );
         }
       });
     }
@@ -378,7 +388,7 @@ defineExpose({
     transform: translateX(-50px);
 
     &--active {
-      opacity: 0.5;
+      opacity: 0.5 !important;
     }
   }
 }
