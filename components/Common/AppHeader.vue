@@ -63,7 +63,7 @@
           </a>
         </div>
 
-        <div class="header__burger" @click="isMenuOpen ? closeMenu() : openMenu()">
+        <div class="header__burger" @click="handleMenuToggle">
           <span>{{ isMenuOpen ? 'Закрыть' : 'Меню' }}</span>
           <div class="header__burger--icon">
             <svg v-if="!isMenuOpen" width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -120,17 +120,21 @@ const openMenu = () => {
 };
 
 const closeMenu = () => {
+  console.log('closeMenu called, setting isMenuOpen to false');
   isMenuOpen.value = false;
 };
 
 const handleMenuToggle = () => {
+  console.log('handleMenuToggle called, isMenuOpen:', isMenuOpen.value);
   if (isMenuOpen.value) {
     // Закрываем меню
+    console.log('Closing menu...');
     if (menuComponent.value) {
       menuComponent.value.closeMenu();
     }
   } else {
     // Открываем меню
+    console.log('Opening menu...');
     openMenu();
   }
 };
