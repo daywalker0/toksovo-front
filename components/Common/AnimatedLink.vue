@@ -66,6 +66,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  hoverColor: {
+    type: String,
+    default: null,
+  },
 });
 
 const emit = defineEmits(['click']);
@@ -131,6 +135,7 @@ const handleClick = event => {
         transform: translateY(0);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         transition-delay: var(--letter-delay, 0s);
+        color: v-bind('hoverColor || "inherit"');
       }
     }
   }

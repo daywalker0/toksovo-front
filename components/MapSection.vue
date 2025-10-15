@@ -24,7 +24,11 @@
           <li v-for="cat in categories" :key="cat.name" class="map__category">
             <div class="map__category-name">
               <img :src="cat.icon" alt="" class="map__icon" />
-              <span>{{ cat.name }}</span>
+              <AnimatedLink
+                :text="cat.name"
+                customClass="map__category-name-link"
+                hoverColor="#ff6b35"
+              />
             </div>
             <span class="map__category-count">{{ cat.count }}</span>
           </li>
@@ -64,6 +68,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import AnimatedLink from './Common/AnimatedLink.vue';
 import mapBgImg from '@/assets/img/map-bg.png';
 import culture from '../assets/img/icons/locations/culture.svg';
 import medicine from '../assets/img/icons/locations/med.svg';
@@ -195,13 +200,28 @@ function selectPin(pin) {
     font-weight: 700;
     line-height: 140%;
     padding: 8px 0;
+
+    &:hover {
+      .map__category-count {
+        color: $accent-color-orange;
+        transition: color 0.3s ease;
+      }
+    }
   }
 
   &__category-name {
     display: flex;
     align-items: center;
-    span {
+
+    &-link {
       margin-left: 10px;
+    }
+
+    &:hover {
+      .map__icon {
+        filter: hue-rotate(20deg) saturate(2) brightness(1.2);
+        transition: filter 0.3s ease;
+      }
     }
   }
 
