@@ -120,6 +120,55 @@ const openMenu = () => {
   if (typeof document !== 'undefined') {
     document.body.style.overflow = 'hidden';
   }
+
+  // Принудительно применяем начальные стили для анимации открытия
+  if (menuRef.value) {
+    const menuContent = menuRef.value.querySelector('.menu__content');
+    const menuOverlay = menuRef.value.querySelector('.menu__overlay');
+    const menuList = menuRef.value.querySelector('.menu__list');
+    const menuDocLinks = menuRef.value.querySelectorAll('.menu--doc-link');
+
+    if (menuContent) {
+      // Устанавливаем начальное состояние
+      menuContent.style.transform = 'translateY(-100%)';
+      menuContent.style.transition = 'none';
+
+      // Принудительно перерисовываем
+      menuContent.offsetHeight;
+
+      // Запускаем анимацию
+      menuContent.style.transition = 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      menuContent.style.transform = 'translateY(0)';
+    }
+
+    if (menuOverlay) {
+      menuOverlay.style.opacity = '0';
+      menuOverlay.style.transition = 'none';
+      menuOverlay.offsetHeight;
+      menuOverlay.style.transition = 'opacity 0.3s ease-in-out 1.2s';
+      menuOverlay.style.opacity = '1';
+    }
+
+    if (menuList) {
+      menuList.style.opacity = '0';
+      menuList.style.transform = 'translateY(20px)';
+      menuList.style.transition = 'none';
+      menuList.offsetHeight;
+      menuList.style.transition = 'opacity 0.4s ease-out 1.5s, transform 0.4s ease-out 1.5s';
+      menuList.style.opacity = '1';
+      menuList.style.transform = 'translateY(0)';
+    }
+
+    menuDocLinks.forEach(link => {
+      link.style.opacity = '0';
+      link.style.transform = 'translateY(20px)';
+      link.style.transition = 'none';
+      link.offsetHeight;
+      link.style.transition = 'opacity 0.4s ease-out 1.5s, transform 0.4s ease-out 1.5s';
+      link.style.opacity = '1';
+      link.style.transform = 'translateY(0)';
+    });
+  }
 };
 
 const closeMenu = () => {
@@ -127,14 +176,39 @@ const closeMenu = () => {
   if (menuRef.value) {
     menuRef.value.classList.add('menu--closing');
 
-    // Принудительно применяем стили к menu__content для гарантии
+    // Принудительно применяем стили для анимации закрытия
     const menuContent = menuRef.value.querySelector('.menu__content');
-    if (menuContent) {
-      // Небольшая задержка, чтобы CSS успел примениться
+    const menuOverlay = menuRef.value.querySelector('.menu__overlay');
+    const menuList = menuRef.value.querySelector('.menu__list');
+    const menuDocLinks = menuRef.value.querySelectorAll('.menu--doc-link');
+
+    // Анимация элементов меню (исчезают первыми)
+    if (menuList) {
+      menuList.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+      menuList.style.opacity = '0';
+      menuList.style.transform = 'translateY(20px)';
+    }
+
+    menuDocLinks.forEach(link => {
+      link.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+      link.style.opacity = '0';
+      link.style.transform = 'translateY(20px)';
+    });
+
+    // Анимация фона (исчезает вторым)
+    if (menuOverlay) {
       setTimeout(() => {
+        menuOverlay.style.transition = 'opacity 0.3s ease-in-out';
+        menuOverlay.style.opacity = '0';
+      }, 300);
+    }
+
+    // Анимация контента (поднимается последним)
+    if (menuContent) {
+      setTimeout(() => {
+        menuContent.style.transition = 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         menuContent.style.transform = 'translateY(-100%)';
-        menuContent.style.transition = 'transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s';
-      }, 50);
+      }, 600);
     }
   }
 
