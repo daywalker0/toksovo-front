@@ -120,21 +120,17 @@ const openMenu = () => {
 };
 
 const closeMenu = () => {
-  console.log('closeMenu called, setting isMenuOpen to false');
   isMenuOpen.value = false;
 };
 
 const handleMenuToggle = () => {
-  console.log('handleMenuToggle called, isMenuOpen:', isMenuOpen.value);
   if (isMenuOpen.value) {
     // Закрываем меню
-    console.log('Closing menu...');
     if (menuComponent.value) {
       menuComponent.value.closeMenu();
     }
   } else {
     // Открываем меню
-    console.log('Opening menu...');
     openMenu();
   }
 };

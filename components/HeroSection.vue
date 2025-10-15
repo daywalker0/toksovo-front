@@ -112,7 +112,6 @@ onMounted(() => {
 
   // Функция плавной анимации
   const animate = () => {
-    console.log('animate() called');
     const lerpFactor = 0.15; // Скорость плавности (0.1 = медленно, 0.3 = быстро)
 
     // Плавно приближаемся к целевому значению
@@ -125,17 +124,11 @@ onMounted(() => {
       parallaxContainer.value.style.transform = `translate3d(0px, ${currentContainerY}px, 0px)`;
     }
     if (renderEl.value) {
-      // Рендер остается прижатым к низу, компенсируя движение контейнера
       const renderY = -currentContainerY;
       renderEl.value.style.transform = `translate3d(0px, ${renderY}px, 0px) scale(${currentRenderScale})`;
     }
     if (skyEl.value) {
       skyEl.value.style.transform = `translate3d(0px, 0px, 0px) scale(${currentSkyScale})`;
-    }
-
-    // Отладка анимации
-    if (Math.abs(targetContainerY - currentContainerY) > 0.1) {
-      console.log('Animating:', currentContainerY, '->', targetContainerY);
     }
 
     // Продолжаем анимацию если есть разница
@@ -180,19 +173,8 @@ onMounted(() => {
     targetRenderScale = renderStartScale - (renderStartScale - 1) * progress;
     targetSkyScale = skyStartScale - (skyStartScale - 1) * progress;
 
-    // Отладка
-    console.log(
-      'Progress:',
-      progress,
-      'ContainerY:',
-      targetContainerY,
-      'RenderScale:',
-      targetRenderScale
-    );
-
     // Запускаем плавную анимацию
     if (!animationId) {
-      console.log('Starting animation');
       animationId = requestAnimationFrame(animate);
     }
   };

@@ -56,7 +56,6 @@ function fixScssImports() {
         const newContent = addVariablesImport(content);
         if (newContent !== content) {
           fs.writeFileSync(file, newContent, 'utf8');
-          console.log(`Fixed: ${file}`);
           fixedCount++;
         }
       }

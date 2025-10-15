@@ -11,7 +11,6 @@ export const useNewsApi = () => {
       });
       return response;
     } catch (error) {
-      console.error('Ошибка загрузки новостей:', error);
       throw new Error('Не удалось загрузить новости');
     }
   };

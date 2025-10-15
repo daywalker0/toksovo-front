@@ -351,7 +351,7 @@ defineExpose({
     top: 0;
     left: 0;
     width: 100%;
-    height: 70vh;
+    height: calc(100vh - 270px); /* Высота экрана минус высота хедера */
     background: $accent-color-brown;
     transform: translateY(-100%);
     overflow-y: auto;
@@ -360,6 +360,20 @@ defineExpose({
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
+
+    @media (max-width: $breakpoint-xl) {
+      height: calc(100vh - 170px); /* Высота экрана минус высота хедера */
+    }
+
+    @media (max-width: $breakpoint-lg) {
+      height: calc(100vh - 60px); /* Меньше отступ для средних экранов */
+      padding: 20px 30px 30px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      height: calc(100vh - 50px); /* Еще меньше отступ для мобильных */
+      padding: 15px 20px 20px;
+    }
   }
 
   &__list {
