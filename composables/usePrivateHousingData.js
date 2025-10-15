@@ -49,7 +49,12 @@ export function usePrivateHousingData() {
   const hoverSide = ref(null);
 
   const toggleItem = index => {
-    activeIndex.value = activeIndex.value === index ? -1 : index;
+    // Если кликаем на активный элемент, не закрываем его
+    if (activeIndex.value === index) {
+      return;
+    }
+    // Иначе переключаем на новый элемент
+    activeIndex.value = index;
   };
 
   const nextItem = () => {

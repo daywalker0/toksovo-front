@@ -5,7 +5,14 @@
     :to="to"
     :target="target"
     :rel="rel"
-    :class="['animated-link', customClass, { 'animated-link--no-animation': disableAnimation }]"
+    :class="[
+      'animated-link',
+      customClass,
+      {
+        'animated-link--no-animation': disableAnimation,
+        'animated-link--no-pointer': disablePointer,
+      },
+    ]"
     @click="handleClick"
     v-bind="$attrs"
   >
@@ -81,6 +88,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  disablePointer: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(['click']);
@@ -104,6 +115,10 @@ const handleClick = event => {
   color: inherit;
   cursor: pointer;
   gap: 8px;
+
+  &--no-pointer {
+    cursor: auto;
+  }
 
   &__text {
     position: relative;

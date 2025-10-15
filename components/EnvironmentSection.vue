@@ -90,6 +90,7 @@
                   :text="item.title"
                   customClass="accordion-header__text"
                   :disableAnimation="activeIndex === index"
+                  :disablePointer="activeIndex === index"
                 />
               </div>
               <div v-show="activeIndex === index" class="accordion-content">
@@ -682,6 +683,8 @@ onBeforeUnmount(() => {
     font-size: 28px;
     opacity: 1;
     color: $accent-color-green;
+    cursor: auto !important; // Убираем pointer cursor для активного элемента
+
     .icon {
       opacity: 1;
       width: fit-content;
