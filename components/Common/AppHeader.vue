@@ -186,10 +186,6 @@ onUnmounted(() => {
       transition: color 0.3s ease;
       outline: none;
       border: none;
-
-      &:hover {
-        color: #666;
-      }
     }
   }
 
