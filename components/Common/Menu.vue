@@ -140,7 +140,7 @@ const openMenu = () => {
       menuContent.offsetHeight;
 
       // Запускаем анимацию с плавным easing
-      menuContent.style.transition = 'transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+      menuContent.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
       menuContent.style.transform = 'translateY(0)';
     }
 
@@ -148,7 +148,7 @@ const openMenu = () => {
       menuOverlay.style.opacity = '0';
       menuOverlay.style.transition = 'none';
       menuOverlay.offsetHeight;
-      menuOverlay.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 1.2s';
+      menuOverlay.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s';
       menuOverlay.style.opacity = '1';
     }
 
@@ -158,7 +158,7 @@ const openMenu = () => {
       menuList.style.transition = 'none';
       menuList.offsetHeight;
       menuList.style.transition =
-        'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s';
+        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s';
       menuList.style.opacity = '1';
       menuList.style.transform = 'translateY(0)';
     }
@@ -169,7 +169,7 @@ const openMenu = () => {
       link.style.transition = 'none';
       link.offsetHeight;
       link.style.transition =
-        'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.5s';
+        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s';
       link.style.opacity = '1';
       link.style.transform = 'translateY(0)';
     });
@@ -190,14 +190,14 @@ const closeMenu = () => {
     // Анимация элементов меню (исчезают первыми)
     if (menuList) {
       menuList.style.transition =
-        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
       menuList.style.opacity = '0';
       menuList.style.transform = 'translateY(20px)';
     }
 
     menuDocLinks.forEach(link => {
       link.style.transition =
-        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
       link.style.opacity = '0';
       link.style.transform = 'translateY(20px)';
     });
@@ -205,17 +205,17 @@ const closeMenu = () => {
     // Анимация фона (исчезает вторым)
     if (menuOverlay) {
       setTimeout(() => {
-        menuOverlay.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        menuOverlay.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
         menuOverlay.style.opacity = '0';
-      }, 400);
+      }, 200);
     }
 
     // Анимация контента (поднимается последним)
     if (menuContent) {
       setTimeout(() => {
-        menuContent.style.transition = 'transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+        menuContent.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
         menuContent.style.transform = 'translateY(-100%)';
-      }, 800);
+      }, 400);
     }
   }
 
@@ -234,7 +234,7 @@ const closeMenu = () => {
 
     // Эмитим событие о закрытии меню
     emit('menu-closed');
-  }, 2000); // Ждем 2 секунды для завершения всей анимации (0.8s задержка + 1.2s анимация)
+  }, 1000); // Ждем 1 секунду для завершения всей анимации (0.4s задержка + 0.6s анимация)
 };
 
 const isActiveSection = link => {
