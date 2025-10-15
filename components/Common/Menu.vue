@@ -163,9 +163,9 @@ const openMenu = () => {
           link.style.transition = 'none';
           link.offsetHeight;
 
-          // Каждый элемент появляется с задержкой 0.05s после предыдущего
-          const delay = 0.3 + index * 0.05;
-          link.style.transition = `opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
+          // Каждый элемент появляется с задержкой 0.08s после предыдущего
+          const delay = 0.3 + index * 0.08;
+          link.style.transition = `opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`;
           link.style.opacity = '1';
           link.style.transform = 'translateX(0)';
         }
@@ -204,9 +204,9 @@ const closeMenu = () => {
         if (link) {
           // Элементы исчезают в обратном порядке (снизу вверх)
           const reverseIndex = menuItems.length - 1 - index;
-          const delay = reverseIndex * 0.03; // Быстрее исчезают
+          const delay = reverseIndex * 0.05; // Плавнее исчезают
 
-          link.style.transition = `opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
+          link.style.transition = `opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`;
           link.style.opacity = '0';
           link.style.transform = 'translateX(-50px)';
         }
@@ -252,7 +252,7 @@ const closeMenu = () => {
 
     // Эмитим событие о закрытии меню
     emit('menu-closed');
-  }, 600); // Ждем 0.6 секунды для завершения всей анимации (0.2s задержка + 0.4s анимация)
+  }, 800); // Ждем 0.8 секунды для завершения всей анимации (0.2s задержка + 0.6s анимация)
 };
 
 const isActiveSection = link => {
@@ -341,7 +341,7 @@ defineExpose({
     top: 0;
     left: 0;
     width: 100%;
-    height: 60vh;
+    height: 70vh;
     background: $accent-color-brown;
     transform: translateY(-100%);
     overflow-y: auto;

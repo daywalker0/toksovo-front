@@ -233,7 +233,7 @@ onUnmounted(() => {
 }
 
 .header__logo {
-  margin-left: 60px;
+  transform: translateX(35px) !important;
   position: relative;
   z-index: 9999;
   transition:
@@ -260,7 +260,6 @@ onUnmounted(() => {
 /* Логотип всегда видим при открытом меню */
 .header--menu-open .header__logo {
   opacity: 1 !important;
-  transform: translateY(0) !important;
   pointer-events: auto !important;
 }
 
