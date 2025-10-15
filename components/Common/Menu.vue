@@ -34,10 +34,26 @@
                 </svg>
               </span>
               <span class="menu__link-text">
-                <span class="menu__link-text-inner">{{ item.title }}</span>
-                <span class="menu__link-text-inner menu__link-text-inner--hover">{{
-                  item.title
-                }}</span>
+                <span class="menu__link-text-inner">
+                  <span
+                    v-for="(letter, index) in item.title.split('')"
+                    :key="`original-${index}`"
+                    class="menu__link-letter"
+                    :style="{ '--letter-delay': `${index * 0.05}s` }"
+                  >
+                    {{ letter === ' ' ? '\u00A0' : letter }}
+                  </span>
+                </span>
+                <span class="menu__link-text-inner menu__link-text-inner--hover">
+                  <span
+                    v-for="(letter, index) in item.title.split('')"
+                    :key="`hover-${index}`"
+                    class="menu__link-letter"
+                    :style="{ '--letter-delay': `${index * 0.05}s` }"
+                  >
+                    {{ letter === ' ' ? '\u00A0' : letter }}
+                  </span>
+                </span>
               </span>
             </a>
           </li>
@@ -414,11 +430,15 @@ defineExpose({
 
     &:hover {
       .menu__link-text-inner {
-        transform: translateY(-100%);
+        .menu__link-letter {
+          transform: translateY(-100%);
+        }
       }
 
       .menu__link-text-inner--hover {
-        transform: translateY(0);
+        .menu__link-letter {
+          transform: translateY(0);
+        }
       }
     }
   }
@@ -431,14 +451,22 @@ defineExpose({
 
   &__link-text-inner {
     display: block;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(0);
 
     &--hover {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
+    }
+  }
+
+  &__link-letter {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+    transition-delay: var(--letter-delay, 0s);
+
+    .menu__link-text-inner--hover & {
       transform: translateY(100%);
     }
   }
