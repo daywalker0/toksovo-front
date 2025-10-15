@@ -200,12 +200,12 @@ function selectPin(pin) {
     font-weight: 700;
     line-height: 140%;
     padding: 8px 0;
+    width: 100%;
 
-    &:hover {
-      .map__category-count {
-        color: $accent-color-orange;
-        transition: color 0.3s ease;
-      }
+    // Меняем цвет счетчика при наведении на название категории
+    .map__category-name:hover ~ .map__category-count {
+      color: $accent-color-orange;
+      transition: color 0.3s ease;
     }
   }
 
