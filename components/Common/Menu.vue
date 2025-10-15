@@ -153,25 +153,34 @@ const openMenu = () => {
     }
 
     if (menuList) {
-      menuList.style.opacity = '0';
-      menuList.style.transform = 'translateY(20px)';
-      menuList.style.transition = 'none';
-      menuList.offsetHeight;
-      menuList.style.transition =
-        'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s';
-      menuList.style.opacity = '1';
-      menuList.style.transform = 'translateY(0)';
+      // Анимируем каждый пункт меню отдельно с задержкой
+      const menuItems = menuList.querySelectorAll('.menu__item');
+      menuItems.forEach((item, index) => {
+        const link = item.querySelector('.menu__link');
+        if (link) {
+          link.style.opacity = '0';
+          link.style.transform = 'translateX(-50px)';
+          link.style.transition = 'none';
+          link.offsetHeight;
+
+          // Каждый элемент появляется с задержкой 0.1s после предыдущего
+          const delay = 0.5 + index * 0.1;
+          link.style.transition = `opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
+          link.style.opacity = '1';
+          link.style.transform = 'translateX(0)';
+        }
+      });
     }
 
     menuDocLinks.forEach(link => {
       link.style.opacity = '0';
-      link.style.transform = 'translateY(20px)';
+      link.style.transform = 'translateX(-30px)';
       link.style.transition = 'none';
       link.offsetHeight;
       link.style.transition =
         'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s';
       link.style.opacity = '1';
-      link.style.transform = 'translateY(0)';
+      link.style.transform = 'translateX(0)';
     });
   }
 };
@@ -189,17 +198,26 @@ const closeMenu = () => {
 
     // Анимация элементов меню (исчезают первыми)
     if (menuList) {
-      menuList.style.transition =
-        'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      menuList.style.opacity = '0';
-      menuList.style.transform = 'translateY(20px)';
+      const menuItems = menuList.querySelectorAll('.menu__item');
+      menuItems.forEach((item, index) => {
+        const link = item.querySelector('.menu__link');
+        if (link) {
+          // Элементы исчезают в обратном порядке (снизу вверх)
+          const reverseIndex = menuItems.length - 1 - index;
+          const delay = reverseIndex * 0.05; // Быстрее исчезают
+
+          link.style.transition = `opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
+          link.style.opacity = '0';
+          link.style.transform = 'translateX(-50px)';
+        }
+      });
     }
 
     menuDocLinks.forEach(link => {
       link.style.transition =
         'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
       link.style.opacity = '0';
-      link.style.transform = 'translateY(20px)';
+      link.style.transform = 'translateX(-30px)';
     });
 
     // Анимация фона (исчезает вторым)
@@ -342,8 +360,6 @@ defineExpose({
     flex-direction: column;
     align-items: center;
     text-align: center;
-    opacity: 0;
-    transform: translateY(20px);
   }
 
   &__item {
@@ -358,6 +374,8 @@ defineExpose({
     display: flex;
     align-items: center;
     gap: 10px;
+    opacity: 0;
+    transform: translateX(-50px);
 
     &--active {
       opacity: 0.5;
@@ -410,6 +428,6 @@ defineExpose({
   font-weight: 600;
   line-height: 120%;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateX(-30px);
 }
 </style>
