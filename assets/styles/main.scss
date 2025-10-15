@@ -33,7 +33,9 @@ body {
 
 /* Плавные переходы только для обычных элементов */
 section:not(.gsap-animated):not([data-gsap]),
-div:not(.gsap-animated):not([data-gsap]):not(.horizontal-wrapper):not(.environment-section),
+div:not(.gsap-animated):not([data-gsap]):not(.horizontal-wrapper):not(.environment-section):not(
+    .menu__content
+  ),
 article:not(.gsap-animated):not([data-gsap]) {
   transition: transform 0.3s ease;
 }

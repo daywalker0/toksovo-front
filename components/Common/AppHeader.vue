@@ -1,5 +1,8 @@
 <template>
-  <header :class="['header', { 'header--scrolled': scrolled }]" ref="header">
+  <header
+    :class="['header', { 'header--scrolled': scrolled, 'header--menu-open': isMenuOpen }]"
+    ref="header"
+  >
     <div class="header__container container">
       <div class="header__btn-choose">
         <a href="#">Выбрать квартиру</a>
@@ -60,10 +63,10 @@
           </a>
         </div>
 
-        <div class="header__burger" @click="openMenu">
-          <span>Меню</span>
+        <div class="header__burger" @click="isMenuOpen ? closeMenu() : openMenu()">
+          <span>{{ isMenuOpen ? 'Закрыть' : 'Меню' }}</span>
           <div class="header__burger--icon">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <svg v-if="!isMenuOpen" width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path
                 fill-rule="evenodd"
                 clip-rule="evenodd"
@@ -71,12 +74,18 @@
                 fill="#2C322C"
               />
             </svg>
+            <svg v-else width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+                fill="#F8F3ED"
+              />
+            </svg>
           </div>
         </div>
       </div>
     </div>
 
-    <Menu ref="menuComponent" :active-section="activeSection" />
+    <Menu ref="menuComponent" :active-section="activeSection" @menu-closed="closeMenu" />
   </header>
 </template>
 
@@ -97,6 +106,7 @@ const props = defineProps({
 const header = ref(null);
 const scrolled = ref(false);
 const menuComponent = ref(null);
+const isMenuOpen = ref(false);
 
 const handleScroll = () => {
   scrolled.value = typeof window !== 'undefined' ? window.scrollY > 50 : false;
@@ -104,7 +114,24 @@ const handleScroll = () => {
 
 const openMenu = () => {
   if (menuComponent.value) {
+    isMenuOpen.value = true;
     menuComponent.value.openMenu();
+  }
+};
+
+const closeMenu = () => {
+  isMenuOpen.value = false;
+};
+
+const handleMenuToggle = () => {
+  if (isMenuOpen.value) {
+    // Закрываем меню
+    if (menuComponent.value) {
+      menuComponent.value.closeMenu();
+    }
+  } else {
+    // Открываем меню
+    openMenu();
   }
 };
 
@@ -125,7 +152,7 @@ onUnmounted(() => {
 @use '@/assets/styles/variables.scss' as *;
 .header {
   position: fixed;
-  z-index: 100;
+  z-index: 1005 !important; /* Выше всех элементов меню */
   width: 100%;
   transition: all 0.3s ease;
 
@@ -146,6 +173,8 @@ onUnmounted(() => {
   }
 
   &__btn-choose {
+    position: relative;
+    z-index: 9999;
     @media (max-width: $breakpoint-x) {
       display: none;
     }
@@ -169,6 +198,8 @@ onUnmounted(() => {
   }
 
   &__tel {
+    position: relative;
+    z-index: 9999;
     a {
       display: flex;
       align-items: center;
@@ -179,6 +210,8 @@ onUnmounted(() => {
   }
 
   &__burger {
+    position: relative;
+    z-index: 9999;
     cursor: pointer;
     margin-left: 20px;
     display: flex;
@@ -190,6 +223,8 @@ onUnmounted(() => {
 }
 
 .header__logo {
+  position: relative;
+  z-index: 9999;
   transition:
     opacity 0.3s,
     transform 0.3s;
@@ -209,5 +244,41 @@ onUnmounted(() => {
   opacity: 0;
   transform: translateY(-20px);
   pointer-events: none;
+}
+
+/* Логотип всегда видим при открытом меню */
+.header--menu-open .header__logo {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+/* Стили для открытого меню */
+.header--menu-open {
+  background: rgba(0, 0, 0, 0.1); /* Легкий фон для лучшей видимости */
+
+  .header__btn-choose a {
+    color: $text-color-light;
+  }
+
+  .header__tel a {
+    color: $text-color-light;
+  }
+
+  .header__tel--icon svg path {
+    fill: $text-color-light;
+  }
+
+  .header__burger {
+    color: $text-color-light;
+  }
+
+  .header__burger--icon svg path {
+    fill: $text-color-light;
+  }
+
+  .header__logo svg path {
+    fill: $text-color-light;
+  }
 }
 </style>
