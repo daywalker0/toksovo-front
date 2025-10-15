@@ -80,12 +80,12 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
 
       &--right {
         text-align: right;
-        margin-left: auto;
-        max-width: 58%;
+        margin-left: 80%;
+        max-width: 100%;
 
         &:last-child {
           margin-left: 41%;
-          max-width: 70%;
+          max-width: 100%;
         }
       }
 

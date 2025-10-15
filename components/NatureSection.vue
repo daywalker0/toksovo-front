@@ -86,15 +86,15 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
         max-width: 70%;
 
         &:last-child {
-          margin-left: 20%;
-          max-width: 70%;
+          margin-left: 80%;
+          max-width: 120%;
         }
       }
 
       &--left {
         text-align: left;
         margin-right: auto;
-        max-width: 60%;
+        max-width: 80%;
       }
     }
   }
