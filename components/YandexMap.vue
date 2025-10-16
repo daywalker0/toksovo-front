@@ -2,6 +2,12 @@
   <div class="yandex-map-wrapper">
     <!-- Контейнер карты -->
     <div ref="mapContainer" class="map-container"></div>
+
+    <!-- Кастомные кнопки зума -->
+    <div class="custom-zoom">
+      <button class="button-zoom button-plus" @click="zoomIn">+</button>
+      <button class="button-zoom button-minus" @click="zoomOut">-</button>
+    </div>
   </div>
 </template>
 
@@ -9,6 +15,21 @@
 import { ref, onMounted, nextTick } from 'vue';
 
 const mapContainer = ref(null);
+let map = null;
+
+const zoomIn = () => {
+  if (map) {
+    const zoom = map.getZoom();
+    map.setZoom(zoom + 1);
+  }
+};
+
+const zoomOut = () => {
+  if (map) {
+    const zoom = map.getZoom();
+    map.setZoom(zoom - 1);
+  }
+};
 
 onMounted(async () => {
   if (!process.client) return;
@@ -18,7 +39,6 @@ onMounted(async () => {
 
   const apiKey = 'f95ebb9f-42ae-4c53-be82-de5a3c134a71';
   await new Promise((resolve, reject) => {
-    if (window.ymaps) return resolve(window.ymaps);
     if (window.ymaps) return resolve(window.ymaps);
     const s = document.createElement('script');
     s.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${apiKey}`;
@@ -31,15 +51,13 @@ onMounted(async () => {
 
   const ymaps = window.ymaps;
 
-  const map = new ymaps.Map(mapContainer.value, {
+  map = new ymaps.Map(mapContainer.value, {
     center: [60.193412, 30.52625],
     zoom: 16,
-    controls: ['zoomControl'],
+    controls: [],
   });
 
-  // Устанавливаем максимальный уровень масштабирования
   map.options.set('minZoom', 15);
-
   map.behaviors.disable('scrollZoom');
 
   const zoomToPlacemark = (placemark, zoomLevel = 18) => {
@@ -212,7 +230,7 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .map-container {
   width: 100%;
   height: 100vh;
@@ -221,11 +239,42 @@ onMounted(async () => {
 .yandex-map-wrapper {
   position: relative;
   width: 100%;
-  filter: grayscale(100%) brightness(100%) contrast(100%);
   height: 100%;
 }
 
-:deep(.ymaps-2-1-79-controls__control) {
-  inset: 340px auto auto 97% !important;
+.custom-zoom {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.button-zoom {
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: 0.2s ease;
+
+  &:hover {
+    transition: 0.2s ease;
+    color: #ff6b35;
+  }
+}
+
+.button-plus {
+  border-bottom: 1px solid #d9d9d9;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.button-minus {
+  border-top: 1px solid #d9d9d9;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
 }
 </style>
