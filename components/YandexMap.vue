@@ -1,16 +1,5 @@
 <template>
   <div class="yandex-map-wrapper">
-    <!-- Твоя верхняя панель — любой HTML/CSS -->
-    <div class="top-panel">
-      <slot name="top-panel">
-        <!-- пример содержимого панели -->
-        <div class="panel-inner">
-          <button @click="fitAll">Показать все маркеры</button>
-          <input v-model="searchQuery" placeholder="Поиск..." @keydown.enter="search" />
-        </div>
-      </slot>
-    </div>
-
     <!-- Контейнер карты -->
     <div ref="mapContainer" class="map-container"></div>
   </div>
@@ -45,9 +34,6 @@ const mapInstance = ref(null);
 const ymapsRef = ref(null);
 const markersCollection = new Map(); // id -> placemark
 const isMapReady = ref(false);
-
-// реактивные переменные для примера панели
-const searchQuery = ref('');
 
 /** helper: загружает скрипт ymaps и ждёт ready */
 async function loadYandexMaps(apiKey) {
@@ -158,53 +144,6 @@ function clearPlacemarks() {
   }
 }
 
-/** подогнать карту по всем маркерам */
-function fitBoundsToAll() {
-  if (!mapInstance.value || !isMapReady.value || !ymapsRef.value) return;
-
-  const geoObjects = Array.from(markersCollection.values());
-  if (!geoObjects.length) return;
-
-  try {
-    const collection = new ymapsRef.value.GeoObjectCollection();
-    geoObjects.forEach(p => collection.add(p));
-    const bounds = collection.getBounds();
-    if (bounds) {
-      mapInstance.value.setBounds(bounds, { checkZoomRange: true, zoomMargin: 20 });
-    }
-  } catch (error) {
-    console.error('Ошибка при подгонке карты:', error);
-  }
-}
-
-/** expose for template */
-function fitAll() {
-  fitBoundsToAll();
-}
-
-function search() {
-  if (!mapInstance.value || !isMapReady.value) return;
-
-  // простой пример: находим первый маркер по hint, центрируем
-  const q = searchQuery.value.trim().toLowerCase();
-  if (!q) return;
-
-  try {
-    for (const [id, placemark] of markersCollection.entries()) {
-      const data = placemark.properties.getAll();
-      const hint = (data.hintContent || '').toLowerCase();
-      if (hint.includes(q)) {
-        const coords = placemark.geometry.getCoordinates();
-        mapInstance.value.setCenter(coords, Math.max(mapInstance.value.getZoom(), 12));
-        placemark.balloon.open();
-        return;
-      }
-    }
-  } catch (error) {
-    console.error('Ошибка при поиске:', error);
-  }
-}
-
 /** lifecycle */
 onMounted(async () => {
   // SSR safe: работать только в браузере
@@ -301,33 +240,10 @@ watch(
   height: 100%;
 }
 
-/* верхняя панель — фиксированная поверх карты */
-.top-panel {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 12px;
-  z-index: 999; /* над картой */
-  display: flex;
-  justify-content: center;
-  pointer-events: none; /* чтобы панель не блокировала события по умолчанию */
-}
-
-.top-panel .panel-inner {
-  pointer-events: auto; /* контент панели интерактивен */
-  background: rgba(255, 255, 255, 0.95);
-  padding: 8px 12px;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-/* контейнер карты занимает весь оставшийся блок */
+/* контейнер карты занимает весь блок */
 .map-container {
   width: 100%;
-  height: 100vh; /* можно переопределить при использовании */
+  height: 100%;
   border-radius: 8px;
   overflow: hidden;
 }
