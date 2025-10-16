@@ -30,7 +30,7 @@
 
     <section id="infrastructure">
       <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
-      <MapSection />
+      <!-- <MapSection /> -->
       <NewMapSection :zoom="16" />
     </section>
 

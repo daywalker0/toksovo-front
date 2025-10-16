@@ -237,6 +237,7 @@ watch(
 .yandex-map-wrapper {
   position: relative;
   width: 100%;
+  filter: grayscale(100%) brightness(100%) contrast(100%);
   height: 100%;
 }
 
