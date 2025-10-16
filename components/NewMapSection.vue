@@ -39,9 +39,7 @@
     <YandexMap
       :center="mapCenter"
       :zoom="mapZoom"
-      :markers="mapMarkers"
       :controls="['zoomControl']"
-      @marker-clicked="onMarkerClicked"
       @ready="onMapReady"
       @error="onMapError"
     />
@@ -71,36 +69,11 @@ const props = defineProps({
     type: Number,
     default: 1, // Увеличение для Токсово
   },
-  markers: {
-    type: Array,
-    default: () => [],
-  },
 });
 
 // Настройки карты
 const mapCenter = props.center;
 const mapZoom = props.zoom;
-
-// Объединяем переданные маркеры с дефолтными
-const defaultMarkers = [
-  {
-    id: 'toksovo-center',
-    coords: [60.15, 30.5],
-    hint: 'Центр Токсово',
-    balloon: '<b>Токсово</b><br>Ленинградская область',
-    iconUrl: '', // можно оставить пустым
-  },
-  {
-    id: 'point-toksovo',
-    coords: [60.16, 30.52],
-    hint: 'ЖК ПОИНТ ТОКСОВО',
-    balloon: '<b>ЖК ПОИНТ ТОКСОВО</b><br>Современный жилой комплекс',
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-    size: [32, 32],
-  },
-];
-
-const mapMarkers = ref([...defaultMarkers, ...props.markers]);
 
 // Состояние сайдбара
 const isSidebarOpen = ref(true);
@@ -119,10 +92,6 @@ const categories = [
 
 function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value;
-}
-
-function onMarkerClicked(marker) {
-  console.log('Клик по маркеру:', marker);
 }
 
 function onMapReady({ map, ymaps }) {

@@ -17,22 +17,17 @@ const props = defineProps({
     type: Number,
     default: 10,
   },
-  markers: {
-    type: Array,
-    default: () => [], // [{ id, coords: [lat, lon], hint, balloon, iconUrl, size:[w,h] }]
-  },
   controls: {
     type: Array,
     default: () => ['zoomControl', 'geolocationControl'], // пример
   },
 });
 
-const emits = defineEmits(['marker-clicked', 'ready', 'error']);
+const emits = defineEmits(['ready', 'error']);
 
 const mapContainer = ref(null);
 const mapInstance = ref(null);
 const ymapsRef = ref(null);
-const markersCollection = new Map(); // id -> placemark
 const isMapReady = ref(false);
 
 /** helper: загружает скрипт ymaps и ждёт ready */
@@ -82,69 +77,6 @@ function createMap(ymaps, container, center, zoom, controls = []) {
   return map;
 }
 
-/** добавляет placemark на карту */
-function addPlacemark(ymaps, id, marker) {
-  if (!mapInstance.value || !isMapReady.value) {
-    console.warn('Карта не готова для добавления маркеров');
-    return;
-  }
-
-  // marker: { id, coords, hint, balloon, iconUrl, size:[w,h] }
-  const options = {
-    hintContent: marker.hint || '',
-    balloonContent: marker.balloon || '',
-  };
-
-  if (marker.iconUrl) {
-    options.iconLayout = 'default#image';
-    options.iconImageHref = marker.iconUrl;
-    options.iconImageSize = marker.size || [30, 42];
-    options.iconImageOffset = marker.offset || [-15, -42];
-  }
-
-  const placemark = new ymaps.Placemark(
-    marker.coords,
-    {
-      hintContent: marker.hint || '',
-      balloonContent: marker.balloon || '',
-    },
-    options
-  );
-
-  // событие клика
-  placemark.events.add('click', () => {
-    // emit наружу
-    emit('marker-clicked', marker);
-    // открыть балун
-    placemark.balloon.open();
-  });
-
-  try {
-    mapInstance.value.geoObjects.add(placemark);
-    markersCollection.set(id, placemark);
-  } catch (error) {
-    console.error('Ошибка при добавлении маркера:', error);
-  }
-}
-
-/** удаляет все маркеры */
-function clearPlacemarks() {
-  if (!mapInstance.value || !isMapReady.value) {
-    markersCollection.clear();
-    return;
-  }
-
-  try {
-    markersCollection.forEach(placemark => {
-      mapInstance.value.geoObjects.remove(placemark);
-    });
-    markersCollection.clear();
-  } catch (error) {
-    console.error('Ошибка при очистке маркеров:', error);
-    markersCollection.clear();
-  }
-}
-
 /** lifecycle */
 onMounted(async () => {
   // SSR safe: работать только в браузере
@@ -188,12 +120,6 @@ onMounted(async () => {
       });
     });
 
-    // добавить начальные маркеры только после готовности карты
-    props.markers.forEach(m => {
-      const id = m.id ?? `${m.coords.join(',')}-${Math.random().toString(36).slice(2, 6)}`;
-      addPlacemark(ymapsRef.value, id, m);
-    });
-
     emit('ready', { map: mapInstance.value, ymaps: ymapsRef.value });
   } catch (error) {
     console.error('Ошибка при инициализации карты:', error);
@@ -203,7 +129,6 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   try {
-    clearPlacemarks();
     if (mapInstance.value) {
       mapInstance.value.destroy();
       mapInstance.value = null;
@@ -212,26 +137,6 @@ onBeforeUnmount(() => {
     // ignore
   }
 });
-
-// следим за props.markers и синхронизируем (упрощённо)
-watch(
-  () => props.markers,
-  newVal => {
-    if (!ymapsRef.value || !mapInstance.value || !isMapReady.value) return;
-
-    try {
-      // простая стратегия: пересоздать коллекцию
-      clearPlacemarks();
-      newVal.forEach(m => {
-        const id = m.id ?? `${m.coords.join(',')}-${Math.random().toString(36).slice(2, 6)}`;
-        addPlacemark(ymapsRef.value, id, m);
-      });
-    } catch (error) {
-      console.error('Ошибка при обновлении маркеров:', error);
-    }
-  },
-  { deep: true }
-);
 </script>
 
 <style scoped>
