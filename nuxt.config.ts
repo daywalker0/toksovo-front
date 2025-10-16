@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   // Базовый URL для GitHub Pages
   app: {
-    baseURL: '/toksovo-front/', // обязательно с /
+    baseURL: '/toksovo-front/',
     head: {
       title: 'ПОИНТ ТОКСОВО',
       titleTemplate: '%s - Жилой комплекс в Токсово',
