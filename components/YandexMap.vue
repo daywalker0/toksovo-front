@@ -88,13 +88,7 @@ onMounted(async () => {
     const apiKey =
       runtimeConfig.public.YANDEX_MAPS_API_KEY ||
       process.env.NUXT_PUBLIC_YANDEX_MAPS_API_KEY ||
-      'f95ebb9f-42ae-4c53-be82-de5a3c134a71' ||
-      '';
-
-    // Отладочная информация
-    console.log('Runtime config:', runtimeConfig.public);
-    console.log('Process env:', process.env.NUXT_PUBLIC_YANDEX_MAPS_API_KEY);
-    console.log('Final API key:', apiKey);
+      'f95ebb9f-42ae-4c53-be82-de5a3c134a71';
 
     if (!apiKey) {
       console.error(
