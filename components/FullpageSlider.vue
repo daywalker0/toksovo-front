@@ -287,14 +287,6 @@ onUnmounted(() => {
     transform 0.3s ease-out,
     opacity 0.3s ease-out;
 }
-
-/* Только для первой секции */
-.fullscreen-section:first-child .section-bg {
-  transform: scale(0.95) !important;
-}
-
-/* Стили для предыдущих секций будут применяться через JavaScript */
-
 /* Анимации для вертикальных переходов фоновых изображений */
 .section-bg.slide-out-up {
   animation: slideOutUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
