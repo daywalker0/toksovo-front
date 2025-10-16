@@ -247,4 +247,8 @@ watch(
   border-radius: 8px;
   overflow: hidden;
 }
+
+:deep(.ymaps-2-1-79-controls__control) {
+  inset: 340px auto auto 97% !important;
+}
 </style>
