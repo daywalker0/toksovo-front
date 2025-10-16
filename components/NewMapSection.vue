@@ -40,6 +40,7 @@
       :center="mapCenter"
       :zoom="mapZoom"
       :markers="mapMarkers"
+      :controls="['zoomControl']"
       @marker-clicked="onMarkerClicked"
       @ready="onMapReady"
       @error="onMapError"
