@@ -2,13 +2,13 @@
   <client-only>
     <div class="map-container">
       <YandexMap
-        :coordinates="[37.617644, 55.755819]"
-        :zoom="9"
+        :coordinates="[60.193412, 30.52625]"
+        :zoom="16"
         :settings="mapSettings"
         width="100%"
         height="100vh"
       >
-        <YandexMarker :coordinates="[37.617644, 55.755819]" marker-id="0" />
+        <YandexMarker :coordinates="[60.193413, 30.52626]" marker-id="0" />
       </YandexMap>
     </div>
   </client-only>
@@ -19,7 +19,7 @@ import { YandexMap, YandexMarker } from 'vue-yandex-maps';
 
 const mapSettings = {
   location: {
-    center: [37.617644, 55.755819],
+    center: [60.193412, 30.52625],
     zoom: 9,
   },
 };
