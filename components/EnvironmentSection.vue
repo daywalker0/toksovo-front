@@ -164,10 +164,8 @@ import imgSlide from '../assets/img/private-housing-section.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Определяем мобильное устройство
 const isMobile = ref(false);
 
-// Используем композабл для данных
 const {
   items,
   activeIndex,
@@ -186,12 +184,10 @@ const isContentVisible = ref(false);
 const currentIndex = ref(0);
 const isAnimating = ref(false);
 
-// Функция для прямой установки активного индекса
 const setActiveIndex = index => {
   activeIndex.value = index;
 };
 
-// Обёртка для toggleItem, чтобы синхронизировать с currentIndex
 const toggleItem = index => {
   originalToggleItem(index);
   if (currentIndex.value !== index && !isAnimating.value) {
@@ -200,7 +196,6 @@ const toggleItem = index => {
   }
 };
 
-// Слайды
 const slides = computed(() => {
   if (!items.value || !Array.isArray(items.value)) {
     return [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
@@ -208,21 +203,15 @@ const slides = computed(() => {
   return items.value.map(item => item.image);
 });
 
-// Текущий слайд для мобильных
-const currentSlide = computed(() => {
-  return slides.value[currentIndex.value] || slides.value[0];
-});
+const currentSlide = computed(() => slides.value[currentIndex.value] || slides.value[0]);
 
 const onMouseMove = e => {
   handleMouseMove(e);
 };
 
-// Переход к следующему слайду
 const goToNextSlide = () => {
   if (isAnimating.value) return;
-
   if (isMobile.value) {
-    // Простая логика для мобильных
     isAnimating.value = true;
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
     currentIndex.value = nextIndex;
@@ -231,19 +220,15 @@ const goToNextSlide = () => {
       isAnimating.value = false;
     }, 300);
   } else {
-    // Оригинальная логика для десктопа
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
     animateSlide(nextIndex, 'right');
     setActiveIndex(nextIndex);
   }
 };
 
-// Переход к предыдущему слайду
 const goToPrevSlide = () => {
   if (isAnimating.value) return;
-
   if (isMobile.value) {
-    // Простая логика для мобильных
     isAnimating.value = true;
     const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
     currentIndex.value = prevIndex;
@@ -252,33 +237,25 @@ const goToPrevSlide = () => {
       isAnimating.value = false;
     }, 300);
   } else {
-    // Оригинальная логика для десктопа
     const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
     animateSlide(prevIndex, 'left');
     setActiveIndex(prevIndex);
   }
 };
 
-// Анимация смены слайда для десктопа
-const animateSlide = (newIndex, direction) => {
+const animateSlide = (newIndex, _direction) => {
   if (isAnimating.value) return;
-
   isAnimating.value = true;
 
-  // Обновляем индекс и активный элемент
   currentIndex.value = newIndex;
   setActiveIndex(newIndex);
 
-  // Обновляем галерею - меняем центральную картинку
   if (galleryRef.value) {
     const galleryItems = galleryRef.value.querySelectorAll('.gallery-item');
     const centerIndex = Math.floor(galleryItems.length / 2);
     const centerItem = galleryItems[centerIndex];
     const centerImg = centerItem?.querySelector('img');
-
-    if (centerImg) {
-      centerImg.src = slides.value[newIndex];
-    }
+    if (centerImg) centerImg.src = slides.value[newIndex];
   }
 
   setTimeout(() => {
@@ -287,56 +264,42 @@ const animateSlide = (newIndex, direction) => {
 };
 
 onMounted(async () => {
-  // Определяем мобильное устройство
   const checkMobile = () => {
     isMobile.value = typeof window !== 'undefined' && window.innerWidth <= 599;
   };
-
   checkMobile();
 
-  // Слушаем изменения размера окна
   if (typeof window !== 'undefined') {
     window.addEventListener('resize', checkMobile);
   }
 
-  // Если мобильное устройство, не инициализируем GSAP
   if (isMobile.value) {
     currentIndex.value = 0;
     setActiveIndex(0);
     return;
   }
 
-  // Оригинальная инициализация для десктопа
   await nextTick();
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise(r => setTimeout(r, 100));
 
   const section = sectionRef.value;
   const gallery = galleryRef.value;
   const content = contentRef.value;
-
   if (!section || !gallery || !content) return;
 
   const galleryItems = gallery.querySelectorAll('.gallery-item');
-  if (galleryItems.length === 0) return;
+  if (!galleryItems.length) return;
 
   const centerIndex = Math.floor(galleryItems.length / 2);
   const centerItem = galleryItems[centerIndex];
   const centerImg = centerItem?.querySelector('img');
-
   if (!centerItem || !centerImg) return;
 
-  // Синхронизируем начальное состояние: всё начинается с индекса 0
   currentIndex.value = 0;
-
-  // Устанавливаем активный элемент аккордеона на 0
   setActiveIndex(0);
 
-  // Скрываем контент
-  gsap.set(content, {
-    y: 40,
-    scale: 0.8,
-    display: 'none',
-  });
+  // Стартовое состояние контента
+  gsap.set(content, { y: 40, opacity: 0, display: 'none' });
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -348,33 +311,33 @@ onMounted(async () => {
     },
   });
 
-  // Уезжают соседи в стороны (кроме центрального)
+  // На старте соседи приводим к 169.4×254, центр — 400×600
   tl.to(
     galleryItems,
     {
-      x: i => {
-        if (i < centerIndex) return '-150%';
-        if (i > centerIndex) return '150%';
-        return '0%'; // Центральный элемент остается на месте
-      },
+      width: i => (i === centerIndex ? '400px' : '169.4px'),
+      height: i => (i === centerIndex ? '600px' : '254px'),
       ease: 'power2.inOut',
       duration: 1,
     },
     0
   );
 
-  // Центральный блок растёт
+  // Рост центрального блока до экрана
+  const growStart = 0.2;
+  const growDur = 1.2;
+  const contentAt = growStart + growDur * 0.8; // 80% прогресса роста
+
   tl.to(
     centerItem,
     {
       width: '100vw',
       height: '100vh',
       borderRadius: 0,
-      x: 0, // Явно фиксируем позицию по X
       ease: 'power2.inOut',
-      duration: 1.2,
+      duration: growDur,
     },
-    0.2
+    growStart
   );
 
   tl.to(
@@ -383,39 +346,37 @@ onMounted(async () => {
       width: '100%',
       height: '100%',
       objectFit: 'cover',
-      x: 0, // Явно фиксируем позицию по X
       ease: 'power2.inOut',
-      duration: 1.2,
+      duration: growDur,
     },
-    0.2
+    growStart
   );
 
-  // Контент появляется на 80% анимации увеличения картинки
+  // Появление контента снизу на 80% роста
+  tl.set(content, { display: 'flex' }, contentAt - 0.01);
   tl.to(
     content,
     {
-      display: 'flex',
       y: 0,
-      scale: 1,
+      opacity: 1,
       ease: 'power3.out',
-      duration: 1.2,
+      duration: 0.6,
     },
-    0.96 // 80% от 1.2 (длительность анимации увеличения картинки)
+    contentAt
   );
 
-  // Курсоры появляются сразу при появлении контента
   tl.call(
     () => {
       isContentVisible.value = true;
     },
     null,
-    0.96
+    contentAt
   );
 });
 
-// Очистка слушателя при размонтировании
 onBeforeUnmount(() => {
   if (typeof window !== 'undefined') {
+    // примитивная очистка
     window.removeEventListener('resize', () => {
       isMobile.value = window.innerWidth <= 599;
     });

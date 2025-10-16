@@ -139,7 +139,7 @@ const handleClick = event => {
 
   &__letter {
     display: inline-block;
-    transition: transform 0.2s cubic-bezier(0, 0, 0.1, 1);
+    transition: transform 0.3s cubic-bezier(0.76, 0, 0.024, 1);
     transform: translateY(0);
     transition-delay: var(--letter-delay, 0s);
 
@@ -153,7 +153,7 @@ const handleClick = event => {
     .animated-link__text-inner {
       .animated-link__letter {
         transform: translateY(-100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.76, 0, 0.024, 1);
         transition-delay: var(--letter-delay, 0s);
       }
     }
@@ -161,7 +161,7 @@ const handleClick = event => {
     .animated-link__text-inner--hover {
       .animated-link__letter {
         transform: translateY(0);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.76, 0, 0.024, 1);
         transition-delay: var(--letter-delay, 0s);
         color: v-bind('hoverColor || "inherit"');
       }

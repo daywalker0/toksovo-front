@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
 import bgSkyImg from '@/assets/img/bg-sky.jpg';
 import heroBgImg from '@/assets/img/hero-bg.png';
 
@@ -55,147 +55,44 @@ const subtitleText = 'комфорт, который становится час
 const letterDelay = 0.05; // seconds per letter
 const titleStartDelay = 0.3; // initial delay before title starts
 
-const titleLetters = computed(() => Array.from(titleText));
-const [firstWord, secondWord] = titleText.split(' ');
-const firstWordLetters = computed(() => Array.from(firstWord));
-const secondWordLetters = computed(() => Array.from(secondWord));
-
-// Pure JavaScript scroll animation
 const sectionEl = ref(null);
 const renderEl = ref(null);
 const skyEl = ref(null);
-const parallaxContainer = ref(null);
 
-let scrollHandler = null;
-let animationId = null;
-let currentContainerY = 0;
-let currentRenderScale = 0;
-let currentSkyScale = 0;
-let targetContainerY = 0;
-let targetRenderScale = 0;
-let targetSkyScale = 0;
+let gsap, ScrollTrigger;
+let st;
 
-onMounted(() => {
-  // Адаптивные параметры
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
-  const renderStartScale = isMobile ? 3.1 : 3.6;
-  const skyStartScale = isMobile ? 1.1 : 1.2;
+onMounted(async () => {
+  // SSR-safe импорт
+  const m = await import('gsap');
+  const s = await import('gsap/ScrollTrigger');
+  gsap = m.gsap || m.default || m;
+  ScrollTrigger = s.ScrollTrigger;
+  gsap.registerPlugin(ScrollTrigger);
 
-  // Устанавливаем начальные позиции
-  if (renderEl.value) {
-    renderEl.value.style.position = 'absolute';
-    renderEl.value.style.bottom = '0';
-    renderEl.value.style.left = '0';
-    renderEl.value.style.right = '0';
-    renderEl.value.style.transformOrigin = 'center bottom';
-    renderEl.value.style.transform = `scale(${renderStartScale})`;
-    renderEl.value.style.zIndex = '1';
-  }
+  const isMobile = window.innerWidth <= 599;
+  const startScale = isMobile ? 3.1 : 2.3; // ваш стартовый масштаб
 
-  if (skyEl.value) {
-    skyEl.value.style.position = 'absolute';
-    skyEl.value.style.top = '0';
-    skyEl.value.style.left = '0';
-    skyEl.value.style.right = '0';
-    skyEl.value.style.transformOrigin = 'center bottom';
-    skyEl.value.style.transform = `scale(${skyStartScale})`;
-    skyEl.value.style.zIndex = '0';
-  }
+  // начальные значения
+  gsap.set(renderEl.value, { transformOrigin: '50% 50%', scale: startScale });
+  // sky фиксированный фон, без анимации
 
-  // Инициализируем текущие значения
-  currentContainerY = 0;
-  currentRenderScale = renderStartScale;
-  currentSkyScale = skyStartScale;
-  targetContainerY = 0;
-  targetRenderScale = renderStartScale;
-  targetSkyScale = skyStartScale;
-
-  // Функция плавной анимации
-  const animate = () => {
-    const lerpFactor = 0.15; // Скорость плавности (0.1 = медленно, 0.3 = быстро)
-
-    // Плавно приближаемся к целевому значению
-    currentContainerY += (targetContainerY - currentContainerY) * lerpFactor;
-    currentRenderScale += (targetRenderScale - currentRenderScale) * lerpFactor;
-    currentSkyScale += (targetSkyScale - currentSkyScale) * lerpFactor;
-
-    // Применяем изменения
-    if (parallaxContainer.value) {
-      parallaxContainer.value.style.transform = `translate3d(0px, ${currentContainerY}px, 0px)`;
-    }
-    if (renderEl.value) {
-      const renderY = -currentContainerY;
-      renderEl.value.style.transform = `translate3d(0px, ${renderY}px, 0px) scale(${currentRenderScale})`;
-    }
-    if (skyEl.value) {
-      skyEl.value.style.transform = `translate3d(0px, 0px, 0px) scale(${currentSkyScale})`;
-    }
-
-    // Продолжаем анимацию если есть разница
-    if (
-      Math.abs(targetContainerY - currentContainerY) > 0.001 ||
-      Math.abs(targetRenderScale - currentRenderScale) > 0.001 ||
-      Math.abs(targetSkyScale - currentSkyScale) > 0.001
-    ) {
-      animationId = requestAnimationFrame(animate);
-    } else {
-      // Анимация завершена
-      animationId = null;
-    }
-  };
-
-  // Функция обработки скролла
-  const handleScroll = () => {
-    if (!sectionEl.value) return;
-
-    const rect = sectionEl.value.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const sectionHeight = windowHeight;
-
-    // Вычисляем прогресс (0 = начало, 1 = конец)
-    let progress = 0;
-
-    // Если секция видна и находится в области анимации
-    if (rect.top <= 0 && rect.bottom >= windowHeight) {
-      // Прогресс от 0 до 1 при скролле вниз
-      progress = Math.abs(rect.top) / sectionHeight;
-      progress = Math.min(progress, 1);
-    } else if (rect.bottom < windowHeight) {
-      // Если секция полностью прокручена - анимация завершена
-      progress = 1;
-    }
-
-    // Вычисляем целевые значения
-    // Контейнер двигается вниз (от 0 до -580px)
-    targetContainerY = -580 * progress;
-
-    // Масштабы уменьшаются (от большого к нормальному)
-    targetRenderScale = renderStartScale - (renderStartScale - 1) * progress;
-    targetSkyScale = skyStartScale - (skyStartScale - 1) * progress;
-
-    // Запускаем плавную анимацию
-    if (!animationId) {
-      animationId = requestAnimationFrame(animate);
-    }
-  };
-
-  // Добавляем обработчик скролла
-  scrollHandler = handleScroll;
-  window.addEventListener('scroll', scrollHandler, { passive: true });
-  window.addEventListener('resize', scrollHandler, { passive: true });
-
-  // Вызываем сразу для начальной позиции
-  handleScroll();
+  st = gsap.to(renderEl.value, {
+    scale: 1,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: sectionEl.value,
+      start: 'top top',
+      end: '+=100vh', // глубина анимации; при необходимости поменяйте
+      scrub: 1,
+    },
+  });
 });
 
 onBeforeUnmount(() => {
-  if (scrollHandler) {
-    window.removeEventListener('scroll', scrollHandler);
-    window.removeEventListener('resize', scrollHandler);
-  }
-  if (animationId) {
-    cancelAnimationFrame(animationId);
-  }
+  st?.scrollTrigger?.kill();
+  st?.kill();
+  ScrollTrigger?.refresh();
 });
 </script>
 
@@ -204,126 +101,47 @@ onBeforeUnmount(() => {
 
 .hero-section {
   position: relative;
-  background: none;
-  min-height: 200vh;
+  min-height: 150vh; // пространство для скролла
   overflow: hidden;
 
-  @media (max-width: $breakpoint-x) {
-    min-height: 100svh;
-  }
-
   &__container {
-    min-height: 200vh;
-
-    @media (max-width: $breakpoint-x) {
-      min-height: 100svh;
-    }
-  }
-
-  &__content {
-    margin: 0 auto;
-    padding-top: 100px;
-    max-width: 660px;
-    text-align: center;
     position: relative;
-    z-index: 1;
+    z-index: 2; // контент над фоном
+    min-height: 200vh;
+    display: flex;
+    align-items: flex-start;
+  }
 
-    @media (max-width: $breakpoint-x) {
-      padding-top: 100px;
-      max-width: 90%;
+  // Фиксированный неанимируемый фон
+  &__sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 
-  &__title {
-    font-size: 120px;
-    font-weight: 400;
-    line-height: 0.8;
-    margin: 0;
-    color: $text-color-primary;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    hyphens: none;
-
-    @media (max-width: $breakpoint-lg) {
-      font-size: 100px;
-    }
-
-    @media (max-width: $breakpoint-x) {
-      font-size: 60px;
-      line-height: 0.9;
-    }
-  }
-
-  &__subtitle {
-    font-size: 36px;
-    line-height: 110%;
-    max-width: 460px;
-    margin: 0 auto;
-    padding-top: 30px;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    hyphens: none;
-
-    @media (max-width: $breakpoint-lg) {
-      font-size: 30px;
-    }
-
-    @media (max-width: $breakpoint-x) {
-      font-size: 22px;
-      max-width: 250px;
-      padding-top: 20px;
-    }
-  }
-
-  &__parallax-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    will-change: transform;
-  }
-
+  // Фиксированный слой, который масштабируется к 0
   &__bg {
-    position: absolute;
-    bottom: 0;
+    position: fixed;
     left: 0;
     right: 0;
+    bottom: 0;
+    top: auto;
     z-index: 1;
     transform-origin: center bottom;
-    will-change: transform;
+    pointer-events: none;
 
     img {
       width: 100%;
       height: auto;
       object-fit: cover;
       object-position: center bottom;
-
-      @media (max-width: $breakpoint-x) {
-        object-position: center 70%;
-      }
-    }
-  }
-
-  &__sky {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 0;
-    pointer-events: none;
-    height: 200vh;
-    transform-origin: center bottom;
-    will-change: transform;
-
-    @media (max-width: $breakpoint-x) {
-      height: 200vh;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
   }
 }

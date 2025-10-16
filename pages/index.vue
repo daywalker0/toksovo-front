@@ -4,47 +4,52 @@
     <section id="hero">
       <HeroSection />
     </section>
-    <section id="about">
-      <TextBlockSection :text="sectionEnvironment.text" :subtitle="sectionEnvironment.subtitle" />
-      <EnvironmentSection />
-      <LocationsSection />
-    </section>
+    <div class="main-sections">
+      <section id="about">
+        <TextBlockSection :text="sectionEnvironment.text" :subtitle="sectionEnvironment.subtitle" />
+        <EnvironmentSection />
+        <LocationsSection />
+      </section>
 
-    <!-- Горизонтальный контейнер -->
-    <div ref="horizontalWrapper" class="horizontal-wrapper">
-      <div class="horizontal-container">
-        <NatureSection />
-        <WalkCitySection />
+      <!-- Горизонтальный контейнер -->
+      <div ref="horizontalWrapper" class="horizontal-wrapper">
+        <div class="horizontal-container">
+          <NatureSection />
+          <WalkCitySection />
+        </div>
       </div>
+
+      <MasterPlanSection />
+
+      <section id="architecture">
+        <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
+        <FullpageSlider :sections="sectionNewStyle.sliderImages" />
+
+        <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
+        <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
+      </section>
+
+      <section id="infrastructure">
+        <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
+        <!-- <MapSection /> -->
+        <NewMapSection :zoom="16" />
+      </section>
+
+      <section id="layouts">
+        <TextBlockSection
+          :text="sectionLiveOwnSpace.text"
+          :subtitle="sectionLiveOwnSpace.subtitle"
+        />
+        <AppsLayoutsSection :apartments="apartments" />
+      </section>
+
+      <ConstructionSection />
+      <NewsSection />
+      <ProjectsSection />
+      <ChooseYouAppsSection />
+
+      <Footer />
     </div>
-
-    <MasterPlanSection />
-
-    <section id="architecture">
-      <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
-      <FullpageSlider :sections="sectionNewStyle.sliderImages" />
-
-      <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
-      <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
-    </section>
-
-    <section id="infrastructure">
-      <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
-      <!-- <MapSection /> -->
-      <NewMapSection :zoom="16" />
-    </section>
-
-    <section id="layouts">
-      <TextBlockSection :text="sectionLiveOwnSpace.text" :subtitle="sectionLiveOwnSpace.subtitle" />
-      <AppsLayoutsSection :apartments="apartments" />
-    </section>
-
-    <ConstructionSection />
-    <NewsSection />
-    <ProjectsSection />
-    <ChooseYouAppsSection />
-
-    <Footer />
   </div>
 </template>
 
@@ -321,6 +326,12 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/variables.scss' as *;
+
+.main-sections {
+  position: relative;
+  z-index: 100000000;
+  background: rgba(248, 243, 237, 1);
+}
 .horizontal-wrapper {
   width: 100vw;
   height: 100vh;
