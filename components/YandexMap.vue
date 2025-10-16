@@ -69,6 +69,9 @@ function createMap(ymaps, container, center, zoom, controls = []) {
     }
   );
 
+  // Отключаем зум колесиком мыши
+  map.behaviors.disable('scrollZoom');
+
   // добавить контролы, если нужно
   if (controls.includes('zoomControl')) map.controls.add('zoomControl');
   if (controls.includes('typeSelector')) map.controls.add('typeSelector');
