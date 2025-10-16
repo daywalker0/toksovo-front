@@ -41,12 +41,17 @@ onMounted(async () => {
 
   map.behaviors.disable('scrollZoom');
 
+  const zoomToPlacemark = (placemark, zoomLevel = 18) => {
+    placemark.events.add('click', () => {
+      map.setCenter(placemark.geometry.getCoordinates(), zoomLevel, {
+        duration: 500, // анимация 0.5 секунды
+      });
+    });
+  };
+
   const placemark1 = new ymaps.Placemark(
     [60.1925, 30.5285],
-    {
-      hintContent: 'Маркер с кружком',
-      balloonContent: 'Здесь маркер',
-    },
+    {},
     {
       iconLayout: 'default#image',
       iconImageHref:
@@ -72,10 +77,7 @@ onMounted(async () => {
   );
   const placemark2 = new ymaps.Placemark(
     [60.1932, 30.5318],
-    {
-      hintContent: 'Маркер с кружком',
-      balloonContent: 'Здесь маркер',
-    },
+    {},
     {
       iconLayout: 'default#image',
       iconImageHref:
@@ -100,10 +102,7 @@ onMounted(async () => {
   );
   const placemark3 = new ymaps.Placemark(
     [60.194, 30.533],
-    {
-      hintContent: 'Маркер с кружком',
-      balloonContent: 'Здесь маркер',
-    },
+    {},
     {
       iconLayout: 'default#image',
       iconImageHref:
@@ -128,10 +127,7 @@ onMounted(async () => {
   );
   const placemark4 = new ymaps.Placemark(
     [60.1941, 30.5342],
-    {
-      hintContent: 'Маркер с кружком',
-      balloonContent: 'Здесь маркер',
-    },
+    {},
     {
       iconLayout: 'default#image',
       iconImageHref:
@@ -151,10 +147,7 @@ onMounted(async () => {
   );
   const placemark5 = new ymaps.Placemark(
     [60.1939, 30.5346],
-    {
-      hintContent: 'Маркер с кружком',
-      balloonContent: 'Здесь маркер',
-    },
+    {},
     {
       iconLayout: 'default#image',
       iconImageHref:
@@ -180,10 +173,7 @@ onMounted(async () => {
   );
   const placemark6 = new ymaps.Placemark(
     [60.1964, 30.5326],
-    {
-      hintContent: 'Маркер с кружком',
-      balloonContent: 'Здесь маркер',
-    },
+    {},
     {
       iconLayout: 'default#image',
       iconImageHref:
@@ -214,6 +204,10 @@ onMounted(async () => {
   map.geoObjects.add(placemark4);
   map.geoObjects.add(placemark5);
   map.geoObjects.add(placemark6);
+
+  [placemark1, placemark2, placemark3, placemark4, placemark5, placemark6].forEach(pm => {
+    zoomToPlacemark(pm, 18);
+  });
 });
 </script>
 
