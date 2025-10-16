@@ -11,6 +11,7 @@
       {
         'animated-link--no-animation': disableAnimation,
         'animated-link--no-pointer': disablePointer,
+        'animated-link--force-hover': forceHover,
       },
     ]"
     @click="handleClick"
@@ -92,6 +93,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  forceHover: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(['click']);
@@ -149,7 +154,8 @@ const handleClick = event => {
   }
 
   // Быстрое появление при hover (только если анимация не отключена)
-  &:hover:not(.animated-link--no-animation) {
+  &:hover:not(.animated-link--no-animation),
+  &.animated-link--force-hover:not(.animated-link--no-animation) {
     .animated-link__text-inner {
       .animated-link__letter {
         transform: translateY(-100%);
