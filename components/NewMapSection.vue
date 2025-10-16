@@ -21,16 +21,28 @@
           </span>
         </h3>
         <ul v-show="isSidebarOpen" class="map__categories">
-          <li v-for="cat in categories" :key="cat.name" class="map__category">
+          <li
+            v-for="cat in categories"
+            :key="cat.name"
+            class="map__category"
+            @mouseenter="handleCategoryMouseEnter(cat.name)"
+            @mouseleave="handleCategoryMouseLeave"
+          >
             <div class="map__category-name">
               <img :src="cat.icon" alt="" class="map__icon" />
               <AnimatedLink
                 :text="cat.name"
                 customClass="map__category-name-link"
                 hoverColor="#ff6b35"
+                :forceHover="hoveredCategory === cat.name"
               />
             </div>
-            <span class="map__category-count">{{ cat.count }}</span>
+            <span
+              class="map__category-count"
+              :class="{ 'map__category-count--hovered': hoveredCategory === cat.name }"
+            >
+              {{ cat.count }}
+            </span>
           </li>
         </ul>
       </div>
@@ -78,6 +90,9 @@ const mapZoom = props.zoom;
 // Состояние сайдбара
 const isSidebarOpen = ref(true);
 
+// Состояние наведения на категории
+const hoveredCategory = ref(null);
+
 // Категории локаций
 const categories = [
   { name: 'Культура и отдых', count: 12, icon: culture, category: 'culture' },
@@ -92,6 +107,14 @@ const categories = [
 
 function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value;
+}
+
+function handleCategoryMouseEnter(categoryName) {
+  hoveredCategory.value = categoryName;
+}
+
+function handleCategoryMouseLeave() {
+  hoveredCategory.value = null;
 }
 
 function onMapReady({ map, ymaps }) {
@@ -176,11 +199,13 @@ function onMapError(error) {
     line-height: 140%;
     padding: 8px 0;
     width: 100%;
+    cursor: pointer;
 
-    // Меняем цвет счетчика при наведении на название категории
-    .map__category-name:hover ~ .map__category-count {
-      color: $accent-color-orange;
-      transition: color 0.3s ease;
+    &:hover {
+      .map__category-count {
+        color: $accent-color-orange;
+        transition: color 0.3s ease;
+      }
     }
   }
 
@@ -203,6 +228,14 @@ function onMapError(error) {
   &__icon {
     width: 20px;
     height: 20px;
+  }
+
+  &__category-count {
+    transition: color 0.3s ease;
+
+    &--hovered {
+      color: $accent-color-orange;
+    }
   }
 }
 </style>

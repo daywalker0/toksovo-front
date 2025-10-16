@@ -19,6 +19,7 @@ onMounted(async () => {
   const apiKey = 'f95ebb9f-42ae-4c53-be82-de5a3c134a71';
   await new Promise((resolve, reject) => {
     if (window.ymaps) return resolve(window.ymaps);
+    if (window.ymaps) return resolve(window.ymaps);
     const s = document.createElement('script');
     s.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${apiKey}`;
     s.onload = () => {

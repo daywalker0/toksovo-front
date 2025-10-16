@@ -179,6 +179,12 @@ const openMenu = () => {
       menuItems.forEach((item, index) => {
         const link = item.querySelector('.menu__link');
         if (link) {
+          // Временно убираем активный класс для анимации
+          const wasActive = link.classList.contains('menu__link--active');
+          if (wasActive) {
+            link.classList.remove('menu__link--active');
+          }
+
           link.style.opacity = '0';
           link.style.transform = 'translateX(-50px)';
           link.style.transition = 'none';
@@ -190,15 +196,15 @@ const openMenu = () => {
           link.style.opacity = '1';
           link.style.transform = 'translateX(0)';
 
-          // Восстанавливаем активную секцию после анимации
-          setTimeout(
-            () => {
-              if (link.classList.contains('menu__link--active')) {
-                link.style.opacity = '0.5';
-              }
-            },
-            delay * 1000 + 500
-          );
+          // Восстанавливаем активный класс после анимации
+          if (wasActive) {
+            setTimeout(
+              () => {
+                link.classList.add('menu__link--active');
+              },
+              delay * 1000 + 500
+            );
+          }
         }
       });
     }
