@@ -50,6 +50,7 @@ const { sections } = toRefs(props);
 const sliderId = ref(`slider-${Math.random().toString(36).substr(2, 9)}`);
 
 const currentSection = ref(0);
+const previousCurrentSection = ref(0); // Отслеживаем предыдущую текущую секцию
 const isIndicatorVisible = ref(false);
 const isInSlider = ref(false);
 let lastUpdateTime = 0;
@@ -151,13 +152,17 @@ onMounted(() => {
         now - lastUpdateTime > 100
       ) {
         // Не чаще чем раз в 100мс
+        previousCurrentSection.value = currentSection.value; // Сохраняем предыдущую секцию
         currentSection.value = mostVisibleIndex;
         lastUpdateTime = now;
       }
-    }, 50); // Уменьшаем задержку для быстрого отклика
+    }, 16); // Уменьшаем задержку для быстрого отклика (60fps)
 
     // Анимация масштабирования для активной секции
     updateScaleAnimation();
+
+    // Анимация для предыдущей секции
+    updatePreviousSectionAnimation();
   };
 
   // Функция для обновления анимации масштабирования только для первой картинки
@@ -186,10 +191,99 @@ onMounted(() => {
         const bgElement = firstElement.querySelector('.section-bg');
         if (bgElement) {
           bgElement.style.transform = `scale(${scale})`;
-          bgElement.style.transition = 'transform 0.3s ease-out';
+          bgElement.style.transition = 'none';
         }
       }
     }
+  };
+
+  // Функция для анимации текущей секции при её уходе
+  const updatePreviousSectionAnimation = () => {
+    const currentIndex = currentSection.value;
+    const previousIndex = previousCurrentSection.value;
+
+    // Анимируем текущую секцию, когда она начинает уходить вверх
+    const currentElement = document.getElementById(`section-${sliderId.value}-${currentIndex}`);
+    if (currentElement) {
+      const rect = currentElement.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Вычисляем прогресс анимации на основе позиции текущей секции
+      // Анимация начинается когда низ текущей секции достигает низа экрана
+      let scrollProgress = 0;
+
+      if (rect.bottom <= 0) {
+        // Секция полностью ушла вверх
+        scrollProgress = 1;
+      } else if (rect.bottom <= windowHeight) {
+        // Анимация начинается когда низ текущей секции достигает низа экрана
+        // Прогресс от 0 (низ секции на дне экрана) до 1 (секция полностью ушла вверх)
+        const startPoint = windowHeight; // Начинаем когда низ секции на дне экрана
+        const endPoint = 0; // Заканчиваем когда низ секции ушел вверх
+
+        scrollProgress = (startPoint - rect.bottom) / (startPoint - endPoint);
+      }
+
+      // Ограничиваем прогресс от 0 до 1
+      scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+
+      // Масштабируем от 1.0 до 0.5 и прозрачность от 1.0 до 0.5
+      const scale = 1.0 - scrollProgress * 0.5; // от 1.0 до 0.5
+      const opacity = 1.0 - scrollProgress * 0.5; // от 1.0 до 0.5
+
+      const bgElement = currentElement.querySelector('.section-bg');
+      if (bgElement) {
+        bgElement.style.transform = `scale(${scale})`;
+        bgElement.style.opacity = opacity;
+        bgElement.style.transition = 'none'; // Убираем задержку для мгновенной реакции
+      }
+    }
+
+    // Также анимируем предыдущую секцию, если она есть
+    if (previousIndex >= 0 && previousIndex !== currentIndex) {
+      const previousElement = document.getElementById(`section-${sliderId.value}-${previousIndex}`);
+      if (previousElement) {
+        const rect = previousElement.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        let scrollProgress = 0;
+
+        if (rect.bottom <= 0) {
+          scrollProgress = 1;
+        } else if (rect.bottom <= windowHeight) {
+          const startPoint = windowHeight;
+          const endPoint = 0;
+          scrollProgress = (startPoint - rect.bottom) / (startPoint - endPoint);
+        }
+
+        scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+
+        const scale = 1.0 - scrollProgress * 0.5;
+        const opacity = 1.0 - scrollProgress * 0.5;
+
+        const bgElement = previousElement.querySelector('.section-bg');
+        if (bgElement) {
+          bgElement.style.transform = `scale(${scale})`;
+          bgElement.style.opacity = opacity;
+          bgElement.style.transition = 'none';
+        }
+      }
+    }
+
+    // Сбрасываем анимацию только для секций, которые не являются текущей и не были предыдущей текущей
+    sections.value.forEach((_, index) => {
+      if (index !== currentIndex && index !== previousCurrentSection.value) {
+        const element = document.getElementById(`section-${sliderId.value}-${index}`);
+        if (element) {
+          const bgElement = element.querySelector('.section-bg');
+          if (bgElement) {
+            // Для неактивных секций сбрасываем анимацию
+            bgElement.style.transform = 'scale(1)';
+            bgElement.style.opacity = '1';
+          }
+        }
+      }
+    });
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
@@ -236,12 +330,18 @@ onUnmounted(() => {
   background-position: center;
   background-repeat: no-repeat;
   transform: scale(1);
+  opacity: 1;
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-out;
 }
 
 /* Только для первой секции */
 .fullscreen-section:first-child .section-bg {
   transform: scale(0.95) !important;
 }
+
+/* Стили для предыдущих секций будут применяться через JavaScript */
 
 /* Анимации для вертикальных переходов фоновых изображений */
 .section-bg.slide-out-up {
