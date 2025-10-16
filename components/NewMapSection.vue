@@ -79,7 +79,7 @@ const props = defineProps({
   },
   zoom: {
     type: Number,
-    default: 1, // Увеличение для Токсово
+    default: 1,
   },
 });
 

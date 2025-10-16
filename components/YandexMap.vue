@@ -37,6 +37,9 @@ onMounted(async () => {
     controls: ['zoomControl'],
   });
 
+  // Устанавливаем максимальный уровень масштабирования
+  map.options.set('minZoom', 15);
+
   map.behaviors.disable('scrollZoom');
 
   const zoomToPlacemark = (placemark, zoomLevel = 18) => {
