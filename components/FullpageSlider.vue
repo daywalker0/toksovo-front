@@ -158,43 +158,8 @@ onMounted(() => {
       }
     }, 16); // Уменьшаем задержку для быстрого отклика (60fps)
 
-    // Анимация масштабирования для активной секции
-    updateScaleAnimation();
-
     // Анимация для предыдущей секции
     updatePreviousSectionAnimation();
-  };
-
-  // Функция для обновления анимации масштабирования только для первой картинки
-  const updateScaleAnimation = () => {
-    // Только для первой секции (индекс 0)
-    const firstElement = document.getElementById(`section-${sliderId.value}-0`);
-    if (firstElement) {
-      const rect = firstElement.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // Проверяем, видна ли половина первой секции
-      const isHalfVisible = rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5;
-
-      if (isHalfVisible) {
-        // Вычисляем прогресс анимации на основе позиции скролла
-        // 0 = секция вверху экрана, 1 = секция внизу экрана
-        const scrollProgress = Math.max(
-          0,
-          Math.min(1, (windowHeight * 0.5 - rect.top) / (windowHeight * 0.5))
-        );
-
-        // Масштабируем от 0.95 до 1.0 при скролле вниз
-        // И от 1.0 до 0.95 при скролле вверх
-        const scale = 0.95 + scrollProgress * 0.05;
-
-        const bgElement = firstElement.querySelector('.section-bg');
-        if (bgElement) {
-          bgElement.style.transform = `scale(${scale})`;
-          bgElement.style.transition = 'none';
-        }
-      }
-    }
   };
 
   // Функция для анимации текущей секции при её уходе
@@ -270,20 +235,7 @@ onMounted(() => {
       }
     }
 
-    // Сбрасываем анимацию только для секций, которые не являются текущей и не были предыдущей текущей
-    sections.value.forEach((_, index) => {
-      if (index !== currentIndex && index !== previousCurrentSection.value) {
-        const element = document.getElementById(`section-${sliderId.value}-${index}`);
-        if (element) {
-          const bgElement = element.querySelector('.section-bg');
-          if (bgElement) {
-            // Для неактивных секций сбрасываем анимацию
-            bgElement.style.transform = 'scale(1)';
-            bgElement.style.opacity = '1';
-          }
-        }
-      }
-    });
+    // Убираем логику сброса анимации - теперь финальные значения opacity и scale сохраняются
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
