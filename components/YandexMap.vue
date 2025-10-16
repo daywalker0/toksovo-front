@@ -85,7 +85,8 @@ onMounted(async () => {
   try {
     // получаем apiKey из runtimeConfig.public
     const runtimeConfig = useRuntimeConfig();
-    const apiKey = runtimeConfig.public.YANDEX_MAPS_API_KEY || '';
+    const apiKey =
+      runtimeConfig.public.YANDEX_MAPS_API_KEY || process.env.NUXT_PUBLIC_YANDEX_MAPS_API_KEY || '';
 
     if (!apiKey) {
       console.error(
