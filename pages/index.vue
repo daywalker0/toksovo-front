@@ -31,7 +31,8 @@
     <section id="infrastructure">
       <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
       <!-- <MapSection /> -->
-      <NewMapSection :zoom="16" />
+      <!-- <NewMapSection :zoom="16" /> -->
+      <NewMapSectionPlugin />
     </section>
 
     <section id="layouts">

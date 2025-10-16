@@ -1,5 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config';
-import path from 'path';
+import { fileURLToPath } from 'url';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-18',
@@ -45,13 +45,13 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'static',
     prerender: {
-      // отключаем сканирование сайта
-      crawl: false,
       routes: [],
     },
   },
 
   modules: ['@pinia/nuxt'],
+
+  plugins: [{ src: '~/plugins/maps', mode: 'client' }],
 
   css: ['@/assets/styles/main.scss'],
 
@@ -73,11 +73,11 @@ export default defineNuxtConfig({
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname),
-        '@assets': path.resolve(__dirname, 'assets'),
-        '@components': path.resolve(__dirname, 'components'),
-        '@composables': path.resolve(__dirname, 'composables'),
-        '@pages': path.resolve(__dirname, 'pages'),
+        '@': fileURLToPath(new URL('.', import.meta.url)),
+        '@assets': fileURLToPath(new URL('./assets', import.meta.url)),
+        '@components': fileURLToPath(new URL('./components', import.meta.url)),
+        '@composables': fileURLToPath(new URL('./composables', import.meta.url)),
+        '@pages': fileURLToPath(new URL('./pages', import.meta.url)),
       },
     },
   },
