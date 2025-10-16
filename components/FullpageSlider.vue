@@ -330,28 +330,6 @@ onUnmounted(() => {
   animation: contentSlideOut 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-@keyframes contentSlideIn {
-  0% {
-    transform: translateY(80px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes contentSlideOut {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-30px);
-    opacity: 0;
-  }
-}
-
 .section-title {
   font-size: 3.5rem;
   font-weight: 700;
