@@ -70,6 +70,7 @@ function createMap(ymaps, container, center, zoom, controls = []) {
     },
     {
       autoFitToViewport: 'always',
+      minZoom: 15,
     }
   );
 
