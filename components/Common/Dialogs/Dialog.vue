@@ -40,7 +40,7 @@ const props = defineProps({
   // Закрывать ли при клике на overlay
   closeOnOverlay: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 });
 
