@@ -4,7 +4,7 @@
       <div class="map__sidebar-content">
         <h3 class="map__sidebar-title" @click="isSidebarOpen = !isSidebarOpen">
           Локации
-          <span class="map__m" :class="{ 'map__m--open': isSidebarOpen }">
+          <span class="map__m" :class="{ 'map__m--open': !isSidebarOpen }">
             <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
               <path
                 d="M4.71429 0.497991C5.11466 -0.0105564 5.88534 -0.0105563 6.28572 0.497991L10.7209 6.13141C11.2373 6.78739 10.7701 7.75 9.93517 7.75L1.06483 7.75C0.229947 7.75 -0.237333 6.78739 0.279119 6.13141L4.71429 0.497991Z"
@@ -47,7 +47,7 @@
               class="map__category-count"
               :class="{ 'map__category-count--hovered': hoveredCategory === cat.key }"
             >
-              {{ shownCountByCategory[cat.key] || 0 }}
+              {{ totalCountByCategory[cat.key] || 0 }}
             </span>
           </li>
         </ul>
@@ -263,6 +263,17 @@ function toggleCategory(cat) {
   cat.active = !cat.active;
 }
 
+const activeCategoryKeys = computed(() => categories.value.filter(c => c.active).map(c => c.key));
+
+const totalCountByCategory = computed(() => {
+  const mapCounts = {};
+  categories.value.forEach(c => (mapCounts[c.key] = 0));
+  locations.value.forEach(loc => {
+    mapCounts[loc.category] = (mapCounts[loc.category] || 0) + 1;
+  });
+  return mapCounts;
+});
+
 const categoryIcon = computed(() => {
   return (categoryKey, isHovered = false) => {
     const category = categories.value.find(cat => cat.key === categoryKey);
@@ -311,24 +322,6 @@ function getGrayIcon(categoryKey) {
   };
   return grayIcons[categoryKey] || '';
 }
-
-// ключи активных категорий, прокидываем в карту
-const activeCategoryKeys = computed(() => categories.value.filter(c => c.active).map(c => c.key));
-
-// shownCountByCategory — сколько маркеров каждой категории **показано** (учитывая active)
-const shownCountByCategory = computed(() => {
-  const mapCounts = {};
-  // инициализация нулями
-  categories.value.forEach(c => (mapCounts[c.key] = 0));
-  // для каждой локации: если её категория активна — увеличиваем
-  locations.value.forEach(loc => {
-    if (activeCategoryKeys.value.includes(loc.category)) {
-      mapCounts[loc.category] = (mapCounts[loc.category] || 0) + 1;
-    }
-  });
-  return mapCounts;
-});
-
 function handleCategoryMouseEnter(key) {
   hoveredCategory.value = key;
 }
@@ -337,7 +330,6 @@ function handleCategoryMouseLeave() {
 }
 
 function onMapReady(payload) {
-  // необязательно — можно использовать для debug
   console.log('map ready', payload);
 }
 function onMapError(err) {
@@ -420,7 +412,6 @@ function onMapError(err) {
     cursor: pointer;
     transition: all 0.3s ease;
 
-    // Ховер для всех категорий (и активных, и неактивных)
     &:hover {
       .map__category-count {
         color: $accent-color-orange;
@@ -446,12 +437,10 @@ function onMapError(err) {
     width: 20px;
     height: 20px;
 
-    // Стиль для неактивных иконок
     &--inactive {
       opacity: 0.5;
     }
 
-    // Стиль для наведенных иконок (резервный вариант через CSS фильтры)
     &--hovered:not(.map__icon--inactive) {
       filter: invert(44%) sepia(85%) saturate(1352%) hue-rotate(345deg) brightness(101%)
         contrast(101%);
@@ -468,7 +457,6 @@ function onMapError(err) {
   }
 }
 
-// Стили для неактивных категорий (без ховера)
 .map__category.inactive {
   .map__category-name-link {
     color: #c0c1c0;
@@ -477,14 +465,8 @@ function onMapError(err) {
   .map__category-count {
     color: #c0c1c0;
   }
-
-  .map__icon {
-    // Серая иконка по умолчанию для неактивных
-    // (будет переопределена при ховере через categoryIcon)
-  }
 }
 
-// Убедитесь, что AnimatedLink наследует цвета
 :deep(.animated-link) {
   color: inherit;
 

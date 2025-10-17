@@ -146,7 +146,7 @@ function createPlacemarkFor(loc) {
   );
 
   placemark.events.add('click', () => {
-    map.setCenter(loc.coords, Math.min(map.getZoom() + 1, 19), { duration: 300 });
+    map.setCenter(loc.coords, 17, { duration: 300 });
   });
 
   return placemark;
