@@ -39,6 +39,7 @@
                 customClass="map__category-name-link"
                 hoverColor="#ff6b35"
                 :forceHover="hoveredCategory === cat.key"
+                :disableAnimation="!cat.active"
               />
             </div>
 
@@ -299,14 +300,14 @@ function getOrangeIcon(categoryKey) {
 
 function getGrayIcon(categoryKey) {
   const grayIcons = {
-    culture: cultureBlack.replace(/fill="black"/g, 'fill="#999"'),
-    medicine: medicineBlack.replace(/fill="black"/g, 'fill="#999"'),
-    education: educationBlack.replace(/fill="black"/g, 'fill="#999"'),
-    finance: financeBlack.replace(/fill="black"/g, 'fill="#999"'),
-    torg: torgBlack.replace(/fill="black"/g, 'fill="#999"'),
-    food: foodBlack.replace(/fill="black"/g, 'fill="#999"'),
-    sport: sportBlack.replace(/fill="black"/g, 'fill="#999"'),
-    services: servicesBlack.replace(/fill="black"/g, 'fill="#999"'),
+    culture: cultureBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
+    medicine: medicineBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
+    education: educationBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
+    finance: financeBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
+    torg: torgBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
+    food: foodBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
+    sport: sportBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
+    services: servicesBlack.replace(/fill="black"/g, 'fill="#D5D6D5"'),
   };
   return grayIcons[categoryKey] || '';
 }
@@ -417,12 +418,16 @@ function onMapError(err) {
     padding: 8px 0;
     width: 100%;
     cursor: pointer;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
 
+    // Ховер для всех категорий (и активных, и неактивных)
     &:hover {
       .map__category-count {
         color: $accent-color-orange;
-        transition: color 0.3s ease;
+      }
+
+      .map__category-name-link {
+        color: $accent-color-orange;
       }
     }
   }
@@ -433,14 +438,8 @@ function onMapError(err) {
 
     &-link {
       margin-left: 10px;
+      transition: color 0.3s ease;
     }
-
-    // &:hover {
-    //   .map__icon {
-    //     filter: hue-rotate(20deg) saturate(2) brightness(1.2);
-    //     transition: filter 0.3s ease;
-    //   }
-    // }
   }
 
   &__icon {
@@ -461,18 +460,36 @@ function onMapError(err) {
 
   &__category-count {
     transition: color 0.3s ease;
+    font-weight: 700;
 
     &--hovered {
-      color: $accent-color-orange;
+      color: #ff6b35;
     }
   }
 }
 
+// Стили для неактивных категорий (без ховера)
 .map__category.inactive {
-  opacity: 0.5;
-
   .map__category-name-link {
-    opacity: 0.7;
+    color: #c0c1c0;
+  }
+
+  .map__category-count {
+    color: #c0c1c0;
+  }
+
+  .map__icon {
+    // Серая иконка по умолчанию для неактивных
+    // (будет переопределена при ховере через categoryIcon)
+  }
+}
+
+// Убедитесь, что AnimatedLink наследует цвета
+:deep(.animated-link) {
+  color: inherit;
+
+  .animated-link__text-inner--hover .animated-link__letter {
+    color: inherit;
   }
 }
 </style>
