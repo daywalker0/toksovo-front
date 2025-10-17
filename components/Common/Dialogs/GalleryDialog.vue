@@ -6,7 +6,6 @@
       @click="closeOnOverlay && $emit('update:modelValue', false)"
     >
       <div class="gallery-content" @click.stop>
-        <!-- Заголовок с информацией и кнопкой закрытия -->
         <div class="gallery-header">
           <div class="gallery-info">
             <h3 class="gallery-title">{{ slide?.title }}</h3>
@@ -32,31 +31,41 @@
           </button>
         </div>
 
-        <!-- Галерея изображений -->
         <div class="gallery-main">
-          <div class="gallery-slider" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
-            <div v-for="(image, index) in slide?.gallery || []" :key="index" class="gallery-slide">
+          <Swiper
+            :modules="[Navigation]"
+            :slides-per-view="2"
+            :space-between="16"
+            :navigation="{
+              prevEl: prevButtonRef,
+              nextEl: nextButtonRef,
+            }"
+            @slide-change="onSlideChange"
+            class="gallery-swiper"
+          >
+            <SwiperSlide
+              v-for="(image, index) in slide?.gallery || []"
+              :key="index"
+              class="gallery-slide"
+            >
               <img :src="image.src" :alt="image.alt" class="gallery-image" />
-            </div>
-          </div>
+            </SwiperSlide>
+          </Swiper>
         </div>
 
-        <!-- Контролы -->
         <div class="gallery-controls">
-          <!-- Прогресс бар (90% ширины) -->
           <div class="gallery-progress">
             <div class="progress-bar">
               <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
             </div>
           </div>
 
-          <!-- Кнопки навигации (10% ширины) -->
           <div class="gallery-navigation">
             <button
+              ref="prevButtonRef"
               class="nav-button prev"
               :class="{ disabled: isPrevDisabled }"
               :disabled="isPrevDisabled"
-              @click="goToPrev"
             >
               <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
                 <path
@@ -66,10 +75,10 @@
               </svg>
             </button>
             <button
+              ref="nextButtonRef"
               class="nav-button next"
               :class="{ disabled: isNextDisabled }"
               :disabled="isNextDisabled"
-              @click="goToNext"
             >
               <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
                 <path
@@ -86,7 +95,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 const props = defineProps({
   modelValue: {
@@ -106,36 +119,34 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 const currentIndex = ref(0);
+const prevButtonRef = ref(null);
+const nextButtonRef = ref(null);
+const swiperInstance = ref(null);
+
 const totalSlides = computed(() => props.slide?.gallery?.length || 0);
-const slidesPerView = 3; // Показываем 3 слайда одновременно
+const visibleSlidesCount = 2;
 
 const isPrevDisabled = computed(() => currentIndex.value <= 0);
 const isNextDisabled = computed(() => {
-  // Если слайдов меньше чем slidesPerView, то кнопка "вперед" отключена
-  if (totalSlides.value <= slidesPerView) return true;
-  return currentIndex.value >= totalSlides.value - slidesPerView;
+  if (totalSlides.value <= visibleSlidesCount) return true;
+  return currentIndex.value >= totalSlides.value - visibleSlidesCount;
 });
 
 const progressPercentage = computed(() => {
   if (totalSlides.value === 0) return 0;
-  // Если слайдов меньше чем slidesPerView, прогресс всегда 100%
-  if (totalSlides.value <= slidesPerView) return 100;
-  return ((currentIndex.value + slidesPerView) / totalSlides.value) * 100;
+  if (totalSlides.value <= visibleSlidesCount) return 100;
+  const maxIndex = totalSlides.value - visibleSlidesCount;
+  return ((currentIndex.value + visibleSlidesCount) / totalSlides.value) * 100;
 });
 
-const goToPrev = () => {
-  if (!isPrevDisabled.value) {
-    currentIndex.value = Math.max(0, currentIndex.value - 1);
-  }
+const onSwiper = swiper => {
+  swiperInstance.value = swiper;
 };
 
-const goToNext = () => {
-  if (!isNextDisabled.value) {
-    currentIndex.value = Math.min(totalSlides.value - slidesPerView, currentIndex.value + 1);
-  }
+const onSlideChange = swiper => {
+  currentIndex.value = swiper.activeIndex;
 };
 
-// Обработка клавиатуры
 const handleKeydown = event => {
   if (!props.modelValue) return;
 
@@ -144,19 +155,22 @@ const handleKeydown = event => {
       emit('update:modelValue', false);
       break;
     case 'ArrowLeft':
-      goToPrev();
+      if (swiperInstance.value && !isPrevDisabled.value) {
+        swiperInstance.value.slidePrev();
+      }
       break;
     case 'ArrowRight':
-      goToNext();
+      if (swiperInstance.value && !isNextDisabled.value) {
+        swiperInstance.value.slideNext();
+      }
       break;
   }
 };
 
-// Функции для блокировки скролла
 const lockScroll = () => {
   if (typeof document !== 'undefined') {
     document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = '0px'; // Компенсация для скроллбара
+    document.body.style.paddingRight = '0px';
   }
 };
 
@@ -167,24 +181,30 @@ const unlockScroll = () => {
   }
 };
 
-// Следим за изменениями modelValue
 watch(
   () => props.modelValue,
-  newValue => {
+  async newValue => {
     if (newValue) {
       currentIndex.value = 0;
-      lockScroll(); // Блокируем скролл при открытии
+      lockScroll();
+      // Ждем следующего тика, чтобы Swiper инициализировался
+      await nextTick();
+      if (swiperInstance.value) {
+        swiperInstance.value.slideTo(0);
+      }
     } else {
-      unlockScroll(); // Разблокируем скролл при закрытии
+      unlockScroll();
     }
   }
 );
 
-// Следим за изменениями слайдов
 watch(
   () => props.slide?.gallery?.length,
   () => {
     currentIndex.value = 0;
+    if (swiperInstance.value) {
+      swiperInstance.value.slideTo(0);
+    }
   }
 );
 
@@ -198,7 +218,7 @@ onUnmounted(() => {
   if (typeof document !== 'undefined') {
     document.removeEventListener('keydown', handleKeydown);
   }
-  unlockScroll(); // Убеждаемся что скролл разблокирован при размонтировании
+  unlockScroll();
 });
 </script>
 
@@ -273,27 +293,22 @@ onUnmounted(() => {
   position: relative;
 }
 
-.gallery-slider {
-  display: flex;
+.gallery-swiper {
   width: 100%;
   height: 100%;
-  transition: transform 0.3s ease;
-  gap: 16px;
 }
 
 .gallery-slide {
-  flex: 0 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  min-width: 200px;
 }
 
 .gallery-image {
   height: 100%;
-  width: auto;
-  object-fit: contain;
+  width: 100%;
+  object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -340,10 +355,10 @@ onUnmounted(() => {
 .nav-button {
   width: 44px;
   height: 44px;
-  border: 1px solid #ccc;
+  border: 1px solid $text-color-primary;
   border-radius: 50%;
   background: transparent;
-  color: #333;
+  color: $text-color-primary;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -409,6 +424,12 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+/* Скрываем стандартные кнопки Swiper */
+:deep(.swiper-button-prev),
+:deep(.swiper-button-next) {
+  display: none;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .gallery-content {
@@ -432,14 +453,6 @@ onUnmounted(() => {
     padding: 16px;
   }
 
-  .gallery-slide {
-    min-width: 150px;
-  }
-
-  .gallery-slider {
-    gap: 12px;
-  }
-
   .gallery-controls {
     padding: 20px;
     gap: 16px;
@@ -453,6 +466,12 @@ onUnmounted(() => {
   .nav-button {
     width: 36px;
     height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  :deep(.swiper) {
+    --swiper-slides-per-view: 1;
   }
 }
 </style>
