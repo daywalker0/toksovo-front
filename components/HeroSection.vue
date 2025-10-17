@@ -3,7 +3,7 @@
     <div class="hero-section__container container">
       <div class="hero-section__content">
         <h1 class="hero-section__title" aria-label="Поинт Токсово">
-          <span class="word">
+          <!-- <span class="word">
             <span
               v-for="(ch, i) in firstWordLetters"
               :key="`t1-${i}`"
@@ -23,7 +23,8 @@
               }"
               v-text="ch"
             />
-          </span>
+          </span> -->
+          {{ titleText }}
         </h1>
         <div
           class="subtitle-text hero-section__subtitle"
@@ -110,6 +111,62 @@ onBeforeUnmount(() => {
     min-height: 200vh;
     display: flex;
     align-items: flex-start;
+    justify-content: center;
+  }
+
+  &__content {
+    margin: 0 auto;
+    padding-top: 100px;
+    max-width: 660px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+
+    @media (max-width: $breakpoint-x) {
+      padding-top: 100px;
+      max-width: 90%;
+    }
+  }
+
+  &__title {
+    font-size: 120px;
+    font-weight: 400;
+    line-height: 0.8;
+    margin: 0;
+    color: $text-color-primary;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 100px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 60px;
+      line-height: 0.9;
+    }
+  }
+
+  &__subtitle {
+    font-size: 36px;
+    line-height: 110%;
+    max-width: 460px;
+    margin: 0 auto;
+    padding-top: 30px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    hyphens: none;
+
+    @media (max-width: $breakpoint-lg) {
+      font-size: 30px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 22px;
+      max-width: 250px;
+      padding-top: 20px;
+    }
   }
 
   // Фиксированный неанимируемый фон

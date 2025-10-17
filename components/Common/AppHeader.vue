@@ -166,7 +166,7 @@ onUnmounted(() => {
 @use '@/assets/styles/variables.scss' as *;
 .header {
   position: fixed;
-  z-index: 1005 !important; /* Выше всех элементов меню */
+  z-index: 111111005 !important; /* Выше всех элементов меню */
   width: 100%;
   transition: all 0.3s ease;
 
