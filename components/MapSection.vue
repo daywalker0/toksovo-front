@@ -304,7 +304,6 @@ function selectPin(pin) {
   }
 
   .button-plus {
-    border-bottom: 1px solid #d9d9d9;
     border-top-left-radius: 50%;
     border-top-right-radius: 50%;
   }
