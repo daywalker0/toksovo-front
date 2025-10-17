@@ -46,46 +46,27 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
+// Композабл для работы с Lenis
+const { stop: stopScroll, start: startScroll } = useLenis();
+
 // Внутреннее состояние для контроля анимации
 const isVisible = ref(false);
 const isAnimating = ref(false);
 
 // Переменные для хранения состояния скролла
-let scrollY = 0;
 let scrollLocked = false;
 
-// Функция для блокировки скролла
+// Функция для блокировки скролла через Lenis
 const lockScroll = () => {
   if (scrollLocked) return;
-
-  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-    scrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
-  }
+  stopScroll(); // Останавливаем Lenis скролл
   scrollLocked = true;
 };
 
-// Функция для разблокировки скролла
+// Функция для разблокировки скролла через Lenis
 const unlockScroll = () => {
   if (!scrollLocked) return;
-
-  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-
-    // Плавное восстановление позиции скролла
-    requestAnimationFrame(() => {
-      window.scrollTo({
-        top: scrollY,
-        behavior: 'instant', // Мгновенное восстановление без анимации
-      });
-    });
-  }
+  startScroll(); // Возобновляем Lenis скролл
   scrollLocked = false;
 };
 

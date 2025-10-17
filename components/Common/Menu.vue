@@ -297,23 +297,24 @@ const isActiveSection = link => {
   return props.activeSection === sectionId;
 };
 
+const { scrollTo } = useLenis();
+
 const scrollToSection = link => {
   if (link.startsWith('#')) {
     const targetId = link.substring(1);
-    const targetElement = document.getElementById(targetId);
 
-    if (targetElement) {
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+    // Используем Lenis для плавного скролла
+    scrollTo(`#${targetId}`, {
+      offset: -100, // Отступ для хедера
+      duration: 1.2,
+      onComplete: () => {
+        // Обновляем URL hash после завершения скролла
+        const newUrl = `${window.location.pathname}#${targetId}`;
+        window.history.replaceState(null, '', newUrl);
+      },
+    });
 
-      // Обновляем URL hash
-      const newUrl = `${window.location.pathname}#${targetId}`;
-      window.history.replaceState(null, '', newUrl);
-
-      closeMenu(); // Закрываем меню после клика
-    }
+    closeMenu(); // Закрываем меню после клика
   }
 };
 

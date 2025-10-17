@@ -31,7 +31,7 @@
           </button>
         </div>
 
-        <div class="gallery-main">
+        <div class="gallery-main" data-lenis-prevent>
           <Swiper
             :modules="[Navigation]"
             :slides-per-view="2"
@@ -167,18 +167,15 @@ const handleKeydown = event => {
   }
 };
 
+// Композабл для работы с Lenis
+const { stop: stopScroll, start: startScroll } = useLenis();
+
 const lockScroll = () => {
-  if (typeof document !== 'undefined') {
-    document.body.style.overflow = 'hidden';
-    document.body.style.paddingRight = '0px';
-  }
+  stopScroll(); // Останавливаем Lenis скролл
 };
 
 const unlockScroll = () => {
-  if (typeof document !== 'undefined') {
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
-  }
+  startScroll(); // Возобновляем Lenis скролл
 };
 
 watch(
