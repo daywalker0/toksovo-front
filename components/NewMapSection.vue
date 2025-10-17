@@ -47,7 +47,7 @@
               class="map__category-count"
               :class="{ 'map__category-count--hovered': hoveredCategory === cat.key }"
             >
-              {{ shownCountByCategory[cat.key] || 0 }}
+              {{ totalCountByCategory[cat.key] || 0 }}
             </span>
           </li>
         </ul>
@@ -263,6 +263,17 @@ function toggleCategory(cat) {
   cat.active = !cat.active;
 }
 
+const activeCategoryKeys = computed(() => categories.value.filter(c => c.active).map(c => c.key));
+
+const totalCountByCategory = computed(() => {
+  const mapCounts = {};
+  categories.value.forEach(c => (mapCounts[c.key] = 0));
+  locations.value.forEach(loc => {
+    mapCounts[loc.category] = (mapCounts[loc.category] || 0) + 1;
+  });
+  return mapCounts;
+});
+
 const categoryIcon = computed(() => {
   return (categoryKey, isHovered = false) => {
     const category = categories.value.find(cat => cat.key === categoryKey);
@@ -311,24 +322,6 @@ function getGrayIcon(categoryKey) {
   };
   return grayIcons[categoryKey] || '';
 }
-
-// ключи активных категорий, прокидываем в карту
-const activeCategoryKeys = computed(() => categories.value.filter(c => c.active).map(c => c.key));
-
-// shownCountByCategory — сколько маркеров каждой категории **показано** (учитывая active)
-const shownCountByCategory = computed(() => {
-  const mapCounts = {};
-  // инициализация нулями
-  categories.value.forEach(c => (mapCounts[c.key] = 0));
-  // для каждой локации: если её категория активна — увеличиваем
-  locations.value.forEach(loc => {
-    if (activeCategoryKeys.value.includes(loc.category)) {
-      mapCounts[loc.category] = (mapCounts[loc.category] || 0) + 1;
-    }
-  });
-  return mapCounts;
-});
-
 function handleCategoryMouseEnter(key) {
   hoveredCategory.value = key;
 }

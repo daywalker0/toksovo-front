@@ -26,7 +26,7 @@
             >
               <path
                 d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
-                fill="#F8F3ED"
+                fill="#2C322C"
               />
             </svg>
           </button>
@@ -241,7 +241,7 @@ onUnmounted(() => {
 .gallery-close {
   width: 48px;
   height: 48px;
-  border: 1px solid #ccc;
+  border: 1px solid $text-color-primary;
   border-radius: 50%;
   background: transparent;
   color: #333;

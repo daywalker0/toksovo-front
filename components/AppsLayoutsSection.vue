@@ -179,7 +179,7 @@ const switchImage = index => {
   width: 420px;
   background-color: $bg-color-2;
   border-radius: 7px;
-  min-height: 600px; // Фиксируем минимальную высоту
+  min-height: 760px;
 
   &__wrap {
     padding: 24px;
@@ -188,7 +188,7 @@ const switchImage = index => {
     justify-content: space-between;
     align-items: flex-start;
     height: 100%;
-    min-height: 600px; // Фиксируем минимальную высоту для внутреннего контейнера
+    min-height: 760px;
   }
 }
 
