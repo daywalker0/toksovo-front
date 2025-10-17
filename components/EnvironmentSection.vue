@@ -8,30 +8,27 @@
     </div>
 
     <!-- Новая реализация для мобильных -->
-    <template v-if="isMobile">
-      <!-- Фоновое изображение -->
+    <template v-else>
       <div class="environment-section__bg">
         <img :src="currentSlide" alt="Environment background" />
       </div>
-
-      <!-- Белый блок с контентом -->
       <div class="environment-section__content">
         <div class="content-block">
           <h2 class="content-title">{{ activeItem?.title || 'Заголовок' }}</h2>
           <p class="content-text">{{ activeItem?.content || 'Описание' }}</p>
 
-          <!-- Кнопки навигации -->
           <div class="navigation-buttons">
             <button
               class="nav-button nav-button--prev"
               @click="goToPrevSlide"
               :disabled="isAnimating"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M15 5 L7 12 L15 19"
+                  fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="2.5"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 />
@@ -43,11 +40,12 @@
               @click="goToNextSlide"
               :disabled="isAnimating"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M9 5 L17 12 L9 19"
+                  fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="2.5"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 />
@@ -183,10 +181,8 @@ const contentRef = ref(null);
 const isContentVisible = ref(false);
 const currentIndex = ref(0);
 const isAnimating = ref(false);
-
-const setActiveIndex = index => {
-  activeIndex.value = index;
-};
+const tlRef = ref(null);
+const setActiveIndex = i => (activeIndex.value = i);
 
 const toggleItem = index => {
   originalToggleItem(index);
@@ -195,12 +191,10 @@ const toggleItem = index => {
     animateSlide(index, direction);
   }
 };
-
 const slides = computed(() => {
-  if (!items.value || !Array.isArray(items.value)) {
+  if (!items.value || !Array.isArray(items.value))
     return [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
-  }
-  return items.value.map(item => item.image);
+  return items.value.map(it => it.image);
 });
 
 const currentSlide = computed(() => slides.value[currentIndex.value] || slides.value[0]);
@@ -263,124 +257,138 @@ const animateSlide = (newIndex, _direction) => {
   }, 300);
 };
 
-onMounted(async () => {
-  const checkMobile = () => {
-    isMobile.value = typeof window !== 'undefined' && window.innerWidth <= 599;
-  };
-  checkMobile();
+let resizeTimer = null;
 
-  if (typeof window !== 'undefined') {
-    window.addEventListener('resize', checkMobile);
-  }
+const S = { w: 131, h: 198, z: 1 };
+const M = { w: 262, h: 394, z: 2 };
+const L = { w: 394, h: 590, z: 3 };
+const layout = [S, M, L, M, S];
 
-  if (isMobile.value) {
-    currentIndex.value = 0;
-    setActiveIndex(0);
-    return;
-  }
+function destroy() {
+  tlRef.value?.scrollTrigger?.kill();
+  tlRef.value?.kill();
+  ScrollTrigger.getAll().forEach(st => st.kill());
+}
 
+async function build() {
   await nextTick();
-  await new Promise(r => setTimeout(r, 100));
 
   const section = sectionRef.value;
   const gallery = galleryRef.value;
   const content = contentRef.value;
   if (!section || !gallery || !content) return;
 
-  const galleryItems = gallery.querySelectorAll('.gallery-item');
-  if (!galleryItems.length) return;
+  const itemsEls = gallery.querySelectorAll('.gallery-item');
+  if (!itemsEls.length) return;
 
-  const centerIndex = Math.floor(galleryItems.length / 2);
-  const centerItem = galleryItems[centerIndex];
+  const centerIndex = Math.floor(itemsEls.length / 2);
+  const centerItem = itemsEls[centerIndex];
   const centerImg = centerItem?.querySelector('img');
   if (!centerItem || !centerImg) return;
 
-  currentIndex.value = 0;
-  setActiveIndex(0);
+  // стартовые размеры S-M-L-M-S
+  itemsEls.forEach((el, i) => {
+    const s = layout[i] || S;
+    gsap.set(el, {
+      width: `${s.w}px`,
+      height: `${s.h}px`,
 
-  // Стартовое состояние контента
-  gsap.set(content, { y: 40, opacity: 0, display: 'none' });
+      zIndex: s.z,
+    });
+    const img = el.querySelector('img');
+    img && gsap.set(img, { width: '100%', height: '100%', objectFit: 'cover' });
+  });
+
+  gsap.set(content, { y: 40, autoAlpha: 0 });
+
+  const others = Array.from(itemsEls).filter((_, i) => i !== centerIndex);
+
+  const growStart = 0.2;
+  const growDur = 1.2;
+  const contentAt = growStart + growDur * 0.8;
 
   const tl = gsap.timeline({
+    defaults: { ease: 'power2.inOut' },
     scrollTrigger: {
       trigger: section,
       start: 'center center',
       end: '+=2000',
       scrub: true,
-      pin: !isMobile.value,
+      pin: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
     },
   });
 
-  // На старте соседи приводим к 169.4×254, центр — 400×600
-  tl.to(
-    galleryItems,
+  tl.fromTo(
+    others,
     {
-      width: i => (i === centerIndex ? '400px' : '169.4px'),
-      height: i => (i === centerIndex ? '600px' : '254px'),
-      ease: 'power2.inOut',
-      duration: 1,
+      width: (i, el) => {
+        const idx = Array.from(itemsEls).indexOf(el);
+        const s = layout[idx] || S;
+        return `${s.w}px`;
+      },
+      height: (i, el) => {
+        const idx = Array.from(itemsEls).indexOf(el);
+        const s = layout[idx] || S;
+        return `${s.h}px`;
+      },
+    },
+    {
+      width: '131px',
+      height: '199px',
+      duration: 0.8,
+      immediateRender: false,
+      overwrite: 'auto',
     },
     0
   );
 
-  // Рост центрального блока до экрана
-  const growStart = 0.2;
-  const growDur = 1.2;
-  const contentAt = growStart + growDur * 0.8; // 80% прогресса роста
-
-  tl.to(
+  // единственный fromTo (без конкурирующих твинов)
+  tl.fromTo(
     centerItem,
+    { width: `${L.w}px`, height: `${L.h}px` },
     {
       width: '100vw',
       height: '100vh',
-      borderRadius: 0,
-      ease: 'power2.inOut',
       duration: growDur,
+      immediateRender: false,
+      overwrite: 'auto',
     },
     growStart
   );
 
-  tl.to(
-    centerImg,
-    {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-      ease: 'power2.inOut',
-      duration: growDur,
-    },
-    growStart
-  );
-
-  // Появление контента снизу на 80% роста
-  tl.set(content, { display: 'flex' }, contentAt - 0.01);
-  tl.to(
+  // Контент появляется
+  tl.fromTo(
     content,
-    {
-      y: 0,
-      opacity: 1,
-      ease: 'power3.out',
-      duration: 0.6,
-    },
+    { y: 40, autoAlpha: 0 },
+    { y: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.6, immediateRender: false },
     contentAt
   );
 
-  tl.call(
-    () => {
-      isContentVisible.value = true;
-    },
-    null,
-    contentAt
-  );
+  tlRef.value = tl;
+}
+
+onMounted(async () => {
+  const checkMobile = () => (isMobile.value = window.innerWidth <= 599);
+  checkMobile();
+
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      checkMobile();
+      destroy();
+      if (!isMobile.value) build();
+      else ScrollTrigger.refresh();
+    }, 150);
+  });
+
+  if (!isMobile.value) build();
 });
 
 onBeforeUnmount(() => {
-  if (typeof window !== 'undefined') {
-    // примитивная очистка
-    window.removeEventListener('resize', () => {
-      isMobile.value = window.innerWidth <= 599;
-    });
-  }
+  clearTimeout(resizeTimer);
+  destroy();
 });
 </script>
 

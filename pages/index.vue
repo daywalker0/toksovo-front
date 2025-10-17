@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
 
 .main-sections {
   position: relative;
-  z-index: 100000000;
+  z-index: 100;
   background: rgba(248, 243, 237, 1);
 }
 .horizontal-wrapper {

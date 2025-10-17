@@ -1,14 +1,25 @@
 <template>
   <div class="title-new" ref="titleRef">
-    <div class="title-lines">
-      <div v-for="(line, lineIndex) in lines" :key="lineIndex" class="title-line">
-        <span
-          v-for="(char, charIndex) in line"
-          :key="charIndex"
-          class="title-char"
-          :style="{ '--char-index': charIndex }"
-        >
-          {{ char === ' ' ? '\u00A0' : char }}
+    <div
+      class="title-lines"
+      :data-text-split="true"
+      :data-mode="mode"
+      :letters-slide-up="mode === 'letters-slide-up' ? '' : null"
+      :letters-fade-in="mode === 'letters-fade-in' ? '' : null"
+      :letters-slide-down="mode === 'letters-slide-down' ? '' : null"
+      :letters-fade-in-random="mode === 'letters-fade-in-random' ? '' : null"
+      :words-slide-up="mode === 'words-slide-up' ? '' : null"
+      :words-rotate-in="mode === 'words-rotate-in' ? '' : null"
+      :words-slide-from-right="mode === 'words-slide-from-right' ? '' : null"
+      :scrub-each-word="mode === 'scrub-each-word' ? '' : null"
+    >
+      <div v-for="(line, lineIndex) in wordsPerLine" :key="lineIndex" class="title-line">
+        <span v-for="(word, wIdx) in line" :key="wIdx" class="word">
+          <span v-for="(ch, cIdx) in wordToChars(word)" :key="cIdx" class="char">
+            {{ ch === ' ' ? '\u00A0' : ch }}
+          </span>
+          <!-- пробел между словами в строке -->
+          <span v-if="wIdx < line.length - 1" class="char">&nbsp;</span>
         </span>
       </div>
     </div>
@@ -16,223 +27,211 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const props = defineProps({
-  text: {
+  text: { type: String, required: true },
+  maxWidth: { type: Number, default: 600 },
+  mode: {
     type: String,
-    required: true,
-  },
-  maxWidth: {
-    type: Number,
-    default: 600,
+    default: 'letters-slide-up',
   },
 });
 
 const titleRef = ref(null);
-const lines = ref([]);
-let scrollTrigger = null;
+const wordsPerLine = ref([]);
+const timelines = [];
+const triggers = [];
 
-const splitTextIntoLines = (text, maxWidth) => {
-  if (!process.client || !titleRef.value) return [text];
+function wordToChars(word) {
+  return [...word];
+}
+
+function splitTextIntoLines(text, maxWidth) {
+  if (!titleRef.value) return [[text]];
+  const measure = document.createElement('span');
+  measure.style.position = 'absolute';
+  measure.style.visibility = 'hidden';
+  measure.style.whiteSpace = 'nowrap';
+  measure.style.fontSize =
+    getComputedStyle(titleRef.value).getPropertyValue('--title-fs') || '118px';
+  measure.style.fontWeight = '400';
+  measure.style.fontFamily = 'inherit';
+  document.body.appendChild(measure);
 
   const words = text.split(' ');
   const lines = [];
-  let currentLine = '';
-
-  // Создаем временный элемент для измерения
-  const tempElement = document.createElement('div');
-  tempElement.style.position = 'absolute';
-  tempElement.style.visibility = 'hidden';
-  tempElement.style.whiteSpace = 'nowrap';
-  tempElement.style.fontSize = '118px';
-  tempElement.style.fontWeight = '400';
-  tempElement.style.fontFamily = 'inherit';
-  document.body.appendChild(tempElement);
+  let current = '';
 
   for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    const testLine = currentLine ? `${currentLine} ${word}` : word;
-    tempElement.textContent = testLine;
-    const width = tempElement.offsetWidth;
-
-    if (width <= maxWidth) {
-      currentLine = testLine;
+    const candidate = current ? `${current} ${words[i]}` : words[i];
+    measure.textContent = candidate;
+    if (measure.offsetWidth <= maxWidth) {
+      current = candidate;
     } else {
-      if (currentLine) {
-        lines.push(currentLine);
-        currentLine = word;
-      } else {
-        currentLine = word;
-      }
+      if (current) lines.push(current);
+      current = words[i];
     }
   }
+  if (current) lines.push(current);
+  document.body.removeChild(measure);
+  return lines.map(l => l.split(' '));
+}
 
-  if (currentLine) {
-    lines.push(currentLine);
-  }
+function updateLines() {
+  wordsPerLine.value = splitTextIntoLines(props.text, props.maxWidth);
+}
 
-  document.body.removeChild(tempElement);
-  return lines;
-};
+function killAll() {
+  timelines.splice(0).forEach(tl => tl.kill());
+  triggers.splice(0).forEach(tr => tr.kill());
+}
 
-const updateLines = () => {
-  if (props.text) {
-    lines.value = splitTextIntoLines(props.text, props.maxWidth);
-  }
-};
+function createScrollTrigger(triggerElement, tl) {
+  // tl должен быть создан без { paused: true }
+  const st = ScrollTrigger.create({
+    trigger: triggerElement,
+    start: 'top 100%',
+    end: 'bottom 70%',
+    scrub: true, // привязка ко скроллу
+    animation: tl, // ScrollTrigger управляет таймлайном
+    onLeaveBack: () => tl.progress(0),
+  });
+  triggers.push(st);
+}
 
-const initAnimation = () => {
-  if (!titleRef.value || process.server) return;
-
+function initAnimation() {
+  if (!titleRef.value) return;
   gsap.registerPlugin(ScrollTrigger);
+  killAll();
 
-  // Убиваем предыдущую анимацию если есть
-  if (scrollTrigger) {
-    scrollTrigger.kill();
-  }
+  gsap.set(titleRef.value.querySelector('[data-text-split]'), { opacity: 1 });
 
-  const chars = titleRef.value.querySelectorAll('.title-char');
-  const lineElements = titleRef.value.querySelectorAll('.title-line');
+  const $$ = sel => Array.from(titleRef.value.querySelectorAll(sel));
 
-  if (chars.length === 0) return;
+  const makeTL = (selector, vars, opt = {}) => {
+    $$(selector).forEach(el => {
+      const tl = gsap.timeline({ paused: true });
+      tl.from(el.querySelectorAll(opt.target || '.char'), vars);
+      createScrollTrigger(el, tl);
+      timelines.push(tl);
+    });
+  };
 
-  // Определяем смещение в зависимости от размера экрана
-  const isMobile = window.innerWidth <= 768;
-  const isSmallMobile = window.innerWidth <= 480;
-  const initialY = isSmallMobile ? 40 : isMobile ? 60 : 100;
-
-  // Устанавливаем начальное состояние - все буквы скрыты и смещены вниз
-  gsap.set(chars, {
-    clipPath: 'inset(100% 0 0 0)',
-    y: initialY,
-    scale: 1,
-    transformOrigin: 'center center',
-  });
-
-  // Создаем timeline для анимации
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: titleRef.value,
-      start: isMobile ? 'top 90%' : 'top 80%', // Раньше для мобильных
-      end: 'top 20%', // Заканчиваем анимацию
-      scrub: 0.3, // Очень отзывчивая привязка к скроллу для пошагового эффекта
-      markers: false,
-      invalidateOnRefresh: true,
-      refreshPriority: -1, // Приоритет обновления
-      onUpdate: self => {
-        // Дополнительная логика при обновлении скролла
-        const progress = self.progress;
-        // Можно добавить дополнительные эффекты на основе прогресса
-      },
+  makeTL(
+    '[words-slide-up]',
+    {
+      opacity: 0,
+      yPercent: 150,
+      duration: 0.5,
+      ease: 'back.out(2)',
+      stagger: { amount: 0.5 },
     },
+    { target: '.word' }
+  );
+
+  makeTL(
+    '[words-rotate-in]',
+    {
+      rotationX: -90,
+      duration: 0.6,
+      ease: 'power2.out',
+      stagger: { amount: 0.6 },
+    },
+    { target: '.word' }
+  );
+
+  makeTL(
+    '[words-slide-from-right]',
+    {
+      opacity: 0,
+      x: '1em',
+      duration: 0.6,
+      ease: 'power2.out',
+      stagger: { amount: 0.2 },
+    },
+    { target: '.word' }
+  );
+
+  makeTL('[letters-slide-up]', {
+    yPercent: 150,
+    duration: 0.2,
+    ease: 'power1.out',
+    stagger: { amount: 0.6 },
   });
 
-  // Сначала скрываем все строки
-  tl.set(lineElements, {
+  makeTL('[letters-slide-down]', {
+    yPercent: -120,
+    duration: 0.3,
+    ease: 'power1.out',
+    stagger: { amount: 0.7 },
+  });
+
+  makeTL('[letters-fade-in]', {
     opacity: 0,
-    y: 0,
+    duration: 0.2,
+    ease: 'power1.out',
+    stagger: { amount: 0.8 },
   });
 
-  // Анимация для каждой строки последовательно
-  let previousLineEnd = 0;
+  makeTL('[letters-fade-in-random]', {
+    opacity: 0,
+    duration: 0.05,
+    ease: 'power1.out',
+    stagger: { amount: 0.4, from: 'random' },
+  });
 
-  lines.value.forEach((line, lineIndex) => {
-    const lineElement = lineElements[lineIndex];
-    const lineChars = lineElement.querySelectorAll('.title-char');
-
-    // Начало анимации текущей строки - после окончания предыдущей
-    const lineStart = previousLineEnd;
-
-    // Сначала показываем строку
-    tl.to(
-      lineElement,
-      {
-        opacity: 1,
-        duration: 0.2,
-        ease: 'power2.out',
+  $$('[scrub-each-word]').forEach(el => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 90%',
+        end: 'top center',
+        scrub: true,
       },
-      lineStart
-    );
-
-    // Анимируем каждую букву отдельно как ступеньку
-    lineChars.forEach((char, charIndex) => {
-      const charDelay = isMobile ? 0.08 : 0.15; // Быстрее для мобильных
-      const charStart = lineStart + 0.1 + charIndex * charDelay;
-
-      tl.to(
-        char,
-        {
-          clipPath: 'inset(0% 0 0 0)',
-          y: 0,
-          duration: isMobile ? 0.6 : 0.8, // Быстрее для мобильных
-          ease: 'power2.out',
-        },
-        charStart
-      );
     });
-
-    // Обновляем время окончания текущей строки для следующей
-    const charDelay = isMobile ? 0.08 : 0.15;
-    const charDuration = isMobile ? 0.6 : 0.8;
-    const lineDuration = 0.1 + lineChars.length * charDelay + charDuration; // Время на все буквы + анимация последней
-    previousLineEnd = lineStart + lineDuration + (isMobile ? 0.1 : 0.2); // Меньшая пауза для мобильных
+    tl.from(el.querySelectorAll('.word'), {
+      opacity: 0.2,
+      duration: 0.2,
+      ease: 'power1.out',
+      stagger: { each: 0.4 },
+    });
+    timelines.push(tl);
   });
+}
 
-  scrollTrigger = tl.scrollTrigger;
-};
-
-// Оптимизированный обработчик ресайза
-let resizeTimeout;
-const handleResize = () => {
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
+let resizeT;
+function handleResize() {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(async () => {
     updateLines();
-    nextTick(() => {
-      setTimeout(() => {
-        initAnimation();
-      }, 50);
-    });
+    await nextTick();
+    initAnimation();
   }, 150);
-};
+}
 
-onMounted(() => {
-  nextTick(() => {
-    updateLines();
-    setTimeout(() => {
-      initAnimation();
-    }, 100);
-  });
-
-  if (typeof window !== 'undefined') {
-    window.addEventListener('resize', handleResize);
-  }
+onMounted(async () => {
+  updateLines();
+  await nextTick();
+  initAnimation();
+  window.addEventListener('resize', handleResize);
 });
 
-// Обновляем при изменении текста
 watch(
-  () => props.text,
-  () => {
+  () => [props.text, props.maxWidth, props.mode],
+  async () => {
     updateLines();
-    nextTick(() => {
-      setTimeout(() => {
-        initAnimation();
-      }, 100);
-    });
+    await nextTick();
+    initAnimation();
   }
 );
 
 onUnmounted(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', handleResize);
-    clearTimeout(resizeTimeout);
-  }
-
-  if (scrollTrigger) {
-    scrollTrigger.kill();
-  }
+  window.removeEventListener('resize', handleResize);
+  clearTimeout(resizeT);
+  killAll();
 });
 </script>
 
@@ -243,14 +242,18 @@ onUnmounted(() => {
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  min-height: 200px; /* Увеличиваем высоту для анимации */
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  --title-fs: 118px;
 
+  @media (max-width: $breakpoint-lg) {
+    --title-fs: 88px;
+  }
   @media (max-width: $breakpoint-x) {
-    max-width: 100%;
+    --title-fs: 50px;
   }
 }
 
@@ -258,12 +261,12 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
   width: 100%;
+  opacity: 0; /* скрываем до gsap.set */
 }
 
 .title-line {
-  font-size: 118px;
+  font-size: var(--title-fs);
   font-weight: 400;
   line-height: 0.8;
   color: $text-color-primary;
@@ -271,53 +274,23 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 8px 0; /* Увеличиваем отступы для анимации */
-  position: relative;
-  /* Изначально скрыты для анимации */
-  opacity: 0;
-  transform: translateY(0);
-  /* Ограничиваем ширину строки чтобы скрыть буквы снизу */
-  width: 100%;
+  padding: 8px 0;
   overflow: hidden;
 
-  @media (max-width: $breakpoint-lg) {
-    font-size: 88px;
-  }
-
   @media (max-width: $breakpoint-x) {
-    font-size: 50px;
     justify-content: flex-start;
   }
 }
 
-.title-char {
+.word {
   display: inline-block;
-  clip-path: inset(100% 0 0 0); /* Начальное состояние - обрезано снизу */
-  transform: translateY(100px); /* Начальное смещение вниз */
-  will-change: clip-path, transform;
-  /* Убедимся что буквы не обрезаются */
-  overflow: visible;
-  position: relative;
-  backface-visibility: hidden; /* Улучшает производительность */
-  /* Оптимизация для скролла */
-  transform-style: preserve-3d;
+  will-change: transform, opacity;
   perspective: 1000px;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-  .title-new {
-    min-height: 200px;
-  }
-
-  .title-line {
-    font-size: 72px;
-    transform: translateY(0);
-  }
-
-  .title-char {
-    clip-path: inset(100% 0 0 0); /* Начальное состояние - обрезано снизу */
-    transform: translateY(60px); /* Меньшее смещение для мобильных */
-  }
+.char {
+  display: inline-block;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 </style>

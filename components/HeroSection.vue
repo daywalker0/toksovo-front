@@ -84,8 +84,8 @@ onMounted(async () => {
     scrollTrigger: {
       trigger: sectionEl.value,
       start: 'top top',
-      end: '+=100vh', // глубина анимации; при необходимости поменяйте
-      scrub: 1,
+      end: '+=900vh',
+      scrub: true,
     },
   });
 });
