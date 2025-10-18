@@ -1,15 +1,11 @@
 <template>
   <section ref="sectionRef" class="enhanced-section" id="master-plan">
     <div class="sticky-container">
-      <!-- Текстовый контент -->
-      <div ref="textContentRef" class="text-content">
-        <div ref="textLeftRef" class="text-left">Ген.</div>
-        <div ref="textRightRef" class="text-right">План</div>
-      </div>
-
-      <!-- Анимируемая картинка -->
+      <!-- Анимируемая картинка с текстом внутри -->
       <div ref="imageMaskRef" class="image-mask">
+        <div ref="textLeftRef" class="text-left">Ген.</div>
         <img :src="genPlanImg" alt="Main image" class="reveal-image" />
+        <div ref="textRightRef" class="text-right">План</div>
       </div>
 
       <!-- Пинсы которые появляются после раскрытия -->
@@ -245,25 +241,15 @@ onMounted(async () => {
       return;
     }
 
-    // Быстрые сеттеры для синхронных обновлений без лагов
-    const setLeftX = textLeftRef.value ? gsap.quickSetter(textLeftRef.value, 'x', 'px') : null;
-    const setRightX = textRightRef.value ? gsap.quickSetter(textRightRef.value, 'x', 'px') : null;
-    const setMaskW = imageMaskRef.value
-      ? gsap.quickSetter(imageMaskRef.value, 'width', 'px')
-      : null;
-    const setMaskH = imageMaskRef.value
-      ? gsap.quickSetter(imageMaskRef.value, 'height', 'px')
-      : null;
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
-        start: 'top top', // Анимация начинается когда секция в самом верху
-        end: '+=100%', // Анимация занимает 100% высоты секции
-        scrub: 1,
-        markers: false,
+        start: 'top top',
+        end: '+=100%',
+        scrub: true,
+        invalidateOnRefresh: true,
         onUpdate: self => {
-          // Показываем пины и кнопку фильтра когда анимация завершена на 80%
+          // Показываем пины и кнопку фильтра когда анимация завершена на 50%
           if (self.progress > 0.5 && !showPins.value) {
             showPins.value = true;
             showFilterButton.value = true;
@@ -271,68 +257,45 @@ onMounted(async () => {
             showPins.value = false;
             showFilterButton.value = false;
           }
-          // Остальные апдейты выполняются в твине state.t ниже
         },
         onComplete: () => {
-          // Убеждаемся что пины и кнопка фильтра показаны после завершения анимации
           showPins.value = true;
           showFilterButton.value = true;
         },
       },
     });
 
-    // Начальное состояние - показываем прямоугольник 422x563px в центре
+    // Начальное состояние
     gsap.set(imageMaskRef.value, {
-      width: '422px',
-      height: '563px',
+      width: 422,
+      height: 563,
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      scale: 1,
-      opacity: 1,
+      force3D: true,
     });
 
-    // Начальные состояния текста: контейнер шире маски, элементы по краям
-    if (textContentRef.value) {
-      gsap.set(textContentRef.value, {
-        width: '580px', // Ширина контейнера больше маски
-        height: '563px',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-      });
-    }
-    if (textLeftRef.value && textRightRef.value) {
-      // Позиционируем текст по краям контейнера
-      gsap.set(textLeftRef.value, { x: -160 }); // Левый текст слева от маски
-      gsap.set(textRightRef.value, { x: 260 }); // Правый текст справа от маски
-    }
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-    // Общий драйвер анимации, который синхронно обновляет размеры маски и позиции текста
-    const state = { t: 0 };
-    tl.to(state, {
-      t: 1,
-      duration: 1,
-      ease: 'power2.out',
-      onUpdate: () => {
-        const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
-        const vh = typeof window !== 'undefined' ? window.innerHeight : 800;
-        const w = gsap.utils.interpolate(422, vw, state.t);
-        const h = gsap.utils.interpolate(563, vh, state.t);
-        const gapPx = 24;
-        if (setMaskW) setMaskW(w);
-        if (setMaskH) setMaskH(h);
-        if (setLeftX && setRightX) {
-          setLeftX(-(w / 2 + gapPx));
-          setRightX(w / 2 + gapPx);
-        }
-
-        // Поднимаем z-index прямоугольника во время анимации
-        if (imageMaskRef.value) {
-          imageMaskRef.value.style.zIndex = 2 + state.t; // От 2 до 3
-        }
+    // Анимируем только блок - текст автоматически движется вместе с ним
+    // благодаря CSS привязке (left/right: 24px)
+    tl.fromTo(
+      imageMaskRef.value,
+      {
+        width: 422,
+        height: 563,
       },
-    });
+      {
+        width: vw,
+        height: vh,
+        duration: 1,
+        ease: 'none',
+        force3D: true,
+        immediateRender: false,
+      },
+      0
+    );
 
     // Текст не меняет прозрачность и не "наезжает": его раздвигает расширяющийся контейнер
   }
@@ -362,33 +325,32 @@ onMounted(async () => {
   background: #e6dfd8;
 }
 
-.text-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1; /* Текст выше прямоугольника изначально */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 1100px;
-  color: $text-color-primary;
-  font-size: 118px;
-  font-weight: 400;
-  pointer-events: none;
-}
-
 .text-left,
 .text-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  color: $text-color-primary;
   font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 400;
   letter-spacing: 0.1em;
   opacity: 0.9;
-  will-change: transform;
+  pointer-events: none;
+  backface-visibility: hidden;
+  white-space: nowrap;
 
   @media (max-width: $breakpoint-lg) {
     font-size: 98px;
   }
+}
+
+.text-left {
+  right: calc(100% + 24px); /* снаружи блока слева */
+}
+
+.text-right {
+  left: calc(100% + 24px); /* снаружи блока справа */
 }
 
 .image-mask {
@@ -398,18 +360,26 @@ onMounted(async () => {
   transform: translate(-50%, -50%);
   width: 422px;
   height: 563px;
-  z-index: 2; /* Прямоугольник выше текста, чтобы текст был под ним */
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Fallback стили на случай если GSAP не загрузится */
+  will-change: width, height;
+  backface-visibility: hidden;
+  overflow: visible; /* текст может выходить за границы */
 }
 
 .reveal-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  z-index: 0; /* изображение под текстом */
 }
 
 /* Стили для пинов */
