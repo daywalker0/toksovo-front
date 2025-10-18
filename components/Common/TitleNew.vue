@@ -97,24 +97,31 @@ function createScrollTrigger(triggerElement, tl) {
     end: 'bottom 70%',
     scrub: true, // привязка ко скроллу
     animation: tl, // ScrollTrigger управляет таймлайном
+    invalidateOnRefresh: true,
     onLeaveBack: () => tl.progress(0),
   });
   triggers.push(st);
 }
 
 function initAnimation() {
-  if (!titleRef.value) return;
+  if (!titleRef.value || !process.client) return;
   gsap.registerPlugin(ScrollTrigger);
   killAll();
 
-  gsap.set(titleRef.value.querySelector('[data-text-split]'), { opacity: 1 });
+  const textSplit = titleRef.value.querySelector('[data-text-split]');
+  if (!textSplit) return;
+
+  gsap.set(textSplit, { opacity: 1 });
 
   const $$ = sel => Array.from(titleRef.value.querySelectorAll(sel));
 
   const makeTL = (selector, vars, opt = {}) => {
-    $$(selector).forEach(el => {
+    const elements = $$(selector);
+    elements.forEach(el => {
       const tl = gsap.timeline({ paused: true });
-      tl.from(el.querySelectorAll(opt.target || '.char'), vars);
+      const targets = el.querySelectorAll(opt.target || '.char');
+      if (targets.length === 0) return;
+      tl.from(targets, vars);
       createScrollTrigger(el, tl);
       timelines.push(tl);
     });
@@ -213,15 +220,22 @@ function handleResize() {
 }
 
 onMounted(async () => {
-  updateLines();
-  await nextTick();
-  initAnimation();
+  if (!process.client) return;
+
+  // Задержка для гарантии, что все тяжелые компоненты уже инициализированы
+  setTimeout(async () => {
+    updateLines();
+    await nextTick();
+    initAnimation();
+  }, 300);
+
   window.addEventListener('resize', handleResize);
 });
 
 watch(
   () => [props.text, props.maxWidth, props.mode],
   async () => {
+    if (!process.client) return;
     updateLines();
     await nextTick();
     initAnimation();

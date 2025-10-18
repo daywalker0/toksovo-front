@@ -261,7 +261,23 @@ const initHorizontalScroll = () => {
 onMounted(() => {
   // Ждем следующего тика для гарантии, что DOM полностью обновлен
   nextTick(() => {
+    // ВАЖНО: сначала инициализируем горизонтальный скролл
     initHorizontalScroll();
+
+    // После инициализации горизонтального скролла делаем множественные refresh
+    // чтобы все ScrollTrigger'ы пересчитали свои позиции
+    [100, 300, 500, 1000, 2000, 3000, 4000].forEach(delay => {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, delay);
+    });
+
+    // Refresh после полной загрузки всех ресурсов
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 300);
+    });
 
     // Обработка resize для пересчета горизонтального скролла
     let resizeTimeout;
