@@ -61,7 +61,7 @@ const renderEl = ref(null);
 const skyEl = ref(null);
 
 let gsap, ScrollTrigger;
-let st;
+let tl;
 
 onMounted(async () => {
   // SSR-safe импорт
@@ -72,27 +72,79 @@ onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger);
 
   const isMobile = window.innerWidth <= 599;
-  const startScale = isMobile ? 3.1 : 2.3; // ваш стартовый масштаб
+  const startScale = isMobile ? 3.1 : 2.3;
 
-  // начальные значения
-  gsap.set(renderEl.value, { transformOrigin: '50% 50%', scale: startScale });
-  // sky фиксированный фон, без анимации
+  // Получаем элементы контента
+  const titleEl = sectionEl.value?.querySelector('.hero-section__title');
+  const subtitleEl = sectionEl.value?.querySelector('.hero-section__subtitle');
 
-  st = gsap.to(renderEl.value, {
-    scale: 1,
-    ease: 'none',
+  // Начальные значения
+  gsap.set(renderEl.value, {
+    transformOrigin: '50% 50%',
+    scale: startScale,
+    force3D: true,
+    willChange: 'transform',
+  });
+
+  // Устанавливаем начальные значения для текста
+  if (titleEl) {
+    gsap.set(titleEl, {
+      y: 0,
+      opacity: 1,
+      force3D: true,
+    });
+  }
+
+  if (subtitleEl) {
+    gsap.set(subtitleEl, {
+      y: 30,
+      opacity: 0,
+      force3D: true,
+    });
+  }
+
+  // Создаём timeline с привязкой к скроллу
+  tl = gsap.timeline({
+    defaults: { ease: 'none' },
     scrollTrigger: {
       trigger: sectionEl.value,
       start: 'top top',
-      end: '+=900vh',
+      end: '+=1500vh',
       scrub: true,
+      invalidateOnRefresh: true,
     },
   });
+
+  // Анимация масштабирования фона
+  tl.to(
+    renderEl.value,
+    {
+      scale: 1,
+      duration: 1,
+      ease: 'power1.out',
+    },
+    0
+  );
+
+  // Анимация появления subtitle привязана к скроллу
+  if (subtitleEl) {
+    tl.to(
+      subtitleEl,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.3,
+        ease: 'power2.out',
+      },
+      0.15
+    );
+  }
 });
 
 onBeforeUnmount(() => {
-  st?.scrollTrigger?.kill();
-  st?.kill();
+  tl?.scrollTrigger?.kill();
+  tl?.kill();
+  ScrollTrigger?.getAll().forEach(st => st.kill());
   ScrollTrigger?.refresh();
 });
 </script>
@@ -175,15 +227,18 @@ onBeforeUnmount(() => {
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      will-change: transform;
     }
   }
 
-  // Фиксированный слой, который масштабируется к 0
+  // Фиксированный слой, который масштабируется
   &__bg {
     position: fixed;
     left: 0;
@@ -193,12 +248,15 @@ onBeforeUnmount(() => {
     z-index: 1;
     transform-origin: center bottom;
     pointer-events: none;
+    backface-visibility: hidden;
+    will-change: transform;
 
     img {
       width: 100%;
       height: auto;
       object-fit: cover;
       object-position: center bottom;
+      display: block;
     }
   }
 }
@@ -226,38 +284,21 @@ onBeforeUnmount(() => {
 
 .subtitle-animated {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  animation-delay: 1.5s; // Задержка после заголовка
   word-break: keep-all;
   overflow-wrap: break-word;
   hyphens: none;
-
-  @media (max-width: $breakpoint-x) {
-    transform: translateY(20px);
-    animation-duration: 0.6s;
-  }
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .char {
-    animation: none;
     opacity: 1;
     transform: none;
   }
 
   .subtitle-animated {
-    animation: none;
-    opacity: 1;
-    transform: none;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 </style>
