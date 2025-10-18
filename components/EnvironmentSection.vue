@@ -20,7 +20,7 @@
           <div class="navigation-buttons">
             <button
               class="nav-button nav-button--prev"
-              @click="goToPrevSlide"
+              @click="() => goToPrevSlide(false)"
               :disabled="isAnimating"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
@@ -37,7 +37,7 @@
 
             <button
               class="nav-button nav-button--next"
-              @click="goToNextSlide"
+              @click="() => goToNextSlide(false)"
               :disabled="isAnimating"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
@@ -112,13 +112,13 @@
       <div class="image-control" v-if="isContentVisible" @mousemove="onMouseMove">
         <div
           class="image-half left"
-          @click="goToPrevSlide"
+          @click="() => goToPrevSlide(false)"
           @mouseenter="hoverSide = 'left'"
           @mouseleave="hoverSide = null"
         />
         <div
           class="image-half right"
-          @click="goToNextSlide"
+          @click="() => goToNextSlide(false)"
           @mouseenter="hoverSide = 'right'"
           @mouseleave="hoverSide = null"
         />
@@ -193,7 +193,6 @@ const isAnimating = ref(false);
 const tlRef = ref(null);
 const autoplayInterval = ref(null);
 const progressInterval = ref(null);
-const userInteracted = ref(false);
 const isInView = ref(false);
 const progressValue = ref(0);
 const setActiveIndex = i => (activeIndex.value = i);
@@ -228,7 +227,7 @@ const stopProgress = () => {
 // Функции управления автовоспроизведением
 const startAutoplay = () => {
   stopAutoplay();
-  if (!userInteracted.value && isInView.value) {
+  if (isInView.value) {
     startProgress(); // Запускаем прогресс
 
     autoplayInterval.value = setInterval(() => {
@@ -248,25 +247,13 @@ const stopAutoplay = () => {
   stopProgress();
 };
 
-const resetAutoplay = () => {
-  userInteracted.value = false;
-  startAutoplay();
-};
-
 const toggleItem = index => {
   originalToggleItem(index);
-  userInteracted.value = true;
-  stopAutoplay();
 
   if (currentIndex.value !== index && !isAnimating.value) {
     const direction = index > currentIndex.value ? 'right' : 'left';
-    animateSlide(index, direction);
+    animateSlide(index, direction, true);
   }
-
-  // Возобновляем автовоспроизведение через 10 секунд после взаимодействия
-  setTimeout(() => {
-    resetAutoplay();
-  }, 10000);
 };
 const slides = computed(() => {
   if (!items.value || !Array.isArray(items.value))
@@ -294,15 +281,6 @@ const onMouseMove = e => {
 const goToNextSlide = (isAutomatic = false) => {
   if (isAnimating.value) return;
 
-  // Останавливаем автовоспроизведение при ручном клике
-  if (!isAutomatic) {
-    userInteracted.value = true;
-    stopAutoplay();
-    setTimeout(() => {
-      resetAutoplay();
-    }, 10000);
-  }
-
   if (isMobile.value) {
     isAnimating.value = true;
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
@@ -310,23 +288,20 @@ const goToNextSlide = (isAutomatic = false) => {
     activeIndex.value = nextIndex;
     setTimeout(() => {
       isAnimating.value = false;
+      // Перезапускаем таймер после завершения анимации
+      if (!isAutomatic && isInView.value) {
+        startAutoplay();
+      }
     }, 300);
   } else {
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
-    animateSlide(nextIndex, 'right');
+    animateSlide(nextIndex, 'right', !isAutomatic);
     setActiveIndex(nextIndex);
   }
 };
 
-const goToPrevSlide = () => {
+const goToPrevSlide = (isAutomatic = false) => {
   if (isAnimating.value) return;
-
-  // Останавливаем автовоспроизведение при ручном клике
-  userInteracted.value = true;
-  stopAutoplay();
-  setTimeout(() => {
-    resetAutoplay();
-  }, 10000);
 
   if (isMobile.value) {
     isAnimating.value = true;
@@ -335,15 +310,19 @@ const goToPrevSlide = () => {
     activeIndex.value = prevIndex;
     setTimeout(() => {
       isAnimating.value = false;
+      // Перезапускаем таймер после завершения анимации при ручном клике
+      if (!isAutomatic && isInView.value) {
+        startAutoplay();
+      }
     }, 300);
   } else {
     const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
-    animateSlide(prevIndex, 'left');
+    animateSlide(prevIndex, 'left', !isAutomatic);
     setActiveIndex(prevIndex);
   }
 };
 
-const animateSlide = (newIndex, _direction) => {
+const animateSlide = (newIndex, _direction, shouldRestartTimer = false) => {
   if (isAnimating.value) return;
   isAnimating.value = true;
 
@@ -360,6 +339,10 @@ const animateSlide = (newIndex, _direction) => {
 
   setTimeout(() => {
     isAnimating.value = false;
+    // Перезапускаем таймер после завершения анимации
+    if (shouldRestartTimer && isInView.value) {
+      startAutoplay();
+    }
   }, 300);
 };
 
