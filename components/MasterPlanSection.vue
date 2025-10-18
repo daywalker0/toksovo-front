@@ -264,41 +264,69 @@ onMounted(async () => {
     const initialTop = centerY - initialH / 2;
     const initialBottom = centerY + initialH / 2;
 
-    // Устанавливаем начальное состояние 4 блоков с перекрытием
-    gsap.set(overlayTopRef.value, {
-      height: initialTop,
-    });
-    gsap.set(overlayBottomRef.value, {
-      top: initialBottom,
-      height: vh - initialBottom,
-    });
-    gsap.set(overlayLeftRef.value, {
-      width: initialLeft,
-      top: initialTop - 1, // -1px для перекрытия с верхним блоком
-      height: initialH + 2, // +2px для перекрытия сверху и снизу
-    });
-    gsap.set(overlayRightRef.value, {
-      left: initialRight,
-      width: vw - initialRight,
-      top: initialTop - 1, // -1px для перекрытия с верхним блоком
-      height: initialH + 2, // +2px для перекрытия сверху и снизу
-    });
+    const textGap = 120; // увеличенный отступ
+    const textTop = '45%'; // позиция по вертикали
 
-    // Начальные позиции текста
-    const textGap = 60; // увеличенный отступ
+    // Функция для обновления всех элементов
+    const updateElements = (w, h) => {
+      const left = centerX - w / 2;
+      const right = centerX + w / 2;
+      const top = centerY - h / 2;
+      const bottom = centerY + h / 2;
 
-    gsap.set(textLeftRef.value, {
-      right: vw - initialLeft + textGap,
-      left: 'auto',
-      top: '50%',
-      transform: 'translate(0, 0)',
-    });
-    gsap.set(textRightRef.value, {
-      left: initialRight + textGap,
-      right: 'auto',
-      top: '50%',
-      transform: 'translate(0, 0)',
-    });
+      // Округляем до целых пикселей
+      const topRound = Math.round(top);
+      const bottomRound = Math.round(bottom);
+      const leftRound = Math.round(left);
+      const rightRound = Math.round(right);
+      const hRound = Math.round(h) + 2;
+
+      // Обновляем 4 блока
+      if (overlayTopRef.value) {
+        gsap.set(overlayTopRef.value, { height: topRound });
+      }
+      if (overlayBottomRef.value) {
+        gsap.set(overlayBottomRef.value, { top: bottomRound, height: vh - bottomRound });
+      }
+      if (overlayLeftRef.value) {
+        gsap.set(overlayLeftRef.value, {
+          width: leftRound,
+          top: topRound - 1,
+          height: hRound,
+        });
+      }
+      if (overlayRightRef.value) {
+        gsap.set(overlayRightRef.value, {
+          left: rightRound,
+          width: vw - rightRound,
+          top: topRound - 1,
+          height: hRound,
+        });
+      }
+
+      // Позиционируем текст
+      if (textLeftRef.value) {
+        const textRight = Math.round(vw - leftRound + textGap);
+        gsap.set(textLeftRef.value, {
+          right: textRight,
+          left: 'auto',
+          top: textTop,
+          transform: 'translate(0, 0)',
+        });
+      }
+      if (textRightRef.value) {
+        const textLeft = Math.round(rightRound + textGap);
+        gsap.set(textRightRef.value, {
+          left: textLeft,
+          right: 'auto',
+          top: textTop,
+          transform: 'translate(0, 0)',
+        });
+      }
+    };
+
+    // Устанавливаем начальные значения сразу
+    updateElements(422, 563);
 
     const state = { w: 422, h: 563 };
 
@@ -327,73 +355,20 @@ onMounted(async () => {
     });
 
     // Анимируем размер отверстия
-    tl.to(
+    tl.fromTo(
       state,
+      {
+        w: 422,
+        h: 563,
+      },
       {
         w: vw,
         h: vh,
         duration: 1,
         ease: 'none',
+        immediateRender: true,
         onUpdate: () => {
-          const w = state.w;
-          const h = state.h;
-
-          const left = centerX - w / 2;
-          const right = centerX + w / 2;
-          const top = centerY - h / 2;
-          const bottom = centerY + h / 2;
-
-          // Обновляем 4 блока создающих рамку
-          // Округляем до целых пикселей и добавляем перекрытие 1px чтобы избежать зазоров
-          const topRound = Math.round(top);
-          const bottomRound = Math.round(bottom);
-          const leftRound = Math.round(left);
-          const rightRound = Math.round(right);
-          const hRound = Math.round(h) + 2; // +2px для перекрытия сверху и снизу
-
-          if (overlayTopRef.value) {
-            gsap.set(overlayTopRef.value, { height: topRound });
-          }
-          if (overlayBottomRef.value) {
-            gsap.set(overlayBottomRef.value, { top: bottomRound, height: vh - bottomRound });
-          }
-          if (overlayLeftRef.value) {
-            gsap.set(overlayLeftRef.value, {
-              width: leftRound,
-              top: topRound - 1, // -1px для перекрытия с верхом
-              height: hRound,
-            });
-          }
-          if (overlayRightRef.value) {
-            gsap.set(overlayRightRef.value, {
-              left: rightRound,
-              width: vw - rightRound,
-              top: topRound - 1, // -1px для перекрытия с верхом
-              height: hRound,
-            });
-          }
-
-          // Позиционируем текст с округлением
-          const textGap = 120;
-
-          if (textLeftRef.value) {
-            const textRight = Math.round(vw - leftRound + textGap);
-            gsap.set(textLeftRef.value, {
-              right: textRight,
-              left: 'auto',
-              top: '45%',
-              transform: 'translate(0, 0)',
-            });
-          }
-          if (textRightRef.value) {
-            const textLeft = Math.round(rightRound + textGap);
-            gsap.set(textRightRef.value, {
-              left: textLeft,
-              right: 'auto',
-              top: '45%',
-              transform: 'translate(0, 0)',
-            });
-          }
+          updateElements(state.w, state.h);
         },
       },
       0

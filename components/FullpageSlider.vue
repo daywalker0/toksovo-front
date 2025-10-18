@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, toRefs } from 'vue';
+import { ref, onMounted, onUnmounted, toRefs, nextTick } from 'vue';
 
 const props = defineProps({
   sections: {
@@ -50,12 +50,11 @@ const { sections } = toRefs(props);
 const sliderId = ref(`slider-${Math.random().toString(36).substr(2, 9)}`);
 
 const currentSection = ref(0);
-const previousCurrentSection = ref(0); // Отслеживаем предыдущую текущую секцию
 const isIndicatorVisible = ref(false);
 const isInSlider = ref(false);
-let lastUpdateTime = 0;
 
 let observer;
+let scrollTriggers = [];
 
 const scrollToSection = index => {
   // Простая навигация через scrollIntoView
@@ -73,9 +72,16 @@ const scrollToSection = index => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick();
+
   // Инициализируем currentSection
   currentSection.value = 0;
+
+  // Динамически импортируем GSAP
+  const { gsap } = await import('gsap');
+  const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+  gsap.registerPlugin(ScrollTrigger);
 
   // Создаем отдельный observer для определения активности слайдера
   const sliderObserver = new IntersectionObserver(
@@ -98,155 +104,70 @@ onMounted(() => {
     sliderObserver.observe(sliderContainer);
   }
 
-  // Создаем observer для секций - только для определения активности слайдера
+  // Создаем observer для определения текущей секции
   observer = new IntersectionObserver(
     entries => {
-      // Этот observer только для определения, что слайдер активен
-      // Не обновляем currentSection здесь
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          const index = parseInt(entry.target.dataset.section || 0);
+          currentSection.value = index;
+        }
+      });
     },
     {
-      threshold: 0.3, // Срабатывает при 30% видимости
+      threshold: [0.5],
       rootMargin: '0px',
     }
   );
 
-  // Наблюдаем за всеми секциями
+  // Создаем ScrollTrigger анимацию для каждой секции
   sections.value.forEach((_, index) => {
     const element = document.getElementById(`section-${sliderId.value}-${index}`);
-    if (element) {
-      observer.observe(element);
-    } else {
-    }
-  });
+    if (!element) return;
 
-  // Добавляем обработчик скролла для более точного отслеживания
-  let scrollTimeout;
-  const handleScroll = () => {
-    if (!isInSlider.value) return;
+    // Добавляем data-section для observer
+    element.dataset.section = index;
+    observer.observe(element);
 
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      // Находим секцию, которая больше всего видна
-      let maxVisibleRatio = 0;
-      let mostVisibleIndex = 0;
+    const bgElement = element.querySelector('.section-bg');
+    if (!bgElement) return;
 
-      sections.value.forEach((_, index) => {
-        const element = document.getElementById(`section-${sliderId.value}-${index}`);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
-          const visibleRatio = visibleHeight / window.innerHeight;
+    // Устанавливаем начальные значения
+    gsap.set(bgElement, {
+      scale: 1,
+      opacity: 1,
+      force3D: true,
+    });
 
-          if (visibleRatio > maxVisibleRatio) {
-            maxVisibleRatio = visibleRatio;
-            mostVisibleIndex = index;
-          }
-        }
-      });
+    // Анимация при скролле вверх (секция уходит)
+    const trigger = gsap.to(bgElement, {
+      scale: 0.5,
+      opacity: 0.5,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: element,
+        start: 'bottom bottom',
+        end: 'bottom top',
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
+    });
 
-      // Обновляем только если новая секция видна значительно больше
-      const now = Date.now();
-      if (
-        maxVisibleRatio > 0.3 &&
-        mostVisibleIndex !== currentSection.value &&
-        now - lastUpdateTime > 100
-      ) {
-        // Не чаще чем раз в 100мс
-        previousCurrentSection.value = currentSection.value; // Сохраняем предыдущую секцию
-        currentSection.value = mostVisibleIndex;
-        lastUpdateTime = now;
-      }
-    }, 16); // Уменьшаем задержку для быстрого отклика (60fps)
-
-    // Анимация для предыдущей секции
-    updatePreviousSectionAnimation();
-  };
-
-  // Функция для анимации текущей секции при её уходе
-  const updatePreviousSectionAnimation = () => {
-    const currentIndex = currentSection.value;
-    const previousIndex = previousCurrentSection.value;
-
-    // Анимируем текущую секцию, когда она начинает уходить вверх
-    const currentElement = document.getElementById(`section-${sliderId.value}-${currentIndex}`);
-    if (currentElement) {
-      const rect = currentElement.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // Вычисляем прогресс анимации на основе позиции текущей секции
-      // Анимация начинается когда низ текущей секции достигает низа экрана
-      let scrollProgress = 0;
-
-      if (rect.bottom <= 0) {
-        // Секция полностью ушла вверх
-        scrollProgress = 1;
-      } else if (rect.bottom <= windowHeight) {
-        // Анимация начинается когда низ текущей секции достигает низа экрана
-        // Прогресс от 0 (низ секции на дне экрана) до 1 (секция полностью ушла вверх)
-        const startPoint = windowHeight; // Начинаем когда низ секции на дне экрана
-        const endPoint = 0; // Заканчиваем когда низ секции ушел вверх
-
-        scrollProgress = (startPoint - rect.bottom) / (startPoint - endPoint);
-      }
-
-      // Ограничиваем прогресс от 0 до 1
-      scrollProgress = Math.max(0, Math.min(1, scrollProgress));
-
-      // Масштабируем от 1.0 до 0.5 и прозрачность от 1.0 до 0.5
-      const scale = 1.0 - scrollProgress * 0.5; // от 1.0 до 0.5
-      const opacity = 1.0 - scrollProgress * 0.5; // от 1.0 до 0.5
-
-      const bgElement = currentElement.querySelector('.section-bg');
-      if (bgElement) {
-        bgElement.style.transform = `scale(${scale})`;
-        bgElement.style.opacity = opacity;
-        bgElement.style.transition = 'none'; // Убираем задержку для мгновенной реакции
-      }
-    }
-
-    // Также анимируем предыдущую секцию, если она есть
-    if (previousIndex >= 0 && previousIndex !== currentIndex) {
-      const previousElement = document.getElementById(`section-${sliderId.value}-${previousIndex}`);
-      if (previousElement) {
-        const rect = previousElement.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-
-        let scrollProgress = 0;
-
-        if (rect.bottom <= 0) {
-          scrollProgress = 1;
-        } else if (rect.bottom <= windowHeight) {
-          const startPoint = windowHeight;
-          const endPoint = 0;
-          scrollProgress = (startPoint - rect.bottom) / (startPoint - endPoint);
-        }
-
-        scrollProgress = Math.max(0, Math.min(1, scrollProgress));
-
-        const scale = 1.0 - scrollProgress * 0.5;
-        const opacity = 1.0 - scrollProgress * 0.5;
-
-        const bgElement = previousElement.querySelector('.section-bg');
-        if (bgElement) {
-          bgElement.style.transform = `scale(${scale})`;
-          bgElement.style.opacity = opacity;
-          bgElement.style.transition = 'none';
-        }
-      }
-    }
-
-    // Убираем логику сброса анимации - теперь финальные значения opacity и scale сохраняются
-  };
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-
-  onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
+    scrollTriggers.push(trigger);
   });
 });
 
 onUnmounted(() => {
   if (observer) observer.disconnect();
+
+  // Очищаем все ScrollTriggers
+  scrollTriggers.forEach(trigger => {
+    if (trigger.scrollTrigger) {
+      trigger.scrollTrigger.kill();
+    }
+    trigger.kill();
+  });
+  scrollTriggers = [];
 });
 </script>
 
@@ -283,9 +204,8 @@ onUnmounted(() => {
   background-repeat: no-repeat;
   transform: scale(1);
   opacity: 1;
-  transition:
-    transform 0.3s ease-out,
-    opacity 0.3s ease-out;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .section-overlay {
