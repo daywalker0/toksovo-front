@@ -208,7 +208,6 @@ const isAnimating = ref(false);
 const tlRef = ref(null);
 const autoplayInterval = ref(null);
 const progressInterval = ref(null);
-const isInView = ref(false);
 const progressValue = ref(0);
 const setActiveIndex = i => (activeIndex.value = i);
 
@@ -242,16 +241,14 @@ const stopProgress = () => {
 // Функции управления автовоспроизведением
 const startAutoplay = () => {
   stopAutoplay();
-  if (isInView.value) {
-    startProgress(); // Запускаем прогресс
+  startProgress(); // Запускаем прогресс
 
-    autoplayInterval.value = setInterval(() => {
-      if (!isAnimating.value && isInView.value) {
-        goToNextSlide(true); // true = автоматическое переключение
-        startProgress(); // Перезапускаем прогресс
-      }
-    }, 3000);
-  }
+  autoplayInterval.value = setInterval(() => {
+    if (!isAnimating.value) {
+      goToNextSlide(true); // true = автоматическое переключение
+      startProgress(); // Перезапускаем прогресс
+    }
+  }, 3000);
 };
 
 const stopAutoplay = () => {
@@ -278,9 +275,7 @@ const toggleItem = index => {
         currentIndex.value = index;
         nextSlideIndex.value = null;
         isAnimating.value = false;
-        if (isInView.value) {
-          startAutoplay();
-        }
+        startAutoplay();
       }, 600);
     } else {
       const direction = index > currentIndex.value ? 'right' : 'left';
@@ -326,7 +321,7 @@ const goToNextSlide = (isAutomatic = false) => {
       nextSlideIndex.value = null;
       isAnimating.value = false;
       // Перезапускаем таймер после завершения анимации
-      if (!isAutomatic && isInView.value) {
+      if (!isAutomatic) {
         startAutoplay();
       }
     }, 600); // Увеличил время для плавности анимации
@@ -352,7 +347,7 @@ const goToPrevSlide = (isAutomatic = false) => {
       nextSlideIndex.value = null;
       isAnimating.value = false;
       // Перезапускаем таймер после завершения анимации при ручном клике
-      if (!isAutomatic && isInView.value) {
+      if (!isAutomatic) {
         startAutoplay();
       }
     }, 600);
@@ -409,7 +404,7 @@ const animateSlide = (newIndex, direction, shouldRestartTimer = false) => {
           isAnimating.value = false;
 
           // Перезапускаем таймер после завершения анимации
-          if (shouldRestartTimer && isInView.value) {
+          if (shouldRestartTimer) {
             startAutoplay();
           }
         },
@@ -418,7 +413,7 @@ const animateSlide = (newIndex, direction, shouldRestartTimer = false) => {
   } else {
     setTimeout(() => {
       isAnimating.value = false;
-      if (shouldRestartTimer && isInView.value) {
+      if (shouldRestartTimer) {
         startAutoplay();
       }
     }, 600);
@@ -488,30 +483,18 @@ async function build() {
       onUpdate: self => {
         // Показываем контент только когда прогресс достигает определенного уровня
         isContentVisible.value = self.progress > 0.6;
-
-        // Запускаем автовоспроизведение когда контент полностью виден
-        if (self.progress > 0.8 && !isInView.value) {
-          isInView.value = true;
-          startAutoplay();
-        }
       },
       onLeave: () => {
         // Скрываем контент при уходе вниз
         isContentVisible.value = true;
-        isInView.value = false;
-        stopAutoplay();
       },
       onEnterBack: () => {
         // Показываем контент при возврате сверху
         isContentVisible.value = true;
-        isInView.value = true;
-        startAutoplay();
       },
       onLeaveBack: () => {
         // Скрываем контент при уходе вверх
         isContentVisible.value = false;
-        isInView.value = false;
-        stopAutoplay();
       },
     },
   });
@@ -577,20 +560,16 @@ onMounted(async () => {
       if (!isMobile.value) build();
       else {
         ScrollTrigger.refresh();
-        // Для мобильных запускаем автовоспроизведение сразу
-        isInView.value = true;
-        startAutoplay();
       }
     }, 150);
   });
 
   if (!isMobile.value) {
     build();
-  } else {
-    // Для мобильных запускаем автовоспроизведение сразу
-    isInView.value = true;
-    startAutoplay();
   }
+
+  // Запускаем автовоспроизведение сразу при монтировании
+  startAutoplay();
 });
 
 onBeforeUnmount(() => {
