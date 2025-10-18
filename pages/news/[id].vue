@@ -217,7 +217,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNewsStore } from '~/stores/news';
 import TitleNew from '~/components/Common/TitleNew.vue';
@@ -228,6 +228,12 @@ import Footer from '~/components/Footer.vue';
 const route = useRoute();
 const router = useRouter();
 const newsStore = useNewsStore();
+
+// Получаем Lenis для программного скролла
+const { $lenis } = useNuxtApp();
+
+// Флаг первой загрузки
+const isFirstLoad = ref(true);
 
 // Получаем данные из store
 const newsItem = computed(() => newsStore.currentNews);
@@ -314,9 +320,52 @@ useHead(() => {
   };
 });
 
+// Функция для скролла наверх
+const scrollToTop = () => {
+  if (process.client) {
+    // Получаем инстанс Lenis напрямую
+    const lenisInstance = $lenis?.getInstance?.();
+    if (lenisInstance) {
+      // Используем только Lenis для избежания конфликтов
+      lenisInstance.scrollTo(0, { immediate: true });
+    } else {
+      // Fallback на нативный метод, если Lenis не доступен
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  }
+};
+
+// Следим за изменением ID новости
+watch(
+  () => route.params.id,
+  async newId => {
+    if (newId && process.client && !isFirstLoad.value) {
+      // Загружаем новость
+      await newsStore.fetchNewsById(newId);
+
+      // Ждем рендеринга DOM
+      await nextTick();
+
+      // Скроллим страницу вверх мгновенно
+      requestAnimationFrame(() => {
+        scrollToTop();
+      });
+    }
+  }
+);
+
 onMounted(async () => {
   const newsId = route.params.id;
   await newsStore.fetchNewsById(newsId);
+
+  // Скроллим страницу вверх после первой загрузки
+  await nextTick();
+  requestAnimationFrame(() => {
+    scrollToTop();
+  });
+
+  // Снимаем флаг первой загрузки
+  isFirstLoad.value = false;
 });
 </script>
 
