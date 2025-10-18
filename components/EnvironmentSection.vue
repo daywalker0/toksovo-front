@@ -263,6 +263,9 @@ const toggleItem = index => {
   originalToggleItem(index);
 
   if (currentIndex.value !== index && !isAnimating.value) {
+    // Сразу перезапускаем таймер
+    startAutoplay();
+
     if (isMobile.value) {
       // Для мобайла используем ту же логику
       isAnimating.value = true;
@@ -275,11 +278,10 @@ const toggleItem = index => {
         currentIndex.value = index;
         nextSlideIndex.value = null;
         isAnimating.value = false;
-        startAutoplay();
       }, 600);
     } else {
       const direction = index > currentIndex.value ? 'right' : 'left';
-      animateSlide(index, direction, true);
+      animateSlide(index, direction);
     }
   }
 };
@@ -309,6 +311,11 @@ const onMouseMove = e => {
 const goToNextSlide = (isAutomatic = false) => {
   if (isAnimating.value) return;
 
+  // Перезапускаем таймер сразу при ручном клике
+  if (!isAutomatic) {
+    startAutoplay();
+  }
+
   if (isMobile.value) {
     isAnimating.value = true;
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
@@ -320,20 +327,21 @@ const goToNextSlide = (isAutomatic = false) => {
       currentIndex.value = nextIndex;
       nextSlideIndex.value = null;
       isAnimating.value = false;
-      // Перезапускаем таймер после завершения анимации
-      if (!isAutomatic) {
-        startAutoplay();
-      }
-    }, 600); // Увеличил время для плавности анимации
+    }, 600);
   } else {
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
-    animateSlide(nextIndex, 'right', !isAutomatic);
+    animateSlide(nextIndex, 'right');
     setActiveIndex(nextIndex);
   }
 };
 
 const goToPrevSlide = (isAutomatic = false) => {
   if (isAnimating.value) return;
+
+  // Перезапускаем таймер сразу при ручном клике
+  if (!isAutomatic) {
+    startAutoplay();
+  }
 
   if (isMobile.value) {
     isAnimating.value = true;
@@ -346,19 +354,15 @@ const goToPrevSlide = (isAutomatic = false) => {
       currentIndex.value = prevIndex;
       nextSlideIndex.value = null;
       isAnimating.value = false;
-      // Перезапускаем таймер после завершения анимации при ручном клике
-      if (!isAutomatic) {
-        startAutoplay();
-      }
     }, 600);
   } else {
     const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
-    animateSlide(prevIndex, 'left', !isAutomatic);
+    animateSlide(prevIndex, 'left');
     setActiveIndex(prevIndex);
   }
 };
 
-const animateSlide = (newIndex, direction, shouldRestartTimer = false) => {
+const animateSlide = (newIndex, direction) => {
   if (isAnimating.value) return;
   isAnimating.value = true;
 
@@ -402,20 +406,12 @@ const animateSlide = (newIndex, direction, shouldRestartTimer = false) => {
           centerItem.removeChild(tempImg);
           centerItem.style.position = originalPosition;
           isAnimating.value = false;
-
-          // Перезапускаем таймер после завершения анимации
-          if (shouldRestartTimer) {
-            startAutoplay();
-          }
         },
       });
     }
   } else {
     setTimeout(() => {
       isAnimating.value = false;
-      if (shouldRestartTimer) {
-        startAutoplay();
-      }
     }, 600);
   }
 };
