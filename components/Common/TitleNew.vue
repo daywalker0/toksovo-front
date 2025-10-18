@@ -118,10 +118,26 @@ function initAnimation() {
   const makeTL = (selector, vars, opt = {}) => {
     const elements = $$(selector);
     elements.forEach(el => {
-      const tl = gsap.timeline({ paused: true });
       const targets = el.querySelectorAll(opt.target || '.char');
       if (targets.length === 0) return;
-      tl.from(targets, vars);
+
+      // Устанавливаем начальное состояние ДО анимации
+      const fromVars = { ...vars }; // например { opacity: 0, yPercent: 150 }
+      gsap.set(targets, fromVars);
+
+      // Создаём таймлайн
+      const tl = gsap.timeline({ paused: true });
+      tl.to(targets, {
+        ...Object.fromEntries(
+          Object.entries(vars).filter(([k]) => k !== 'opacity' && k !== 'yPercent')
+        ),
+        opacity: 1,
+        yPercent: 0,
+        ease: vars.ease || 'power1.out',
+        stagger: vars.stagger || 0.05,
+        duration: vars.duration || 0.3,
+      });
+
       createScrollTrigger(el, tl);
       timelines.push(tl);
     });
