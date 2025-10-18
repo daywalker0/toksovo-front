@@ -11,7 +11,7 @@
 
         <div class="footer__section-item center">
           <div class="footer__logo">
-            <a @click="router.push('/')" href="#" style="cursor: pointer">
+            <NuxtLink to="/" class="footer__logo-link">
               <svg
                 width="244"
                 height="50"
@@ -34,7 +34,7 @@
                   fill="#2C322C"
                 />
               </svg>
-            </a>
+            </NuxtLink>
           </div>
           <div class="footer__phone">
             <AnimatedLink
@@ -125,11 +125,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import DialogCallback from './Common/Dialogs/DialogCallback.vue';
 import AnimatedLink from './Common/AnimatedLink.vue';
-
-const router = useRouter();
 
 const showDialogCallback = ref(false);
 
@@ -219,14 +216,22 @@ const openDialogCallback = () => {
     color: $text-color-secondary;
   }
 
-  &__logo svg {
-    @media (max-width: $breakpoint-lg) {
-      width: 195px;
+  &__logo {
+    &-link {
+      display: inline-block;
+      text-decoration: none;
+      outline: none;
     }
 
-    @media (max-width: $breakpoint-sm) {
-      width: 150px;
-      height: auto;
+    svg {
+      @media (max-width: $breakpoint-lg) {
+        width: 195px;
+      }
+
+      @media (max-width: $breakpoint-sm) {
+        width: 150px;
+        height: auto;
+      }
     }
   }
 
