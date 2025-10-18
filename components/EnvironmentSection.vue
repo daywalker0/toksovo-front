@@ -483,7 +483,7 @@ async function build() {
 
   const others = Array.from(itemsEls).filter((_, i) => i !== centerIndex);
 
-  const growStart = 0.2;
+  const growStart = 0.3;
   const growDur = 1.2;
   const contentAt = growStart + growDur * 0.8;
 
@@ -527,6 +527,9 @@ async function build() {
     },
   });
 
+  // Добавляем небольшую паузу в начале для стабилизации pin
+  tl.to({}, { duration: 0.1 }, 0);
+
   tl.fromTo(
     others,
     {
@@ -548,7 +551,7 @@ async function build() {
       immediateRender: false,
       overwrite: 'auto',
     },
-    0
+    0.1
   );
 
   // единственный fromTo (без конкурирующих твинов)
@@ -561,6 +564,7 @@ async function build() {
       duration: growDur,
       immediateRender: false,
       overwrite: 'auto',
+      force3D: true,
     },
     growStart
   );
@@ -802,6 +806,8 @@ onBeforeUnmount(() => {
     width: 400px;
     height: 600px;
     z-index: 3;
+    will-change: width, height;
+    transform: translateZ(0);
   }
 
   &:nth-child(2),
