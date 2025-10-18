@@ -10,7 +10,20 @@
     <!-- Новая реализация для мобильных -->
     <template v-else>
       <div class="environment-section__bg">
-        <img :src="currentSlide" alt="Environment background" />
+        <img
+          :key="'current-' + currentIndex"
+          :src="currentSlide"
+          alt="Environment background"
+          class="slide-image slide-current"
+        />
+        <img
+          v-if="nextSlideIndex !== null"
+          :key="'next-' + nextSlideIndex"
+          :src="slides[nextSlideIndex]"
+          alt="Next slide"
+          class="slide-image slide-next"
+          :class="slideDirection === 'right' ? 'from-right' : 'from-left'"
+        />
       </div>
       <div class="environment-section__content">
         <div class="content-block">
@@ -189,6 +202,8 @@ const galleryRef = ref(null);
 const contentRef = ref(null);
 const isContentVisible = ref(false);
 const currentIndex = ref(0);
+const nextSlideIndex = ref(null);
+const slideDirection = ref('right'); // 'right' или 'left'
 const isAnimating = ref(false);
 const tlRef = ref(null);
 const autoplayInterval = ref(null);
@@ -251,8 +266,26 @@ const toggleItem = index => {
   originalToggleItem(index);
 
   if (currentIndex.value !== index && !isAnimating.value) {
-    const direction = index > currentIndex.value ? 'right' : 'left';
-    animateSlide(index, direction, true);
+    if (isMobile.value) {
+      // Для мобайла используем ту же логику
+      isAnimating.value = true;
+      const direction = index > currentIndex.value ? 'right' : 'left';
+      slideDirection.value = direction;
+      nextSlideIndex.value = index;
+      activeIndex.value = index;
+
+      setTimeout(() => {
+        currentIndex.value = index;
+        nextSlideIndex.value = null;
+        isAnimating.value = false;
+        if (isInView.value) {
+          startAutoplay();
+        }
+      }, 600);
+    } else {
+      const direction = index > currentIndex.value ? 'right' : 'left';
+      animateSlide(index, direction, true);
+    }
   }
 };
 const slides = computed(() => {
@@ -284,15 +317,19 @@ const goToNextSlide = (isAutomatic = false) => {
   if (isMobile.value) {
     isAnimating.value = true;
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
-    currentIndex.value = nextIndex;
+    slideDirection.value = 'right';
+    nextSlideIndex.value = nextIndex;
     activeIndex.value = nextIndex;
+
     setTimeout(() => {
+      currentIndex.value = nextIndex;
+      nextSlideIndex.value = null;
       isAnimating.value = false;
       // Перезапускаем таймер после завершения анимации
       if (!isAutomatic && isInView.value) {
         startAutoplay();
       }
-    }, 300);
+    }, 600); // Увеличил время для плавности анимации
   } else {
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
     animateSlide(nextIndex, 'right', !isAutomatic);
@@ -306,15 +343,19 @@ const goToPrevSlide = (isAutomatic = false) => {
   if (isMobile.value) {
     isAnimating.value = true;
     const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
-    currentIndex.value = prevIndex;
+    slideDirection.value = 'left';
+    nextSlideIndex.value = prevIndex;
     activeIndex.value = prevIndex;
+
     setTimeout(() => {
+      currentIndex.value = prevIndex;
+      nextSlideIndex.value = null;
       isAnimating.value = false;
       // Перезапускаем таймер после завершения анимации при ручном клике
       if (!isAutomatic && isInView.value) {
         startAutoplay();
       }
-    }, 300);
+    }, 600);
   } else {
     const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
     animateSlide(prevIndex, 'left', !isAutomatic);
@@ -322,7 +363,7 @@ const goToPrevSlide = (isAutomatic = false) => {
   }
 };
 
-const animateSlide = (newIndex, _direction, shouldRestartTimer = false) => {
+const animateSlide = (newIndex, direction, shouldRestartTimer = false) => {
   if (isAnimating.value) return;
   isAnimating.value = true;
 
@@ -334,16 +375,54 @@ const animateSlide = (newIndex, _direction, shouldRestartTimer = false) => {
     const centerIndex = Math.floor(galleryItems.length / 2);
     const centerItem = galleryItems[centerIndex];
     const centerImg = centerItem?.querySelector('img');
-    if (centerImg) centerImg.src = slides.value[newIndex];
-  }
 
-  setTimeout(() => {
-    isAnimating.value = false;
-    // Перезапускаем таймер после завершения анимации
-    if (shouldRestartTimer && isInView.value) {
-      startAutoplay();
+    if (centerImg) {
+      // Создаем временное изображение для анимации
+      const tempImg = document.createElement('img');
+      tempImg.src = slides.value[newIndex];
+      tempImg.style.position = 'absolute';
+      tempImg.style.top = '0';
+      tempImg.style.left = '0';
+      tempImg.style.width = '100%';
+      tempImg.style.height = '100%';
+      tempImg.style.objectFit = 'cover';
+
+      // Устанавливаем начальную позицию в зависимости от направления
+      const startX = direction === 'right' ? '100%' : '-100%';
+      gsap.set(tempImg, { x: startX });
+
+      // Делаем centerItem относительным для позиционирования
+      const originalPosition = centerItem.style.position;
+      centerItem.style.position = 'relative';
+      centerItem.style.overflow = 'hidden';
+      centerItem.appendChild(tempImg);
+
+      // Анимируем новое изображение (заезжает поверх текущего)
+      gsap.to(tempImg, {
+        x: 0,
+        duration: 0.6,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          centerImg.src = slides.value[newIndex];
+          centerItem.removeChild(tempImg);
+          centerItem.style.position = originalPosition;
+          isAnimating.value = false;
+
+          // Перезапускаем таймер после завершения анимации
+          if (shouldRestartTimer && isInView.value) {
+            startAutoplay();
+          }
+        },
+      });
     }
-  }, 300);
+  } else {
+    setTimeout(() => {
+      isAnimating.value = false;
+      if (shouldRestartTimer && isInView.value) {
+        startAutoplay();
+      }
+    }, 600);
+  }
 };
 
 let resizeTimer = null;
@@ -542,16 +621,37 @@ onBeforeUnmount(() => {
     height: 100%;
     z-index: 1;
     display: block;
+    overflow: hidden;
 
     @media (min-width: 600px) {
       display: none;
     }
 
-    img {
+    .slide-image {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center;
+    }
+
+    .slide-current {
+      z-index: 1;
+    }
+
+    .slide-next {
+      z-index: 2;
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+      &.from-right {
+        animation-name: slideInFromRight;
+      }
+
+      &.from-left {
+        animation-name: slideInFromLeft;
+      }
     }
   }
 
@@ -687,13 +787,16 @@ onBeforeUnmount(() => {
     object-fit: cover;
     border-radius: inherit;
     display: block;
+    position: relative;
   }
 
-  // Центральный слайд (третий)
+  // Центральный слайд (третий) - позиционирование для анимации
   &:nth-child(3) {
     width: 400px;
     height: 600px;
     z-index: 3;
+    position: relative;
+    overflow: hidden;
   }
 
   &:nth-child(2),
@@ -853,6 +956,24 @@ onBeforeUnmount(() => {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 </style>

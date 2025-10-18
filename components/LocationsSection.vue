@@ -191,7 +191,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-top: 170px;
+  margin-top: 410px;
 }
 
 .parallax-container {
