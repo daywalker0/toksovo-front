@@ -265,7 +265,7 @@ onMounted(async () => {
     const initialBottom = centerY + initialH / 2;
 
     const textGap = 120; // увеличенный отступ
-    const textTop = '45%'; // позиция по вертикали
+    const textTop = '44%'; // позиция по вертикали
 
     // Функция для обновления всех элементов
     const updateElements = (w, h) => {
