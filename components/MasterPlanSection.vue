@@ -1,12 +1,20 @@
 <template>
   <section ref="sectionRef" class="enhanced-section" id="master-plan">
     <div class="sticky-container">
-      <!-- Анимируемая картинка с текстом внутри -->
-      <div ref="imageMaskRef" class="image-mask">
-        <div ref="textLeftRef" class="text-left">Ген.</div>
-        <img :src="genPlanImg" alt="Main image" class="reveal-image" />
-        <div ref="textRightRef" class="text-right">План</div>
+      <!-- Фиксированное изображение с пинами под всем -->
+      <div class="background-image">
+        <img :src="genPlanImg" alt="Master plan" />
       </div>
+
+      <!-- 4 блока создающих рамку вокруг отверстия -->
+      <div ref="overlayTopRef" class="overlay-bar overlay-top"></div>
+      <div ref="overlayBottomRef" class="overlay-bar overlay-bottom"></div>
+      <div ref="overlayLeftRef" class="overlay-bar overlay-left"></div>
+      <div ref="overlayRightRef" class="overlay-bar overlay-right"></div>
+
+      <!-- Тексты по бокам отверстия -->
+      <div ref="textLeftRef" class="text-left">Ген.</div>
+      <div ref="textRightRef" class="text-right">План</div>
 
       <!-- Пинсы которые появляются после раскрытия -->
       <div v-if="showPins" class="pins-container">
@@ -68,10 +76,12 @@ import { ref, onMounted, nextTick, computed } from 'vue';
 import genPlanImg from '@/assets/img/gen-plan.jpg';
 
 const sectionRef = ref(null);
-const imageMaskRef = ref(null);
+const overlayTopRef = ref(null);
+const overlayBottomRef = ref(null);
+const overlayLeftRef = ref(null);
+const overlayRightRef = ref(null);
 const textLeftRef = ref(null);
 const textRightRef = ref(null);
-const textContentRef = ref(null);
 const showPins = ref(false);
 const showFilterButton = ref(false);
 const hoveredPin = ref(null);
@@ -237,9 +247,61 @@ onMounted(async () => {
     await nextTick();
 
     // Проверяем что элементы существуют
-    if (!sectionRef.value || !imageMaskRef.value) {
+    if (!sectionRef.value || !overlayTopRef.value) {
       return;
     }
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const centerX = vw / 2;
+    const centerY = vh / 2;
+
+    // Начальные размеры отверстия
+    const initialW = 422;
+    const initialH = 563;
+    const initialLeft = centerX - initialW / 2;
+    const initialRight = centerX + initialW / 2;
+    const initialTop = centerY - initialH / 2;
+    const initialBottom = centerY + initialH / 2;
+
+    // Устанавливаем начальное состояние 4 блоков с перекрытием
+    gsap.set(overlayTopRef.value, {
+      height: initialTop,
+    });
+    gsap.set(overlayBottomRef.value, {
+      top: initialBottom,
+      height: vh - initialBottom,
+    });
+    gsap.set(overlayLeftRef.value, {
+      width: initialLeft,
+      top: initialTop - 1, // -1px для перекрытия с верхним блоком
+      height: initialH + 2, // +2px для перекрытия сверху и снизу
+    });
+    gsap.set(overlayRightRef.value, {
+      left: initialRight,
+      width: vw - initialRight,
+      top: initialTop - 1, // -1px для перекрытия с верхним блоком
+      height: initialH + 2, // +2px для перекрытия сверху и снизу
+    });
+
+    // Начальные позиции текста
+    const textGap = 24;
+    const initialHoleCenter = (initialTop + initialBottom) / 2; // центр отверстия
+
+    gsap.set(textLeftRef.value, {
+      right: vw - initialLeft + textGap, // от правого края экрана
+      left: 'auto',
+      top: initialHoleCenter,
+      transform: 'translateY(-50%)',
+    });
+    gsap.set(textRightRef.value, {
+      left: initialRight + textGap,
+      right: 'auto',
+      top: initialHoleCenter,
+      transform: 'translateY(-50%)',
+    });
+
+    const state = { w: 422, h: 563 };
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -249,11 +311,11 @@ onMounted(async () => {
         scrub: true,
         invalidateOnRefresh: true,
         onUpdate: self => {
-          // Показываем пины и кнопку фильтра когда анимация завершена на 50%
-          if (self.progress > 0.5 && !showPins.value) {
+          // Показываем пины когда завершено на 80%
+          if (self.progress > 0.8 && !showPins.value) {
             showPins.value = true;
             showFilterButton.value = true;
-          } else if (self.progress <= 0.5 && showPins.value) {
+          } else if (self.progress <= 0.8 && showPins.value) {
             showPins.value = false;
             showFilterButton.value = false;
           }
@@ -265,34 +327,76 @@ onMounted(async () => {
       },
     });
 
-    // Начальное состояние
-    gsap.set(imageMaskRef.value, {
-      width: 422,
-      height: 563,
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      force3D: true,
-    });
-
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    // Анимируем только блок - текст автоматически движется вместе с ним
-    // благодаря CSS привязке (left/right: 24px)
-    tl.fromTo(
-      imageMaskRef.value,
+    // Анимируем размер отверстия
+    tl.to(
+      state,
       {
-        width: 422,
-        height: 563,
-      },
-      {
-        width: vw,
-        height: vh,
+        w: vw,
+        h: vh,
         duration: 1,
         ease: 'none',
-        force3D: true,
-        immediateRender: false,
+        onUpdate: () => {
+          const w = state.w;
+          const h = state.h;
+
+          const left = centerX - w / 2;
+          const right = centerX + w / 2;
+          const top = centerY - h / 2;
+          const bottom = centerY + h / 2;
+
+          // Обновляем 4 блока создающих рамку
+          // Округляем до целых пикселей и добавляем перекрытие 1px чтобы избежать зазоров
+          const topRound = Math.round(top);
+          const bottomRound = Math.round(bottom);
+          const leftRound = Math.round(left);
+          const rightRound = Math.round(right);
+          const hRound = Math.round(h) + 2; // +2px для перекрытия сверху и снизу
+
+          if (overlayTopRef.value) {
+            gsap.set(overlayTopRef.value, { height: topRound });
+          }
+          if (overlayBottomRef.value) {
+            gsap.set(overlayBottomRef.value, { top: bottomRound, height: vh - bottomRound });
+          }
+          if (overlayLeftRef.value) {
+            gsap.set(overlayLeftRef.value, {
+              width: leftRound,
+              top: topRound - 1, // -1px для перекрытия с верхом
+              height: hRound,
+            });
+          }
+          if (overlayRightRef.value) {
+            gsap.set(overlayRightRef.value, {
+              left: rightRound,
+              width: vw - rightRound,
+              top: topRound - 1, // -1px для перекрытия с верхом
+              height: hRound,
+            });
+          }
+
+          // Позиционируем текст с округлением
+          const textGap = 24;
+          const holeCenter = (topRound + bottomRound) / 2; // центр отверстия по Y
+
+          if (textLeftRef.value) {
+            const textRight = Math.round(vw - leftRound + textGap);
+            gsap.set(textLeftRef.value, {
+              right: textRight,
+              left: 'auto',
+              top: holeCenter,
+              transform: 'translateY(-50%)',
+            });
+          }
+          if (textRightRef.value) {
+            const textLeft = Math.round(rightRound + textGap);
+            gsap.set(textRightRef.value, {
+              left: textLeft,
+              right: 'auto',
+              top: holeCenter,
+              transform: 'translateY(-50%)',
+            });
+          }
+        },
       },
       0
     );
@@ -325,12 +429,68 @@ onMounted(async () => {
   background: #e6dfd8;
 }
 
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+}
+
+.overlay-bar {
+  position: absolute;
+  background: #e6dfd8;
+  z-index: 1;
+  backface-visibility: hidden;
+  will-change: width, height, top, left;
+  transform: translateZ(0);
+  image-rendering: crisp-edges;
+  outline: 1px solid transparent; /* предотвращает моргание границ */
+}
+
+.overlay-top {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0; /* анимируется */
+}
+
+.overlay-bottom {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0; /* анимируется */
+}
+
+.overlay-left {
+  top: 0; /* анимируется */
+  left: 0;
+  width: 0; /* анимируется */
+  height: 0; /* анимируется */
+}
+
+.overlay-right {
+  top: 0; /* анимируется */
+  right: 0;
+  width: 0; /* анимируется */
+  height: 0; /* анимируется */
+}
+
 .text-left,
 .text-right {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
+  z-index: 2;
   color: $text-color-primary;
   font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 400;
@@ -339,47 +499,11 @@ onMounted(async () => {
   pointer-events: none;
   backface-visibility: hidden;
   white-space: nowrap;
+  will-change: transform;
 
   @media (max-width: $breakpoint-lg) {
     font-size: 98px;
   }
-}
-
-.text-left {
-  right: calc(100% + 24px); /* снаружи блока слева */
-}
-
-.text-right {
-  left: calc(100% + 24px); /* снаружи блока справа */
-}
-
-.image-mask {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 422px;
-  height: 563px;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  will-change: width, height;
-  backface-visibility: hidden;
-  overflow: visible; /* текст может выходить за границы */
-}
-
-.reveal-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  z-index: 0; /* изображение под текстом */
 }
 
 /* Стили для пинов */
@@ -575,7 +699,7 @@ onMounted(async () => {
   position: absolute;
   bottom: 48px;
   left: 44px;
-  z-index: 10;
+  z-index: 4;
   animation: fadeInUp 0.5s ease-out;
 }
 
