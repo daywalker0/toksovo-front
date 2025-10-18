@@ -193,92 +193,95 @@ const apartments = [
 ];
 
 const horizontalWrapper = ref(null);
+let horizontalScrollTrigger = null;
 
 gsap.registerPlugin(ScrollTrigger);
 
 const initHorizontalScroll = () => {
-  if (!horizontalWrapper.value) {
-    return;
+  if (!horizontalWrapper.value) return;
+
+  const container = horizontalWrapper.value.querySelector('.horizontal-container');
+  if (!container) return;
+
+  const sections = gsap.utils.toArray('.horizontal-container > *');
+  if (sections.length === 0) return;
+
+  // Уничтожаем предыдущий trigger
+  if (horizontalScrollTrigger) {
+    horizontalScrollTrigger.scrollTrigger?.kill();
+    horizontalScrollTrigger.kill();
   }
 
-  const horizontalContainer = horizontalWrapper.value.querySelector('.horizontal-container');
-  const horizontalSections = gsap.utils.toArray('.horizontal-container > *');
+  // Явно устанавливаем ширину контейнера
+  const sectionWidth = window.innerWidth;
+  const totalWidth = sectionWidth * sections.length;
 
-  if (horizontalSections.length === 0) {
-    console.error('No horizontal sections found');
-    return;
-  }
-
-  const totalWidth = horizontalSections.length * 100;
-
-  gsap.set(horizontalContainer, {
-    width: `${totalWidth}vw`,
+  gsap.set(container, {
+    width: totalWidth,
+    x: 0,
+    force3D: true,
   });
 
-  // Создаем timeline с четкими шагами для каждой секции
+  // Вычисляем точное расстояние движения
+  // У нас 2 секции, нужно проскроллить 1 ширину экрана чтобы показать вторую
+  const scrollDistance = totalWidth - sectionWidth;
+
+  // Используем timeline для добавления пауз
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: horizontalWrapper.value,
-      start: 'top top',
-      end: () =>
-        `+=${typeof window !== 'undefined' ? window.innerHeight * horizontalSections.length * 0.7 : 1000}`, // Немного увеличиваем длину скролла
+      start: 'center center',
+      end: () => `+=${scrollDistance * 2.5}`,
       pin: true,
-      scrub: 1.5,
-      anticipatePin: 1,
-      markers: false,
-      onUpdate: self => {
-        // Получаем прогресс скролла
-        const progress = self.progress;
-        const direction = self.direction;
-
-        // Увеличиваем длину скролла для переходов между секциями
-        if (progress > 0.3 && progress < 0.7) {
-          // В середине анимации - увеличиваем чувствительность
-          const currentProgress = (progress - 0.3) / 0.4; // Нормализуем к 0-1
-          const multiplier = 0.7 + currentProgress * 0.3; // От 0.7 до 1.0
-
-          // Применяем динамическое изменение
-          if (self.scrollTrigger) {
-            self.scrollTrigger.vars.end = `+=${window.innerHeight * horizontalSections.length * multiplier}`;
-          }
-        }
+      scrub: 1,
+      invalidateOnRefresh: true,
+      markers: {
+        startColor: 'green',
+        endColor: 'red',
+        fontSize: '18px',
+        fontWeight: 'bold',
+        indent: 100,
       },
+      id: 'horizontal-scroll',
     },
   });
 
-  // Добавляем паузы между анимациями для фиксации
-  horizontalSections.forEach((_, index) => {
-    if (index === 0) return; // Первая секция уже видна
+  // Пауза при входе - 35% времени
+  tl.to({}, { duration: 0.35, ease: 'none' }, 0);
 
-    const position = `-${index * 100}vw`;
+  // Основное горизонтальное движение - 30% времени
+  tl.to(
+    container,
+    {
+      x: -scrollDistance,
+      ease: 'none',
+      duration: 0.3,
+    },
+    0.35
+  );
 
-    // Добавляем паузу перед анимацией (25% времени)
-    tl.to(horizontalContainer, {
-      duration: 0.25,
-      ease: 'power2.inOut',
-    });
+  // Пауза при выходе - 35% времени
+  tl.to({}, { duration: 0.35, ease: 'none' }, 0.65);
 
-    // Анимация перехода к следующей секции (50% времени)
-    tl.to(horizontalContainer, {
-      x: position,
-      duration: 0.5,
-      ease: 'power2.inOut',
-    });
-
-    // Пауза на секции (25% времени)
-    tl.to(horizontalContainer, {
-      duration: 0.25,
-      ease: 'power2.inOut',
-    });
-  });
-
-  ScrollTrigger.refresh();
+  horizontalScrollTrigger = tl;
 };
 
 onMounted(() => {
   // Ждем следующего тика для гарантии, что DOM полностью обновлен
   nextTick(() => {
     initHorizontalScroll();
+
+    // Обработка resize для пересчета горизонтального скролла
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        initHorizontalScroll();
+        ScrollTrigger.refresh();
+      }, 250);
+    };
+
+    window.addEventListener('resize', handleResize);
 
     // Добавляем обработчик скролла для обновления hash
     let scrollTimeout;
@@ -314,11 +317,17 @@ onMounted(() => {
     onBeforeUnmount(() => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('resize', handleResize);
     });
   });
 });
 
 onBeforeUnmount(() => {
+  if (horizontalScrollTrigger) {
+    horizontalScrollTrigger.scrollTrigger?.kill();
+    horizontalScrollTrigger.kill();
+    horizontalScrollTrigger = null;
+  }
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 });
 </script>
@@ -348,20 +357,20 @@ onBeforeUnmount(() => {
   position: relative;
   will-change: transform;
   backface-visibility: hidden;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
 
   @media (max-width: $breakpoint-x) {
     height: 100svh;
   }
-}
 
-.horizontal-container > * {
-  width: 100vw;
-  height: 100vh;
-  flex-shrink: 0;
+  > * {
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0;
 
-  @media (max-width: $breakpoint-x) {
-    height: 100svh;
+    @media (max-width: $breakpoint-x) {
+      height: 100svh;
+    }
   }
 }
 
