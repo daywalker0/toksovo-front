@@ -115,7 +115,7 @@
 <script setup>
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import TitleNew from './Common/TitleNew.vue';
 import locationCardImg from '@/assets/img/location-card.png';
 
@@ -124,53 +124,84 @@ const leftColumn = ref(null);
 const centerColumn = ref(null);
 const rightColumn = ref(null);
 
-onMounted(() => {
-  if (process.client) {
-    gsap.registerPlugin(ScrollTrigger);
+let triggers = [];
 
-    // Начальные позиции
-    gsap.set(centerColumn.value, { y: -150 }); // центр выше
-    gsap.set([leftColumn.value, rightColumn.value], { y: 200 }); // боковые ниже
+onMounted(async () => {
+  await nextTick();
 
-    // Левая колонка (сильнее вверх)
-    gsap.to(leftColumn.value, {
-      y: -400,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: parallaxSection.value,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-        invalidateOnRefresh: true,
-      },
-    });
+  gsap.registerPlugin(ScrollTrigger);
 
-    // Центральная колонка (вниз)
-    gsap.to(centerColumn.value, {
-      y: 250,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: parallaxSection.value,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-        invalidateOnRefresh: true,
-      },
-    });
-
-    // Правая колонка (сильнее вверх)
-    gsap.to(rightColumn.value, {
-      y: -400,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: parallaxSection.value,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-        invalidateOnRefresh: true,
-      },
-    });
+  if (!parallaxSection.value || !leftColumn.value || !centerColumn.value || !rightColumn.value) {
+    console.error('LocationsSection: refs not initialized');
+    return;
   }
+
+  // Начальные позиции:
+  // Центр - самая высокая (0)
+  // Левая - ниже центральной (150px)
+  // Правая - еще ниже левой (300px)
+  gsap.set(centerColumn.value, {
+    y: 0,
+    force3D: true,
+  });
+  gsap.set(leftColumn.value, {
+    y: 150,
+    force3D: true,
+  });
+  gsap.set(rightColumn.value, {
+    y: 300,
+    force3D: true,
+  });
+
+  // Центральная колонка (медленно вниз)
+  const centerTween = gsap.to(centerColumn.value, {
+    y: 350,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: parallaxSection.value,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true,
+      invalidateOnRefresh: true,
+    },
+  });
+  triggers.push(centerTween);
+
+  // Левая колонка (средняя скорость вверх)
+  const leftTween = gsap.to(leftColumn.value, {
+    y: -400,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: parallaxSection.value,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true,
+      invalidateOnRefresh: true,
+    },
+  });
+  triggers.push(leftTween);
+
+  // Правая колонка (быстро вверх)
+  const rightTween = gsap.to(rightColumn.value, {
+    y: -700,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: parallaxSection.value,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true,
+      invalidateOnRefresh: true,
+    },
+  });
+  triggers.push(rightTween);
+});
+
+onBeforeUnmount(() => {
+  triggers.forEach(tween => {
+    tween.scrollTrigger?.kill();
+    tween.kill();
+  });
+  triggers = [];
 });
 </script>
 
@@ -191,7 +222,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-top: 410px;
+  margin: 100px 0;
 }
 
 .parallax-container {
@@ -217,6 +248,7 @@ onMounted(() => {
   opacity: 1;
   will-change: transform;
   transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .card {
