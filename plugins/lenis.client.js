@@ -12,8 +12,8 @@ export default defineNuxtPlugin(() => {
   if (process.client) {
     // Создаем инстанс Lenis
     lenis = new Lenis({
-      duration: 1.2, // Длительность инерции как на Mac
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing функция для плавности
+      duration: 1.5, // Длительность инерции для еще большей плавности
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing функция для плавности
       orientation: 'vertical', // Вертикальный скролл
       gestureOrientation: 'vertical', // Жесты
       smoothWheel: true, // Плавный скролл колесом мыши
@@ -22,7 +22,8 @@ export default defineNuxtPlugin(() => {
       touchMultiplier: 2, // Чувствительность touch
       infinite: false, // Отключаем бесконечный скролл
       autoResize: true, // Автоматическое обновление при изменении размера
-      lerp: 0.1, // Плавность интерполяции (0.1 = оптимально)
+      lerp: 0.08, // Увеличенная плавность интерполяции (меньше = плавнее)
+      normalizeWheel: true, // Нормализация скорости колеса для плавности
     });
 
     // Интеграция с GSAP ScrollTrigger
@@ -30,7 +31,7 @@ export default defineNuxtPlugin(() => {
     lenis.on('scroll', ScrollTrigger.update);
 
     // Добавляем Lenis в ticker GSAP для синхронизации
-    gsap.ticker.add((time) => {
+    gsap.ticker.add(time => {
       lenis.raf(time * 1000); // Передаем время в миллисекундах
     });
 
@@ -42,7 +43,7 @@ export default defineNuxtPlugin(() => {
       lenis.scrollTo(target, {
         offset: 0,
         duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         ...options,
       });
     };
@@ -100,4 +101,3 @@ export default defineNuxtPlugin(() => {
     },
   };
 });
-

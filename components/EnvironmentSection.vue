@@ -488,14 +488,14 @@ async function build() {
   const contentAt = growStart + growDur * 0.8;
 
   const tl = gsap.timeline({
-    defaults: { ease: 'power2.inOut' },
+    defaults: { ease: 'power1.out' },
     scrollTrigger: {
       trigger: section,
       start: 'center center',
-      end: '+=2000',
-      scrub: true,
+      end: '+=3000',
+      scrub: 2,
       pin: true,
-      anticipatePin: 1,
+      pinSpacing: true,
       invalidateOnRefresh: true,
       onUpdate: self => {
         const wasVisible = isContentVisible.value;
@@ -569,7 +569,7 @@ async function build() {
   tl.fromTo(
     content,
     { y: 40, autoAlpha: 0 },
-    { y: 0, autoAlpha: 1, ease: 'power3.out', duration: 0.6, immediateRender: false },
+    { y: 0, autoAlpha: 1, ease: 'power1.out', duration: 0.8, immediateRender: false },
     contentAt
   );
 
