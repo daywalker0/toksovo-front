@@ -285,20 +285,19 @@ onMounted(async () => {
     });
 
     // Начальные позиции текста
-    const textGap = 24;
-    const initialHoleCenter = (initialTop + initialBottom) / 2; // центр отверстия
+    const textGap = 60; // увеличенный отступ
 
     gsap.set(textLeftRef.value, {
-      right: vw - initialLeft + textGap, // от правого края экрана
+      right: vw - initialLeft + textGap,
       left: 'auto',
-      top: initialHoleCenter,
-      transform: 'translateY(-50%)',
+      top: '50%',
+      transform: 'translate(0, 0)',
     });
     gsap.set(textRightRef.value, {
       left: initialRight + textGap,
       right: 'auto',
-      top: initialHoleCenter,
-      transform: 'translateY(-50%)',
+      top: '50%',
+      transform: 'translate(0, 0)',
     });
 
     const state = { w: 422, h: 563 };
@@ -375,16 +374,15 @@ onMounted(async () => {
           }
 
           // Позиционируем текст с округлением
-          const textGap = 24;
-          const holeCenter = (topRound + bottomRound) / 2; // центр отверстия по Y
+          const textGap = 120;
 
           if (textLeftRef.value) {
             const textRight = Math.round(vw - leftRound + textGap);
             gsap.set(textLeftRef.value, {
               right: textRight,
               left: 'auto',
-              top: holeCenter,
-              transform: 'translateY(-50%)',
+              top: '45%',
+              transform: 'translate(0, 0)',
             });
           }
           if (textRightRef.value) {
@@ -392,8 +390,8 @@ onMounted(async () => {
             gsap.set(textRightRef.value, {
               left: textLeft,
               right: 'auto',
-              top: holeCenter,
-              transform: 'translateY(-50%)',
+              top: '45%',
+              transform: 'translate(0, 0)',
             });
           }
         },
