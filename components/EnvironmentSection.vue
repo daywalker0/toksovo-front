@@ -369,7 +369,8 @@ const animateSlide = (newIndex, direction) => {
   currentIndex.value = newIndex;
   setActiveIndex(newIndex);
 
-  if (galleryRef.value) {
+  // Анимация работает только когда контент виден (секция на полном экране)
+  if (galleryRef.value && isContentVisible.value) {
     const galleryItems = galleryRef.value.querySelectorAll('.gallery-item');
     const centerIndex = Math.floor(galleryItems.length / 2);
     const centerItem = galleryItems[centerIndex];
@@ -408,7 +409,20 @@ const animateSlide = (newIndex, direction) => {
           isAnimating.value = false;
         },
       });
+    } else {
+      isAnimating.value = false;
     }
+  } else if (galleryRef.value && !isContentVisible.value) {
+    // Если секция не развернута, просто меняем изображение без анимации
+    const galleryItems = galleryRef.value.querySelectorAll('.gallery-item');
+    const centerIndex = Math.floor(galleryItems.length / 2);
+    const centerItem = galleryItems[centerIndex];
+    const centerImg = centerItem?.querySelector('img');
+
+    if (centerImg) {
+      centerImg.src = slides.value[newIndex];
+    }
+    isAnimating.value = false;
   } else {
     setTimeout(() => {
       isAnimating.value = false;
@@ -477,8 +491,18 @@ async function build() {
       anticipatePin: 1,
       invalidateOnRefresh: true,
       onUpdate: self => {
+        const wasVisible = isContentVisible.value;
         // Показываем контент только когда прогресс достигает определенного уровня
         isContentVisible.value = self.progress > 0.6;
+
+        // Запускаем автовоспроизведение когда контент становится видимым
+        if (!wasVisible && isContentVisible.value) {
+          startAutoplay();
+        }
+        // Останавливаем когда контент скрывается
+        if (wasVisible && !isContentVisible.value) {
+          stopAutoplay();
+        }
       },
       onLeave: () => {
         // Скрываем контент при уходе вниз
@@ -491,6 +515,7 @@ async function build() {
       onLeaveBack: () => {
         // Скрываем контент при уходе вверх
         isContentVisible.value = false;
+        stopAutoplay();
       },
     },
   });
@@ -562,10 +587,10 @@ onMounted(async () => {
 
   if (!isMobile.value) {
     build();
+  } else {
+    // Для мобильной версии запускаем автовоспроизведение сразу
+    startAutoplay();
   }
-
-  // Запускаем автовоспроизведение сразу при монтировании
-  startAutoplay();
 });
 
 onBeforeUnmount(() => {
@@ -770,8 +795,6 @@ onBeforeUnmount(() => {
     width: 400px;
     height: 600px;
     z-index: 3;
-    position: relative;
-    overflow: hidden;
   }
 
   &:nth-child(2),
