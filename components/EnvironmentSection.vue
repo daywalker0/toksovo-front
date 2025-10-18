@@ -101,7 +101,7 @@
                       style="
                         transform: rotate(-90deg);
                         transform-origin: center;
-                        transition: stroke-dashoffset 0.016s linear;
+                        will-change: stroke-dashoffset;
                       "
                     />
                   </svg>
@@ -207,34 +207,41 @@ const slideDirection = ref('right'); // 'right' или 'left'
 const isAnimating = ref(false);
 const tlRef = ref(null);
 const autoplayInterval = ref(null);
-const progressInterval = ref(null);
+const progressAnimationId = ref(null);
+const progressStartTime = ref(null);
 const progressValue = ref(0);
 const setActiveIndex = i => (activeIndex.value = i);
 
 // Функции управления прогрессом
-const startProgress = () => {
-  progressValue.value = 0;
-  const duration = 3000; // 3 секунды
-  const fps = 60;
-  const increment = 100 / (duration / (1000 / fps));
-
-  if (progressInterval.value) {
-    clearInterval(progressInterval.value);
+const animateProgress = timestamp => {
+  if (!progressStartTime.value) {
+    progressStartTime.value = timestamp;
   }
 
-  progressInterval.value = setInterval(() => {
-    progressValue.value += increment;
-    if (progressValue.value >= 100) {
-      progressValue.value = 100;
-    }
-  }, 1000 / fps);
+  const elapsed = timestamp - progressStartTime.value;
+  const duration = 3000; // 3 секунды
+  const progress = Math.min((elapsed / duration) * 100, 100);
+
+  progressValue.value = progress;
+
+  if (progress < 100) {
+    progressAnimationId.value = requestAnimationFrame(animateProgress);
+  }
+};
+
+const startProgress = () => {
+  stopProgress();
+  progressValue.value = 0;
+  progressStartTime.value = null;
+  progressAnimationId.value = requestAnimationFrame(animateProgress);
 };
 
 const stopProgress = () => {
-  if (progressInterval.value) {
-    clearInterval(progressInterval.value);
-    progressInterval.value = null;
+  if (progressAnimationId.value) {
+    cancelAnimationFrame(progressAnimationId.value);
+    progressAnimationId.value = null;
   }
+  progressStartTime.value = null;
   progressValue.value = 0;
 };
 
