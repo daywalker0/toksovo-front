@@ -139,6 +139,10 @@ onMounted(async () => {
       force3D: true,
     });
 
+    // Последний элемент остается без анимации
+    const isLastSection = index === sections.value.length - 1;
+    if (isLastSection) return;
+
     // Анимация при скролле вверх (секция уходит)
     const trigger = gsap.to(bgElement, {
       scale: 0.5,
