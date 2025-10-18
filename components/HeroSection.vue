@@ -109,8 +109,9 @@ onMounted(async () => {
     scrollTrigger: {
       trigger: sectionEl.value,
       start: 'top top',
-      end: '+=1500vh',
-      scrub: true,
+      end: 'bottom bottom',
+      scrub: 0.5,
+      fastScrollEnd: true,
       invalidateOnRefresh: true,
     },
   });
@@ -121,7 +122,7 @@ onMounted(async () => {
     {
       scale: 1,
       duration: 1,
-      ease: 'power1.out',
+      ease: 'none',
     },
     0
   );
@@ -134,9 +135,9 @@ onMounted(async () => {
         y: 0,
         opacity: 1,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: 'power1.out',
       },
-      0.15
+      0.2
     );
   }
 });
@@ -154,7 +155,7 @@ onBeforeUnmount(() => {
 
 .hero-section {
   position: relative;
-  min-height: 150vh; // пространство для скролла
+  min-height: 300vh; // соответствует длине анимации
   overflow: hidden;
 
   &__container {
