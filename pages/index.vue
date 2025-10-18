@@ -238,22 +238,22 @@ const initHorizontalScroll = () => {
     },
   });
 
-  // Пауза при входе - 35% времени
-  tl.to({}, { duration: 0.35, ease: 'none' }, 0);
+  // Пауза при входе - 25% времени
+  tl.to({}, { duration: 0.25, ease: 'none' }, 0);
 
-  // Основное горизонтальное движение - 30% времени
+  // Основное горизонтальное движение - 50% времени
   tl.to(
     container,
     {
       x: -scrollDistance,
       ease: 'none',
-      duration: 0.3,
+      duration: 0.5,
     },
-    0.35
+    0.25
   );
 
-  // Пауза при выходе - 35% времени
-  tl.to({}, { duration: 0.35, ease: 'none' }, 0.65);
+  // Пауза при выходе - 25% времени
+  tl.to({}, { duration: 0.25, ease: 'none' }, 0.75);
 
   horizontalScrollTrigger = tl;
 };
