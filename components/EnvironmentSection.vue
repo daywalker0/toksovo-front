@@ -70,17 +70,26 @@
               <div class="accordion-header" @click="toggleItem(index)">
                 <div class="icon">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <circle cx="8" cy="8" r="6.5" stroke="#E6DFD8" stroke-width="3" />
-                    <mask id="path-2-inside-1_306_1521" fill="white">
-                      <path
-                        d="M8 0C9.26248 1.5055e-08 10.507 0.298792 11.6319 0.871948C12.7568 1.4451 13.7301 2.27635 14.4721 3.29772C15.2142 4.31909 15.704 5.50158 15.9015 6.74852C16.099 7.99546 15.9986 9.27144 15.6085 10.4721L12.7629 9.54756C13.0071 8.79592 13.07 7.99716 12.9463 7.21658C12.8227 6.43599 12.5161 5.69575 12.0516 5.05637C11.587 4.41699 10.9778 3.89663 10.2736 3.53784C9.56941 3.17904 8.79031 2.992 8 2.992V0Z"
-                      />
-                    </mask>
-                    <path
-                      d="M8 0C9.26248 1.5055e-08 10.507 0.298792 11.6319 0.871948C12.7568 1.4451 13.7301 2.27635 14.4721 3.29772C15.2142 4.31909 15.704 5.50158 15.9015 6.74852C16.099 7.99546 15.9986 9.27144 15.6085 10.4721L12.7629 9.54756C13.0071 8.79592 13.07 7.99716 12.9463 7.21658C12.8227 6.43599 12.5161 5.69575 12.0516 5.05637C11.587 4.41699 10.9778 3.89663 10.2736 3.53784C9.56941 3.17904 8.79031 2.992 8 2.992V0Z"
+                    <!-- Фоновый круг -->
+                    <circle cx="8" cy="8" r="6.5" stroke="#E6DFD8" stroke-width="3" fill="none" />
+                    <!-- Прогресс круг -->
+                    <circle
+                      cx="8"
+                      cy="8"
+                      r="6.5"
                       stroke="#4C5E36"
-                      stroke-width="6"
-                      mask="url(#path-2-inside-1_306_1521)"
+                      stroke-width="3"
+                      fill="none"
+                      :stroke-dasharray="progressCircle.circumference"
+                      :stroke-dashoffset="
+                        activeIndex === index ? progressCircle.offset : progressCircle.circumference
+                      "
+                      stroke-linecap="round"
+                      style="
+                        transform: rotate(-90deg);
+                        transform-origin: center;
+                        transition: stroke-dashoffset 0.016s linear;
+                      "
                     />
                   </svg>
                 </div>
@@ -182,14 +191,82 @@ const isContentVisible = ref(false);
 const currentIndex = ref(0);
 const isAnimating = ref(false);
 const tlRef = ref(null);
+const autoplayInterval = ref(null);
+const progressInterval = ref(null);
+const userInteracted = ref(false);
+const isInView = ref(false);
+const progressValue = ref(0);
 const setActiveIndex = i => (activeIndex.value = i);
+
+// Функции управления прогрессом
+const startProgress = () => {
+  progressValue.value = 0;
+  const duration = 3000; // 3 секунды
+  const fps = 60;
+  const increment = 100 / (duration / (1000 / fps));
+
+  if (progressInterval.value) {
+    clearInterval(progressInterval.value);
+  }
+
+  progressInterval.value = setInterval(() => {
+    progressValue.value += increment;
+    if (progressValue.value >= 100) {
+      progressValue.value = 100;
+    }
+  }, 1000 / fps);
+};
+
+const stopProgress = () => {
+  if (progressInterval.value) {
+    clearInterval(progressInterval.value);
+    progressInterval.value = null;
+  }
+  progressValue.value = 0;
+};
+
+// Функции управления автовоспроизведением
+const startAutoplay = () => {
+  stopAutoplay();
+  if (!userInteracted.value && isInView.value) {
+    startProgress(); // Запускаем прогресс
+
+    autoplayInterval.value = setInterval(() => {
+      if (!isAnimating.value && isInView.value) {
+        goToNextSlide(true); // true = автоматическое переключение
+        startProgress(); // Перезапускаем прогресс
+      }
+    }, 3000);
+  }
+};
+
+const stopAutoplay = () => {
+  if (autoplayInterval.value) {
+    clearInterval(autoplayInterval.value);
+    autoplayInterval.value = null;
+  }
+  stopProgress();
+};
+
+const resetAutoplay = () => {
+  userInteracted.value = false;
+  startAutoplay();
+};
 
 const toggleItem = index => {
   originalToggleItem(index);
+  userInteracted.value = true;
+  stopAutoplay();
+
   if (currentIndex.value !== index && !isAnimating.value) {
     const direction = index > currentIndex.value ? 'right' : 'left';
     animateSlide(index, direction);
   }
+
+  // Возобновляем автовоспроизведение через 10 секунд после взаимодействия
+  setTimeout(() => {
+    resetAutoplay();
+  }, 10000);
 };
 const slides = computed(() => {
   if (!items.value || !Array.isArray(items.value))
@@ -199,12 +276,33 @@ const slides = computed(() => {
 
 const currentSlide = computed(() => slides.value[currentIndex.value] || slides.value[0]);
 
+// Вычисляем stroke-dashoffset для прогресс круга
+const progressCircle = computed(() => {
+  const radius = 6.5;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (progressValue.value / 100) * circumference;
+  return {
+    circumference,
+    offset,
+  };
+});
+
 const onMouseMove = e => {
   handleMouseMove(e);
 };
 
-const goToNextSlide = () => {
+const goToNextSlide = (isAutomatic = false) => {
   if (isAnimating.value) return;
+
+  // Останавливаем автовоспроизведение при ручном клике
+  if (!isAutomatic) {
+    userInteracted.value = true;
+    stopAutoplay();
+    setTimeout(() => {
+      resetAutoplay();
+    }, 10000);
+  }
+
   if (isMobile.value) {
     isAnimating.value = true;
     const nextIndex = (currentIndex.value + 1) % slides.value.length;
@@ -222,6 +320,14 @@ const goToNextSlide = () => {
 
 const goToPrevSlide = () => {
   if (isAnimating.value) return;
+
+  // Останавливаем автовоспроизведение при ручном клике
+  userInteracted.value = true;
+  stopAutoplay();
+  setTimeout(() => {
+    resetAutoplay();
+  }, 10000);
+
   if (isMobile.value) {
     isAnimating.value = true;
     const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
@@ -317,6 +423,34 @@ async function build() {
       pin: true,
       anticipatePin: 1,
       invalidateOnRefresh: true,
+      onUpdate: self => {
+        // Показываем контент только когда прогресс достигает определенного уровня
+        isContentVisible.value = self.progress > 0.6;
+
+        // Запускаем автовоспроизведение когда контент полностью виден
+        if (self.progress > 0.8 && !isInView.value) {
+          isInView.value = true;
+          startAutoplay();
+        }
+      },
+      onLeave: () => {
+        // Скрываем контент при уходе вниз
+        isContentVisible.value = true;
+        isInView.value = false;
+        stopAutoplay();
+      },
+      onEnterBack: () => {
+        // Показываем контент при возврате сверху
+        isContentVisible.value = true;
+        isInView.value = true;
+        startAutoplay();
+      },
+      onLeaveBack: () => {
+        // Скрываем контент при уходе вверх
+        isContentVisible.value = false;
+        isInView.value = false;
+        stopAutoplay();
+      },
     },
   });
 
@@ -379,15 +513,27 @@ onMounted(async () => {
       checkMobile();
       destroy();
       if (!isMobile.value) build();
-      else ScrollTrigger.refresh();
+      else {
+        ScrollTrigger.refresh();
+        // Для мобильных запускаем автовоспроизведение сразу
+        isInView.value = true;
+        startAutoplay();
+      }
     }, 150);
   });
 
-  if (!isMobile.value) build();
+  if (!isMobile.value) {
+    build();
+  } else {
+    // Для мобильных запускаем автовоспроизведение сразу
+    isInView.value = true;
+    startAutoplay();
+  }
 });
 
 onBeforeUnmount(() => {
   clearTimeout(resizeTimer);
+  stopAutoplay();
   destroy();
 });
 </script>
