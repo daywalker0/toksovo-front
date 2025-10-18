@@ -235,14 +235,6 @@ const initHorizontalScroll = () => {
       pin: true,
       scrub: 1,
       invalidateOnRefresh: true,
-      markers: {
-        startColor: 'green',
-        endColor: 'red',
-        fontSize: '18px',
-        fontWeight: 'bold',
-        indent: 100,
-      },
-      id: 'horizontal-scroll',
     },
   });
 
