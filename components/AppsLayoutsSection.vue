@@ -172,6 +172,12 @@ const switchImage = index => {
     @media (max-width: $breakpoint-sm) {
       gap: 40px;
     }
+
+    @media (max-width: $breakpoint-x) {
+      flex-direction: column;
+      gap: 40px;
+      padding-bottom: 60px;
+    }
   }
 }
 
@@ -181,6 +187,12 @@ const switchImage = index => {
   border-radius: 7px;
   min-height: 760px;
 
+  @media (max-width: $breakpoint-x) {
+    width: 100%;
+    min-height: auto;
+    order: 2;
+  }
+
   &__wrap {
     padding: 24px;
     display: flex;
@@ -189,6 +201,11 @@ const switchImage = index => {
     align-items: flex-start;
     height: 100%;
     min-height: 760px;
+
+    @media (max-width: $breakpoint-x) {
+      min-height: auto;
+      padding: 20px;
+    }
   }
 }
 
@@ -198,6 +215,12 @@ const switchImage = index => {
   flex-direction: column;
   justify-content: space-between;
   gap: 1.5rem;
+
+  @media (max-width: $breakpoint-x) {
+    order: 1;
+    width: 100%;
+    margin-top: 20px;
+  }
 }
 
 .apartment-number {
@@ -215,6 +238,12 @@ const switchImage = index => {
   @media (max-width: $breakpoint-lg) {
     padding-bottom: 24px;
     font-size: 36px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 28px;
+    padding-bottom: 0;
+    margin-bottom: 20px;
   }
 }
 
@@ -237,6 +266,14 @@ const switchImage = index => {
     padding-bottom: 16px;
     margin-bottom: 8px;
   }
+
+  @media (max-width: $breakpoint-x) {
+    flex-direction: column;
+    gap: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
 }
 
 .info-item {
@@ -258,6 +295,23 @@ const switchImage = index => {
     padding-bottom: 0;
     margin-bottom: 0;
     flex: 1;
+
+    @media (max-width: $breakpoint-x) {
+      width: 100%;
+      border-bottom: 1px solid $utility-color-1;
+      padding-bottom: 13px;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border-top: none;
+    }
+  }
+
+  @media (max-width: $breakpoint-x) {
+    width: 100%;
+    margin-bottom: 0;
   }
 }
 
@@ -267,6 +321,16 @@ const switchImage = index => {
 
   @media (max-width: $breakpoint-lg) {
     padding-bottom: 24px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    width: 100%;
+    padding-top: 12px;
+    padding-bottom: 13px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 
@@ -278,6 +342,9 @@ const switchImage = index => {
   @media (max-width: $breakpoint-lg) {
     font-size: 14px;
   }
+  @media (max-width: $breakpoint-x) {
+    margin-bottom: 0;
+  }
 }
 
 .info-value {
@@ -285,6 +352,9 @@ const switchImage = index => {
   color: $text-color-primary;
   @media (max-width: $breakpoint-lg) {
     font-size: 26px;
+  }
+  @media (max-width: $breakpoint-x) {
+    font-size: 20px;
   }
 }
 
@@ -305,6 +375,11 @@ const switchImage = index => {
 
   @media (max-width: $breakpoint-lg) {
     margin-bottom: 30px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    margin-bottom: 20px;
+    min-height: auto;
   }
 }
 
@@ -429,6 +504,10 @@ const switchImage = index => {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 14px;
+  }
 
   &::before {
     content: '';
