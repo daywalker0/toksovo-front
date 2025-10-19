@@ -149,6 +149,13 @@ const openDialogCallback = () => {
       padding-top: 40px;
       padding-bottom: 20px;
     }
+
+    @media (max-width: $breakpoint-x) {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      padding-top: 32px;
+    }
   }
 
   &__content {
@@ -162,6 +169,14 @@ const openDialogCallback = () => {
       gap: 30px;
       margin-bottom: 40px;
     }
+
+    @media (max-width: $breakpoint-x) {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 0;
+      text-align: center;
+    }
   }
 
   &__section-item {
@@ -174,9 +189,11 @@ const openDialogCallback = () => {
       gap: 20px !important;
     }
 
-    @media (max-width: $breakpoint-sm) {
-      gap: 15px !important;
-      text-align: center;
+    .disclaimer {
+      @media (max-width: $breakpoint-x) {
+        order: 1;
+        max-width: 220px;
+      }
     }
 
     &_title {
@@ -188,10 +205,6 @@ const openDialogCallback = () => {
       @media (max-width: $breakpoint-lg) {
         font-size: 14px;
       }
-
-      @media (max-width: $breakpoint-sm) {
-        font-size: 12px;
-      }
     }
 
     &_text {
@@ -201,10 +214,6 @@ const openDialogCallback = () => {
 
       @media (max-width: $breakpoint-lg) {
         font-size: 20px;
-      }
-
-      @media (max-width: $breakpoint-sm) {
-        font-size: 16px;
       }
     }
   }
@@ -217,6 +226,10 @@ const openDialogCallback = () => {
   }
 
   &__logo {
+    @media (max-width: $breakpoint-x) {
+      order: 1;
+    }
+
     &-link {
       display: inline-block;
       text-decoration: none;
@@ -227,11 +240,6 @@ const openDialogCallback = () => {
       @media (max-width: $breakpoint-lg) {
         width: 195px;
       }
-
-      @media (max-width: $breakpoint-sm) {
-        width: 150px;
-        height: auto;
-      }
     }
   }
 
@@ -240,6 +248,10 @@ const openDialogCallback = () => {
     flex-direction: column;
     gap: 8px;
     margin: 0 auto;
+
+    @media (max-width: $breakpoint-x) {
+      order: 2;
+    }
   }
 
   &__project {
@@ -257,19 +269,33 @@ const openDialogCallback = () => {
     text-transform: uppercase;
 
     @media (max-width: $breakpoint-sm) {
-      font-size: 20px;
+      font-size: 23px;
       gap: 6px;
     }
   }
 
   &__callback {
     margin: 0 auto;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 8px 16px;
+
+    @media (max-width: $breakpoint-x) {
+      order: 3;
+    }
   }
 
   &__documents {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+
+    @media (max-width: $breakpoint-x) {
+      align-items: center;
+      gap: 2px;
+      order: 2;
+    }
   }
 
   &__doc-link {
@@ -285,6 +311,19 @@ const openDialogCallback = () => {
       gap: 20px;
       text-align: center;
     }
+
+    @media (max-width: $breakpoint-x) {
+      flex-direction: column;
+      gap: 0;
+      text-align: center;
+      order: 6;
+    }
+  }
+
+  &__copyright {
+    @media (max-width: $breakpoint-x) {
+      order: 1;
+    }
   }
 
   &__copy-text,
@@ -296,6 +335,12 @@ const openDialogCallback = () => {
 
     @media (max-width: $breakpoint-sm) {
       font-size: 12px;
+    }
+  }
+
+  &__development {
+    @media (max-width: $breakpoint-x) {
+      order: 3;
     }
   }
 
@@ -320,6 +365,12 @@ const openDialogCallback = () => {
       max-width: 100%;
       line-height: 140%;
     }
+
+    @media (max-width: $breakpoint-x) {
+      order: 2;
+      margin: 12px auto 32px;
+      max-width: 340px;
+    }
   }
 }
 
@@ -331,6 +382,15 @@ const openDialogCallback = () => {
     text-align: center;
     max-width: 100%;
   }
+
+  @media (max-width: $breakpoint-x) {
+    order: 4;
+    text-align: center;
+    max-width: 100%;
+    gap: 8px !important;
+    max-width: 220px;
+    margin: 0 auto;
+  }
 }
 
 .right-side {
@@ -339,13 +399,27 @@ const openDialogCallback = () => {
   @media (max-width: $breakpoint-sm) {
     text-align: center;
   }
+
+  @media (max-width: $breakpoint-x) {
+    order: 5;
+    text-align: center;
+    gap: 8px !important;
+    margin: 0 auto;
+  }
 }
 
 .center {
   gap: 32px;
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: $breakpoint-sm) {
     gap: 20px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    order: 1;
+    gap: 24px;
   }
 }
 </style>
