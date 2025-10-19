@@ -142,6 +142,26 @@
               <span>На главную</span>
             </div>
           </button>
+
+          <!-- Кнопка "Поделиться" на мобильных -->
+          <button v-if="!showMobileShare" @click="toggleMobileShare" class="share-button-mobile">
+            <div class="share-button-mobile__icon">
+              <svg
+                width="15"
+                height="11"
+                viewBox="0 0 15 11"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M8.9024 1.23772C8.7152 1.32573 8.54942 1.52556 8.54942 1.8356V2.84853C8.54942 3.17578 8.27582 3.44111 7.93831 3.44111H6.05609C3.54298 3.44111 1.33416 5.58782 1.22634 8.37493C2.43516 7.23329 4.01147 6.57769 5.72 6.57769H7.93831C8.27582 6.57769 8.54942 6.84302 8.54942 7.17031V8.72347C8.54942 9.03347 8.7152 9.23333 8.9024 9.32133C9.08951 9.40929 9.29956 9.39187 9.46867 9.23755C9.46858 9.23764 9.46871 9.23751 9.46867 9.23755L13.2211 5.80462C13.5375 5.47755 13.4932 4.99422 13.2418 4.7732L13.2328 4.7652L9.4688 1.32161C9.46871 1.32153 9.46889 1.32169 9.4688 1.32161C9.29973 1.16739 9.08947 1.14975 8.9024 1.23772ZM8.36911 0.171279C8.97182 -0.112117 9.7364 -0.0620456 10.3068 0.45879L14.0676 3.89942C14.8843 4.62253 14.8402 5.88471 14.0919 6.63649C14.0853 6.64315 14.0785 6.64964 14.0716 6.65595L10.3072 10.0999C9.7368 10.6207 8.97182 10.6712 8.36911 10.3878C7.76644 10.1044 7.3272 9.49387 7.3272 8.72347V7.76289H5.72C3.86698 7.76289 2.17464 8.72044 1.13333 10.3818C0.991 10.6089 0.710187 10.7163 0.446302 10.6447C0.182422 10.573 0 10.3397 0 10.074V8.5884C0 5.13098 2.71748 2.25591 6.05609 2.25591H7.3272V1.8356C7.3272 1.06517 7.76644 0.45467 8.36911 0.171279Z"
+                  fill="#2C322C"
+                />
+              </svg>
+            </div>
+          </button>
         </div>
 
         <div class="news-article__content">
@@ -180,6 +200,122 @@
         <button @click="$router.push('/')" class="home-button">Вернуться на главную</button>
       </div>
     </div>
+
+    <!-- Мобильный оверлей -->
+    <Transition name="overlay">
+      <div v-if="showMobileShare" class="mobile-share-overlay" @click="toggleMobileShare"></div>
+    </Transition>
+
+    <!-- Мобильный блок соцсетей - переносим внутрь header -->
+    <Transition name="social-mobile">
+      <div v-if="showMobileShare && newsItem" class="social-share-mobile-wrapper">
+        <div class="social-share-mobile">
+          <button class="social-share-mobile__button" @click="copyLink">
+            <div class="social-share-mobile__icon">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M14.5795 3.4199C13.1307 1.97115 10.7013 1.97115 9.25257 3.4199L7.92196 4.75056C7.59651 5.076 7.06885 5.076 6.7434 4.75056C6.41801 4.42511 6.41801 3.89748 6.7434 3.57204L8.07407 2.24139C10.1737 0.141765 13.6583 0.141765 15.758 2.24139C17.8576 4.34103 17.8576 7.82567 15.758 9.92528L14.4273 11.2559C14.1018 11.5813 13.5742 11.5813 13.2488 11.2559C12.9233 10.9305 12.9233 10.4028 13.2488 10.0774L14.5795 8.74678C16.0282 7.298 16.0282 4.86867 14.5795 3.4199ZM12.0886 5.91073C12.414 6.23617 12.414 6.76384 12.0886 7.08928L7.08863 12.0893C6.76318 12.4147 6.23551 12.4147 5.91007 12.0893C5.58468 11.7638 5.58468 11.2362 5.91007 10.9107L10.9101 5.91073C11.2355 5.58534 11.7632 5.58534 12.0886 5.91073ZM4.7499 6.74406C5.07535 7.0695 5.07535 7.59717 4.7499 7.92262L3.41925 9.25323C1.97049 10.702 1.97049 13.1313 3.41925 14.5801C4.86801 16.0288 7.29735 16.0288 8.74613 14.5801L10.0767 13.2494C10.4022 12.924 10.9298 12.924 11.2553 13.2494C11.5807 13.5749 11.5807 14.1025 11.2553 14.4279L9.92463 15.7586C7.82502 17.8582 4.34037 17.8582 2.24074 15.7586C0.141109 13.659 0.141109 10.1743 2.24074 8.07473L3.57138 6.74406C3.89682 6.41867 4.42446 6.41867 4.7499 6.74406Z"
+                  fill="#2C322C"
+                />
+              </svg>
+            </div>
+          </button>
+          <button class="social-share-mobile__button" @click="shareEmail">
+            <div class="social-share-mobile__icon">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M4.68172 4.16667C3.53902 4.16667 2.50065 5.18967 2.50065 6.64367V13.3563C2.50065 14.8103 3.53902 15.8333 4.68172 15.8333H15.3996C16.5459 15.8333 17.5624 14.8136 17.4978 13.3942C17.4972 13.3816 17.4969 13.3689 17.4969 13.3563V6.64367C17.4969 5.18967 16.4585 4.16667 15.3159 4.16667H4.68172ZM0.833984 6.64367C0.833984 4.41952 2.47508 2.5 4.68172 2.5H15.3159C17.5225 2.5 19.1636 4.41952 19.1636 6.64367V13.3384C19.2558 15.5885 17.5961 17.5 15.3996 17.5H4.68172C2.47508 17.5 0.833984 15.5805 0.833984 13.3563V6.64367Z"
+                  fill="#2C322C"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M4.27449 6.25594C4.50141 5.85555 5.00996 5.71489 5.41037 5.94183L9.30935 8.15144C9.76074 8.39417 10.2382 8.39417 10.6896 8.15144L14.5886 5.94183C14.989 5.71489 15.4976 5.85555 15.7245 6.25594C15.9514 6.65633 15.8108 7.16489 15.4103 7.39183L11.5041 9.60555L11.4908 9.61294C10.5397 10.1292 9.45924 10.1292 8.50818 9.61294L8.49485 9.60555L4.58862 7.39183C4.18822 7.16489 4.04757 6.65633 4.27449 6.25594Z"
+                  fill="#2C322C"
+                />
+              </svg>
+            </div>
+          </button>
+          <button class="social-share-mobile__button" @click="shareVK">
+            <div class="social-share-mobile__icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M4.2631 4.2631C3 5.5262 3 7.55914 3 11.625V12.375C3 16.4409 3 18.4738 4.2631 19.7369C5.5262 21 7.55914 21 11.625 21H12.375C16.4409 21 18.4738 21 19.7369 19.7369C21 18.4738 21 16.4409 21 12.375V11.625C21 7.55914 21 5.5262 19.7369 4.2631C18.4738 3 16.4409 3 12.375 3H11.625C7.55914 3 5.5262 3 4.2631 4.2631ZM6.56291 8.625H7.87571C8.21122 8.625 8.33744 8.77181 8.46326 9.13526C9.10533 11.0052 10.1879 12.6393 10.633 12.6393C10.7998 12.6393 10.8764 12.5625 10.8764 12.1388V10.2059C10.8463 9.65576 10.654 9.41783 10.5116 9.24159C10.4237 9.13276 10.3548 9.04746 10.3548 8.92669C10.3548 8.77987 10.4803 8.625 10.6888 8.625H12.7518C13.03 8.625 13.1269 8.77373 13.1269 9.10748V11.7077C13.1269 11.9858 13.2477 12.0831 13.3311 12.0831C13.498 12.0831 13.6371 11.9858 13.9431 11.6799C14.8889 10.6231 15.5565 8.99618 15.5565 8.99618C15.6399 8.80155 15.7938 8.625 16.1276 8.625H17.4404C17.8374 8.625 17.9209 8.82934 17.8374 9.10748C17.6705 9.87221 16.0711 12.1248 16.0711 12.1248C15.932 12.3473 15.8764 12.4585 16.0711 12.7088C16.1396 12.8048 16.2859 12.9481 16.4533 13.112C16.6255 13.2806 16.82 13.4711 16.9751 13.6544C17.539 14.2886 17.964 14.8237 18.0824 15.1925C18.1906 15.5625 18.0031 15.75 17.628 15.75H16.3152C15.9635 15.75 15.7865 15.5531 15.4039 15.1276C15.2417 14.9472 15.0426 14.7258 14.7776 14.4609C13.9987 13.71 13.665 13.6126 13.4702 13.6126C13.206 13.6126 13.1269 13.6875 13.1269 14.0625V15.2396C13.1269 15.5625 13.0237 15.75 12.1892 15.75C10.7984 15.75 9.26996 14.9058 8.18512 13.3485C6.55787 11.068 6.11279 9.34384 6.11279 8.99618C6.11279 8.80155 6.18782 8.625 6.56291 8.625Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+          </button>
+          <button class="social-share-mobile__button" @click="shareWhatsApp">
+            <div class="social-share-mobile__icon">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g clip-path="url(#clip0_396_884)">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M17.0519 2.90667C15.1802 1.03333 12.6919 0.000833333 10.041 0C4.57854 0 0.132708 4.445 0.130208 9.91C0.129375 11.6567 0.586042 13.3617 1.45354 14.865L0.046875 20L5.30021 18.6217C6.74771 19.4117 8.37771 19.8275 10.036 19.8283H10.0402C15.5019 19.8283 19.9485 15.3825 19.951 9.9175C19.9527 7.27 18.9227 4.77917 17.0519 2.90667ZM10.041 18.1542H10.0377C8.55937 18.1542 7.11021 17.7567 5.84521 17.0058L5.54437 16.8275L2.42688 17.645L3.25938 14.605L3.06354 14.2933C2.23854 12.9817 1.80354 11.4658 1.80438 9.91C1.80604 5.36833 5.50188 1.67333 10.0452 1.67333C12.2452 1.67333 14.3135 2.53167 15.8685 4.08833C17.4235 5.64583 18.2794 7.715 18.2785 9.91583C18.276 14.4592 14.581 18.1542 10.041 18.1542ZM14.5594 11.985C14.3119 11.8608 13.0944 11.2617 12.8669 11.1792C12.6402 11.0967 12.4752 11.055 12.3094 11.3025C12.1435 11.55 11.6702 12.1083 11.5252 12.2742C11.381 12.4392 11.236 12.46 10.9885 12.3358C10.741 12.2117 9.94271 11.9508 8.99687 11.1067C8.26104 10.45 7.76354 9.63917 7.61938 9.39083C7.47521 9.1425 7.60438 9.00917 7.72771 8.88583C7.83938 8.775 7.97521 8.59667 8.09938 8.45167C8.22438 8.30833 8.26521 8.205 8.34854 8.03917C8.43104 7.87417 8.39021 7.72917 8.32771 7.605C8.26521 7.48167 7.77021 6.2625 7.56438 5.76667C7.36354 5.28333 7.15938 5.34917 7.00688 5.34167C6.86271 5.33417 6.69771 5.33333 6.53188 5.33333C6.36688 5.33333 6.09854 5.395 5.87188 5.64333C5.64521 5.89167 5.00521 6.49083 5.00521 7.70917C5.00521 8.92833 5.89271 10.1058 6.01604 10.2708C6.13938 10.4358 7.76187 12.9375 10.246 14.01C10.8369 14.265 11.2985 14.4175 11.6577 14.5317C12.251 14.72 12.791 14.6933 13.2177 14.63C13.6935 14.5592 14.6827 14.0308 14.8894 13.4525C15.096 12.8742 15.096 12.3775 15.0335 12.275C14.9719 12.1708 14.8069 12.1092 14.5594 11.985Z"
+                    fill="#2C322C"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_396_884">
+                    <rect width="20" height="20" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+          </button>
+          <button class="social-share-mobile__button" @click="shareTelegram">
+            <div class="social-share-mobile__icon">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M17.0065 5.10666C16.7781 7.49999 15.7931 13.31 15.2915 15.99C15.0798 17.125 14.6615 17.505 14.2565 17.5417C13.3781 17.6217 12.7098 16.96 11.8581 16.4017C10.5265 15.5283 9.77313 14.985 8.4798 14.1317C6.9848 13.1467 7.95313 12.605 8.80647 11.72C9.02813 11.4883 12.9031 7.96499 12.9781 7.64666C12.9881 7.60666 12.9965 7.45833 12.9081 7.37833C12.8198 7.29833 12.6881 7.32666 12.5948 7.34833C12.4615 7.37833 10.3331 8.78499 6.2098 11.57C5.60646 11.985 5.05813 12.1867 4.56813 12.1767C4.02813 12.165 2.98813 11.87 2.2148 11.62C1.26646 11.3117 0.513131 11.1483 0.578131 10.6267C0.613131 10.3533 0.98813 10.075 1.7048 9.78999C6.11813 7.86666 9.0598 6.59999 10.5331 5.98666C14.7381 4.23833 15.6115 3.93332 16.1798 3.92499C16.3048 3.92332 16.5848 3.95333 16.7665 4.09999C16.9198 4.22333 16.9615 4.39166 16.9815 4.50999C17.0015 4.62833 17.0265 4.89666 17.0065 5.10666Z"
+                  fill="#2C322C"
+                />
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <!-- Кнопка закрыть -->
+        <button @click="toggleMobileShare" class="social-share-mobile-close">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path
+              d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+              fill="#2C322C"
+            />
+          </svg>
+        </button>
+      </div>
+    </Transition>
 
     <!-- Другие новости -->
     <section v-if="newsItem" class="other-news-section">
@@ -253,6 +389,20 @@ const handleNewsClick = newsId => {
 
 // Обработчики социальных сетей
 const showCopyNotification = ref(false);
+const showMobileShare = ref(false);
+
+const toggleMobileShare = () => {
+  showMobileShare.value = !showMobileShare.value;
+
+  // Блокируем скролл когда открыто меню
+  if (process.client) {
+    if (showMobileShare.value) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+};
 
 const copyLink = async () => {
   try {
@@ -266,6 +416,11 @@ const copyLink = async () => {
   } catch (err) {
     console.error('Ошибка копирования ссылки:', err);
   }
+  // Закрываем мобильное меню
+  showMobileShare.value = false;
+  if (process.client) {
+    document.body.style.overflow = '';
+  }
 };
 
 const shareEmail = () => {
@@ -273,6 +428,9 @@ const shareEmail = () => {
   const subject = encodeURIComponent(newsItem.value?.title || 'Новость');
   const body = encodeURIComponent(`${newsItem.value?.title}\n\n${window.location.href}`);
   window.open(`mailto:?subject=${subject}&body=${body}`);
+  // Закрываем мобильное меню
+  showMobileShare.value = false;
+  document.body.style.overflow = '';
 };
 
 const shareVK = () => {
@@ -280,18 +438,27 @@ const shareVK = () => {
   const url = encodeURIComponent(window.location.href);
   const title = encodeURIComponent(newsItem.value?.title || '');
   window.open(`https://vk.com/share.php?url=${url}&title=${title}`, '_blank');
+  // Закрываем мобильное меню
+  showMobileShare.value = false;
+  document.body.style.overflow = '';
 };
 
 const shareWhatsApp = () => {
   if (!process.client) return;
   const text = encodeURIComponent(`${newsItem.value?.title}\n\n${window.location.href}`);
   window.open(`https://wa.me/?text=${text}`, '_blank');
+  // Закрываем мобильное меню
+  showMobileShare.value = false;
+  document.body.style.overflow = '';
 };
 
 const shareTelegram = () => {
   if (!process.client) return;
   const text = encodeURIComponent(`${newsItem.value?.title}\n\n${window.location.href}`);
   window.open(`https://t.me/share/url?url=${window.location.href}&text=${text}`, '_blank');
+  // Закрываем мобильное меню
+  showMobileShare.value = false;
+  document.body.style.overflow = '';
 };
 
 // SEO мета-теги
@@ -410,8 +577,8 @@ onMounted(async () => {
   align-items: center;
 
   &__icon {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -427,6 +594,13 @@ onMounted(async () => {
   flex: 1;
   display: flex;
   flex-direction: column;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
 }
 
 .news-article__meta {
@@ -473,6 +647,10 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  @media (max-width: $breakpoint-x) {
+    display: none; // Скрываем на мобильных
+  }
 }
 
 .copy-notification {
@@ -693,6 +871,151 @@ onMounted(async () => {
     box-shadow 0.3s ease;
 }
 
+/* Кнопка "Поделиться" на мобильных */
+.share-button-mobile {
+  display: none;
+
+  @media (max-width: $breakpoint-x) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+
+    &__icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid $utility-color-1;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+}
+
+/* Мобильный оверлей */
+.mobile-share-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100000;
+  display: none;
+
+  @media (max-width: $breakpoint-x) {
+    display: block;
+  }
+}
+
+/* Мобильный wrapper для соцсетей и кнопки закрытия */
+.social-share-mobile-wrapper {
+  position: fixed;
+  right: 20px;
+  top: 90px;
+  z-index: 100001;
+  display: none;
+  align-items: flex-start;
+  gap: 8px;
+
+  @media (max-width: $breakpoint-x) {
+    display: flex;
+  }
+}
+
+/* Мобильный блок соцсетей */
+.social-share-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid $utility-color-1;
+    background: $bg-color-1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+    &:active {
+      transform: scale(0.95);
+      background: $accent-color-orange;
+      border-color: $accent-color-orange;
+
+      svg path {
+        fill: white;
+      }
+    }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Кнопка закрыть в мобильном меню */
+.social-share-mobile-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid $text-color-white;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+
+  svg path {
+    fill: $text-color-white;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Анимации */
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.overlay-enter-from,
+.overlay-leave-to {
+  opacity: 0;
+}
+
+.social-mobile-enter-active,
+.social-mobile-leave-active {
+  transition: all 0.3s ease;
+}
+
+.social-mobile-enter-from,
+.social-mobile-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .news-page {
@@ -704,8 +1027,8 @@ onMounted(async () => {
   }
 
   .news-article {
-    padding: 20px;
-    margin: 0 20px 100px 20px; /* Уменьшенный отступ снизу на мобильных */
+    padding: 0;
+    margin: 70px 0 100px; /* Уменьшенный отступ снизу на мобильных */
   }
 
   .news-article__content .news-article__title {
