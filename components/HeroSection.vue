@@ -140,6 +140,21 @@ onMounted(async () => {
       0.2
     );
   }
+
+  // ScrollTrigger для скрытия фоновых элементов после выхода из секции
+  ScrollTrigger.create({
+    trigger: sectionEl.value,
+    start: 'top top',
+    end: 'bottom top',
+    onLeave: () => {
+      if (renderEl.value) renderEl.value.style.opacity = '0';
+      if (skyEl.value) skyEl.value.style.opacity = '0';
+    },
+    onEnterBack: () => {
+      if (renderEl.value) renderEl.value.style.opacity = '1';
+      if (skyEl.value) skyEl.value.style.opacity = '1';
+    },
+  });
 });
 
 onBeforeUnmount(() => {
@@ -230,6 +245,7 @@ onBeforeUnmount(() => {
     pointer-events: none;
     backface-visibility: hidden;
     transform: translateZ(0);
+    transition: opacity 0.3s ease;
 
     img {
       width: 100%;
@@ -251,6 +267,7 @@ onBeforeUnmount(() => {
     pointer-events: none;
     backface-visibility: hidden;
     will-change: transform;
+    transition: opacity 0.3s ease;
 
     @media (max-width: $breakpoint-x) {
       transform-origin: 50% 60%;
