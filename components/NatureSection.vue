@@ -2,27 +2,47 @@
   <div class="nature-section section horizontal-section">
     <div class="nature-section__container container">
       <div class="nature-section__content">
-        <h2 class="nature-section__title">
+        <!-- Десктопная версия заголовка -->
+        <h2 v-if="!isMobile" class="nature-section__title">
           <span class="title-word title-word--right">Жить</span>
           <span class="title-word title-word--left">среди</span>
           <span class="title-word title-word--right">природы</span>
         </h2>
+
+        <!-- Мобильная версия заголовка -->
+        <h2 v-else class="nature-section__title">Жить среди природы</h2>
+
         <div class="nature-section__subtitle subtitle-text">
           Жилой комплекс окружён лесами, озёрами и экотропами, где можно гулять в любое время года.
           Утренние пробежки, прогулки с детьми и пикники на свежем воздухе становятся частью
           повседневной жизни. Природа буквально в нескольких шагах от дома.
         </div>
+        <div class="nature-section__image">
+          <img :src="natureImg" alt="nature-img-1" />
+        </div>
       </div>
-    </div>
-
-    <div class="nature-section__image">
-      <img :src="natureImg" alt="nature-img-1" />
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import natureImg from '@/assets/img/nature-img-1.jpg';
+
+const isMobile = ref(false);
+
+onMounted(() => {
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 599;
+  };
+
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkMobile);
+  });
+});
 </script>
 
 <style lang="scss" scoped>
@@ -36,6 +56,7 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
 
   @media (max-width: $breakpoint-x) {
     height: 100svh;
+    align-items: stretch;
   }
   display: flex;
   align-items: center;
@@ -44,6 +65,12 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
   &__container {
     position: relative;
     height: 100%;
+
+    @media (max-width: $breakpoint-x) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__content {
@@ -56,8 +83,13 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
       margin-left: 80px;
     }
 
-    @media (max-width: $breakpoint-sm) {
-      margin-left: 0px;
+    @media (max-width: $breakpoint-x) {
+      margin-top: 0;
+      margin-left: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      height: 100%;
     }
   }
 
@@ -73,6 +105,13 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
     flex-direction: column;
     align-items: center;
     gap: 20px;
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 50px;
+      max-width: 100%;
+      text-align: left;
+      line-height: 90%;
+    }
 
     .title-word {
       display: block;
@@ -117,6 +156,15 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
     @media (max-width: $breakpoint-lg) {
       font-size: 18px;
     }
+
+    @media (max-width: $breakpoint-x) {
+      position: static;
+      max-width: 100%;
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
   }
 
   &__image {
@@ -135,8 +183,16 @@ import natureImg from '@/assets/img/nature-img-1.jpg';
       display: block;
     }
 
-    @media (max-width: $breakpoint-sm) {
-      width: 50%;
+    @media (max-width: $breakpoint-x) {
+      position: static;
+      width: 100%;
+      height: auto;
+      flex: 1;
+      min-height: 400px;
+
+      img {
+        height: 100%;
+      }
     }
   }
 }

@@ -2,28 +2,48 @@
   <div class="walk-city-section section horizontal-section">
     <div class="walk-city-section__container container">
       <div class="walk-city-section__content">
-        <h2 class="walk-city-section__title">
+        <!-- Десктопная версия заголовка -->
+        <h2 v-if="!isMobile" class="walk-city-section__title">
           <span class="title-word title-word--right">Гулять</span>
           <span class="title-word title-word--left">без</span>
           <span class="title-word title-word--right">города</span>
         </h2>
+
+        <!-- Мобильная версия заголовка -->
+        <h2 v-else class="walk-city-section__title">Гулять без города</h2>
+
         <div class="walk-city-section__subtitle subtitle-text">
           Здесь не нужны долгие поездки ради отдыха: рядом парки, оздоровительные маршруты и
           живописные тропы. Можно после работы пройтись вдоль озера, покататься на велосипеде или
           встретить закат на смотровой площадке. Всё лучшее для активного и спокойного отдыха уже
           рядом.
         </div>
+        <div class="walk-city-section__image">
+          <img :src="walkCityImg" alt="nature-img-1" />
+        </div>
       </div>
-    </div>
-
-    <div class="walk-city-section__image">
-      <img :src="walkCityImg" alt="nature-img-1" />
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import walkCityImg from '@/assets/img/walk-city-img.jpg';
+
+const isMobile = ref(false);
+
+onMounted(() => {
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 599;
+  };
+
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkMobile);
+  });
+});
 </script>
 
 <style lang="scss" scoped>
@@ -38,6 +58,7 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
 
   @media (max-width: $breakpoint-x) {
     height: 100svh;
+    align-items: stretch;
   }
   display: flex;
   align-items: center;
@@ -46,6 +67,12 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
   &__container {
     position: relative;
     height: 100%;
+
+    @media (max-width: $breakpoint-x) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__content {
@@ -57,20 +84,36 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
     @media (max-width: $breakpoint-lg) {
       margin-left: 80px;
     }
+
+    @media (max-width: $breakpoint-x) {
+      margin-top: 0;
+      margin-left: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      height: 100%;
+    }
   }
 
   &__title {
     color: $text-color-light;
+    position: relative;
+    z-index: 10;
     line-height: 80%;
     margin: 0;
     text-align: center;
     max-width: 510px;
-    position: relative;
-    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 50px;
+      max-width: 100%;
+      text-align: left;
+      line-height: 90%;
+    }
 
     .title-word {
       display: block;
@@ -80,19 +123,19 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
 
       &--right {
         text-align: right;
-        margin-left: 80%;
-        max-width: 100%;
+        margin-left: auto;
+        max-width: 70%;
 
         &:last-child {
-          margin-left: 41%;
-          max-width: 100%;
+          margin-left: 80%;
+          max-width: 120%;
         }
       }
 
       &--left {
         text-align: left;
         margin-right: auto;
-        max-width: 60%;
+        max-width: 80%;
       }
     }
   }
@@ -105,15 +148,24 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
     color: $text-color-light;
     opacity: 0.8;
     font-family: 'Akrobat';
-    font-weight: 500;
-    font-size: 20px;
     word-break: keep-all;
     overflow-wrap: break-word;
     hyphens: none;
+    font-weight: 500;
+    font-size: 20px;
     line-height: 140%;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 18px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      position: static;
+      max-width: 100%;
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+      text-align: left;
     }
   }
 
@@ -122,7 +174,7 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
     top: 0;
     right: 0;
     bottom: 0;
-    width: 65%;
+    width: 60%;
     height: 100%;
 
     img {
@@ -131,6 +183,18 @@ import walkCityImg from '@/assets/img/walk-city-img.jpg';
       object-fit: cover;
       object-position: center;
       display: block;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      position: static;
+      width: 100%;
+      height: auto;
+      flex: 1;
+      min-height: 400px;
+
+      img {
+        height: 100%;
+      }
     }
   }
 }

@@ -198,6 +198,16 @@ let horizontalScrollTrigger = null;
 gsap.registerPlugin(ScrollTrigger);
 
 const initHorizontalScroll = () => {
+  // Отключаем горизонтальный скролл на мобильных устройствах
+  if (window.innerWidth <= 599) {
+    if (horizontalScrollTrigger) {
+      horizontalScrollTrigger.scrollTrigger?.kill();
+      horizontalScrollTrigger.kill();
+      horizontalScrollTrigger = null;
+    }
+    return;
+  }
+
   if (!horizontalWrapper.value) return;
 
   const container = horizontalWrapper.value.querySelector('.horizontal-container');
@@ -355,7 +365,8 @@ onBeforeUnmount(() => {
   position: relative;
 
   @media (max-width: $breakpoint-x) {
-    height: 100svh;
+    height: auto;
+    overflow: visible;
   }
 }
 
@@ -368,7 +379,10 @@ onBeforeUnmount(() => {
   transform: translate3d(0, 0, 0);
 
   @media (max-width: $breakpoint-x) {
-    height: 100svh;
+    height: auto;
+    flex-direction: column;
+    transform: none;
+    will-change: auto;
   }
 
   > * {
@@ -378,6 +392,7 @@ onBeforeUnmount(() => {
 
     @media (max-width: $breakpoint-x) {
       height: 100svh;
+      width: 100vw;
     }
   }
 }
