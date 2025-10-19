@@ -46,8 +46,8 @@
         </template>
       </DefaultSlider>
     </div>
-    <Dialog v-model="showDialogVideo" :close-on-overlay="true">
-      <div>ВИДЕО</div>
+    <Dialog v-model="showDialogVideo" :close-on-overlay="true" class="video-dialog">
+      <div class="video-dialog-content">ВИДЕО</div>
     </Dialog>
   </section>
 </template>
@@ -277,6 +277,43 @@ const openDialogVideo = () => {
 
   @media (max-width: $breakpoint-x) {
     height: 253px;
+  }
+}
+
+/* Стили для видео диалога */
+::v-deep(.video-dialog) {
+  .dialog-overlay {
+    z-index: 100000; // Перекрываем хедер
+  }
+
+  .dialog-content {
+    padding: 0 !important; // Убираем боковые отступы
+    height: 214px;
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: $breakpoint-x) {
+      border-radius: 0 !important;
+    }
+  }
+
+  .dialog-close {
+    top: -60px; // Крестик сверху над окном
+    right: 0;
+  }
+}
+
+.video-dialog-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media (max-width: $breakpoint-x) {
+    font-size: 40px;
   }
 }
 </style>
