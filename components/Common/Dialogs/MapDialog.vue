@@ -28,30 +28,12 @@
         <!-- Фильтры внизу -->
         <div class="map-dialog__filters">
           <div class="map-dialog__filter-tabs">
-            <!-- Кнопка "Актив" (все) -->
-            <button
-              class="map-dialog__filter-btn"
-              :class="{ active: filterMode === 'all' }"
-              @click="handleAllActive"
-            >
-              <span>Актив (По умолчанию все)</span>
-            </button>
-
-            <!-- Кнопка "Выкл" (все выкл) -->
-            <button
-              class="map-dialog__filter-btn"
-              :class="{ active: filterMode === 'none' }"
-              @click="handleAllInactive"
-            >
-              <span>Выкл</span>
-            </button>
-
             <!-- Категории -->
             <button
               v-for="cat in categories"
               :key="cat.key"
               class="map-dialog__filter-btn"
-              :class="{ active: cat.active, custom: filterMode === 'custom' }"
+              :class="{ active: cat.active }"
               @click="handleToggleCategory(cat)"
             >
               <span class="map-dialog__filter-icon" v-html="getCategoryIcon(cat.key)"></span>
@@ -65,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { watch, computed } from 'vue';
 import YandexMap from '~/components/YandexMap.vue';
 
 // Иконки категорий
@@ -111,43 +93,15 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['update:modelValue', 'toggle-category', 'all-active', 'all-inactive']);
-
-const filterMode = ref('all'); // 'all', 'none', 'custom'
+const emit = defineEmits(['update:modelValue', 'toggle-category']);
 
 const closeDialog = () => {
   emit('update:modelValue', false);
 };
 
-const handleAllActive = () => {
-  filterMode.value = 'all';
-  emit('all-active');
-};
-
-const handleAllInactive = () => {
-  filterMode.value = 'none';
-  emit('all-inactive');
-};
-
 const handleToggleCategory = cat => {
-  filterMode.value = 'custom';
   emit('toggle-category', cat);
 };
-
-// Определяем режим при изменении категорий
-watch(
-  () => props.activeCategories,
-  newVal => {
-    if (newVal.length === props.categories.length) {
-      filterMode.value = 'all';
-    } else if (newVal.length === 0) {
-      filterMode.value = 'none';
-    } else {
-      filterMode.value = 'custom';
-    }
-  },
-  { immediate: true }
-);
 
 // Блокируем скролл body при открытии и скрываем хедер
 watch(
@@ -276,9 +230,9 @@ watch(
   &__filter-btn {
     padding: 8px 16px;
     border-radius: 50px;
-    background: $utility-color-1;
-    border: 2px solid transparent;
-    color: $text-color-primary;
+    background: $bg-color-2;
+    border: none;
+    color: $text-color-secondary;
     font-size: 14px;
     font-weight: 700;
     font-family: 'Akrobat';

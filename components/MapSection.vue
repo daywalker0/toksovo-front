@@ -166,8 +166,6 @@
       :categories="categories"
       :activeCategories="activeCategoryKeys"
       @toggle-category="toggleCategory"
-      @all-active="handleAllActive"
-      @all-inactive="handleAllInactive"
     />
   </div>
 </template>
@@ -458,18 +456,6 @@ function onMapError(err) {
 
 function openMapDialog() {
   isMapDialogOpen.value = true;
-}
-
-function handleAllActive() {
-  categories.value.forEach(cat => {
-    cat.active = true;
-  });
-}
-
-function handleAllInactive() {
-  categories.value.forEach(cat => {
-    cat.active = false;
-  });
 }
 
 // Проверка мобильного устройства
