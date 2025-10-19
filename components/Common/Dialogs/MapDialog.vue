@@ -34,7 +34,7 @@
               :class="{ active: filterMode === 'all' }"
               @click="handleAllActive"
             >
-              Актив
+              <span>Актив (По умолчанию все)</span>
             </button>
 
             <!-- Кнопка "Выкл" (все выкл) -->
@@ -43,7 +43,7 @@
               :class="{ active: filterMode === 'none' }"
               @click="handleAllInactive"
             >
-              Выкл
+              <span>Выкл</span>
             </button>
 
             <!-- Категории -->
@@ -132,15 +132,22 @@ watch(
   { immediate: true }
 );
 
-// Блокируем скролл body при открытии
+// Блокируем скролл body при открытии и скрываем хедер
 watch(
   () => props.modelValue,
   isOpen => {
     if (process.client) {
+      const header = document.querySelector('.header');
       if (isOpen) {
         document.body.style.overflow = 'hidden';
+        if (header) {
+          header.style.display = 'none';
+        }
       } else {
         document.body.style.overflow = '';
+        if (header) {
+          header.style.display = '';
+        }
       }
     }
   }
@@ -177,10 +184,10 @@ watch(
     top: 20px;
     right: 20px;
     z-index: 10002;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: rgba(44, 50, 44, 0.8);
+    background: $accent-color-brown;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: none;
@@ -212,22 +219,45 @@ watch(
     bottom: 0;
     left: 0;
     width: 100%;
-    background: $bg-color-2;
-    padding: 16px;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    background: transparent;
+    padding: 0 0 40px 20px;
     z-index: 10001;
-    max-height: 30vh;
-    overflow-y: auto;
+
+    // Градиент справа, показывающий что есть еще контент
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.3) 0%, transparent 100%);
+      pointer-events: none;
+    }
   }
 
   &__filter-tabs {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
+    padding-right: 16px; // Добавляем отступ справа для последних элементов
+    scroll-behavior: smooth; // Плавная прокрутка
+    -webkit-overflow-scrolling: touch; // Плавный свайп на iOS
+
+    // Скрываем скроллбар но оставляем функциональность
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
   }
 
   &__filter-btn {
-    padding: 10px 16px;
+    padding: 8px 16px;
     border-radius: 50px;
     background: $utility-color-1;
     border: 2px solid transparent;
@@ -238,6 +268,7 @@ watch(
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    flex-shrink: 0;
 
     &.active {
       background: $accent-color-orange;
