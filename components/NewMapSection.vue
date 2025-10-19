@@ -1,6 +1,7 @@
 <template>
   <div class="map">
-    <div class="map__sidebar">
+    <!-- Десктопная версия с сайдбаром -->
+    <div v-if="!isMobile" class="map__sidebar">
       <div class="map__sidebar-content">
         <h3 class="map__sidebar-title" @click="isSidebarOpen = !isSidebarOpen">
           Локации
@@ -25,7 +26,6 @@
             @mouseleave="handleCategoryMouseLeave"
           >
             <div class="map__category-name">
-              <!-- Обновите эту строку -->
               <div
                 v-html="categoryIcon(cat.key, hoveredCategory === cat.key)"
                 class="map__icon"
@@ -54,7 +54,37 @@
       </div>
     </div>
 
+    <!-- Мобильная версия - превью с оверлеем -->
+    <div v-if="isMapReady && isMobile" class="map__mobile-preview" @click="openMapDialog">
+      <YandexMap
+        key="mobile-map"
+        :center="mapCenter"
+        :zoom="mapZoom"
+        :locations="locations"
+        :activeCategories="activeCategoryKeys"
+        :disableInteraction="true"
+      />
+      <div class="map__mobile-overlay">
+        <div class="map__mobile-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 2C10.0222 2 8.08879 2.58649 6.4443 3.6853C4.79981 4.78412 3.51809 6.3459 2.76121 8.17317C2.00433 10.0004 1.8063 12.0111 2.19215 13.9509C2.578 15.8907 3.53041 17.6725 4.92894 19.0711C6.32746 20.4696 8.10929 21.422 10.0491 21.8079C11.9889 22.1937 13.9996 21.9957 15.8268 21.2388C17.6541 20.4819 19.2159 19.2002 20.3147 17.5557C21.4135 15.9112 22 13.9778 22 12C22 10.6868 21.7413 9.38642 21.2388 8.17317C20.7363 6.95991 19.9997 5.85752 19.0711 4.92893C18.1425 4.00035 17.0401 3.26375 15.8268 2.7612C14.6136 2.25866 13.3132 2 12 2ZM12 20C10.4178 20 8.87104 19.5308 7.55544 18.6518C6.23985 17.7727 5.21447 16.5233 4.60897 15.0615C4.00347 13.5997 3.84504 11.9911 4.15372 10.4393C4.4624 8.88743 5.22433 7.46197 6.34315 6.34315C7.46197 5.22433 8.88743 4.4624 10.4393 4.15372C11.9911 3.84504 13.5997 4.00346 15.0615 4.60896C16.5233 5.21447 17.7727 6.23984 18.6518 7.55544C19.5308 8.87103 20 10.4177 20 12C20 14.1217 19.1571 16.1566 17.6569 17.6569C16.1566 19.1571 14.1217 20 12 20Z"
+              fill="white"
+            />
+            <path
+              d="M12 7C11.7348 7 11.4804 7.10536 11.2929 7.29289C11.1054 7.48043 11 7.73478 11 8V13C11 13.2652 11.1054 13.5196 11.2929 13.7071C11.4804 13.8946 11.7348 14 12 14C12.2652 14 12.5196 13.8946 12.7071 13.7071C12.8946 13.5196 13 13.2652 13 13V8C13 7.73478 12.8946 7.48043 12.7071 7.29289C12.5196 7.10536 12.2652 7 12 7Z"
+              fill="white"
+            />
+          </svg>
+        </div>
+        <div class="map__mobile-text">Нажмите для просмотра карты</div>
+      </div>
+    </div>
+
+    <!-- Десктопная карта -->
     <YandexMap
+      v-if="isMapReady && !isMobile"
+      key="desktop-map"
       :center="mapCenter"
       :zoom="mapZoom"
       :locations="locations"
@@ -62,13 +92,27 @@
       @ready="onMapReady"
       @error="onMapError"
     />
+
+    <!-- Мобильный диалог с картой -->
+    <MapDialog
+      v-model="isMapDialogOpen"
+      :center="mapCenter"
+      :zoom="mapZoom"
+      :locations="locations"
+      :categories="categories"
+      :activeCategories="activeCategoryKeys"
+      @toggle-category="toggleCategory"
+      @all-active="handleAllActive"
+      @all-inactive="handleAllInactive"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import YandexMap from '~/components/YandexMap.vue';
 import AnimatedLink from './Common/AnimatedLink.vue';
+import MapDialog from './Common/Dialogs/MapDialog.vue';
 
 const cultureBlack = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_886_110)">
@@ -213,6 +257,10 @@ const mapZoom = 15;
 
 const isSidebarOpen = ref(true);
 const hoveredCategory = ref(null);
+// Инициализируем isMobile сразу правильно для SSR/CSR
+const isMobile = ref(process.client ? window.innerWidth <= 599 : false);
+const isMapDialogOpen = ref(false);
+const isMapReady = ref(false);
 
 // категории: без хардкодного count
 const categories = ref([
@@ -335,6 +383,45 @@ function onMapReady(payload) {
 function onMapError(err) {
   console.error('map error', err);
 }
+
+function openMapDialog() {
+  isMapDialogOpen.value = true;
+}
+
+function handleAllActive() {
+  categories.value.forEach(cat => {
+    cat.active = true;
+  });
+}
+
+function handleAllInactive() {
+  categories.value.forEach(cat => {
+    cat.active = false;
+  });
+}
+
+// Проверка мобильного устройства
+const checkMobile = () => {
+  if (process.client) {
+    isMobile.value = window.innerWidth <= 599;
+  }
+};
+
+onMounted(() => {
+  checkMobile();
+  // Устанавливаем флаг готовности карты после определения типа устройства
+  isMapReady.value = true;
+
+  if (process.client) {
+    window.addEventListener('resize', checkMobile);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (process.client) {
+    window.removeEventListener('resize', checkMobile);
+  }
+});
 </script>
 <style lang="scss" scoped>
 @use '@/assets/styles/variables.scss' as *;
@@ -345,11 +432,12 @@ function onMapError(err) {
   height: 100vh;
   overflow: hidden;
   background: #f5f5f5;
+  font-family: 'Akrobat';
 
   @media (max-width: $breakpoint-x) {
-    height: 100svh;
+    height: auto;
+    padding: 20px;
   }
-  font-family: 'Akrobat';
 
   &__sidebar {
     position: absolute;
@@ -361,6 +449,65 @@ function onMapError(err) {
     background-color: $bg-color-2;
     min-width: 305px;
     color: $accent-color-green;
+
+    @media (max-width: $breakpoint-x) {
+      display: none;
+    }
+  }
+
+  &__mobile-preview {
+    position: relative;
+    width: 100%;
+    height: 454px;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+
+    @media (min-width: calc($breakpoint-x + 1px)) {
+      display: none;
+    }
+  }
+
+  &__mobile-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  &__mobile-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s ease-in-out infinite;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__mobile-text {
+    color: $text-color-white;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Akrobat';
+    text-align: center;
   }
 
   &__sidebar-content {
@@ -475,6 +622,18 @@ function onMapError(err) {
 
   .animated-link__text-inner--hover .animated-link__letter {
     color: inherit;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
   }
 }
 </style>

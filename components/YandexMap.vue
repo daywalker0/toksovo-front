@@ -3,7 +3,7 @@
     <div ref="mapContainer" class="map-container"></div>
 
     <!-- Кастомные кнопки зума -->
-    <div class="custom-zoom">
+    <div v-if="showZoomControls" class="custom-zoom">
       <button class="button-zoom button-plus" @click="zoomIn">+</button>
       <button class="button-zoom button-minus" @click="zoomOut">−</button>
     </div>
@@ -24,6 +24,14 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  disableInteraction: {
+    type: Boolean,
+    default: false,
+  },
+  showZoomControls: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const emit = defineEmits(['ready', 'error']);
@@ -37,11 +45,39 @@ const allMarkers = new Map();
 
 onMounted(async () => {
   if (!process.client) return;
-  await nextTick();
 
   const apiKey = 'f95ebb9f-42ae-4c53-be82-de5a3c134a71';
 
   try {
+    // Ждем, пока контейнер появится в DOM и получит свои размеры
+    await new Promise((resolve, reject) => {
+      let attempts = 0;
+      const maxAttempts = 60; // 3 секунды максимум (60 * 50ms)
+
+      const checkContainer = () => {
+        // Проверяем наличие ref и его размеры
+        if (
+          mapContainer.value &&
+          mapContainer.value.offsetWidth > 0 &&
+          mapContainer.value.offsetHeight > 0
+        ) {
+          resolve();
+        } else if (attempts >= maxAttempts) {
+          reject(
+            new Error('Map container failed to initialize: element not found or has no dimensions')
+          );
+        } else {
+          attempts++;
+          setTimeout(checkContainer, 50);
+        }
+      };
+
+      // Начинаем проверку после nextTick
+      nextTick(() => {
+        checkContainer();
+      });
+    });
+
     ymaps = await new Promise((resolve, reject) => {
       if (window.ymaps) return resolve(window.ymaps);
       const script = document.createElement('script');
@@ -60,6 +96,11 @@ onMounted(async () => {
     map.behaviors.disable('scrollZoom');
     map.options.set('minZoom', 10);
     map.options.set('maxZoom', 19);
+
+    // Отключаем взаимодействие, если нужно (для превью)
+    if (props.disableInteraction) {
+      map.behaviors.disable(['drag', 'dblClickZoom', 'multiTouch']);
+    }
 
     createPlacemarksFromLocations();
     updateVisibleMarkers();
