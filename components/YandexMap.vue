@@ -220,6 +220,8 @@ function zoomOut() {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
+
 .yandex-map-wrapper {
   position: relative;
   width: 100%;
@@ -239,6 +241,11 @@ function zoomOut() {
   flex-direction: column;
   z-index: 10;
   transform: translateY(-50%);
+
+  @media (max-width: $breakpoint-x) {
+    top: auto;
+    bottom: 10%;
+  }
 }
 
 .button-zoom {

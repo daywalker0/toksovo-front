@@ -113,6 +113,17 @@ const openDialogVideo = () => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/variables.scss' as *;
+
+::v-deep(.slide) {
+  padding: 0 !important;
+  border: none !important;
+  min-height: 0 !important;
+
+  @media (max-width: $breakpoint-x) {
+    width: 253px !important;
+  }
+}
+
 ::v-deep(.dialog-content) {
   width: 80%;
   height: 80%;
@@ -127,7 +138,7 @@ const openDialogVideo = () => {
   }
   &__title {
     margin: 0 auto;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
     font-size: 88px;
   }
 }
@@ -137,6 +148,7 @@ const openDialogVideo = () => {
   display: flex;
   flex-direction: column;
   min-height: 500px;
+  width: 100%;
 
   @media (max-width: $breakpoint-sm) {
     min-height: 390px;
@@ -145,6 +157,7 @@ const openDialogVideo = () => {
   @media (max-width: $breakpoint-x) {
     height: auto;
     min-height: auto;
+    width: 100%;
   }
 }
 
@@ -153,6 +166,10 @@ const openDialogVideo = () => {
   flex-direction: column;
   margin-top: 24px;
   flex: 1;
+
+  @media (max-width: $breakpoint-x) {
+    margin-top: 12px;
+  }
 
   &--header {
     display: flex;
@@ -164,6 +181,14 @@ const openDialogVideo = () => {
 
     @media (max-width: $breakpoint-md) {
       font-size: 14px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      flex-direction: column-reverse;
+      gap: 4px;
+      align-items: flex-start;
+      font-size: 14px;
+      margin-bottom: 14px;
     }
   }
 
@@ -180,8 +205,9 @@ const openDialogVideo = () => {
       font-size: 24px;
     }
 
-    @media (max-width: $breakpoint-sm) {
+    @media (max-width: $breakpoint-x) {
       font-size: 20px;
+      margin-bottom: 8px;
     }
   }
 
@@ -196,8 +222,9 @@ const openDialogVideo = () => {
       font-size: 16px;
     }
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: $breakpoint-x) {
       font-size: 14px;
+      margin-bottom: 16px;
     }
 
     &_text {
@@ -250,10 +277,6 @@ const openDialogVideo = () => {
 
   @media (max-width: $breakpoint-x) {
     height: 253px;
-  }
-
-  @media (max-width: $breakpoint-sm) {
-    height: 200px;
   }
 }
 </style>

@@ -272,7 +272,7 @@ const mobileConfig = computed(() => {
     return {
       slidesPerView: 'auto',
       spaceBetween: 8,
-      centeredSlides: true,
+      centeredSlides: false,
     };
   }
 

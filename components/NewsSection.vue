@@ -7,8 +7,8 @@
         :slides-per-view="2"
         :space-between="45"
         :show-navigation="true"
-        :hide-navigation-on-mobile="true"
         :mobile-slide-width="253"
+        :hide-navigation-on-mobile="true"
       >
         <template #slide="{ slide, active }">
           <div :class="['custom-slide', { active }]" @click="handleNewsClick(slide.id)">
