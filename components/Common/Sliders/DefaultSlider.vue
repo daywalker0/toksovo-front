@@ -99,7 +99,8 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/effect-cube';
 import 'swiper/css/effect-coverflow';
 
-const isMobile = ref(false);
+// Инициализируем isMobile сразу правильно
+const isMobile = ref(process.client ? window.innerWidth <= 599 : false);
 
 const props = defineProps({
   slides: {
@@ -218,6 +219,10 @@ const getSlideKey = (slide, index) => {
 
 // Computed
 const autoplayConfig = computed(() => {
+  // Отключаем автоплей на мобильных устройствах
+  if (isMobile.value) return false;
+
+  if (props.autoplay === false) return false;
   return props.autoplay === true ? { delay: 4000, disableOnInteraction: false } : props.autoplay;
 });
 
@@ -303,9 +308,13 @@ const shouldShowNavigation = computed(() => {
 
 onMounted(() => {
   const checkMobile = () => {
-    isMobile.value = window.innerWidth <= 599;
+    const newIsMobile = window.innerWidth <= 599;
+    // Обновляем только если значение изменилось
+    if (isMobile.value !== newIsMobile) {
+      isMobile.value = newIsMobile;
+    }
   };
-  checkMobile();
+
   window.addEventListener('resize', checkMobile);
 
   onBeforeUnmount(() => {
