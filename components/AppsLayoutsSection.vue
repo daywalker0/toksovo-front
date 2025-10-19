@@ -57,25 +57,50 @@
           </div>
         </div>
 
-        <!-- Главное изображение -->
-        <div class="main-image">
-          <img :src="currentApartment.images[currentImageIndex]" :alt="currentApartment.title" />
-        </div>
+        <!-- Главное изображение с навигацией -->
+        <div class="main-image-wrapper">
+          <!-- Стрелка назад -->
+          <button
+            class="nav-arrow nav-arrow--prev"
+            :class="{ invisible: currentImageIndex === 0 }"
+            @click="currentImageIndex > 0 && switchImage(currentImageIndex - 1)"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15 5 L7 12 L15 19"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
 
-        <!-- Миниатюры для слайдера -->
-        <div class="thumbnails">
-          <span>Другие планировки:</span>
-          <div class="thumbnails-slider">
-            <div
-              v-for="(image, index) in currentApartment.images"
-              :key="index"
-              class="thumbnail"
-              :class="{ active: currentImageIndex === index }"
-              @click="switchImage(index)"
-            >
-              <img :src="image" :alt="`Планировка ${index + 1}`" />
-            </div>
+          <div class="main-image">
+            <img :src="currentApartment.images[currentImageIndex]" :alt="currentApartment.title" />
           </div>
+
+          <!-- Стрелка вперед -->
+          <button
+            class="nav-arrow nav-arrow--next"
+            :class="{ invisible: currentImageIndex >= currentApartment.images.length - 1 }"
+            @click="
+              currentImageIndex < currentApartment.images.length - 1 &&
+              switchImage(currentImageIndex + 1)
+            "
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M9 5 L17 12 L9 19"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -530,6 +555,20 @@ const switchImage = index => {
   }
 }
 
+.main-image-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  @media (max-width: $breakpoint-x) {
+    gap: 12px;
+    height: 340px;
+  }
+}
+
 .main-image {
   width: 100%;
   height: 100%;
@@ -568,65 +607,74 @@ const switchImage = index => {
   @media (max-width: $breakpoint-md) {
     max-height: 300px;
   }
-}
 
-.thumbnails {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  span {
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-family: 'Akrobat';
-    color: $text-color-secondary;
+  @media (max-width: $breakpoint-x) {
+    object-fit: cover;
+    height: 100%;
   }
 }
 
-.thumbnails-slider {
+.nav-arrow {
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  border-radius: 50%;
+  border: 1px solid $utility-color-1;
   display: flex;
-  gap: 0.75rem;
   justify-content: center;
-  overflow-x: auto;
-  padding: 0.5rem 0;
-}
-
-.thumbnail {
-  flex: 0 0 180px;
-  height: 120px;
-  border-radius: 0.375rem;
-  overflow: hidden;
+  align-items: center;
+  color: $text-color-secondary;
+  transition: 0.3s;
+  padding: 0;
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-  opacity: 0.6;
-
-  &.active {
-    opacity: 1;
-  }
+  background-color: transparent;
+  flex-shrink: 0;
 
   &:hover {
-    opacity: 1;
+    background-color: $text-color-primary;
+    border-color: $text-color-primary;
+    color: $text-color-white;
+    transition: 0.3s;
   }
 
-  @media (max-width: 1240px) {
-    flex: 0 0 150px;
-    height: 100px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &--prev {
+    order: -1;
+  }
+
+  &--next {
+    order: 1;
   }
 
   @media (max-width: $breakpoint-lg) {
-    flex: 0 0 120px;
-    height: 80px;
+    width: 41px;
+    height: 41px;
+    min-width: 41px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 
-  @media (max-width: $breakpoint-md) {
-    flex: 0 0 100px;
-    height: 70px;
-  }
-}
+  @media (max-width: $breakpoint-x) {
+    width: 41px;
+    height: 41px;
+    min-width: 41px;
 
-.thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &.invisible {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 </style>
