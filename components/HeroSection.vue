@@ -80,7 +80,7 @@ onMounted(async () => {
 
   // Начальные значения
   gsap.set(renderEl.value, {
-    transformOrigin: '50% 50%',
+    transformOrigin: isMobile ? '50% 60%' : '50% 50%',
     scale: startScale,
     force3D: true,
     willChange: 'transform',
@@ -251,6 +251,10 @@ onBeforeUnmount(() => {
     pointer-events: none;
     backface-visibility: hidden;
     will-change: transform;
+
+    @media (max-width: $breakpoint-x) {
+      transform-origin: 50% 60%;
+    }
 
     img {
       width: 100%;

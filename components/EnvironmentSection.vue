@@ -725,7 +725,7 @@ onBeforeUnmount(() => {
     padding: 20px 15px;
     max-width: 100%;
     border-radius: 8px;
-    min-height: 230px;
+    min-height: 250px;
     display: flex;
     flex-direction: column;
   }
