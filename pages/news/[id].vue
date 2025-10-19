@@ -206,6 +206,22 @@
       <div v-if="showMobileShare" class="mobile-share-overlay" @click="toggleMobileShare"></div>
     </Transition>
 
+    <!-- Уведомление о копировании для мобильного (отдельно от меню) -->
+    <Transition name="notification-fade">
+      <div v-if="showCopyNotification" class="mobile-copy-notification">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M13.3333 4L6 11.3333L2.66667 8"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span>Ссылка скопирована!</span>
+      </div>
+    </Transition>
+
     <!-- Мобильный блок соцсетей - переносим внутрь header -->
     <Transition name="social-mobile">
       <div v-if="showMobileShare && newsItem" class="social-share-mobile-wrapper">
@@ -980,6 +996,34 @@ onMounted(async () => {
   }
 }
 
+/* Уведомление о копировании для мобильного */
+.mobile-copy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: $accent-color-orange;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Akrobat';
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  z-index: 100003;
+  display: none;
+
+  @media (max-width: $breakpoint-x) {
+    display: flex;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
 /* Мобильный блок соцсетей */
 .social-share-mobile {
   display: flex;
@@ -1061,6 +1105,17 @@ onMounted(async () => {
 .social-mobile-leave-to {
   opacity: 0;
   transform: translateX(20px);
+}
+
+.notification-fade-enter-active,
+.notification-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.notification-fade-enter-from,
+.notification-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 /* Адаптивность */
