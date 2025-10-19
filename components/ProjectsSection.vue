@@ -122,6 +122,9 @@ const openDialogVideo = () => {
   font-size: 118px;
 }
 .projects-section {
+  @media (max-width: $breakpoint-x) {
+    margin-bottom: 60px;
+  }
   &__title {
     margin: 0 auto;
     margin-bottom: 60px;

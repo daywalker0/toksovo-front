@@ -1,39 +1,88 @@
 <template>
   <div class="choose-your-apps-section section" ref="section">
-    <div class="background-wrapper">
-      <div class="background background-light"></div>
-      <div class="background background-dark" ref="darkBg"></div>
+    <!-- Мобильная версия -->
+    <div v-if="isMobile" class="mobile-version">
+      <div class="mobile-background" :style="{ backgroundImage: `url(${chooseYourLife})` }">
+        <div class="mobile-overlay"></div>
+      </div>
+      <div class="mobile-content">
+        <div class="mobile-text">Выберите свою квартиру для жизни</div>
+        <div class="mobile-buttons">
+          <button class="mobile-button">
+            <span class="button-title">Генплан</span>
+            <div class="button-action">
+              <span>Перейти</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 5 L17 12 L9 19"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+          </button>
+          <button class="mobile-button">
+            <span class="button-title">Каталог квартир</span>
+            <div class="button-action">
+              <span>Перейти</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M9 5 L17 12 L9 19"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <section class="sticky-content">
-      <div class="content" ref="content">
-        <button
-          class="button button-left"
-          :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
-          :style="{ opacity: buttonsOpacity }"
-        >
-          Генплан
-        </button>
-
-        <div
-          class="content--center"
-          ref="imageContainer"
-          :style="{ transform: `scale(${imageScale})` }"
-        >
-          <div class="image-overlay" :style="{ opacity: overlayOpacity }"></div>
-          <img :src="chooseYourLife" alt="preview" />
-          <div class="text" :style="{ opacity: textOpacity }">Выберите свою квартиру для жизни</div>
-        </div>
-
-        <button
-          class="button button-right"
-          :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
-          :style="{ opacity: buttonsOpacity }"
-        >
-          Каталог квартир
-        </button>
+    <!-- Десктопная версия -->
+    <template v-else>
+      <div class="background-wrapper">
+        <div class="background background-light"></div>
+        <div class="background background-dark" ref="darkBg"></div>
       </div>
-    </section>
+
+      <section class="sticky-content">
+        <div class="content" ref="content">
+          <button
+            class="button button-left"
+            :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
+            :style="{ opacity: buttonsOpacity }"
+          >
+            Генплан
+          </button>
+
+          <div
+            class="content--center"
+            ref="imageContainer"
+            :style="{ transform: `scale(${imageScale})` }"
+          >
+            <div class="image-overlay" :style="{ opacity: overlayOpacity }"></div>
+            <img :src="chooseYourLife" alt="preview" />
+            <div class="text" :style="{ opacity: textOpacity }">
+              Выберите свою квартиру для жизни
+            </div>
+          </div>
+
+          <button
+            class="button button-right"
+            :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
+            :style="{ opacity: buttonsOpacity }"
+          >
+            Каталог квартир
+          </button>
+        </div>
+      </section>
+    </template>
   </div>
 </template>
 
@@ -50,13 +99,15 @@ const textOpacity = ref(0);
 const buttonsOpacity = ref(0);
 const overlayOpacity = ref(0);
 const imageScale = ref(0.95);
+const isMobile = ref(false);
 
 const handleScroll = () => {
+  // На мобилке не обрабатываем скролл
+  if (isMobile.value) return;
   if (!section.value || !darkBg.value || !imageContainer.value || !content.value) return;
 
   const sectionRect = section.value.getBoundingClientRect();
   const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 599;
 
   // Прогресс скролла секции (0 - начало, 1 - конец)
   const sectionProgress = Math.max(
@@ -79,7 +130,7 @@ const handleScroll = () => {
 
     // Картинка на весь экран
     imageContainer.value.style.width = '100vw';
-    imageContainer.value.style.height = isMobile ? '100svh' : '100vh';
+    imageContainer.value.style.height = isMobile.value ? '100svh' : '100vh';
     imageContainer.value.style.maxWidth = 'none';
     imageContainer.value.style.transform = `scale(${imageScale.value})`;
 
@@ -122,7 +173,7 @@ const handleScroll = () => {
     // ===== ФАЗА 2: появление текста и кнопок =====
 
     // Картинка в финальном размере
-    if (isMobile) {
+    if (isMobile.value) {
       imageContainer.value.style.width = '100%';
       imageContainer.value.style.height = '300px';
       imageContainer.value.style.maxWidth = '100%';
@@ -136,8 +187,8 @@ const handleScroll = () => {
     const phase2Progress = (sectionProgress - 0.4) / 0.2;
 
     // Для мобильных устройств делаем анимацию более ранней
-    const textStartProgress = isMobile ? 0.3 : 0.5;
-    const buttonsStartProgress = isMobile ? 0.1 : 0.2;
+    const textStartProgress = isMobile.value ? 0.3 : 0.5;
+    const buttonsStartProgress = isMobile.value ? 0.1 : 0.2;
 
     // Появление текста
     if (phase2Progress <= textStartProgress) {
@@ -156,7 +207,7 @@ const handleScroll = () => {
     }
 
     // Затемнение картинки появляется вместе с текстом
-    const overlayStartProgress = isMobile ? 0.3 : 0.5;
+    const overlayStartProgress = isMobile.value ? 0.3 : 0.5;
     if (phase2Progress <= overlayStartProgress) {
       overlayOpacity.value = phase2Progress / overlayStartProgress;
     } else {
@@ -170,7 +221,7 @@ const handleScroll = () => {
     // ===== ФАЗА 3: ТОЛЬКО анимация смены цвета =====
 
     // Картинка в финальном размере
-    if (isMobile) {
+    if (isMobile.value) {
       imageContainer.value.style.width = '100%';
       imageContainer.value.style.height = '300px';
       imageContainer.value.style.maxWidth = '100%';
@@ -201,14 +252,20 @@ const handleScroll = () => {
 };
 
 onMounted(() => {
+  // Проверка мобильного устройства
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 599;
+  };
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
   // Инициализируем начальное состояние темного фона
-  if (darkBg.value) {
+  if (darkBg.value && !isMobile.value) {
     darkBg.value.style.transform = 'translateY(0)';
   }
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && !isMobile.value) {
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll);
     handleScroll(); // начальная проверка
   }
 });
@@ -216,7 +273,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('scroll', handleScroll);
-    window.removeEventListener('resize', handleScroll);
+    window.removeEventListener('resize', () => {
+      isMobile.value = window.innerWidth <= 599;
+    });
   }
 });
 </script>
@@ -231,6 +290,11 @@ onUnmounted(() => {
 
   @media (max-width: $breakpoint-sm) {
     margin-top: 100px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+    margin-top: 0;
   }
 }
 
@@ -398,6 +462,102 @@ onUnmounted(() => {
     &.button-right {
       right: auto !important;
       order: 3;
+    }
+  }
+}
+
+// Мобильная версия
+.mobile-version {
+  width: 100%;
+  height: 100svh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.mobile-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.mobile-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 20px 20px;
+}
+
+.mobile-text {
+  color: $text-color-white;
+  font-size: 40px;
+  text-align: center;
+  line-height: 120%;
+}
+
+.mobile-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.mobile-button {
+  flex: 1;
+  min-height: 166px;
+  aspect-ratio: 1;
+  background: transparent;
+  border: 1px solid $text-color-white;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: $text-color-white;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .button-title {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Akrobat';
+    text-align: left;
+    line-height: 120%;
+  }
+
+  .button-action {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-family: 'Akrobat';
+    font-weight: 600;
+    margin-top: auto;
+
+    svg {
+      width: 12px;
+      height: 12px;
     }
   }
 }
