@@ -282,10 +282,6 @@ const openDialogVideo = () => {
 
 /* Стили для видео диалога */
 ::v-deep(.video-dialog) {
-  .dialog-overlay {
-    z-index: 100000; // Перекрываем хедер
-  }
-
   .dialog-content {
     padding: 0 !important; // Убираем боковые отступы
     height: 214px;
@@ -301,8 +297,8 @@ const openDialogVideo = () => {
   }
 
   .dialog-close {
-    top: -60px; // Крестик сверху над окном
-    right: 0;
+    top: 20px;
+    right: 20px;
   }
 }
 

@@ -91,18 +91,43 @@ watch(
     if (newValue) {
       isVisible.value = true;
       lockScroll();
+
+      // Скрываем хедер
+      if (process.client) {
+        const header = document.querySelector('.header');
+        if (header) {
+          header.style.transform = 'translateY(-100%)';
+          header.style.transition = 'transform 0.3s ease';
+        }
+      }
     } else {
       // Задержка перед разблокировкой скролла, чтобы анимация закрытия завершилась
       setTimeout(() => {
         unlockScroll();
       }, 400); // 400ms = время анимации закрытия
+
+      // Возвращаем хедер
+      if (process.client) {
+        const header = document.querySelector('.header');
+        if (header) {
+          header.style.transform = '';
+        }
+      }
     }
   }
 );
 
-// Разблокируем скролл при уничтожении компонента
+// Разблокируем скролл и восстанавливаем хедер при уничтожении компонента
 onUnmounted(() => {
   unlockScroll();
+
+  // Восстанавливаем хедер
+  if (process.client) {
+    const header = document.querySelector('.header');
+    if (header) {
+      header.style.transform = '';
+    }
+  }
 });
 </script>
 
@@ -119,7 +144,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999999;
 }
 
 .dialog-content {
