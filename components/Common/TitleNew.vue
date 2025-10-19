@@ -65,10 +65,16 @@ function splitTextIntoLines(text, maxWidth) {
   const lines = [];
   let current = '';
 
+  // Используем реальную ширину контейнера на мобилке
+  const isMobile = window.innerWidth <= 599;
+  const effectiveMaxWidth = isMobile
+    ? Math.min(maxWidth, titleRef.value.offsetWidth - 40)
+    : maxWidth;
+
   for (let i = 0; i < words.length; i++) {
     const candidate = current ? `${current} ${words[i]}` : words[i];
     measure.textContent = candidate;
-    if (measure.offsetWidth <= maxWidth) {
+    if (measure.offsetWidth <= effectiveMaxWidth) {
       current = candidate;
     } else {
       if (current) lines.push(current);
@@ -283,7 +289,7 @@ onUnmounted(() => {
     --title-fs: 88px;
   }
   @media (max-width: $breakpoint-x) {
-    --title-fs: 50px;
+    --title-fs: 45px;
     min-height: 0;
   }
 }
@@ -310,6 +316,7 @@ onUnmounted(() => {
 
   @media (max-width: $breakpoint-x) {
     justify-content: flex-start;
+    line-height: 60%;
   }
 }
 
