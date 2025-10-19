@@ -172,13 +172,13 @@ onUnmounted(() => {
 
   &__container {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     font-family: 'Akrobat';
     font-weight: 700;
     text-transform: uppercase;
     font-size: 20px;
-    min-height: 70px;
+    min-height: 45px;
     padding: 0 20px;
 
     @media (max-width: $breakpoint-lg) {
@@ -205,6 +205,7 @@ onUnmounted(() => {
   &__contacts {
     display: flex;
     align-items: center;
+    margin-left: 10px;
   }
 
   &__tel {
@@ -212,6 +213,10 @@ onUnmounted(() => {
     z-index: 9999;
     display: flex;
     align-items: center;
+
+    @media (max-width: 375px) {
+      display: none;
+    }
 
     &--icon {
       margin-right: 6px;
@@ -233,6 +238,10 @@ onUnmounted(() => {
     align-items: center;
     min-width: 120px;
     justify-content: flex-end;
+
+    @media (max-width: $breakpoint-x) {
+      min-width: 80px;
+    }
 
     &--text {
       min-width: 60px;
@@ -269,6 +278,7 @@ onUnmounted(() => {
 
     @media (max-width: $breakpoint-x) {
       width: 135px;
+      height: 28px;
     }
   }
 }

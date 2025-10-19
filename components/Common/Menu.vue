@@ -399,8 +399,9 @@ defineExpose({
     }
 
     @media (max-width: $breakpoint-x) {
-      height: calc(100vh - 50px); /* Еще меньше отступ для мобильных */
-      padding: 15px 20px 20px;
+      height: calc(100vh - 120px); /* Еще меньше отступ для мобильных */
+      justify-content: space-between;
+      padding: 90px 20px 20px;
     }
   }
 
@@ -430,6 +431,10 @@ defineExpose({
     transform: translateX(-50px);
     text-decoration: none;
     color: inherit;
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 26px;
+    }
 
     &--active {
       opacity: 0.5 !important;
@@ -537,6 +542,12 @@ defineExpose({
   width: 100%;
   display: flex;
   justify-content: space-between;
+  @media (max-width: $breakpoint-x) {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 48px;
+  }
   &--top {
     display: flex;
     font-weight: 700;
@@ -559,5 +570,9 @@ defineExpose({
   line-height: 120%;
   opacity: 0;
   transform: translateX(-30px);
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 12px;
+  }
 }
 </style>
