@@ -73,6 +73,10 @@ onMounted(async () => {
     margin: 0 auto;
     margin-bottom: 60px;
     font-size: 88px;
+
+    @media (max-width: $breakpoint-x) {
+      margin-bottom: 20px;
+    }
   }
 }
 
