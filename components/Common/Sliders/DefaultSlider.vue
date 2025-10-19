@@ -115,6 +115,10 @@ const props = defineProps({
     type: Number,
     default: 45,
   },
+  centeredSlides: {
+    type: Boolean,
+    default: false,
+  },
   autoplay: {
     type: [Boolean, Object],
     default: () => ({ delay: 4000, disableOnInteraction: false }),
@@ -286,7 +290,7 @@ const effectiveSpaceBetween = computed(() => {
 });
 
 const effectiveCenteredSlides = computed(() => {
-  return mobileConfig.value ? mobileConfig.value.centeredSlides : false;
+  return mobileConfig.value ? mobileConfig.value.centeredSlides : props.centeredSlides;
 });
 
 // Показывать ли навигацию

@@ -4,27 +4,33 @@
       <TitleNew text="Локации рядом" />
 
       <!-- Мобильная версия - слайдер -->
-      <div
-        v-if="isMobile"
-        class="mobile-slider"
-        @touchstart="handleTouchStart"
-        @touchmove="handleTouchMove"
-        @touchend="handleTouchEnd"
-      >
-        <div class="slider-wrapper">
-          <div class="card">
-            <img class="card-img" :src="slides[currentIndex].image" alt="card" />
-            <div class="card-content">
-              <div class="card-content--distance">{{ slides[currentIndex].distance }}</div>
-              <div class="card-content__title">
-                <div class="card-content--name">{{ slides[currentIndex].name }}</div>
-              </div>
-              <div v-if="slides[currentIndex].subtitle" class="card-content__subtitle">
-                {{ slides[currentIndex].subtitle }}
+      <div v-if="isMobile" class="mobile-slider">
+        <DefaultSlider
+          :slides="slides"
+          :slides-per-view="'auto'"
+          :space-between="16"
+          :centered-slides="true"
+          :autoplay="false"
+          :show-pagination="false"
+          :show-navigation="false"
+          :hide-navigation-on-mobile="true"
+          :breakpoints="{}"
+        >
+          <template #slide="{ slide }">
+            <div class="card mobile-card">
+              <img class="card-img" :src="slide.image" alt="card" />
+              <div class="card-content">
+                <div class="card-content__title">
+                  <div class="card-content--name">{{ slide.name }}</div>
+                  <div class="card-content--distance">{{ slide.distance }}</div>
+                </div>
+                <div v-if="slide.subtitle" class="card-content__subtitle">
+                  {{ slide.subtitle }}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </template>
+        </DefaultSlider>
       </div>
 
       <!-- Десктопная версия - параллакс -->
@@ -142,6 +148,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import TitleNew from './Common/TitleNew.vue';
+import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 import locationCardImg from '@/assets/img/location-card.png';
 
 const parallaxSection = ref(null);
@@ -150,14 +157,6 @@ const centerColumn = ref(null);
 const rightColumn = ref(null);
 
 const isMobile = ref(false);
-const currentIndex = ref(0);
-const isAnimating = ref(false);
-
-// Touch события для свайпа
-const touchStartX = ref(0);
-const touchEndX = ref(0);
-const touchStartY = ref(0);
-const touchEndY = ref(0);
 
 // Массив всех слайдов для мобильной версии
 const slides = ref([
@@ -216,50 +215,6 @@ const slides = ref([
     subtitle: 'на прилегающей территории',
   },
 ]);
-
-// Обработчики свайпа
-const handleTouchStart = e => {
-  touchStartX.value = e.touches[0].clientX;
-  touchStartY.value = e.touches[0].clientY;
-};
-
-const handleTouchMove = e => {
-  touchEndX.value = e.touches[0].clientX;
-  touchEndY.value = e.touches[0].clientY;
-};
-
-const handleTouchEnd = () => {
-  if (isAnimating.value) return;
-
-  const diffX = touchStartX.value - touchEndX.value;
-  const diffY = touchStartY.value - touchEndY.value;
-
-  // Проверяем, что горизонтальный свайп больше вертикального
-  if (Math.abs(diffX) > Math.abs(diffY)) {
-    // Минимальная дистанция свайпа - 50px
-    if (Math.abs(diffX) > 50) {
-      isAnimating.value = true;
-
-      if (diffX > 0) {
-        // Свайп влево - следующий слайд
-        currentIndex.value = (currentIndex.value + 1) % slides.value.length;
-      } else {
-        // Свайп вправо - предыдущий слайд
-        currentIndex.value = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
-      }
-
-      setTimeout(() => {
-        isAnimating.value = false;
-      }, 300);
-    }
-  }
-
-  // Сбрасываем значения
-  touchStartX.value = 0;
-  touchEndX.value = 0;
-  touchStartY.value = 0;
-  touchEndY.value = 0;
-};
 
 let triggers = [];
 let resizeTimer = null;
@@ -508,31 +463,35 @@ onBeforeUnmount(() => {
 // Мобильный слайдер
 .mobile-slider {
   margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 
-  .slider-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    touch-action: pan-y;
-    user-select: none;
+  // Переопределяем стили слайдера
+  :deep(.default-swiper) {
+    overflow: visible;
 
-    .card {
-      width: 100%;
-      max-width: 366px;
-      margin: 0;
-      animation: fadeIn 0.3s ease;
+    .swiper-wrapper {
+      align-items: center;
+    }
 
-      @media (max-width: $breakpoint-x) {
-        max-width: 100%;
+    .swiper-slide {
+      width: 80% !important;
+      transition: transform 0.3s ease;
+      border: none !important;
+      padding: 0 !important;
+      background-color: transparent !important;
+
+      &:hover {
+        border: none !important;
+        background-color: transparent !important;
       }
     }
+  }
+
+  .mobile-card {
+    width: 100%;
+    margin: 0;
 
     .card-img {
       height: 488px;
-      pointer-events: none;
 
       @media (max-width: $breakpoint-x) {
         height: 400px;
@@ -542,17 +501,6 @@ onBeforeUnmount(() => {
         height: 338px;
       }
     }
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 </style>
