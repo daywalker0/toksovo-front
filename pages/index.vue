@@ -31,7 +31,7 @@
 
       <section id="infrastructure">
         <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
-        <NewMapSection :zoom="16" />
+        <MapSection :zoom="16" />
       </section>
 
       <section id="layouts">
@@ -102,7 +102,7 @@ import WalkCitySection from '@/components/WalkCitySection.vue';
 import MasterPlanSection from '@/components/MasterPlanSection.vue';
 import FullpageSlider from '@/components/FullpageSlider.vue';
 import TextBlockSection from '@/components/TextBlockSection.vue';
-import NewMapSection from '@/components/NewMapSection.vue';
+import MapSection from '~/components/MapSection.vue';
 import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
 import ConstructionSection from '@/components/ConstructionSection.vue';
 import NewsSection from '@/components/NewsSection.vue';
