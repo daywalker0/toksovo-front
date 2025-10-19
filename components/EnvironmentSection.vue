@@ -27,6 +27,31 @@
       </div>
       <div class="environment-section__content">
         <div class="content-block">
+          <!-- Круговой прогресс-бар -->
+          <div class="progress-circle">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <!-- Фоновый круг -->
+              <circle cx="8" cy="8" r="6.5" stroke="#E6DFD8" stroke-width="3" fill="none" />
+              <!-- Прогресс круг -->
+              <circle
+                cx="8"
+                cy="8"
+                r="6.5"
+                stroke="#4C5E36"
+                stroke-width="3"
+                fill="none"
+                :stroke-dasharray="progressCircle.circumference"
+                :stroke-dashoffset="progressCircle.offset"
+                stroke-linecap="round"
+                style="
+                  transform: rotate(-90deg);
+                  transform-origin: center;
+                  will-change: stroke-dashoffset;
+                "
+              />
+            </svg>
+          </div>
+
           <h2 class="content-title">{{ activeItem?.title || 'Заголовок' }}</h2>
           <p class="content-text">{{ activeItem?.content || 'Описание' }}</p>
 
@@ -700,6 +725,23 @@ onBeforeUnmount(() => {
     padding: 20px 15px;
     max-width: 100%;
     border-radius: 8px;
+    min-height: 230px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.progress-circle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  svg {
+    display: block;
+  }
+
+  circle {
+    transition: stroke-dashoffset 0.1s linear;
   }
 }
 
@@ -714,6 +756,8 @@ onBeforeUnmount(() => {
   @media (max-width: $breakpoint-x) {
     font-size: 24px;
     margin: 0 0 15px 0;
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -728,6 +772,7 @@ onBeforeUnmount(() => {
   @media (max-width: $breakpoint-x) {
     font-size: 16px;
     margin: 0 0 20px 0;
+    text-align: center;
   }
 }
 
@@ -735,6 +780,7 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 12px;
   justify-content: center;
+  margin-top: auto;
 }
 
 .nav-button {

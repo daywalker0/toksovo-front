@@ -166,7 +166,7 @@ onUnmounted(() => {
 @use '@/assets/styles/variables.scss' as *;
 .header {
   position: fixed;
-  z-index: 12341231 !important;
+  z-index: 12341 !important;
   width: 100%;
   transition: all 0.3s ease;
 
@@ -245,7 +245,7 @@ onUnmounted(() => {
 }
 
 .header__logo {
-  transform: translateX(35px) !important;
+  transform: translateX(35px);
   position: relative;
   z-index: 9999;
   transition:
@@ -256,6 +256,10 @@ onUnmounted(() => {
     display: inline-block;
     text-decoration: none;
     outline: none;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    transform: none;
   }
 
   svg {
@@ -273,6 +277,12 @@ onUnmounted(() => {
   opacity: 0;
   transform: translateY(-20px);
   pointer-events: none;
+
+  @media (max-width: $breakpoint-x) {
+    opacity: 1 !important;
+    transform: translateY(0px) !important;
+    pointer-events: auto !important;
+  }
 }
 
 /* Логотип всегда видим при открытом меню */

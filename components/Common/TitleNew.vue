@@ -284,6 +284,7 @@ onUnmounted(() => {
   }
   @media (max-width: $breakpoint-x) {
     --title-fs: 50px;
+    min-height: 0;
   }
 }
 

@@ -1,6 +1,7 @@
 @use './fonts.scss';
 @use './reset.scss';
 @use './typography.scss';
+@use './variables.scss' as *;
 
 html:root {
   scroll-behavior: auto; // Отключаем smooth scroll для Lenis
@@ -21,6 +22,10 @@ html {
 html.lenis,
 html.lenis body {
   height: auto;
+
+  @media (max-width: $breakpoint-x) {
+    overflow-x: hidden;
+  }
 }
 
 .lenis.lenis-smooth {
