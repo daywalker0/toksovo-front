@@ -299,4 +299,43 @@ const handleSubmit = () => {
     transform: none;
   }
 }
+
+/* Стили для позиционирования диалога */
+:deep(.dialog-content:has(.callback-dialog) ~ .dialog-close) {
+  @media (max-width: $breakpoint-x) {
+    top: 20px !important;
+    right: 20px !important;
+  }
+}
+
+:deep(.dialog-overlay:has(.callback-dialog)) {
+  @media (max-width: $breakpoint-x) {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+}
+
+:deep(.dialog-content:has(.callback-dialog)) {
+  @media (max-width: $breakpoint-x) {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 80vh !important;
+    max-height: 80vh !important;
+    margin: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 40px 20px 20px 20px !important;
+  }
+}
+</style>
+
+<style lang="scss">
+/* Глобальные стили для диалога обратного звонка */
+@use '@/assets/styles/variables.scss' as *;
+
+.dialog-overlay:has(.callback-dialog) {
+  @media (max-width: $breakpoint-x) {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+}
 </style>
