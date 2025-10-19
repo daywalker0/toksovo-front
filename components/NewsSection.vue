@@ -68,6 +68,10 @@ onMounted(async () => {
 .news-section {
   &__container {
     padding-bottom: 120px;
+
+    @media (max-width: $breakpoint-x) {
+      padding-bottom: 60px;
+    }
   }
   &__title {
     margin: 0 auto;
@@ -106,6 +110,7 @@ onMounted(async () => {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 6;
+    line-clamp: 6;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
   }
@@ -123,5 +128,10 @@ onMounted(async () => {
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+
+  @media (max-width: $breakpoint-x) {
+    height: auto;
+    min-height: 200px;
+  }
 }
 </style>

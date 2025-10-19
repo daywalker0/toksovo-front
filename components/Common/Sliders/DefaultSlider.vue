@@ -3,14 +3,16 @@
     <div class="slider-container">
       <Swiper
         :modules="modules"
-        :slides-per-view="slidesPerView"
-        :space-between="spaceBetween"
+        :slides-per-view="effectiveSlidesPerView"
+        :space-between="effectiveSpaceBetween"
+        :centered-slides="effectiveCenteredSlides"
         :pagination="paginationConfig"
         :autoplay="autoplayConfig"
         :breakpoints="breakpoints"
         :navigation="navigation"
         :effect="effect"
         class="default-swiper"
+        :class="{ 'mobile-swiper': isMobile && mobileSlideWidth }"
         onSlideChange
         @swiper="onSwiper"
         @slide-change="onSlideChange"
@@ -21,6 +23,8 @@
           v-for="(slide, index) in slides"
           :key="getSlideKey(slide, index)"
           class="slide"
+          :class="{ 'mobile-slide-fixed': isMobile && mobileSlideWidth }"
+          :style="isMobile && mobileSlideWidth ? { width: `${mobileSlideWidth}px` } : {}"
         >
           <!-- Слот для кастомной верстки слайда -->
           <slot name="slide" :slide="slide" :index="index" :active="activeIndex === index">
@@ -32,14 +36,14 @@
           </slot>
         </SwiperSlide>
 
-        <div class="slider--controls">
+        <div class="slider--controls" v-if="shouldShowNavigation || showPagination">
           <!-- Прогрессбар -->
-          <div class="custom-progressbar">
+          <div class="custom-progressbar" v-if="showPagination && !hideNavigationOnMobile">
             <span class="swiper-pagination-progressbar-fill"></span>
           </div>
 
           <!-- Навигационные стрелки -->
-          <div class="custom-navigation" v-if="showNavigation">
+          <div class="custom-navigation" v-if="shouldShowNavigation">
             <button
               class="nav-button prev"
               :class="{ disabled: isPrevDisabled }"
@@ -84,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -94,6 +98,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/effect-fade';
 import 'swiper/css/effect-cube';
 import 'swiper/css/effect-coverflow';
+
+const isMobile = ref(false);
 
 const props = defineProps({
   slides: {
@@ -151,6 +157,14 @@ const props = defineProps({
   modules: {
     type: Array,
     default: () => [Pagination, Autoplay],
+  },
+  mobileSlideWidth: {
+    type: Number,
+    default: null, // Если указано, будет использоваться для мобилки
+  },
+  hideNavigationOnMobile: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -238,6 +252,62 @@ const onResize = () => {
 const onBreakpoint = () => {
   updateNavigationState();
 };
+
+// Вычисляем параметры для мобилки
+const mobileConfig = computed(() => {
+  if (!isMobile.value) {
+    return null;
+  }
+
+  // Если указана фиксированная ширина слайда - используем auto режим
+  if (props.mobileSlideWidth) {
+    return {
+      slidesPerView: 'auto',
+      spaceBetween: 8,
+      centeredSlides: true,
+    };
+  }
+
+  // Иначе - один слайд на весь экран
+  return {
+    slidesPerView: 1,
+    spaceBetween: 16,
+    centeredSlides: false,
+  };
+});
+
+// Объединяем конфиг с мобильными параметрами
+const effectiveSlidesPerView = computed(() => {
+  return mobileConfig.value ? mobileConfig.value.slidesPerView : props.slidesPerView;
+});
+
+const effectiveSpaceBetween = computed(() => {
+  return mobileConfig.value ? mobileConfig.value.spaceBetween : props.spaceBetween;
+});
+
+const effectiveCenteredSlides = computed(() => {
+  return mobileConfig.value ? mobileConfig.value.centeredSlides : false;
+});
+
+// Показывать ли навигацию
+const shouldShowNavigation = computed(() => {
+  if (isMobile.value && props.hideNavigationOnMobile) {
+    return false;
+  }
+  return props.showNavigation;
+});
+
+onMounted(() => {
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 599;
+  };
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkMobile);
+  });
+});
 </script>
 
 <style lang="scss" scoped>
@@ -364,5 +434,19 @@ const onBreakpoint = () => {
 :deep(.swiper-pagination-progressbar) {
   display: block !important;
   opacity: 1 !important;
+}
+
+// Мобильная версия
+.mobile-swiper {
+  @media (max-width: $breakpoint-x) {
+    overflow: visible;
+  }
+}
+
+.mobile-slide-fixed {
+  @media (max-width: $breakpoint-x) {
+    width: auto !important;
+    flex-shrink: 0;
+  }
 }
 </style>

@@ -2,11 +2,14 @@
   <section class="projects-section section" id="projects">
     <div class="projects-section__container container">
       <TitleNew text="Другие проекты" class="projects-section__title" />
+
       <DefaultSlider
         :slides="projectsSlides"
         :slides-per-view="2"
         :space-between="45"
         :show-navigation="true"
+        :mobile-slide-width="253"
+        :hide-navigation-on-mobile="true"
       >
         <template #slide="{ slide, active }">
           <div :class="['custom-slide', { active }]">
@@ -135,6 +138,11 @@ const openDialogVideo = () => {
   @media (max-width: $breakpoint-sm) {
     min-height: 390px;
   }
+
+  @media (max-width: $breakpoint-x) {
+    height: auto;
+    min-height: auto;
+  }
 }
 
 .content {
@@ -235,6 +243,10 @@ const openDialogVideo = () => {
 
   @media (max-width: $breakpoint-md) {
     height: 250px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    height: 253px;
   }
 
   @media (max-width: $breakpoint-sm) {
