@@ -39,6 +39,7 @@ defineProps({
   align-items: center;
   z-index: 9999;
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .loader-content {

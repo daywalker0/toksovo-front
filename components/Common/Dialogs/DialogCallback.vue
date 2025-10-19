@@ -179,6 +179,30 @@ const handleSubmit = () => {
     border-bottom-color: $accent-color-orange;
   }
 
+  &::-webkit-input-placeholder {
+    color: #999;
+    font-family: 'Akrobat';
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.4;
+  }
+
+  &::-moz-placeholder {
+    color: #999;
+    font-family: 'Akrobat';
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.4;
+  }
+
+  &:-ms-input-placeholder {
+    color: #999;
+    font-family: 'Akrobat';
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.4;
+  }
+
   &::placeholder {
     color: #999;
     font-family: 'Akrobat';

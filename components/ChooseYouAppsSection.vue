@@ -329,6 +329,7 @@ onUnmounted(() => {
 }
 
 .sticky-content {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   height: 100vh;

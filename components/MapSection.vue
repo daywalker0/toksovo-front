@@ -165,6 +165,9 @@ function selectPin(pin) {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     transition: color 0.2s ease;
     font-size: 22px;

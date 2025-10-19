@@ -33,6 +33,7 @@ html.lenis body {
 }
 
 .lenis.lenis-smooth [data-lenis-prevent] {
+  -webkit-overscroll-behavior: contain;
   overscroll-behavior: contain;
 }
 
