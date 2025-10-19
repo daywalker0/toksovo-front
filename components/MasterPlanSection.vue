@@ -1,23 +1,46 @@
 <template>
   <section ref="sectionRef" class="enhanced-section" id="master-plan">
-    <div class="sticky-container">
+    <div class="sticky-container" :class="{ 'mobile-version': isMobile }">
       <!-- Фиксированное изображение с пинами под всем -->
-      <div class="background-image">
-        <img :src="genPlanImg" alt="Master plan" />
+      <div
+        class="background-image"
+        :class="{ 'mobile-scrollable': isMobile }"
+        ref="scrollContainer"
+      >
+        <div class="image-wrapper" ref="imageWrapper">
+          <img :src="genPlanImg" alt="Master plan" :style="mobileImageStyle" />
+
+          <!-- Пинсы на мобильных привязаны к изображению -->
+          <div v-if="showPins && isMobile" class="pins-container pins-container--mobile">
+            <div
+              v-for="(pin, index) in pins"
+              :key="index"
+              class="pin"
+              :class="{
+                'pin--active': pin.active,
+                'pin--hover': pin.active && hoveredPinIndex === index,
+              }"
+              :style="getMobilePinStyle(pin)"
+              @click="pin.active && handlePinClick(pin, index)"
+            >
+              <div class="pin-dot">{{ pin.id }}</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- 4 блока создающих рамку вокруг отверстия -->
-      <div ref="overlayTopRef" class="overlay-bar overlay-top"></div>
-      <div ref="overlayBottomRef" class="overlay-bar overlay-bottom"></div>
-      <div ref="overlayLeftRef" class="overlay-bar overlay-left"></div>
-      <div ref="overlayRightRef" class="overlay-bar overlay-right"></div>
+      <!-- 4 блока создающих рамку вокруг отверстия (только для десктопа) -->
+      <div v-if="!isMobile" ref="overlayTopRef" class="overlay-bar overlay-top"></div>
+      <div v-if="!isMobile" ref="overlayBottomRef" class="overlay-bar overlay-bottom"></div>
+      <div v-if="!isMobile" ref="overlayLeftRef" class="overlay-bar overlay-left"></div>
+      <div v-if="!isMobile" ref="overlayRightRef" class="overlay-bar overlay-right"></div>
 
-      <!-- Тексты по бокам отверстия -->
-      <div ref="textLeftRef" class="text-left">Ген.</div>
-      <div ref="textRightRef" class="text-right">План</div>
+      <!-- Тексты по бокам отверстия (только для десктопа) -->
+      <div v-if="!isMobile" ref="textLeftRef" class="text-left">Ген.</div>
+      <div v-if="!isMobile" ref="textRightRef" class="text-right">План</div>
 
-      <!-- Пинсы которые появляются после раскрытия -->
-      <div v-if="showPins" class="pins-container">
+      <!-- Пинсы которые появляются после раскрытия (только для десктопа) -->
+      <div v-if="showPins && !isMobile" class="pins-container">
         <div
           v-for="(pin, index) in pins"
           :key="index"
@@ -61,18 +84,39 @@
 
       <!-- Кнопка подбора по параметрам -->
       <button
-        v-if="showFilterButton"
+        v-if="showFilterButton && !isMobile"
         class="button button--orange button--filter"
         @click="handleFilterClick"
       >
         Подбор по параметрам
       </button>
+
+      <!-- Мобильная плашка навигации -->
+      <div v-if="isMobile" class="mobile-navigation">
+        <button class="mobile-nav-btn mobile-nav-btn--left" @click="scrollLeft">
+          <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
+            <path
+              d="M7.15141 0.0727358L8.03516 0.956484L1.43391 7.55773C1.31641 7.67648 1.25141 7.83273 1.25141 8.00023C1.25141 8.16773 1.31641 8.32398 1.43391 8.44273L8.03516 15.044L7.15141 15.9277L0.550155 9.32648C0.196404 8.97273 0.00140572 8.50148 0.00140572 8.00023C0.00140572 7.49898 0.196404 7.02898 0.550155 6.67398L7.15141 0.0727358Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+        <div class="mobile-nav-text">Перемещайтесь по генплану</div>
+        <button class="mobile-nav-btn mobile-nav-btn--right" @click="scrollRight">
+          <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
+            <path
+              d="M1.84859 15.9273L0.964844 15.0435L7.56609 8.44227C7.68359 8.32352 7.74859 8.16727 7.74859 7.99977C7.74859 7.83227 7.68359 7.67602 7.56609 7.55727L0.964844 0.956015L1.84859 0.0722656L8.44985 6.67352C8.8036 7.02727 8.99859 7.49852 8.99859 7.99977C8.99859 8.50102 8.8036 8.97102 8.44985 9.32602L1.84859 15.9273Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue';
 import genPlanImg from '@/assets/img/gen-plan.jpg';
 
 const sectionRef = ref(null);
@@ -82,6 +126,9 @@ const overlayLeftRef = ref(null);
 const overlayRightRef = ref(null);
 const textLeftRef = ref(null);
 const textRightRef = ref(null);
+const scrollContainer = ref(null);
+const imageWrapper = ref(null);
+const isMobile = ref(process.client ? window.innerWidth <= 599 : false);
 const showPins = ref(false);
 const showFilterButton = ref(false);
 const hoveredPin = ref(null);
@@ -136,6 +183,25 @@ const handlePinLeave = () => {
     }
     closeTimeoutId = null;
   }, 120);
+};
+
+// Клик по пину на мобильных
+const handlePinClick = (pin, index) => {
+  hoveredPinIndex.value = index;
+  hoveredPin.value = {
+    ...pin,
+    buildingNumber: (index ?? 0) + 1,
+    offers: defaultOffers,
+  };
+};
+
+// Стили для пинов на мобильных (привязаны к изображению)
+const getMobilePinStyle = pin => {
+  return {
+    top: `${pin.y}%`,
+    left: `${pin.x}%`,
+    transform: 'translate(-50%, -50%)',
+  };
 };
 
 const handlePanelEnter = () => {
@@ -235,8 +301,61 @@ const handleFilterClick = () => {
   // Здесь можно добавить логику для открытия фильтра или модального окна
 };
 
+// Мобильные стили и функции
+const mobileImageStyle = computed(() => {
+  return {};
+});
+
+const scrollLeft = () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollBy({
+      left: -window.innerWidth * 0.5,
+      behavior: 'smooth',
+    });
+  }
+};
+
+const scrollRight = () => {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollBy({
+      left: window.innerWidth * 0.5,
+      behavior: 'smooth',
+    });
+  }
+};
+
+const checkMobile = () => {
+  const newIsMobile = window.innerWidth <= 599;
+  if (isMobile.value !== newIsMobile) {
+    isMobile.value = newIsMobile;
+    // На мобильных показываем пины сразу
+    if (isMobile.value) {
+      showPins.value = true;
+    }
+  }
+};
+
 onMounted(async () => {
   if (process.client) {
+    // Проверяем мобильность и показываем пины сразу на мобильных
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    // На мобильных показываем пины сразу, без анимации
+    if (isMobile.value) {
+      showPins.value = true;
+
+      // Скроллим к центру изображения
+      await nextTick();
+      if (scrollContainer.value) {
+        const scrollWidth = scrollContainer.value.scrollWidth;
+        const clientWidth = scrollContainer.value.clientWidth;
+        const centerScroll = (scrollWidth - clientWidth) / 2;
+        scrollContainer.value.scrollLeft = centerScroll;
+      }
+
+      return; // Не запускаем GSAP для мобильных
+    }
     // Динамически импортируем GSAP только на клиенте
     const { gsap } = await import('gsap');
     const { ScrollTrigger } = await import('gsap/ScrollTrigger');
@@ -377,6 +496,12 @@ onMounted(async () => {
     // Текст не меняет прозрачность и не "наезжает": его раздвигает расширяющийся контейнер
   }
 });
+
+onBeforeUnmount(() => {
+  if (process.client) {
+    window.removeEventListener('resize', checkMobile);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -385,8 +510,10 @@ onMounted(async () => {
 .enhanced-section {
   height: 200vh; /* Достаточно места для скролла */
   position: relative;
+
   @media (max-width: $breakpoint-x) {
     height: 100svh;
+    min-height: 100svh;
   }
 }
 
@@ -397,13 +524,14 @@ onMounted(async () => {
   height: 100vh;
   display: flex;
   align-items: center;
-
-  @media (max-width: $breakpoint-x) {
-    height: 100svh;
-  }
   justify-content: center;
   overflow: hidden;
   background: #e6dfd8;
+
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+    min-height: 100svh;
+  }
 }
 
 .background-image {
@@ -422,6 +550,50 @@ onMounted(async () => {
     object-fit: cover;
     object-position: center;
     display: block;
+  }
+
+  &.mobile-scrollable {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+
+    // Скрываем скроллбар но оставляем функциональность
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+
+  @media (max-width: $breakpoint-x) {
+    width: auto;
+    height: 100%;
+    min-width: 400%;
+    display: block;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+
+    @media (max-width: $breakpoint-x) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
   }
 }
 
@@ -492,6 +664,16 @@ onMounted(async () => {
   height: 100%;
   z-index: 3;
   pointer-events: all;
+
+  &--mobile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: all;
+  }
 }
 
 .pin {
@@ -753,6 +935,63 @@ onMounted(async () => {
   .pin-info-panel[data-position='right-top']::before,
   .pin-info-panel[data-position='left-top']::before {
     bottom: -12px;
+  }
+}
+
+/* Мобильная навигация */
+.mobile-navigation {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 7px;
+  border: 1px solid $text-color-primary;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mobile-nav-text {
+  font-family: 'Akrobat';
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 140%;
+  color: $text-color-white;
+  white-space: nowrap;
+}
+
+.mobile-nav-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  color: $text-color-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 9px;
+    height: 16px;
+  }
+}
+
+/* Мобильная версия контейнера */
+.mobile-version {
+  overflow: visible;
+
+  .pins-container {
+    z-index: 3;
   }
 }
 </style>
