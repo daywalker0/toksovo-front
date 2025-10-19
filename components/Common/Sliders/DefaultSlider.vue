@@ -23,8 +23,7 @@
           v-for="(slide, index) in slides"
           :key="getSlideKey(slide, index)"
           class="slide"
-          :class="{ 'mobile-slide-fixed': isMobile && mobileSlideWidth }"
-          :style="isMobile && mobileSlideWidth ? { width: `${mobileSlideWidth}px` } : {}"
+          :style="slideStyle"
         >
           <!-- Слот для кастомной верстки слайда -->
           <slot name="slide" :slide="slide" :index="index" :active="activeIndex === index">
@@ -306,6 +305,17 @@ const shouldShowNavigation = computed(() => {
   return props.showNavigation;
 });
 
+// Стиль для слайда с фиксированной шириной на мобильных
+const slideStyle = computed(() => {
+  if (isMobile.value && props.mobileSlideWidth) {
+    return {
+      width: `${props.mobileSlideWidth}px`,
+      flexShrink: '0',
+    };
+  }
+  return {};
+});
+
 onMounted(() => {
   const checkMobile = () => {
     const newIsMobile = window.innerWidth <= 599;
@@ -453,13 +463,6 @@ onMounted(() => {
 .mobile-swiper {
   @media (max-width: $breakpoint-x) {
     overflow: visible;
-  }
-}
-
-.mobile-slide-fixed {
-  @media (max-width: $breakpoint-x) {
-    width: auto !important;
-    flex-shrink: 0;
   }
 }
 </style>

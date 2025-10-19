@@ -7,6 +7,8 @@
         :slides-per-view="2"
         :space-between="45"
         :show-navigation="true"
+        :hide-navigation-on-mobile="true"
+        :mobile-slide-width="253"
       >
         <template #slide="{ slide, active }">
           <div :class="['custom-slide', { active }]" @click="handleNewsClick(slide.id)">
@@ -94,13 +96,23 @@ onMounted(async () => {
 
   &--date {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     font-weight: 400;
     line-height: 100%;
     font-size: 16px;
     font-family: 'Bona Nova SC';
     margin-top: 40px;
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 14px;
+    }
+
+    span {
+      @media (max-width: $breakpoint-x) {
+        font-size: 36px;
+      }
+    }
   }
   &--text {
     font-size: 22px;
@@ -113,6 +125,10 @@ onMounted(async () => {
     line-clamp: 6;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 18px;
+    }
   }
 }
 .date {
@@ -130,7 +146,6 @@ onMounted(async () => {
     box-shadow 0.3s ease;
 
   @media (max-width: $breakpoint-x) {
-    height: auto;
     min-height: 200px;
   }
 }
