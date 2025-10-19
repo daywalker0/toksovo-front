@@ -326,7 +326,8 @@
           :slides-per-view="2"
           :space-between="45"
           :show-navigation="true"
-          :show-pagination="true"
+          :mobile-slide-width="253"
+          :hide-navigation-on-mobile="true"
         >
           <template #slide="{ slide, active }">
             <div :class="['custom-slide', { active }]" @click="handleNewsClick(slide.id)">
@@ -817,11 +818,38 @@ onMounted(async () => {
     margin-bottom: 60px;
     font-size: 88px;
   }
+
+  @media (max-width: $breakpoint-x) {
+    ::v-deep(.default-slider) {
+      overflow: visible;
+    }
+
+    ::v-deep(.slider-container) {
+      overflow: visible;
+    }
+
+    ::v-deep(.default-swiper) {
+      overflow: visible;
+    }
+  }
 }
 
 /* Стили для слайдов новостей (копируем из NewsSection) */
 ::v-deep(.swiper-slide) {
   height: 300px !important;
+
+  @media (max-width: $breakpoint-x) {
+    width: 253px !important;
+    flex-shrink: 0;
+  }
+}
+
+::v-deep(.slide) {
+  min-height: 0 !important;
+
+  @media (max-width: $breakpoint-x) {
+    width: 253px !important;
+  }
 }
 
 .content {
@@ -834,13 +862,23 @@ onMounted(async () => {
 
   &--date {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     font-weight: 400;
     line-height: 100%;
     font-size: 16px;
     font-family: 'Bona Nova SC';
     margin-top: 40px;
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 14px;
+    }
+
+    span {
+      @media (max-width: $breakpoint-x) {
+        font-size: 36px;
+      }
+    }
   }
   &--text {
     font-size: 22px;
@@ -853,6 +891,10 @@ onMounted(async () => {
     line-clamp: 6;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
+
+    @media (max-width: $breakpoint-x) {
+      font-size: 18px;
+    }
   }
 }
 
@@ -869,6 +911,11 @@ onMounted(async () => {
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+
+  @media (max-width: $breakpoint-x) {
+    min-height: 200px;
+    width: 100%;
+  }
 }
 
 /* Кнопка "Поделиться" на мобильных */

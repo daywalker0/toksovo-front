@@ -65,6 +65,19 @@ onMounted(async () => {
 
 ::v-deep(.swiper-slide) {
   height: 300px !important;
+
+  @media (max-width: $breakpoint-x) {
+    width: 253px !important;
+    flex-shrink: 0;
+  }
+}
+
+::v-deep(.slide) {
+  min-height: 0 !important;
+
+  @media (max-width: $breakpoint-x) {
+    width: 253px !important;
+  }
 }
 
 .news-section {
@@ -82,6 +95,20 @@ onMounted(async () => {
 
     @media (max-width: $breakpoint-x) {
       margin-bottom: 20px;
+    }
+  }
+
+  @media (max-width: $breakpoint-x) {
+    ::v-deep(.default-slider) {
+      overflow: visible;
+    }
+
+    ::v-deep(.slider-container) {
+      overflow: visible;
+    }
+
+    ::v-deep(.default-swiper) {
+      overflow: visible;
     }
   }
 }
@@ -147,6 +174,7 @@ onMounted(async () => {
 
   @media (max-width: $breakpoint-x) {
     min-height: 200px;
+    width: 100%;
   }
 }
 </style>
