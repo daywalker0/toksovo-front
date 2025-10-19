@@ -385,6 +385,9 @@ onMounted(async () => {
 .enhanced-section {
   height: 200vh; /* Достаточно места для скролла */
   position: relative;
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
 }
 
 .sticky-container {
