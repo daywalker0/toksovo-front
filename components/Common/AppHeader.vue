@@ -170,6 +170,12 @@ onUnmounted(() => {
   width: 100%;
   transition: all 0.3s ease;
 
+  @media (max-width: $breakpoint-x) {
+    background-color: rgba(248, 243, 237, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
   &__container {
     display: flex;
     align-items: flex-end;
@@ -183,6 +189,11 @@ onUnmounted(() => {
 
     @media (max-width: $breakpoint-lg) {
       font-size: 18px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      min-height: 60px;
+      padding: 0 20px 15px;
     }
   }
 
