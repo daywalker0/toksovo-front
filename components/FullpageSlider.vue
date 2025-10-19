@@ -1,40 +1,61 @@
 <template>
   <div class="sections-container" :data-slider-id="sliderId">
-    <!-- Превью навигация -->
-    <div v-if="isIndicatorVisible && isInSlider" class="previews">
-      <div
-        v-for="(section, index) in sections"
-        :key="index"
-        class="thumb"
-        :class="{ active: index === currentSection }"
-        :data-section="index"
-        :data-current="currentSection"
-        :data-slider-id="sliderId"
-        @click="scrollToSection(index)"
+    <!-- Мобильная версия - Swiper слайдер -->
+    <div v-if="isMobile" class="mobile-slider">
+      <swiper
+        :modules="modules"
+        :slides-per-view="'auto'"
+        :space-between="8"
+        :centered-slides="true"
+        class="mobile-swiper"
+        @slideChange="onSlideChange"
       >
-        <img :src="section.image" />
-      </div>
+        <swiper-slide v-for="(section, index) in sections" :key="index" class="mobile-swiper-slide">
+          <div class="mobile-slide" :style="{ backgroundImage: `url(${section.image})` }"></div>
+        </swiper-slide>
+      </swiper>
     </div>
 
-    <!-- Секции -->
-    <section
-      v-for="(section, index) in sections"
-      :key="index"
-      :id="`section-${sliderId}-${index}`"
-      class="fullscreen-section"
-      :class="{
-        'section-active': currentSection === index,
-        'section-prev': currentSection === index - 1,
-        'section-next': currentSection === index + 1,
-      }"
-    >
-      <div class="section-bg" :style="{ backgroundImage: `url(${section.image})` }"></div>
-    </section>
+    <!-- Десктопная версия -->
+    <template v-else>
+      <!-- Превью навигация -->
+      <div v-if="isIndicatorVisible && isInSlider" class="previews">
+        <div
+          v-for="(section, index) in sections"
+          :key="index"
+          class="thumb"
+          :class="{ active: index === currentSection }"
+          :data-section="index"
+          :data-current="currentSection"
+          :data-slider-id="sliderId"
+          @click="scrollToSection(index)"
+        >
+          <img :src="section.image" />
+        </div>
+      </div>
+
+      <!-- Секции -->
+      <section
+        v-for="(section, index) in sections"
+        :key="index"
+        :id="`section-${sliderId}-${index}`"
+        class="fullscreen-section"
+        :class="{
+          'section-active': currentSection === index,
+          'section-prev': currentSection === index - 1,
+          'section-next': currentSection === index + 1,
+        }"
+      >
+        <div class="section-bg" :style="{ backgroundImage: `url(${section.image})` }"></div>
+      </section>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, toRefs, nextTick } from 'vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
 
 const props = defineProps({
   sections: {
@@ -52,82 +73,114 @@ const sliderId = ref(`slider-${Math.random().toString(36).substr(2, 9)}`);
 const currentSection = ref(0);
 const isIndicatorVisible = ref(false);
 const isInSlider = ref(false);
+const isMobile = ref(false);
+
+const modules = [];
 
 let observer;
 let scrollTriggers = [];
 
+// Обработчик изменения слайда в Swiper
+const onSlideChange = swiper => {
+  currentSection.value = swiper.activeIndex;
+};
+
 const scrollToSection = index => {
-  // Простая навигация через scrollIntoView
-  const targetElement = document.getElementById(`section-${sliderId.value}-${index}`);
-
-  if (targetElement) {
-    targetElement.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-
-    // Обновляем текущую секцию
-    currentSection.value = index;
+  if (isMobile.value) {
+    // На мобилке просто меняем currentSection (swiper обработает сам)
+    if (index >= 0 && index < sections.value.length) {
+      currentSection.value = index;
+    }
   } else {
+    // На десктопе используем scrollIntoView
+    const targetElement = document.getElementById(`section-${sliderId.value}-${index}`);
+
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+
+      // Обновляем текущую секцию
+      currentSection.value = index;
+    }
   }
 };
 
 onMounted(async () => {
+  // Явно устанавливаем первый слайд
+  currentSection.value = 0;
+
   await nextTick();
 
-  // Инициализируем currentSection
-  currentSection.value = 0;
+  // Проверка мобильного устройства
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 599;
+  };
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+
+  // На мобилке не инициализируем GSAP
+  if (isMobile.value) {
+    return;
+  }
 
   // Динамически импортируем GSAP
   const { gsap } = await import('gsap');
   const { ScrollTrigger } = await import('gsap/ScrollTrigger');
   gsap.registerPlugin(ScrollTrigger);
 
-  // Создаем отдельный observer для определения активности слайдера
-  const sliderObserver = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        isInSlider.value = entry.isIntersecting;
-        if (entry.isIntersecting) {
-          isIndicatorVisible.value = true;
-        } else {
-          isIndicatorVisible.value = false;
-        }
-      });
-    },
-    { threshold: 0.3 }
-  );
+  // Создаем отдельный observer для определения активности слайдера (только для десктопа)
+  if (!isMobile.value) {
+    const sliderObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          isInSlider.value = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            isIndicatorVisible.value = true;
+          } else {
+            isIndicatorVisible.value = false;
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
 
-  // Наблюдаем за контейнером слайдера
-  const sliderContainer = document.querySelector(`[data-slider-id="${sliderId.value}"]`);
-  if (sliderContainer) {
-    sliderObserver.observe(sliderContainer);
+    // Наблюдаем за контейнером слайдера
+    const sliderContainer = document.querySelector(`[data-slider-id="${sliderId.value}"]`);
+    if (sliderContainer) {
+      sliderObserver.observe(sliderContainer);
+    }
   }
 
-  // Создаем observer для определения текущей секции
-  observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-          const index = parseInt(entry.target.dataset.section || 0);
-          currentSection.value = index;
-        }
-      });
-    },
-    {
-      threshold: [0.5],
-      rootMargin: '0px',
-    }
-  );
+  // Создаем observer для определения текущей секции (только для десктопа)
+  if (!isMobile.value) {
+    observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            const index = parseInt(entry.target.dataset.section || 0);
+            currentSection.value = index;
+          }
+        });
+      },
+      {
+        threshold: [0.5],
+        rootMargin: '0px',
+      }
+    );
+  }
 
   // Создаем ScrollTrigger анимацию для каждой секции
   sections.value.forEach((_, index) => {
     const element = document.getElementById(`section-${sliderId.value}-${index}`);
     if (!element) return;
 
-    // Добавляем data-section для observer
-    element.dataset.section = index;
-    observer.observe(element);
+    // Добавляем data-section для observer (только для десктопа)
+    if (!isMobile.value && observer) {
+      element.dataset.section = index;
+      observer.observe(element);
+    }
 
     const bgElement = element.querySelector('.section-bg');
     if (!bgElement) return;
@@ -162,6 +215,10 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+  window.removeEventListener('resize', () => {
+    isMobile.value = window.innerWidth <= 599;
+  });
+
   if (observer) observer.disconnect();
 
   // Очищаем все ScrollTriggers
@@ -329,5 +386,29 @@ onUnmounted(() => {
   border-radius: 6px;
   z-index: 10;
   pointer-events: none;
+}
+
+// Мобильная версия с Swiper
+.mobile-slider {
+  width: 100%;
+  padding: 20px 0;
+}
+
+.mobile-swiper {
+  width: 100%;
+  height: 340px;
+}
+
+.mobile-swiper-slide {
+  width: 340px !important;
+  height: 340px;
+}
+
+.mobile-slide {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 </style>
