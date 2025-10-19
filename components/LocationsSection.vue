@@ -468,10 +468,6 @@ onBeforeUnmount(() => {
   :deep(.default-swiper) {
     overflow: visible;
 
-    .swiper-wrapper {
-      align-items: center;
-    }
-
     .swiper-slide {
       width: 80% !important;
       transition: transform 0.3s ease;
