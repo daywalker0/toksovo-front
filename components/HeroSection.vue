@@ -94,8 +94,8 @@ onMounted(async () => {
 
   if (subtitleEl) {
     gsap.set(subtitleEl, {
-      y: 30,
-      opacity: 0,
+      y: 0,
+      opacity: 1,
       force3D: true,
     });
   }
