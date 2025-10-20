@@ -55,14 +55,13 @@ onMounted(() => {
   height: 100vh;
   flex-shrink: 0;
   background-color: $accent-color-brown;
-
-  @media (max-width: $breakpoint-x) {
-    height: 100svh;
-    align-items: stretch;
-  }
   display: flex;
   align-items: center;
   overflow: hidden;
+
+  @media (max-width: $breakpoint-x) {
+    display: none; // скрываем на мобилке, так как контент показывается через NatureSection
+  }
 
   &__container {
     position: relative;

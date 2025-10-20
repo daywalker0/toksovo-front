@@ -68,7 +68,8 @@ const initPinning = () => {
     start: 'bottom bottom', // когда низ секции достигает низа viewport
     end: '+=100%', // держим зафиксированной на протяжении 100% viewport
     pin: true,
-    pinSpacing: true, // создаем пространство, чтобы WalkCitySection не наползала
+    pinSpacing: true, // создаем пространство для плавного выхода
+    anticipatePin: 1, // плавное начало пиннинга
     markers: true, // для дебага
     id: 'nature-pin',
   });
