@@ -22,7 +22,7 @@
         </div>
         <div class="nature-section__image">
           <img :src="natureImg" alt="nature-img-1" loading="lazy" />
-          <!-- Overlay с картинкой WalkCitySection -->
+          <!-- Overlay с картинкой WalkCitySection ВНУТРИ блока -->
           <div class="image-overlay-wrapper" ref="imageOverlay">
             <img :src="walkCityImg" alt="walk-city-img" loading="lazy" class="overlay-image" />
           </div>
@@ -49,7 +49,7 @@ let pinTrigger = null;
 let colorAnimation = null; // это будет timeline с обеими анимациями
 
 const initPinning = () => {
-  // Только для мобилки
+  // Только для мобилки и только если элементы существуют
   if (!isMobile.value || !natureSection.value || !colorOverlay.value || !imageOverlay.value) return;
 
   // Убиваем предыдущие triggers если есть
@@ -73,7 +73,7 @@ const initPinning = () => {
     id: 'nature-pin',
   });
 
-  // Создаем единый timeline для синхронных анимаций
+  // Создаем единый timeline для синхронных анимаций (только на мобилке)
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: natureSection.value,
@@ -85,7 +85,7 @@ const initPinning = () => {
     },
   });
 
-  // Анимация поднятия коричневого overlay снизу вверх
+  // Анимация фона - проходит полную высоту секции
   tl.fromTo(
     colorOverlay.value,
     {
@@ -98,14 +98,14 @@ const initPinning = () => {
     0 // начинается в момент 0
   );
 
-  // Анимация поднятия картинки WalkCitySection снизу вверх (одновременно)
+  // Анимация картинки - проходит ТО ЖЕ расстояние (полную высоту блока)
   tl.fromTo(
     imageOverlay.value,
     {
       clipPath: 'inset(100% 0% 0% 0%)', // начинается скрытой снизу
     },
     {
-      clipPath: 'inset(0% 0% 0% 0%)', // полностью видна
+      clipPath: 'inset(-40% 0% 0% 0%)', // полностью видна
       ease: 'none',
     },
     0 // начинается в момент 0 (одновременно с colorOverlay)
@@ -323,7 +323,7 @@ onMounted(() => {
   top: 0;
   left: 0;
   width: 40%; // левая часть (текстовая область)
-  height: 100%;
+  height: 100%; // на всю высоту секции
   background-color: $accent-color-brown;
   z-index: 1;
   pointer-events: none;
@@ -333,7 +333,7 @@ onMounted(() => {
   }
 }
 
-// Overlay для эффекта смены картинки (внутри блока nature-section__image)
+// Overlay для картинки ВНУТРИ блока nature-section__image (только на мобилке)
 .image-overlay-wrapper {
   position: absolute;
   top: 0;
@@ -343,6 +343,16 @@ onMounted(() => {
   z-index: 2;
   pointer-events: none;
   overflow: hidden;
+
+  // На десктопе картинка не нужна - она уже в image-overlay-wrapper внутри блока
+  @media (max-width: $breakpoint-x) {
+    // Только на мобилке меняем картинку внутри блока nature-section__image
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 
   .overlay-image {
     width: 100%;
