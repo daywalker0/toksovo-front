@@ -150,7 +150,6 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100vh;
-  height: 100svh;
   background: rgba(0, 0, 0, 0.9);
   z-index: 10000;
   display: flex;
@@ -158,12 +157,21 @@ onUnmounted(() => {
   justify-content: center;
   padding: 0;
 
+  @media (max-width: $breakpoint-x) {
+    height: 100svh;
+  }
+
   &__container {
     position: relative;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+
+    @media (max-width: $breakpoint-x) {
+      max-height: 100svh;
+      max-height: -webkit-fill-available;
+    }
   }
 
   &__close {
@@ -199,6 +207,11 @@ onUnmounted(() => {
     position: relative;
     width: 100%;
     overflow: hidden;
+
+    @media (max-width: $breakpoint-x) {
+      height: 100%;
+      min-height: 0;
+    }
   }
 
   &__filters {
@@ -208,9 +221,14 @@ onUnmounted(() => {
     width: 100%;
     background: transparent;
     padding: 0 0 40px 20px;
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
     z-index: 10001;
 
-    // Градиент справа, показывающий что есть еще контент
+    @media (max-width: $breakpoint-x) {
+      padding: 0 0 20px 20px;
+      padding-bottom: max(20px, calc(env(safe-area-inset-bottom) + 10px));
+    }
+
     &::after {
       content: '';
       position: absolute;
