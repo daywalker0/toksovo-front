@@ -301,16 +301,18 @@ const openDialogVideo = () => {
 /* Стили для видео диалога */
 ::v-deep(.video-dialog) {
   .dialog-content {
-    padding: 0 !important; // Убираем боковые отступы
-    height: 214px;
     max-width: 100%;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 170px;
 
     @media (max-width: $breakpoint-x) {
       border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      height: 214px;
     }
   }
 
