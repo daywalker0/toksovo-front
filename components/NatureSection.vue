@@ -1,5 +1,8 @@
 <template>
-  <div class="nature-section section horizontal-section">
+  <div class="nature-section section horizontal-section" ref="natureSection">
+    <!-- Overlay для смены цвета снизу вверх -->
+    <div class="color-overlay" ref="colorOverlay"></div>
+
     <div class="nature-section__container container">
       <div class="nature-section__content">
         <!-- Десктопная версия заголовка -->
@@ -19,6 +22,10 @@
         </div>
         <div class="nature-section__image">
           <img :src="natureImg" alt="nature-img-1" loading="lazy" />
+          <!-- Overlay с картинкой WalkCitySection -->
+          <div class="image-overlay-wrapper" ref="imageOverlay">
+            <img :src="walkCityImg" alt="walk-city-img" loading="lazy" class="overlay-image" />
+          </div>
         </div>
       </div>
     </div>
@@ -26,21 +33,133 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import natureImg from '@/assets/img/nature-img-1.jpg';
+import walkCityImg from '@/assets/img/walk-city-img.jpg';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const isMobile = ref(false);
+const natureSection = ref(null);
+const colorOverlay = ref(null);
+const imageOverlay = ref(null);
+let pinTrigger = null;
+let colorAnimation = null; // это будет timeline с обеими анимациями
+
+const initPinning = () => {
+  // Только для мобилки
+  if (!isMobile.value || !natureSection.value || !colorOverlay.value || !imageOverlay.value) return;
+
+  // Убиваем предыдущие triggers если есть
+  if (pinTrigger) {
+    pinTrigger.kill();
+  }
+  if (colorAnimation) {
+    colorAnimation.scrollTrigger?.kill();
+    colorAnimation.kill();
+    colorAnimation = null;
+  }
+
+  // Фиксируем секцию когда её низ достигает низа экрана
+  pinTrigger = ScrollTrigger.create({
+    trigger: natureSection.value,
+    start: 'bottom bottom', // когда низ секции достигает низа viewport
+    end: '+=100%', // держим зафиксированной на протяжении 100% viewport
+    pin: true,
+    pinSpacing: true, // создаем пространство, чтобы WalkCitySection не наползала
+    markers: true, // для дебага
+    id: 'nature-pin',
+  });
+
+  // Создаем единый timeline для синхронных анимаций
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: natureSection.value,
+      start: 'bottom bottom',
+      end: '+=100%',
+      scrub: true,
+      markers: true,
+      id: 'nature-transition',
+    },
+  });
+
+  // Анимация поднятия коричневого overlay снизу вверх
+  tl.fromTo(
+    colorOverlay.value,
+    {
+      clipPath: 'inset(100% 0% 0% 0%)', // начинается скрытым снизу
+    },
+    {
+      clipPath: 'inset(0% 0% 0% 0%)', // полностью видим
+      ease: 'none',
+    },
+    0 // начинается в момент 0
+  );
+
+  // Анимация поднятия картинки WalkCitySection снизу вверх (одновременно)
+  tl.fromTo(
+    imageOverlay.value,
+    {
+      clipPath: 'inset(100% 0% 0% 0%)', // начинается скрытой снизу
+    },
+    {
+      clipPath: 'inset(0% 0% 0% 0%)', // полностью видна
+      ease: 'none',
+    },
+    0 // начинается в момент 0 (одновременно с colorOverlay)
+  );
+
+  colorAnimation = tl;
+};
 
 onMounted(() => {
   const checkMobile = () => {
+    const wasMobile = isMobile.value;
     isMobile.value = window.innerWidth <= 599;
+
+    if (wasMobile !== isMobile.value) {
+      if (pinTrigger) {
+        pinTrigger.kill();
+        pinTrigger = null;
+      }
+      if (colorAnimation) {
+        colorAnimation.scrollTrigger?.kill();
+        colorAnimation.kill();
+        colorAnimation = null;
+      }
+
+      if (isMobile.value) {
+        nextTick(() => {
+          initPinning();
+        });
+      }
+    }
   };
 
   checkMobile();
+
+  if (isMobile.value) {
+    nextTick(() => {
+      initPinning();
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 200);
+    });
+  }
+
   window.addEventListener('resize', checkMobile);
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', checkMobile);
+    if (pinTrigger) {
+      pinTrigger.kill();
+    }
+    if (colorAnimation) {
+      colorAnimation.scrollTrigger?.kill();
+      colorAnimation.kill();
+    }
   });
 });
 </script>
@@ -65,6 +184,7 @@ onMounted(() => {
   &__container {
     position: relative;
     height: 100%;
+    z-index: 3;
 
     @media (max-width: $breakpoint-x) {
       height: 100%;
@@ -77,7 +197,7 @@ onMounted(() => {
     margin-top: 200px;
     margin-left: 0px;
     position: static;
-    z-index: 3;
+    z-index: 4;
 
     @media (max-width: $breakpoint-lg) {
       margin-left: 80px;
@@ -184,7 +304,7 @@ onMounted(() => {
     }
 
     @media (max-width: $breakpoint-x) {
-      position: static;
+      position: relative; // чтобы overlay внутри позиционировался правильно
       width: 100%;
       height: auto;
       flex: 1;
@@ -194,6 +314,42 @@ onMounted(() => {
         height: 100%;
       }
     }
+  }
+}
+
+// Overlay для эффекта смены цвета (заливает только фон, не картинку)
+.color-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%; // левая часть (текстовая область)
+  height: 100%;
+  background-color: $accent-color-brown;
+  z-index: 1;
+  pointer-events: none;
+
+  @media (max-width: $breakpoint-x) {
+    width: 100%;
+  }
+}
+
+// Overlay для эффекта смены картинки (внутри блока nature-section__image)
+.image-overlay-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+
+  .overlay-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
   }
 }
 </style>
