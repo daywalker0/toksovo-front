@@ -6,6 +6,7 @@
         class="background-image"
         :class="{ 'mobile-scrollable': isMobile }"
         ref="scrollContainer"
+        @click="handleBackgroundClick"
       >
         <div class="image-wrapper" ref="imageWrapper">
           <img :src="genPlanImg" alt="Генеральный план" loading="eager" />
@@ -21,7 +22,7 @@
                 'pin--hover': pin.active && hoveredPinIndex === index,
               }"
               :style="getMobilePinStyle(pin)"
-              @click="pin.active && handlePinClick(pin, index)"
+              @click.stop="pin.active && handlePinClick(pin, index)"
             >
               <div class="pin-dot">{{ pin.id }}</div>
             </div>
@@ -59,27 +60,43 @@
         >
           <div class="pin-dot">{{ pin.id }}</div>
         </div>
+      </div>
 
-        <!-- Инфо-панель справа от выбранного пина -->
-        <div
-          v-if="hoveredPin"
-          class="pin-info-panel"
-          :style="panelStyle"
-          :data-position="getOptimalPanelPosition(hoveredPin).position"
-          @mouseenter="handlePanelEnter"
-          @mouseleave="handlePanelLeave"
+      <!-- Инфо-панель справа от выбранного пина (для всех устройств) -->
+      <div
+        v-if="hoveredPin"
+        class="pin-info-panel"
+        :style="panelStyle"
+        :data-position="getOptimalPanelPosition(hoveredPin).position"
+        @mouseenter="handlePanelEnter"
+        @mouseleave="handlePanelLeave"
+        @click.stop
+      >
+        <!-- Крестик закрытия для мобильных -->
+        <button
+          v-if="isMobile"
+          class="pin-info-close"
+          @click="handleBackgroundClick"
+          aria-label="Закрыть"
         >
-          <div class="pin-info-header">Корпус {{ hoveredPin.buildingNumber }}</div>
-          <ul class="pin-info-list">
-            <li v-for="(offer, i) in hoveredPin.offers" :key="i" class="pin-info-item">
-              <span class="pin-info-type">{{ offer.type }}</span>
-              <span class="pin-info-price">от {{ offer.price }}</span>
-            </li>
-          </ul>
-          <button class="button button--orange pin-info-cta" @click="handleCatalogClick">
-            Каталог квартир
-          </button>
-        </div>
+          <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
+            <path
+              d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+              fill="#2C322C"
+            />
+          </svg>
+        </button>
+
+        <div class="pin-info-header">Корпус {{ hoveredPin.buildingNumber }}</div>
+        <ul class="pin-info-list">
+          <li v-for="(offer, i) in hoveredPin.offers" :key="i" class="pin-info-item">
+            <span class="pin-info-type">{{ offer.type }}</span>
+            <span class="pin-info-price">от {{ offer.price }}</span>
+          </li>
+        </ul>
+        <button class="button button--orange pin-info-cta" @click="handleCatalogClick">
+          Каталог квартир
+        </button>
       </div>
 
       <!-- Кнопка подбора по параметрам -->
@@ -187,12 +204,27 @@ const handlePinLeave = () => {
 
 // Клик по пину на мобильных
 const handlePinClick = (pin, index) => {
-  hoveredPinIndex.value = index;
-  hoveredPin.value = {
-    ...pin,
-    buildingNumber: (index ?? 0) + 1,
-    offers: defaultOffers,
-  };
+  // Если кликнули на тот же пин - закрываем панель
+  if (hoveredPinIndex.value === index && hoveredPin.value) {
+    hoveredPinIndex.value = null;
+    hoveredPin.value = null;
+  } else {
+    // Иначе открываем панель для нового пина
+    hoveredPinIndex.value = index;
+    hoveredPin.value = {
+      ...pin,
+      buildingNumber: (index ?? 0) + 1,
+      offers: defaultOffers,
+    };
+  }
+};
+
+// Клик по фону на мобильных - закрываем панель
+const handleBackgroundClick = () => {
+  if (isMobile.value) {
+    hoveredPinIndex.value = null;
+    hoveredPin.value = null;
+  }
 };
 
 // Стили для пинов на мобильных (привязаны к изображению)
@@ -900,8 +932,14 @@ onBeforeUnmount(() => {
   .pin-info-panel {
     min-width: 200px;
     max-width: 280px;
-    padding: 16px;
+    padding: 20px;
     font-size: 14px;
+    border-radius: 12px;
+
+    // Убираем стрелочку на мобильных
+    &::before {
+      display: none;
+    }
   }
 
   .pin-info-header {
@@ -919,22 +957,30 @@ onBeforeUnmount(() => {
     padding: 8px 16px;
   }
 
-  /* Уменьшенные стрелочки на мобильных */
-  .pin-info-panel::before {
-    border-width: 6px;
-  }
+  /* Кнопка закрытия на мобильных */
+  .pin-info-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.2s ease;
 
-  .pin-info-panel::before {
-    left: -12px;
-  }
+    &:active {
+      transform: scale(0.9);
+    }
 
-  .pin-info-panel[data-position='left']::before {
-    right: -12px;
-  }
-
-  .pin-info-panel[data-position='right-top']::before,
-  .pin-info-panel[data-position='left-top']::before {
-    bottom: -12px;
+    svg {
+      width: 10px;
+      height: 10px;
+    }
   }
 }
 
