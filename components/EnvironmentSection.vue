@@ -519,11 +519,13 @@ async function build() {
     scrollTrigger: {
       trigger: section,
       start: 'center center',
-      end: '+=3000',
-      scrub: 2,
+      end: '+=2000', // Уменьшено с 3000 для лучшей производительности
+      scrub: 1, // Уменьшено с 2 для лучшей производительности
       pin: true,
       pinSpacing: true,
       invalidateOnRefresh: true,
+      fastScrollEnd: true, // Оптимизация для быстрого скролла
+      anticipatePin: 1, // Предварительная подготовка для плавности
       onUpdate: self => {
         const wasVisible = isContentVisible.value;
         // Показываем контент только когда прогресс достигает определенного уровня

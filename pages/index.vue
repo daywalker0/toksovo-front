@@ -233,9 +233,10 @@ const initHorizontalScroll = () => {
       start: 'top top',
       end: () => `+=${getDistance()}`,
       pin: true,
-      scrub: 0, // жёсткая привязка к скроллу
-      anticipatePin: 0,
+      scrub: 0.5, // Более мягкий scrub для лучшей производительности (было 0)
+      anticipatePin: 1, // Предварительная подготовка для плавности (было 0)
       invalidateOnRefresh: true,
+      fastScrollEnd: true, // Оптимизация для быстрого скролла
       // markers: true,
     },
   });
@@ -247,9 +248,12 @@ onMounted(() => {
     // ВАЖНО: сначала инициализируем горизонтальный скролл
     initHorizontalScroll();
 
+    const isMobile = window.innerWidth <= 599;
+
     // После инициализации горизонтального скролла делаем множественные refresh
-    // чтобы все ScrollTrigger'ы пересчитали свои позиции
-    [100, 300, 500, 1000, 2000, 3000, 4000].forEach(delay => {
+    // На мобильных делаем меньше refresh'ов для производительности
+    const refreshDelays = isMobile ? [500, 2000] : [100, 300, 500, 1000, 2000, 3000, 4000];
+    refreshDelays.forEach(delay => {
       setTimeout(() => {
         ScrollTrigger.refresh();
       }, delay);
@@ -274,11 +278,18 @@ onMounted(() => {
 
     window.addEventListener('resize', handleResize);
 
-    // Добавляем обработчик скролла для обновления hash
+    // Добавляем обработчик скролла для обновления hash с throttle
     let scrollTimeout;
+    let isScrolling = false;
     const handleScroll = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(updateUrlHash, 100);
+      // Throttle: выполняем не чаще чем раз в 100мс
+      if (isScrolling) return;
+      isScrolling = true;
+
+      setTimeout(() => {
+        updateUrlHash();
+        isScrolling = false;
+      }, 100);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

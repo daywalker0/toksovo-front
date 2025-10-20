@@ -122,8 +122,16 @@ const scrolled = ref(false);
 const menuComponent = ref(null);
 const isMenuOpen = ref(false);
 
+// Throttle для handleScroll для производительности
+let isHandlingScroll = false;
 const handleScroll = () => {
-  scrolled.value = typeof window !== 'undefined' ? window.scrollY > 50 : false;
+  if (isHandlingScroll) return;
+  isHandlingScroll = true;
+
+  requestAnimationFrame(() => {
+    scrolled.value = typeof window !== 'undefined' ? window.scrollY > 50 : false;
+    isHandlingScroll = false;
+  });
 };
 
 const openMenu = () => {
@@ -171,9 +179,8 @@ onUnmounted(() => {
   transition: all 0.3s ease;
 
   @media (max-width: $breakpoint-x) {
-    background-color: rgba(248, 243, 237, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    // Убрали backdrop-filter для производительности на мобильных
+    background-color: rgba(248, 243, 237, 0.95);
   }
 
   &__container {

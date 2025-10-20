@@ -96,15 +96,18 @@ function killAll() {
 }
 
 function createScrollTrigger(triggerElement, tl) {
+  const isMobile = window.innerWidth <= 599;
+
   // tl должен быть создан без { paused: true }
   const st = ScrollTrigger.create({
     trigger: triggerElement,
     start: 'top 100%',
     end: 'bottom 70%',
-    scrub: true, // привязка ко скроллу
+    scrub: isMobile ? false : true, // На мобильных отключаем scrub для производительности
     animation: tl, // ScrollTrigger управляет таймлайном
     invalidateOnRefresh: true,
     onLeaveBack: () => tl.progress(0),
+    onEnter: isMobile ? () => tl.play() : undefined, // На мобильных запускаем анимацию сразу
   });
   triggers.push(st);
 }
@@ -213,19 +216,21 @@ function initAnimation() {
   });
 
   $$('[scrub-each-word]').forEach(el => {
+    const isMobile = window.innerWidth <= 599;
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: el,
         start: 'top 90%',
         end: 'top center',
-        scrub: true,
+        scrub: isMobile ? false : true, // На мобильных отключаем scrub
+        onEnter: isMobile ? () => tl.play() : undefined, // На мобильных запускаем сразу
       },
     });
     tl.from(el.querySelectorAll('.word'), {
       opacity: 0.2,
-      duration: 0.2,
+      duration: isMobile ? 0.4 : 0.2, // На мобильных быстрее
       ease: 'power1.out',
-      stagger: { each: 0.4 },
+      stagger: { each: isMobile ? 0.1 : 0.4 }, // На мобильных меньше задержка
     });
     timelines.push(tl);
   });

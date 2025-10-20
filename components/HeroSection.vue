@@ -107,7 +107,7 @@ onMounted(async () => {
       trigger: sectionEl.value,
       start: 'top top',
       end: 'bottom bottom+=1000',
-      scrub: true,
+      scrub: isMobile ? 0.5 : true, // На мобильных используем более быстрый scrub
       fastScrollEnd: true,
       invalidateOnRefresh: true,
       // markers: true,

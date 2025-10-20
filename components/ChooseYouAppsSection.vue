@@ -265,7 +265,19 @@ onMounted(() => {
   }
 
   if (typeof window !== 'undefined' && !isMobile.value) {
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Throttle для handleScroll
+    let isHandlingScroll = false;
+    const throttledHandleScroll = () => {
+      if (isHandlingScroll) return;
+      isHandlingScroll = true;
+
+      requestAnimationFrame(() => {
+        handleScroll();
+        isHandlingScroll = false;
+      });
+    };
+
+    window.addEventListener('scroll', throttledHandleScroll, { passive: true });
     handleScroll(); // начальная проверка
   }
 });

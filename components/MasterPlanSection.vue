@@ -734,8 +734,17 @@ onBeforeUnmount(() => {
 
 .pin:not(.pin--active) .pin-dot {
   background: rgba(44, 50, 44, 0.2);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+
+  // Backdrop-filter только на десктопе для производительности
+  @media (min-width: 600px) {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  // На мобильных используем более плотный фон без blur
+  @media (max-width: 599px) {
+    background: rgba(44, 50, 44, 0.6);
+  }
 }
 
 /* Неактивные пины не кликабельны визуально */
@@ -991,8 +1000,8 @@ onBeforeUnmount(() => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
+  // Убрали backdrop-filter для производительности на мобильных
+  background: rgba(230, 223, 216, 0.9);
   border-radius: 7px;
   border: 1px solid $text-color-primary;
   padding: 8px 24px;
