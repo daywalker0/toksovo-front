@@ -2,14 +2,12 @@
   <div class="walk-city-section section horizontal-section">
     <div class="walk-city-section__container container">
       <div class="walk-city-section__content">
-        <!-- Десктопная версия заголовка -->
         <h2 v-if="!isMobile" class="walk-city-section__title">
           <span class="title-word title-word--right">Гулять</span>
           <span class="title-word title-word--left">без</span>
           <span class="title-word title-word--right">города</span>
         </h2>
 
-        <!-- Мобильная версия заголовка -->
         <h2 v-else class="walk-city-section__title">Гулять без города</h2>
 
         <div class="walk-city-section__subtitle subtitle-text">
@@ -60,7 +58,7 @@ onMounted(() => {
   overflow: hidden;
 
   @media (max-width: $breakpoint-x) {
-    display: none; // скрываем на мобилке, так как контент показывается через NatureSection
+    display: none;
   }
 
   &__container {

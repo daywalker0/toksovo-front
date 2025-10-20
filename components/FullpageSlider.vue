@@ -90,49 +90,37 @@ const onSlideChange = swiper => {
 
 const scrollToSection = index => {
   if (isMobile.value) {
-    // На мобилке просто меняем currentSection (swiper обработает сам)
     if (index >= 0 && index < sections.value.length) {
       currentSection.value = index;
     }
   } else {
-    // Игнорируем клик если уже идет программная прокрутка
     if (isProgrammaticScroll.value) {
       return;
     }
 
-    // На десктопе используем window.scrollTo с вычислением позиции
     const targetElement = document.getElementById(`section-${sliderId.value}-${index}`);
 
     if (targetElement) {
-      // Вычисляем абсолютную позицию элемента на странице
       const rect = targetElement.getBoundingClientRect();
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const targetPosition = rect.top + scrollTop;
 
-      // Проверяем, находимся ли мы уже точно на этом слайде
-      // Допустим погрешность в 10 пикселей
       if (Math.abs(scrollTop - targetPosition) < 10) {
-        return; // Уже на этом слайде, ничего не делаем
+        return;
       }
 
-      // Очищаем предыдущий таймаут если есть
       if (scrollTimeout) {
         clearTimeout(scrollTimeout);
       }
 
-      // Устанавливаем флаг программной прокрутки
       isProgrammaticScroll.value = true;
-
-      // Обновляем текущую секцию сразу
       currentSection.value = index;
 
-      // Используем instant scroll для надежности
       window.scrollTo({
         top: targetPosition,
         behavior: 'instant',
       });
 
-      // Снимаем флаг программной прокрутки
       scrollTimeout = setTimeout(() => {
         isProgrammaticScroll.value = false;
       }, 300);
@@ -141,33 +129,26 @@ const scrollToSection = index => {
 };
 
 onMounted(async () => {
-  // Явно устанавливаем первый слайд
   currentSection.value = 0;
 
   await nextTick();
 
-  // Проверка мобильного устройства
   const checkMobile = () => {
     isMobile.value = window.innerWidth <= 599;
   };
   checkMobile();
   window.addEventListener('resize', checkMobile);
 
-  // На мобилке не инициализируем GSAP
   if (isMobile.value) {
     return;
   }
 
-  // Динамически импортируем GSAP
   const { gsap } = await import('gsap');
   const { ScrollTrigger } = await import('gsap/ScrollTrigger');
   gsap.registerPlugin(ScrollTrigger);
 
-  // Добавляем обработчики для сброса флага программной прокрутки
-  // когда пользователь начинает ручную прокрутку
   handleUserScroll = () => {
     if (isProgrammaticScroll.value) {
-      // Даем небольшую задержку, чтобы программная прокрутка могла начаться
       setTimeout(() => {
         isProgrammaticScroll.value = false;
         if (scrollTimeout) {
@@ -178,13 +159,11 @@ onMounted(async () => {
     }
   };
 
-  // Слушаем события колесика мыши и тач-событий (только для десктопа)
   if (!isMobile.value) {
     window.addEventListener('wheel', handleUserScroll, { passive: true });
     window.addEventListener('touchstart', handleUserScroll, { passive: true });
   }
 
-  // Создаем отдельный observer для определения активности слайдера (только для десктопа)
   if (!isMobile.value) {
     const sliderObserver = new IntersectionObserver(
       entries => {
@@ -200,19 +179,16 @@ onMounted(async () => {
       { threshold: 0.3 }
     );
 
-    // Наблюдаем за контейнером слайдера
     const sliderContainer = document.querySelector(`[data-slider-id="${sliderId.value}"]`);
     if (sliderContainer) {
       sliderObserver.observe(sliderContainer);
     }
   }
 
-  // Создаем observer для определения текущей секции (только для десктопа)
   if (!isMobile.value) {
     observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
-          // Игнорируем обновления от observer во время программной прокрутки
           if (isProgrammaticScroll.value) return;
 
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
@@ -233,7 +209,6 @@ onMounted(async () => {
     const element = document.getElementById(`section-${sliderId.value}-${index}`);
     if (!element) return;
 
-    // Добавляем data-section для observer (только для десктопа)
     if (!isMobile.value && observer) {
       element.dataset.section = index;
       observer.observe(element);
@@ -242,18 +217,15 @@ onMounted(async () => {
     const bgElement = element.querySelector('.section-bg');
     if (!bgElement) return;
 
-    // Устанавливаем начальные значения
     gsap.set(bgElement, {
       scale: 1,
       opacity: 1,
       force3D: true,
     });
 
-    // Последний элемент остается без анимации
     const isLastSection = index === sections.value.length - 1;
     if (isLastSection) return;
 
-    // Анимация при скролле вверх (секция уходит)
     const trigger = gsap.to(bgElement, {
       scale: 0.5,
       opacity: 0.5,
@@ -276,7 +248,6 @@ onUnmounted(() => {
     isMobile.value = window.innerWidth <= 599;
   });
 
-  // Удаляем обработчики прокрутки
   if (handleUserScroll) {
     window.removeEventListener('wheel', handleUserScroll);
     window.removeEventListener('touchstart', handleUserScroll);
@@ -284,13 +255,11 @@ onUnmounted(() => {
 
   if (observer) observer.disconnect();
 
-  // Очищаем таймаут если есть
   if (scrollTimeout) {
     clearTimeout(scrollTimeout);
     scrollTimeout = null;
   }
 
-  // Очищаем все ScrollTriggers
   scrollTriggers.forEach(trigger => {
     if (trigger.scrollTrigger) {
       trigger.scrollTrigger.kill();

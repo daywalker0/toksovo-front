@@ -107,7 +107,6 @@ onMounted(async () => {
 
     emit('ready', { map, ymaps });
   } catch (err) {
-    console.error('Ошибка инициализации карты:', err);
     emit('error', err);
   }
 });

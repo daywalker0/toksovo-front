@@ -430,10 +430,7 @@ const copyLink = async () => {
     setTimeout(() => {
       showCopyNotification.value = false;
     }, 2000);
-  } catch (err) {
-    console.error('Ошибка копирования ссылки:', err);
-  }
-  // Закрываем мобильное меню
+  } catch (err) {}
   showMobileShare.value = false;
   if (process.client) {
     document.body.style.overflow = '';

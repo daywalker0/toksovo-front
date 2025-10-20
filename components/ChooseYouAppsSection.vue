@@ -265,7 +265,6 @@ onMounted(() => {
   }
 
   if (typeof window !== 'undefined' && !isMobile.value) {
-    // Throttle для handleScroll
     let isHandlingScroll = false;
     const throttledHandleScroll = () => {
       if (isHandlingScroll) return;
@@ -276,9 +275,9 @@ onMounted(() => {
         isHandlingScroll = false;
       });
     };
-
+    
     window.addEventListener('scroll', throttledHandleScroll, { passive: true });
-    handleScroll(); // начальная проверка
+    handleScroll();
   }
 });
 
@@ -352,7 +351,6 @@ onUnmounted(() => {
   overflow: hidden;
 
   @media (max-width: $breakpoint-x) {
-    // Отключаем sticky на мобильных для предотвращения застревания
     position: relative;
     height: 100svh;
   }

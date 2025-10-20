@@ -98,16 +98,15 @@ function killAll() {
 function createScrollTrigger(triggerElement, tl) {
   const isMobile = window.innerWidth <= 599;
 
-  // tl должен быть создан без { paused: true }
   const st = ScrollTrigger.create({
     trigger: triggerElement,
     start: 'top 100%',
     end: 'bottom 70%',
-    scrub: isMobile ? false : true, // На мобильных отключаем scrub для производительности
-    animation: tl, // ScrollTrigger управляет таймлайном
+    scrub: isMobile ? false : true,
+    animation: tl,
     invalidateOnRefresh: true,
     onLeaveBack: () => tl.progress(0),
-    onEnter: isMobile ? () => tl.play() : undefined, // На мобильных запускаем анимацию сразу
+    onEnter: isMobile ? () => tl.play() : undefined,
   });
   triggers.push(st);
 }
@@ -130,11 +129,9 @@ function initAnimation() {
       const targets = el.querySelectorAll(opt.target || '.char');
       if (targets.length === 0) return;
 
-      // Устанавливаем начальное состояние ДО анимации
-      const fromVars = { ...vars }; // например { opacity: 0, yPercent: 150 }
+      const fromVars = { ...vars };
       gsap.set(targets, fromVars);
 
-      // Создаём таймлайн
       const tl = gsap.timeline({ paused: true });
       tl.to(targets, {
         ...Object.fromEntries(
@@ -222,15 +219,15 @@ function initAnimation() {
         trigger: el,
         start: 'top 90%',
         end: 'top center',
-        scrub: isMobile ? false : true, // На мобильных отключаем scrub
-        onEnter: isMobile ? () => tl.play() : undefined, // На мобильных запускаем сразу
+        scrub: isMobile ? false : true,
+        onEnter: isMobile ? () => tl.play() : undefined,
       },
     });
     tl.from(el.querySelectorAll('.word'), {
       opacity: 0.2,
-      duration: isMobile ? 0.4 : 0.2, // На мобильных быстрее
+      duration: isMobile ? 0.4 : 0.2,
       ease: 'power1.out',
-      stagger: { each: isMobile ? 0.1 : 0.4 }, // На мобильных меньше задержка
+      stagger: { each: isMobile ? 0.1 : 0.4 },
     });
     timelines.push(tl);
   });
@@ -249,7 +246,6 @@ function handleResize() {
 onMounted(async () => {
   if (!process.client) return;
 
-  // Задержка для гарантии, что все тяжелые компоненты уже инициализированы
   setTimeout(async () => {
     updateLines();
     await nextTick();
@@ -304,7 +300,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  opacity: 0; /* скрываем до gsap.set */
+  opacity: 0;
 }
 
 .title-line {

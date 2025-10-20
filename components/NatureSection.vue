@@ -2,14 +2,12 @@
   <div class="nature-section section horizontal-section" ref="natureSection">
     <div class="nature-section__container container">
       <div class="nature-section__content">
-        <!-- Десктопная версия заголовка -->
         <h2 v-if="!isMobile" class="nature-section__title">
           <span class="title-word title-word--right">Жить</span>
           <span class="title-word title-word--left">среди</span>
           <span class="title-word title-word--right">природы</span>
         </h2>
 
-        <!-- Мобильная версия заголовка -->
         <h2 v-else class="nature-section__title">Жить среди природы</h2>
 
         <div class="nature-section__subtitle subtitle-text">

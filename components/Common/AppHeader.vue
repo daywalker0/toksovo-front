@@ -122,7 +122,6 @@ const scrolled = ref(false);
 const menuComponent = ref(null);
 const isMenuOpen = ref(false);
 
-// Throttle для handleScroll для производительности
 let isHandlingScroll = false;
 const handleScroll = () => {
   if (isHandlingScroll) return;
@@ -179,7 +178,6 @@ onUnmounted(() => {
   transition: all 0.3s ease;
 
   @media (max-width: $breakpoint-x) {
-    // Убрали backdrop-filter для производительности на мобильных
     background-color: rgba(248, 243, 237, 0.95);
   }
 
@@ -313,18 +311,16 @@ onUnmounted(() => {
   }
 }
 
-/* Логотип всегда видим при открытом меню */
 .header--menu-open .header__logo {
   opacity: 1 !important;
   pointer-events: auto !important;
-  transform: translateX(35px) translateY(0) !important; /* Сбрасываем смещение по Y */
+  transform: translateX(35px) translateY(0) !important;
 
   @media (max-width: $breakpoint-x) {
-    transform: translateX(0) translateY(0) !important; /* На мобильных убираем смещение по X тоже */
+    transform: translateX(0) translateY(0) !important;
   }
 }
 
-/* Стили для открытого меню */
 .header--menu-open {
   .header__btn-choose a {
     color: $text-color-light;

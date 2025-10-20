@@ -237,14 +237,9 @@ onMounted(async () => {
   if (isMobile.value) return;
 
   if (!parallaxSection.value || !leftColumn.value || !centerColumn.value || !rightColumn.value) {
-    console.error('LocationsSection: refs not initialized');
     return;
   }
 
-  // Начальные позиции:
-  // Центр - самая высокая (0)
-  // Левая - ниже центральной (150px)
-  // Правая - еще ниже левой (300px)
   gsap.set(centerColumn.value, {
     y: 0,
     force3D: true,
@@ -258,7 +253,6 @@ onMounted(async () => {
     force3D: true,
   });
 
-  // Центральная колонка (медленно вниз)
   const centerTween = gsap.to(centerColumn.value, {
     y: 350,
     ease: 'none',
@@ -272,7 +266,6 @@ onMounted(async () => {
   });
   triggers.push(centerTween);
 
-  // Левая колонка (средняя скорость вверх)
   const leftTween = gsap.to(leftColumn.value, {
     y: -400,
     ease: 'none',
@@ -286,7 +279,6 @@ onMounted(async () => {
   });
   triggers.push(leftTween);
 
-  // Правая колонка (быстро вверх)
   const rightTween = gsap.to(rightColumn.value, {
     y: -700,
     ease: 'none',
@@ -307,7 +299,6 @@ onBeforeUnmount(() => {
     tween.scrollTrigger?.kill();
     tween.kill();
   });
-  triggers = [];
 });
 </script>
 

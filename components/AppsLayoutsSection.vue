@@ -1,12 +1,10 @@
 <template>
   <div class="apartments-section section">
     <div class="apartments-section__container container">
-      <!-- Левая часть с информацией -->
       <div class="info-block">
         <div class="info-block__wrap">
           <div class="apartment-title">{{ currentApartment.name }}</div>
 
-          <!-- Информация о квартире -->
           <div class="apartment-info">
             <div class="info-row">
               <div class="info-item">
@@ -24,7 +22,6 @@
             </div>
           </div>
 
-          <!-- Особенности квартиры -->
           <div class="apartment-features">
             <div class="apartment-features--title info-label">Особенности квартиры</div>
             <ul>
@@ -38,10 +35,7 @@
         </div>
       </div>
 
-      <!-- Правая часть с изображениями -->
       <div class="gallery-block">
-        <!-- Переключение типов квартир -->
-
         <div class="apps-switcher">
           <div
             v-for="(apps, index) in apartmentTypes"
@@ -57,9 +51,7 @@
           </div>
         </div>
 
-        <!-- Главное изображение с навигацией -->
         <div class="main-image-wrapper">
-          <!-- Стрелка назад (только на мобильных) -->
           <button
             class="nav-arrow nav-arrow--prev"
             :class="{ invisible: currentImageIndex === 0 }"
@@ -103,7 +95,6 @@
           </button>
         </div>
 
-        <!-- Тамбнейлы (только для десктопа) -->
         <div class="thumbnails-wrapper">
           <div
             v-for="(image, index) in currentApartment.images"
@@ -406,7 +397,8 @@ const switchImage = index => {
   width: 100%;
   padding-top: 12px;
   margin-bottom: 100px;
-  min-height: 200px; // Фиксируем минимальную высоту для секции особенностей
+  min-height: 200px;
+
   &--title {
     margin-bottom: 20px;
   }
@@ -643,7 +635,6 @@ const switchImage = index => {
   background-color: transparent;
   flex-shrink: 0;
 
-  // Скрываем стрелки на десктопе
   @media (min-width: 600px) {
     display: none;
   }
@@ -680,7 +671,7 @@ const switchImage = index => {
   }
 
   @media (max-width: $breakpoint-x) {
-    display: flex; // Показываем на мобильных
+    display: flex;
     width: 41px;
     height: 41px;
     min-width: 41px;
@@ -697,7 +688,6 @@ const switchImage = index => {
   }
 }
 
-// Тамбнейлы (только для десктопа)
 .thumbnails-wrapper {
   display: flex;
   gap: 16px;
@@ -705,7 +695,7 @@ const switchImage = index => {
   margin-top: 20px;
 
   @media (max-width: $breakpoint-x) {
-    display: none; // Скрываем на мобильных
+    display: none;
   }
 }
 

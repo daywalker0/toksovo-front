@@ -11,7 +11,6 @@
         <LocationsSection />
       </section>
 
-      <!-- Горизонтальный контейнер -->
       <div ref="horizontalWrapper" class="horizontal-wrapper">
         <div class="horizontal-container">
           <NatureSection />
@@ -24,7 +23,6 @@
       <section id="architecture">
         <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
         <FullpageSlider :sections="sectionNewStyle.sliderImages" />
-
         <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
         <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
       </section>
@@ -57,7 +55,6 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Функция для обновления hash в URL
 const updateUrlHash = () => {
   const sections = [
     { id: 'hero', element: document.getElementById('hero') },
@@ -78,7 +75,6 @@ const updateUrlHash = () => {
       const rect = element.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Простая логика: секция активна если её верхняя часть видна
       const isVisible = rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5;
 
       if (isVisible) {
@@ -109,12 +105,9 @@ import NewsSection from '@/components/NewsSection.vue';
 import ProjectsSection from '@/components/ProjectsSection.vue';
 import ChooseYouAppsSection from '@/components/ChooseYouAppsSection.vue';
 import Footer from '@/components/Footer.vue';
-import AppLoader from '@/components/Common/AppLoader.vue';
-
 import liveInStyleItem1 from '@/assets/img/live-in-style-item-1.png';
 import liveInStyleItem2 from '@/assets/img/live-in-style-item-2.png';
 import liveInStyleItem3 from '@/assets/img/live-in-style-item-3.png';
-
 import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';
 import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
 import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
@@ -224,7 +217,6 @@ const initHorizontalScroll = () => {
 
   gsap.set(container, { x: 0 });
 
-  // растягиваем вертикальный путь, чтобы не «щёлкало» по секциям
   horizontalScrollTrigger = gsap.to(container, {
     x: () => -getDistance(),
     ease: 'none',
@@ -233,25 +225,19 @@ const initHorizontalScroll = () => {
       start: 'top top',
       end: () => `+=${getDistance()}`,
       pin: true,
-      scrub: 0.5, // Более мягкий scrub для лучшей производительности (было 0)
-      anticipatePin: 1, // Предварительная подготовка для плавности (было 0)
+      scrub: 0.5,
+      anticipatePin: 1,
       invalidateOnRefresh: true,
-      fastScrollEnd: true, // Оптимизация для быстрого скролла
-      // markers: true,
+      fastScrollEnd: true,
     },
   });
 };
 
 onMounted(() => {
-  // Ждем следующего тика для гарантии, что DOM полностью обновлен
   nextTick(() => {
-    // ВАЖНО: сначала инициализируем горизонтальный скролл
     initHorizontalScroll();
 
     const isMobile = window.innerWidth <= 599;
-
-    // После инициализации горизонтального скролла делаем множественные refresh
-    // На мобильных делаем меньше refresh'ов для производительности
     const refreshDelays = isMobile ? [500, 2000] : [100, 300, 500, 1000, 2000, 3000, 4000];
     refreshDelays.forEach(delay => {
       setTimeout(() => {
@@ -259,14 +245,12 @@ onMounted(() => {
       }, delay);
     });
 
-    // Refresh после полной загрузки всех ресурсов
     window.addEventListener('load', () => {
       setTimeout(() => {
         ScrollTrigger.refresh();
       }, 300);
     });
 
-    // Обработка resize для пересчета горизонтального скролла
     let resizeTimeout;
     const handleResize = () => {
       clearTimeout(resizeTimeout);
@@ -278,11 +262,9 @@ onMounted(() => {
 
     window.addEventListener('resize', handleResize);
 
-    // Добавляем обработчик скролла для обновления hash с throttle
     let scrollTimeout;
     let isScrolling = false;
     const handleScroll = () => {
-      // Throttle: выполняем не чаще чем раз в 100мс
       if (isScrolling) return;
       isScrolling = true;
 
@@ -294,7 +276,6 @@ onMounted(() => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Обработка hash при загрузке страницы
     if (window.location.hash) {
       const targetElement = document.querySelector(window.location.hash);
       if (targetElement) {
@@ -305,7 +286,6 @@ onMounted(() => {
       }
     }
 
-    // Обработчик изменения hash
     const handleHashChange = () => {
       if (window.location.hash) {
         const newSection = window.location.hash.replace('#', '');
@@ -315,7 +295,6 @@ onMounted(() => {
 
     window.addEventListener('hashchange', handleHashChange);
 
-    // Обработчик для очистки при размонтировании
     onBeforeUnmount(() => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('hashchange', handleHashChange);

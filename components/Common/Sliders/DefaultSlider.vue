@@ -25,9 +25,7 @@
           class="slide"
           :style="slideStyle"
         >
-          <!-- Слот для кастомной верстки слайда -->
           <slot name="slide" :slide="slide" :index="index" :active="activeIndex === index">
-            <!-- Дефолтная верстка, если слот не передан -->
             <div class="default-slide-content">
               <div class="month">{{ slide.month }}</div>
               <div class="year">{{ slide.year }}</div>
@@ -36,12 +34,10 @@
         </SwiperSlide>
 
         <div class="slider--controls" v-if="shouldShowNavigation || shouldShowPagination">
-          <!-- Прогрессбар (показываем всегда на десктопе, если showPagination=true) -->
           <div class="custom-progressbar" v-if="shouldShowPagination">
             <span class="swiper-pagination-progressbar-fill"></span>
           </div>
 
-          <!-- Навигационные стрелки -->
           <div class="custom-navigation" v-if="shouldShowNavigation">
             <button
               class="nav-button prev"
@@ -385,7 +381,6 @@ onMounted(() => {
     gap: 32px;
 
     @media (max-width: $breakpoint-x) {
-      // На мобильных прогресс-бар скрыт, оставляем только навигацию если есть
       justify-content: center;
     }
   }
@@ -458,10 +453,9 @@ onMounted(() => {
   border-radius: 3px;
   overflow: hidden;
   position: relative;
-  min-width: 200px; /* Минимальная ширина для видимости */
+  min-width: 200px;
 
   @media (max-width: $breakpoint-x) {
-    // Скрываем на мобильных через display (дополнительная защита)
     display: none;
   }
 }
@@ -470,16 +464,14 @@ onMounted(() => {
   background: $text-color-primary;
   border-radius: 3px;
   height: 2px;
-  min-width: 0; /* Позволяет прогресс-бару быть видимым даже когда нет прогресса */
+  min-width: 0;
 }
 
-/* Принудительно показываем прогресс-бар даже когда нет прогресса */
 :deep(.swiper-pagination-progressbar) {
   display: block !important;
   opacity: 1 !important;
 }
 
-// Мобильная версия
 .mobile-swiper {
   @media (max-width: $breakpoint-x) {
     overflow: visible;

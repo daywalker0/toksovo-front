@@ -3,27 +3,6 @@
     <div class="hero-section__container container">
       <div class="hero-section__content">
         <h1 class="hero-section__title" aria-label="Поинт Токсово">
-          <!-- <span class="word">
-            <span
-              v-for="(ch, i) in firstWordLetters"
-              :key="`t1-${i}`"
-              class="char"
-              :style="{ '--delay': `${titleStartDelay + i * letterDelay}s` }"
-              v-text="ch"
-            />
-          </span>
-          <br />
-          <span class="word">
-            <span
-              v-for="(ch, i) in secondWordLetters"
-              :key="`t2-${i}`"
-              class="char"
-              :style="{
-                '--delay': `${titleStartDelay + (firstWordLetters.length + i) * letterDelay}s`,
-              }"
-              v-text="ch"
-            />
-          </span> -->
           {{ titleText }}
         </h1>
         <div
@@ -61,7 +40,6 @@ let gsap, ScrollTrigger;
 let tl;
 
 onMounted(async () => {
-  // SSR-safe импорт
   const m = await import('gsap');
   const s = await import('gsap/ScrollTrigger');
   gsap = m.gsap || m.default || m;
@@ -71,11 +49,9 @@ onMounted(async () => {
   const isMobile = window.innerWidth <= 599;
   const startScale = isMobile ? 3.1 : 2.3;
 
-  // Получаем элементы контента
   const titleEl = sectionEl.value?.querySelector('.hero-section__title');
   const subtitleEl = sectionEl.value?.querySelector('.hero-section__subtitle');
 
-  // Начальные значения
   gsap.set(renderEl.value, {
     transformOrigin: isMobile ? '50% 60%' : '50% 50%',
     scale: startScale,
@@ -83,7 +59,6 @@ onMounted(async () => {
     willChange: 'transform',
   });
 
-  // Устанавливаем начальные значения для текста
   if (titleEl) {
     gsap.set(titleEl, {
       y: 0,
@@ -100,21 +75,18 @@ onMounted(async () => {
     });
   }
 
-  // Создаём timeline с привязкой к скроллу
   tl = gsap.timeline({
     defaults: { ease: 'none' },
     scrollTrigger: {
       trigger: sectionEl.value,
       start: 'top top',
       end: 'bottom bottom+=1000',
-      scrub: isMobile ? 0.5 : true, // На мобильных используем более быстрый scrub
+      scrub: isMobile ? 0.5 : true,
       fastScrollEnd: true,
       invalidateOnRefresh: true,
-      // markers: true,
     },
   });
 
-  // Анимация масштабирования фона
   tl.to(
     renderEl.value,
     {
@@ -125,7 +97,6 @@ onMounted(async () => {
     0
   );
 
-  // Анимация появления subtitle привязана к скроллу
   if (subtitleEl) {
     tl.to(
       subtitleEl,
@@ -139,7 +110,6 @@ onMounted(async () => {
     );
   }
 
-  // ScrollTrigger для скрытия фоновых элементов после выхода из секции
   ScrollTrigger.create({
     trigger: sectionEl.value,
     start: 'top top',
@@ -235,7 +205,6 @@ onBeforeUnmount(() => {
     }
   }
 
-  // Фиксированный неанимируемый фон
   &__sky {
     position: fixed;
     inset: 0;
@@ -253,7 +222,6 @@ onBeforeUnmount(() => {
     }
   }
 
-  // Фиксированный слой, который масштабируется
   &__bg {
     position: fixed;
     left: 0;

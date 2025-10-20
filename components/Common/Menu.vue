@@ -366,7 +366,7 @@ defineExpose({
   }
 
   &__overlay {
-    position: fixed; /* Изменено с absolute на fixed для корректной работы при скролле */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -376,16 +376,16 @@ defineExpose({
 
     .menu--open & {
       opacity: 1;
-      cursor: none; /* use DOM-based cursor */
+      cursor: none;
     }
   }
 
   &__content {
-    position: fixed; /* Изменено с absolute на fixed для корректной работы при скролле */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: calc(100vh - 270px); /* Высота экрана минус высота хедера */
+    height: calc(100vh - 270px);
     background: $accent-color-brown;
     transform: translateY(-100%);
     overflow-y: auto;
@@ -396,16 +396,16 @@ defineExpose({
     align-items: center;
 
     @media (max-width: $breakpoint-xl) {
-      height: calc(100vh - 170px); /* Высота экрана минус высота хедера */
+      height: calc(100vh - 170px);
     }
 
     @media (max-width: $breakpoint-lg) {
-      height: calc(100vh - 60px); /* Меньше отступ для средних экранов */
+      height: calc(100vh - 60px);
       padding: 20px 30px 30px;
     }
 
     @media (max-width: $breakpoint-x) {
-      height: calc(100vh - 120px); /* Еще меньше отступ для мобильных */
+      height: calc(100vh - 120px);
       justify-content: space-between;
       padding: 90px 20px 20px;
     }
@@ -506,7 +506,6 @@ defineExpose({
     }
   }
 
-  // Быстрое исчезновение при убирании hover
   &__link:not(:hover) {
     .menu__link-text-inner {
       .menu__link-letter {
@@ -541,7 +540,7 @@ defineExpose({
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  z-index: 1001; /* above overlay */
+  z-index: 1001;
 }
 
 .right-column {

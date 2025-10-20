@@ -1,13 +1,11 @@
 <template>
   <section class="environment-section" ref="sectionRef">
-    <!-- Старая реализация для десктопа -->
     <div class="environment-section__gallery" ref="galleryRef" v-if="!isMobile">
       <div v-for="(img, i) in slides" :key="i" class="gallery-item">
-        <img :src="img" alt="" loading="lazy" />
+        <img :src="img" alt="Приватная застройка" loading="lazy" />
       </div>
     </div>
 
-    <!-- Новая реализация для мобильных -->
     <template v-else>
       <div class="environment-section__bg">
         <img
@@ -96,7 +94,6 @@
       </div>
     </template>
 
-    <!-- Контент для десктопа -->
     <div class="environment-content" ref="contentRef" v-if="!isMobile">
       <div class="controls-block">
         <div class="controls-block__wrap">
@@ -148,7 +145,6 @@
         </div>
       </div>
 
-      <!-- Две половины для клика по стрелкам -->
       <div class="image-control" v-if="isContentVisible" @mousemove="onMouseMove">
         <div
           class="image-half left"
@@ -509,7 +505,6 @@ async function build() {
   gsap.set(content, { y: 40, autoAlpha: 0 });
 
   const others = Array.from(itemsEls).filter((_, i) => i !== centerIndex);
-
   const growStart = 0.3;
   const growDur = 1.2;
   const contentAt = growStart + growDur * 0.8;
@@ -519,44 +514,37 @@ async function build() {
     scrollTrigger: {
       trigger: section,
       start: 'center center',
-      end: '+=2000', // Уменьшено с 3000 для лучшей производительности
-      scrub: 1, // Уменьшено с 2 для лучшей производительности
+      end: '+=2000',
+      scrub: 1,
       pin: true,
       pinSpacing: true,
       invalidateOnRefresh: true,
-      fastScrollEnd: true, // Оптимизация для быстрого скролла
-      anticipatePin: 1, // Предварительная подготовка для плавности
+      fastScrollEnd: true,
+      anticipatePin: 1,
       onUpdate: self => {
         const wasVisible = isContentVisible.value;
-        // Показываем контент только когда прогресс достигает определенного уровня
         isContentVisible.value = self.progress > 0.6;
 
-        // Запускаем автовоспроизведение когда контент становится видимым
         if (!wasVisible && isContentVisible.value) {
           startAutoplay();
         }
-        // Останавливаем когда контент скрывается
         if (wasVisible && !isContentVisible.value) {
           stopAutoplay();
         }
       },
       onLeave: () => {
-        // Скрываем контент при уходе вниз
         isContentVisible.value = true;
       },
       onEnterBack: () => {
-        // Показываем контент при возврате сверху
         isContentVisible.value = true;
       },
       onLeaveBack: () => {
-        // Скрываем контент при уходе вверх
         isContentVisible.value = false;
         stopAutoplay();
       },
     },
   });
 
-  // Добавляем небольшую паузу в начале для стабилизации pin
   tl.to({}, { duration: 0.1 }, 0);
 
   tl.fromTo(
@@ -583,7 +571,6 @@ async function build() {
     0.1
   );
 
-  // единственный fromTo (без конкурирующих твинов)
   tl.fromTo(
     centerItem,
     { width: `${L.w}px`, height: `${L.h}px` },
@@ -598,7 +585,6 @@ async function build() {
     growStart
   );
 
-  // Контент появляется
   tl.fromTo(
     content,
     { y: 40, autoAlpha: 0 },
@@ -628,7 +614,6 @@ onMounted(async () => {
   if (!isMobile.value) {
     build();
   } else {
-    // Для мобильной версии запускаем автовоспроизведение сразу
     startAutoplay();
   }
 });
@@ -945,15 +930,13 @@ onBeforeUnmount(() => {
     font-size: 28px;
     opacity: 1;
     color: $accent-color-green;
-    cursor: auto !important; // Убираем pointer cursor для активного элемента
+    cursor: auto !important;
 
     .icon {
       opacity: 1;
       width: fit-content;
       margin-right: 12px;
     }
-
-    // Анимация теперь обрабатывается AnimatedLink компонентом
   }
 
   .accordion-content p {

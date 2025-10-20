@@ -47,9 +47,6 @@ export const useNewsStore = defineStore('news', {
           throw new Error('API вернул неверный формат данных');
         }
       } catch (apiError) {
-        console.warn('API недоступен, используем моковые данные:', apiError);
-
-        // Fallback на моковые данные
         const mockNews = [
           {
             id: '1',
@@ -160,14 +157,10 @@ export const useNewsStore = defineStore('news', {
 
           return apiNews;
         } catch (apiError) {
-          console.warn('API недоступен, загружаем все новости:', apiError);
-
-          // Fallback: загружаем все новости
           if (!this.isNewsLoaded) {
             await this.fetchNews();
           }
 
-          // Ищем новость после загрузки
           const news = this.getNewsById(id);
           if (news) {
             this.currentNews = news;
@@ -178,14 +171,12 @@ export const useNewsStore = defineStore('news', {
         }
       } catch (error) {
         this.error = error.message || 'Ошибка загрузки новости';
-        console.error('Ошибка загрузки новости:', error);
         return null;
       } finally {
         this.loading = false;
       }
     },
 
-    // Очистить текущую новость
     clearCurrentNews() {
       this.currentNews = null;
     },
@@ -226,12 +217,10 @@ export const useNewsStore = defineStore('news', {
         this.news = apiNews;
         return true;
       } catch (error) {
-        console.error('Ошибка синхронизации с админкой:', error);
         return false;
       }
     },
 
-    // Обновить новость через API (для админки)
     async updateNewsViaApi(id, newsData) {
       try {
         const newsApi = useNewsApi();
@@ -239,12 +228,10 @@ export const useNewsStore = defineStore('news', {
         this.updateNewsItem(id, updatedNews);
         return updatedNews;
       } catch (error) {
-        console.error('Ошибка обновления новости через API:', error);
         throw error;
       }
     },
 
-    // Создать новость через API (для админки)
     async createNewsViaApi(newsData) {
       try {
         const newsApi = useNewsApi();
@@ -252,12 +239,10 @@ export const useNewsStore = defineStore('news', {
         this.addNews(newNews);
         return newNews;
       } catch (error) {
-        console.error('Ошибка создания новости через API:', error);
         throw error;
       }
     },
 
-    // Удалить новость через API (для админки)
     async deleteNewsViaApi(id) {
       try {
         const newsApi = useNewsApi();
@@ -265,7 +250,6 @@ export const useNewsStore = defineStore('news', {
         this.removeNews(id);
         return true;
       } catch (error) {
-        console.error('Ошибка удаления новости через API:', error);
         throw error;
       }
     },
