@@ -139,6 +139,9 @@ const openMenu = () => {
   isOpen.value = true;
   menuOpenTime.value = Date.now();
 
+  // Останавливаем Lenis скролл
+  stopScroll();
+
   if (typeof document !== 'undefined') {
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = 'hidden';
@@ -282,6 +285,9 @@ const closeMenu = () => {
       menuRef.value.classList.remove('menu--closing');
     }
 
+    // Возобновляем Lenis скролл
+    startScroll();
+
     if (typeof document !== 'undefined') {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
@@ -297,7 +303,7 @@ const isActiveSection = link => {
   return props.activeSection === sectionId;
 };
 
-const { scrollTo } = useLenis();
+const { scrollTo, stop: stopScroll, start: startScroll } = useLenis();
 
 const scrollToSection = link => {
   if (link.startsWith('#')) {

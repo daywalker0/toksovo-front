@@ -296,7 +296,7 @@ onUnmounted(() => {
 
 .header--scrolled .header__logo {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateX(35px) translateY(-20px);
   pointer-events: none;
 
   @media (max-width: $breakpoint-x) {
