@@ -138,13 +138,13 @@ onBeforeUnmount(() => {
 
 .hero-section {
   position: relative;
-  min-height: 250vh; // соответствует длине анимации
+  min-height: 300vh; // соответствует длине анимации
   overflow: hidden;
 
   &__container {
     position: relative;
     z-index: 2; // контент над фоном
-    min-height: 200vh;
+    min-height: 150vh;
     display: flex;
     align-items: flex-start;
     justify-content: center;
