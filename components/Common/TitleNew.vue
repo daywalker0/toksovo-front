@@ -107,8 +107,14 @@ function createScrollTrigger(triggerElement, tl) {
     invalidateOnRefresh: true,
     onLeaveBack: () => tl.progress(0),
     onEnter: isMobile ? () => tl.play() : undefined,
+    toggleActions: 'play none none reverse',
+    immediateRender: false,
   });
   triggers.push(st);
+
+  if (st.isActive) {
+    tl.play();
+  }
 }
 
 function initAnimation() {
@@ -231,6 +237,10 @@ function initAnimation() {
     });
     timelines.push(tl);
   });
+
+  nextTick(() => {
+    ScrollTrigger.refresh();
+  });
 }
 
 let resizeT;
@@ -246,11 +256,20 @@ function handleResize() {
 onMounted(async () => {
   if (!process.client) return;
 
-  setTimeout(async () => {
-    updateLines();
-    await nextTick();
+  updateLines();
+  await nextTick();
+
+  setTimeout(() => {
     initAnimation();
-  }, 300);
+
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
+  }, 100);
 
   window.addEventListener('resize', handleResize);
 });
