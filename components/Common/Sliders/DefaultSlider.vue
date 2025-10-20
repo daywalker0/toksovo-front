@@ -35,9 +35,9 @@
           </slot>
         </SwiperSlide>
 
-        <div class="slider--controls" v-if="shouldShowNavigation || showPagination">
-          <!-- Прогрессбар -->
-          <div class="custom-progressbar" v-if="showPagination && !hideNavigationOnMobile">
+        <div class="slider--controls" v-if="shouldShowNavigation || shouldShowPagination">
+          <!-- Прогрессбар (показываем всегда на десктопе, если showPagination=true) -->
+          <div class="custom-progressbar" v-if="shouldShowPagination">
             <span class="swiper-pagination-progressbar-fill"></span>
           </div>
 
@@ -305,6 +305,16 @@ const shouldShowNavigation = computed(() => {
   return props.showNavigation;
 });
 
+// Показывать ли прогресс-бар (на десктопе - да, на мобильных - нет)
+const shouldShowPagination = computed(() => {
+  // Скрываем прогресс-бар на мобильных
+  if (isMobile.value) {
+    return false;
+  }
+  // На десктопе показываем, если showPagination=true
+  return props.showPagination;
+});
+
 // Стиль для слайда с фиксированной шириной на мобильных
 const slideStyle = computed(() => {
   if (isMobile.value && props.mobileSlideWidth) {
@@ -373,6 +383,11 @@ onMounted(() => {
     margin-top: 24px;
     align-items: center;
     gap: 32px;
+
+    @media (max-width: $breakpoint-x) {
+      // На мобильных прогресс-бар скрыт, оставляем только навигацию если есть
+      justify-content: center;
+    }
   }
 }
 .default-slide-content {
@@ -444,6 +459,11 @@ onMounted(() => {
   overflow: hidden;
   position: relative;
   min-width: 200px; /* Минимальная ширина для видимости */
+
+  @media (max-width: $breakpoint-x) {
+    // Скрываем на мобильных через display (дополнительная защита)
+    display: none;
+  }
 }
 
 :deep(.swiper-pagination-progressbar-fill) {
