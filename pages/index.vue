@@ -55,7 +55,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const updateUrlHash = () => {
+const updateActiveSection = () => {
   const sections = [
     { id: 'hero', element: document.getElementById('hero') },
     { id: 'about', element: document.getElementById('about') },
@@ -68,7 +68,6 @@ const updateUrlHash = () => {
   ];
 
   let currentSection = null;
-  let maxVisibleRatio = 0;
 
   sections.forEach(({ id, element }) => {
     if (element) {
@@ -85,8 +84,7 @@ const updateUrlHash = () => {
 
   if (currentSection && activeSection.value !== currentSection) {
     activeSection.value = currentSection;
-    const newUrl = `${window.location.pathname}#${currentSection}`;
-    window.history.replaceState(null, '', newUrl);
+    // Не обновляем URL при прокрутке
   }
 };
 import AppHeader from '~/components/Common/AppHeader.vue';
@@ -262,42 +260,21 @@ onMounted(() => {
 
     window.addEventListener('resize', handleResize);
 
-    let scrollTimeout;
     let isScrolling = false;
     const handleScroll = () => {
       if (isScrolling) return;
       isScrolling = true;
 
       setTimeout(() => {
-        updateUrlHash();
+        updateActiveSection();
         isScrolling = false;
       }, 100);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    if (window.location.hash) {
-      const targetElement = document.querySelector(window.location.hash);
-      if (targetElement) {
-        setTimeout(() => {
-          targetElement.scrollIntoView({ behavior: 'smooth' });
-          activeSection.value = window.location.hash.replace('#', '');
-        }, 500);
-      }
-    }
-
-    const handleHashChange = () => {
-      if (window.location.hash) {
-        const newSection = window.location.hash.replace('#', '');
-        activeSection.value = newSection;
-      }
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-
     onBeforeUnmount(() => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('resize', handleResize);
     });
   });

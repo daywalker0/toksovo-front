@@ -101,10 +101,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import AnimatedLink from './AnimatedLink.vue';
-
-const router = useRouter();
+import { useLenis } from '~/composables/useLenis';
 
 const props = defineProps({
   activeSection: {
@@ -114,6 +112,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['menu-closed']);
+
+// Инициализируем Lenis в начале
+const { scrollTo, stop: stopScroll, start: startScroll } = useLenis();
 
 const isOpen = ref(false);
 const menuRef = ref(null);
@@ -303,24 +304,25 @@ const isActiveSection = link => {
   return props.activeSection === sectionId;
 };
 
-const { scrollTo, stop: stopScroll, start: startScroll } = useLenis();
-
 const scrollToSection = link => {
   if (link.startsWith('#')) {
     const targetId = link.substring(1);
 
-    // Используем Lenis для плавного скролла
-    scrollTo(`#${targetId}`, {
-      offset: -100, // Отступ для хедера
-      duration: 1.2,
-      onComplete: () => {
-        // Обновляем URL hash после завершения скролла
-        const newUrl = `${window.location.pathname}#${targetId}`;
-        window.history.replaceState(null, '', newUrl);
-      },
-    });
+    closeMenu();
 
-    closeMenu(); // Закрываем меню после клика
+    setTimeout(() => {
+      startScroll();
+
+      setTimeout(() => {
+        scrollTo(`#${targetId}`, {
+          offset: -100,
+          duration: 1.2,
+          onComplete: () => {
+            window.history.replaceState(null, '', window.location.pathname);
+          },
+        });
+      }, 100);
+    }, 200);
   }
 };
 
