@@ -184,13 +184,28 @@ watch(
     if (newValue) {
       currentIndex.value = 0;
       lockScroll();
-      // Ждем следующего тика, чтобы Swiper инициализировался
+
+      if (process.client) {
+        const header = document.querySelector('.header');
+        if (header) {
+          header.style.transform = 'translateY(-100%)';
+          header.style.transition = 'transform 0.3s ease';
+        }
+      }
+
       await nextTick();
       if (swiperInstance.value) {
         swiperInstance.value.slideTo(0);
       }
     } else {
       unlockScroll();
+
+      if (process.client) {
+        const header = document.querySelector('.header');
+        if (header) {
+          header.style.transform = '';
+        }
+      }
     }
   }
 );
@@ -216,6 +231,13 @@ onUnmounted(() => {
     document.removeEventListener('keydown', handleKeydown);
   }
   unlockScroll();
+
+  if (process.client) {
+    const header = document.querySelector('.header');
+    if (header) {
+      header.style.transform = '';
+    }
+  }
 });
 </script>
 

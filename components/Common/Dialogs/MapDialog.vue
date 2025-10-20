@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { watch, computed } from 'vue';
+import { watch, computed, onUnmounted } from 'vue';
 import YandexMap from '~/components/YandexMap.vue';
 
 // Иконки категорий
@@ -103,26 +103,42 @@ const handleToggleCategory = cat => {
   emit('toggle-category', cat);
 };
 
-// Блокируем скролл body при открытии и скрываем хедер
+const { stop: stopScroll, start: startScroll } = useLenis();
+
 watch(
   () => props.modelValue,
   isOpen => {
     if (process.client) {
       const header = document.querySelector('.header');
       if (isOpen) {
+        stopScroll();
         document.body.style.overflow = 'hidden';
         if (header) {
-          header.style.display = 'none';
+          header.style.transform = 'translateY(-100%)';
+          header.style.transition = 'transform 0.3s ease';
         }
       } else {
+        startScroll();
         document.body.style.overflow = '';
         if (header) {
-          header.style.display = '';
+          header.style.transform = '';
         }
       }
     }
   }
 );
+
+onUnmounted(() => {
+  startScroll();
+
+  if (process.client) {
+    document.body.style.overflow = '';
+    const header = document.querySelector('.header');
+    if (header) {
+      header.style.transform = '';
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped>
