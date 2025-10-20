@@ -65,13 +65,14 @@ const initPinning = () => {
   // Фиксируем секцию когда её низ достигает низа экрана
   pinTrigger = ScrollTrigger.create({
     trigger: natureSection.value,
-    start: 'bottom bottom', // когда низ секции достигает низа viewport
-    end: '+=100%', // держим зафиксированной на протяжении 100% viewport
+    start: 'bottom bottom',
+    end: '+=100%',
     pin: true,
-    pinSpacing: true, // создаем пространство для плавного выхода
-    anticipatePin: 1, // плавное начало пиннинга
-    markers: true, // для дебага
-    id: 'nature-pin',
+    pinSpacing: true,
+    pinReparent: false, // не перемещаем в DOM
+    anticipatePin: 1,
+    fastScrollEnd: true, // сглаживание при быстром скролле
+    invalidateOnRefresh: true,
   });
 
   // Создаем единый timeline для синхронных анимаций (только на мобилке)
@@ -81,8 +82,6 @@ const initPinning = () => {
       start: 'bottom bottom',
       end: '+=100%',
       scrub: true,
-      markers: true,
-      id: 'nature-transition',
     },
   });
 
@@ -177,6 +176,9 @@ onMounted(() => {
   @media (max-width: $breakpoint-x) {
     height: 100svh;
     align-items: stretch;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
   }
   display: flex;
   align-items: center;
@@ -318,49 +320,39 @@ onMounted(() => {
   }
 }
 
-// Overlay для эффекта смены цвета (заливает только фон, не картинку)
+// Overlay для эффекта смены цвета (только на мобилке)
 .color-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 40%; // левая часть (текстовая область)
-  height: 100%; // на всю высоту секции
-  background-color: $accent-color-brown;
-  z-index: 1;
-  pointer-events: none;
-
   @media (max-width: $breakpoint-x) {
-    width: 100%;
-  }
-}
-
-// Overlay для картинки ВНУТРИ блока nature-section__image (только на мобилке)
-.image-overlay-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  pointer-events: none;
-  overflow: hidden;
-
-  // На десктопе картинка не нужна - она уже в image-overlay-wrapper внутри блока
-  @media (max-width: $breakpoint-x) {
-    // Только на мобилке меняем картинку внутри блока nature-section__image
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background-color: $accent-color-brown;
+    z-index: 1;
+    pointer-events: none;
   }
+}
 
-  .overlay-image {
+// Overlay для картинки ВНУТРИ блока nature-section__image (только на мобилке)
+.image-overlay-wrapper {
+  @media (max-width: $breakpoint-x) {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+
+    .overlay-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
   }
 }
 </style>

@@ -122,8 +122,8 @@ onMounted(() => {
 
       &--right {
         text-align: right;
-        margin-left: auto;
-        max-width: 70%;
+        margin-left: 70%;
+        max-width: 100%;
 
         &:last-child {
           margin-left: 80%;
