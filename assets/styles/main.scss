@@ -1,7 +1,7 @@
-@use './fonts.scss';
-@use './reset.scss';
-@use './typography.scss';
-@use './variables.scss' as *;
+@use "./fonts.scss";
+@use "./reset.scss";
+@use "./typography.scss";
+@use "./variables.scss" as *;
 
 html:root {
   scroll-behavior: auto; // Отключаем smooth scroll для Lenis
@@ -60,11 +60,9 @@ body {
 
 /* Плавные переходы только для обычных элементов */
 section:not(.gsap-animated):not([data-gsap]),
-div:not(.gsap-animated):not([data-gsap]):not(.horizontal-wrapper):not(.environment-section):not(
-    .menu__content
-  ),
+div:not(.gsap-animated):not([data-gsap]):not(.horizontal-wrapper):not(.environment-section):not(.menu__content),
 article:not(.gsap-animated):not([data-gsap]) {
-  transition: transform 0.3s ease;
+  // transition: transform 0.3s ease;
 }
 
 /* Общие стили для всех кнопок закрытия в диалогах */

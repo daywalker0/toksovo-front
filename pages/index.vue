@@ -198,7 +198,6 @@ let horizontalScrollTrigger = null;
 gsap.registerPlugin(ScrollTrigger);
 
 const initHorizontalScroll = () => {
-  // Отключаем горизонтальный скролл на мобильных устройствах
   if (window.innerWidth <= 599) {
     if (horizontalScrollTrigger) {
       horizontalScrollTrigger.scrollTrigger?.kill();
@@ -208,64 +207,38 @@ const initHorizontalScroll = () => {
     return;
   }
 
-  if (!horizontalWrapper.value) return;
+  const root = horizontalWrapper.value;
+  if (!root) return;
 
-  const container = horizontalWrapper.value.querySelector('.horizontal-container');
+  const container = root.querySelector('.horizontal-container');
   if (!container) return;
 
-  const sections = gsap.utils.toArray('.horizontal-container > *');
-  if (sections.length === 0) return;
-
-  // Уничтожаем предыдущий trigger
+  // убить прошлый tween/trigger только этого блока
   if (horizontalScrollTrigger) {
     horizontalScrollTrigger.scrollTrigger?.kill();
     horizontalScrollTrigger.kill();
+    horizontalScrollTrigger = null;
   }
 
-  // Явно устанавливаем ширину контейнера
-  const sectionWidth = window.innerWidth;
-  const totalWidth = sectionWidth * sections.length;
+  const getDistance = () => Math.max(0, container.scrollWidth - window.innerWidth);
 
-  gsap.set(container, {
-    width: totalWidth,
-    x: 0,
-    force3D: true,
-  });
+  gsap.set(container, { x: 0 });
 
-  // Вычисляем точное расстояние движения
-  // У нас 2 секции, нужно проскроллить 1 ширину экрана чтобы показать вторую
-  const scrollDistance = totalWidth - sectionWidth;
-
-  // Используем timeline для добавления пауз
-  const tl = gsap.timeline({
+  // растягиваем вертикальный путь, чтобы не «щёлкало» по секциям
+  horizontalScrollTrigger = gsap.to(container, {
+    x: () => -getDistance(),
+    ease: 'none',
     scrollTrigger: {
-      trigger: horizontalWrapper.value,
-      start: 'center center',
-      end: () => `+=${scrollDistance * 2.5}`,
+      trigger: root,
+      start: 'top top',
+      end: () => `+=${getDistance()}`,
       pin: true,
-      scrub: 1,
+      scrub: 0, // жёсткая привязка к скроллу
+      anticipatePin: 0,
       invalidateOnRefresh: true,
+      // markers: true,
     },
   });
-
-  // Пауза при входе - 25% времени
-  tl.to({}, { duration: 0.25, ease: 'none' }, 0);
-
-  // Основное горизонтальное движение - 50% времени
-  tl.to(
-    container,
-    {
-      x: -scrollDistance,
-      ease: 'none',
-      duration: 0.5,
-    },
-    0.25
-  );
-
-  // Пауза при выходе - 25% времени
-  tl.to({}, { duration: 0.25, ease: 'none' }, 0.75);
-
-  horizontalScrollTrigger = tl;
 };
 
 onMounted(() => {

@@ -53,9 +53,6 @@ import heroBgImg from '@/assets/img/hero-bg.png';
 const titleText = 'Поинт Токсово';
 const subtitleText = 'комфорт, который становится частью вашего дня';
 
-const letterDelay = 0.05; // seconds per letter
-const titleStartDelay = 0.3; // initial delay before title starts
-
 const sectionEl = ref(null);
 const renderEl = ref(null);
 const skyEl = ref(null);
@@ -109,10 +106,11 @@ onMounted(async () => {
     scrollTrigger: {
       trigger: sectionEl.value,
       start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.5,
+      end: 'bottom bottom+=1000',
+      scrub: true,
       fastScrollEnd: true,
       invalidateOnRefresh: true,
+      // markers: true,
     },
   });
 
