@@ -30,7 +30,7 @@
           :data-slider-id="sliderId"
           @click="scrollToSection(index)"
         >
-          <img :src="section.image" />
+          <img :src="section.image" loading="eager" />
         </div>
       </div>
 

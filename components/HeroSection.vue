@@ -36,10 +36,10 @@
     </div>
     <div class="hero-section__parallax-container" ref="parallaxContainer">
       <div class="hero-section__sky" ref="skyEl">
-        <img :src="bgSkyImg" />
+        <img :src="bgSkyImg" alt="Небо на фоне" loading="eager" />
       </div>
       <div class="hero-section__bg" ref="renderEl">
-        <img :src="heroBgImg" />
+        <img :src="heroBgImg" alt="Жилой комплекс Поинт Токсово" loading="eager" />
       </div>
     </div>
   </div>

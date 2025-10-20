@@ -19,7 +19,7 @@
           рядом.
         </div>
         <div class="walk-city-section__image">
-          <img :src="walkCityImg" alt="nature-img-1" />
+          <img :src="walkCityImg" alt="nature-img-1" loading="lazy" />
         </div>
       </div>
     </div>

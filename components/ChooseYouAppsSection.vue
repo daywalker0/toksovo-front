@@ -67,7 +67,7 @@
             :style="{ transform: `scale(${imageScale})` }"
           >
             <div class="image-overlay" :style="{ opacity: overlayOpacity }"></div>
-            <img :src="chooseYourLife" alt="preview" />
+            <img :src="chooseYourLife" alt="preview" loading="eager" />
             <div class="text" :style="{ opacity: textOpacity }">
               Выберите свою квартиру для жизни
             </div>

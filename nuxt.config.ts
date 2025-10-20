@@ -1,5 +1,9 @@
 import { defineNuxtConfig } from 'nuxt/config';
 import path from 'path';
+import viteImagemin from '@vheemstra/vite-plugin-imagemin';
+import imageminMozjpeg from 'imagemin-mozjpeg';
+import imageminPngquant from 'imagemin-pngquant';
+import imageminWebp from 'imagemin-webp';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-18',
@@ -71,6 +75,25 @@ export default defineNuxtConfig({
       // Папка для ассетов
       assetsDir: '_nuxt',
     },
+    plugins: [
+      // @ts-ignore - Оптимизация изображений при сборке
+      viteImagemin({
+        plugins: {
+          // @ts-ignore
+          jpg: imageminMozjpeg({ quality: 80 }),
+          // @ts-ignore
+          png: imageminPngquant({ quality: [0.7, 0.8] }),
+        },
+        makeWebp: {
+          plugins: {
+            // @ts-ignore
+            jpg: imageminWebp({ quality: 80 }),
+            // @ts-ignore
+            png: imageminWebp({ quality: 80, lossless: false }),
+          },
+        },
+      }),
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname),

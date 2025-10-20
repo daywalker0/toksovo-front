@@ -18,7 +18,7 @@
           повседневной жизни. Природа буквально в нескольких шагах от дома.
         </div>
         <div class="nature-section__image">
-          <img :src="natureImg" alt="nature-img-1" />
+          <img :src="natureImg" alt="nature-img-1" loading="lazy" />
         </div>
       </div>
     </div>

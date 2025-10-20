@@ -24,16 +24,21 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@vheemstra/vite-plugin-imagemin": "^2.2.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-vue": "^10.5.0",
     "globals": "^16.4.0",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^10.0.0",
+    "imagemin-webp": "^8.0.0",
     "postcss": "^8.5.6",
     "postcss-import": "^16.1.1",
     "postcss-pxtorem": "^6.1.0",
     "prettier": "^3.6.2",
-    "sass": "^1.93.2"
+    "sass": "^1.93.2",
+    "vite-plugin-imagemin": "^0.6.1"
   }
 }

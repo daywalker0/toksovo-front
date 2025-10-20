@@ -3,7 +3,7 @@
     <!-- Старая реализация для десктопа -->
     <div class="environment-section__gallery" ref="galleryRef" v-if="!isMobile">
       <div v-for="(img, i) in slides" :key="i" class="gallery-item">
-        <img :src="img" alt="" />
+        <img :src="img" alt="" loading="lazy" />
       </div>
     </div>
 
@@ -15,6 +15,7 @@
           :src="currentSlide"
           alt="Environment background"
           class="slide-image slide-current"
+          loading="eager"
         />
         <img
           v-if="nextSlideIndex !== null"
@@ -23,6 +24,7 @@
           alt="Next slide"
           class="slide-image slide-next"
           :class="slideDirection === 'right' ? 'from-right' : 'from-left'"
+          loading="eager"
         />
       </div>
       <div class="environment-section__content">

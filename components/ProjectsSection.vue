@@ -14,7 +14,7 @@
         <template #slide="{ slide, active }">
           <div :class="['custom-slide', { active }]">
             <div class="image-container">
-              <img :src="slide.image" :alt="slide.title" class="slide-image" />
+              <img :src="slide.image" :alt="slide.title" class="slide-image" loading="lazy" />
             </div>
             <div class="content">
               <div class="content--header">

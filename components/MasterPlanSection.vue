@@ -8,7 +8,7 @@
         ref="scrollContainer"
       >
         <div class="image-wrapper" ref="imageWrapper">
-          <img :src="genPlanImg" alt="Master plan" :style="mobileImageStyle" />
+          <img :src="genPlanImg" alt="Генеральный план" loading="eager" />
 
           <!-- Пинсы на мобильных привязаны к изображению -->
           <div v-if="showPins && isMobile" class="pins-container pins-container--mobile">

@@ -130,7 +130,7 @@ const apartmentTypes = ref([
     floors: '2-9',
     price: '312 660',
     features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-    images: [appsItem1, appsItem1, appsItem1],
+      images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 1,
@@ -139,7 +139,7 @@ const apartmentTypes = ref([
     floors: '2-9',
     price: '312 660',
     features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-    images: [appsItem1, appsItem1, appsItem1],
+      images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 2,
@@ -148,7 +148,7 @@ const apartmentTypes = ref([
     floors: '2-8',
     price: '285 400',
     features: ['Компактная планировка', 'Балкон с панорамным видом', 'Современная отделка'],
-    images: [appsItem1, appsItem1, appsItem1],
+      images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 3,
@@ -157,7 +157,7 @@ const apartmentTypes = ref([
     floors: '3-10',
     price: '345 200',
     features: ['Большая гостиная', 'Две спальни', 'Отдельная кухня', 'Два санузла'],
-    images: [appsItem1, appsItem1, appsItem1],
+      images: [appsItem1, appsItem1, appsItem1],
   },
 ]);
 
