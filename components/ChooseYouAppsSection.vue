@@ -352,6 +352,8 @@ onUnmounted(() => {
   overflow: hidden;
 
   @media (max-width: $breakpoint-x) {
+    // Отключаем sticky на мобильных для предотвращения застревания
+    position: relative;
     height: 100svh;
   }
 }

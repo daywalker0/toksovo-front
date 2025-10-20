@@ -561,6 +561,8 @@ onBeforeUnmount(() => {
   background: #e6dfd8;
 
   @media (max-width: $breakpoint-x) {
+    // Отключаем sticky на мобильных для предотвращения застревания
+    position: relative;
     height: 100svh;
     min-height: 100svh;
   }
