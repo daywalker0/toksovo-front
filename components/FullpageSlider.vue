@@ -28,7 +28,7 @@
           :data-section="index"
           :data-current="currentSection"
           :data-slider-id="sliderId"
-          @click="scrollToSection(index)"
+          @click.prevent.stop="scrollToSection(index)"
         >
           <img :src="section.image" loading="eager" />
         </div>
@@ -74,11 +74,13 @@ const currentSection = ref(0);
 const isIndicatorVisible = ref(false);
 const isInSlider = ref(false);
 const isMobile = ref(false);
+const isProgrammaticScroll = ref(false); // Флаг программной прокрутки
 
 const modules = [];
 
 let observer;
 let scrollTriggers = [];
+let scrollTimeout = null;
 
 // Обработчик изменения слайда в Swiper
 const onSlideChange = swiper => {
@@ -92,17 +94,47 @@ const scrollToSection = index => {
       currentSection.value = index;
     }
   } else {
-    // На десктопе используем scrollIntoView
+    // Игнорируем клик если уже идет программная прокрутка
+    if (isProgrammaticScroll.value) {
+      return;
+    }
+
+    // На десктопе используем window.scrollTo с вычислением позиции
     const targetElement = document.getElementById(`section-${sliderId.value}-${index}`);
 
     if (targetElement) {
-      targetElement.scrollIntoView({
+      // Вычисляем абсолютную позицию элемента на странице
+      const rect = targetElement.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const targetPosition = rect.top + scrollTop;
+
+      // Проверяем, находимся ли мы уже точно на этом слайде
+      // Допустим погрешность в 10 пикселей
+      if (Math.abs(scrollTop - targetPosition) < 10) {
+        return; // Уже на этом слайде, ничего не делаем
+      }
+
+      // Устанавливаем флаг программной прокрутки
+      isProgrammaticScroll.value = true;
+
+      // Обновляем текущую секцию сразу
+      currentSection.value = index;
+
+      // Очищаем предыдущий таймаут если есть
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+
+      // Используем window.scrollTo для более надежной прокрутки
+      window.scrollTo({
+        top: targetPosition,
         behavior: 'smooth',
-        block: 'start',
       });
 
-      // Обновляем текущую секцию
-      currentSection.value = index;
+      // Снимаем флаг программной прокрутки после завершения анимации
+      scrollTimeout = setTimeout(() => {
+        isProgrammaticScroll.value = false;
+      }, 1200);
     }
   }
 };
@@ -158,6 +190,9 @@ onMounted(async () => {
     observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
+          // Игнорируем обновления от observer во время программной прокрутки
+          if (isProgrammaticScroll.value) return;
+
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
             const index = parseInt(entry.target.dataset.section || 0);
             currentSection.value = index;
@@ -220,6 +255,12 @@ onUnmounted(() => {
   });
 
   if (observer) observer.disconnect();
+
+  // Очищаем таймаут если есть
+  if (scrollTimeout) {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = null;
+  }
 
   // Очищаем все ScrollTriggers
   scrollTriggers.forEach(trigger => {
@@ -359,6 +400,7 @@ onUnmounted(() => {
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.3s ease;
+  user-select: none;
 }
 
 .thumb:hover {
@@ -373,6 +415,8 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: none;
+  user-select: none;
 }
 
 .thumb.active::after {
