@@ -317,6 +317,11 @@ onUnmounted(() => {
 .header--menu-open .header__logo {
   opacity: 1 !important;
   pointer-events: auto !important;
+  transform: translateX(35px) translateY(0) !important; /* Сбрасываем смещение по Y */
+
+  @media (max-width: $breakpoint-x) {
+    transform: translateX(0) translateY(0) !important; /* На мобильных убираем смещение по X тоже */
+  }
 }
 
 /* Стили для открытого меню */

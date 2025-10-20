@@ -366,7 +366,7 @@ defineExpose({
   }
 
   &__overlay {
-    position: absolute;
+    position: fixed; /* Изменено с absolute на fixed для корректной работы при скролле */
     top: 0;
     left: 0;
     width: 100%;
@@ -381,7 +381,7 @@ defineExpose({
   }
 
   &__content {
-    position: absolute;
+    position: fixed; /* Изменено с absolute на fixed для корректной работы при скролле */
     top: 0;
     left: 0;
     width: 100%;

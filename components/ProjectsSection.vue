@@ -122,6 +122,14 @@ const openDialogVideo = () => {
     padding: 24px !important;
     border: 1px solid rgba(44, 50, 44, 0.2) !important;
     border-radius: 12px !important;
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+
+    &:hover {
+      border: 1px solid $text-color-white !important;
+      background-color: $text-color-white !important;
+    }
   }
 
   // На мобильных убираем отступы и бордер
@@ -146,7 +154,7 @@ const openDialogVideo = () => {
   }
   &__title {
     margin: 0 auto;
-    margin-bottom: 20px;
+    margin-bottom: 80px;
     font-size: 88px;
   }
 }
