@@ -177,7 +177,9 @@ function createPlacemarkFor(loc) {
 
   const placemark = new ymaps.Placemark(
     loc.coords,
-    {},
+    {
+      hintContent: loc.name || loc.title || 'Локация',
+    },
     {
       iconLayout: 'default#image',
       iconImageHref: 'data:image/svg+xml;base64,' + btoa(svg),

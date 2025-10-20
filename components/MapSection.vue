@@ -153,8 +153,6 @@
       :locations="locations"
       :activeCategories="activeCategoryKeys"
       :showZoomControls="true"
-      @ready="onMapReady"
-      @error="onMapError"
     />
 
     <!-- Мобильный диалог с картой -->
@@ -445,13 +443,6 @@ function handleCategoryMouseEnter(key) {
 }
 function handleCategoryMouseLeave() {
   hoveredCategory.value = null;
-}
-
-function onMapReady(payload) {
-  console.log('map ready', payload);
-}
-function onMapError(err) {
-  console.error('map error', err);
 }
 
 function openMapDialog() {
