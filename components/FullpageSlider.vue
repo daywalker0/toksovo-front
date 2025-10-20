@@ -81,6 +81,7 @@ const modules = [];
 let observer;
 let scrollTriggers = [];
 let scrollTimeout = null;
+let handleUserScroll = null;
 
 // Обработчик изменения слайда в Swiper
 const onSlideChange = swiper => {
@@ -94,8 +95,11 @@ const scrollToSection = index => {
       currentSection.value = index;
     }
   } else {
+    console.log('Click on section', index, 'isProgrammaticScroll:', isProgrammaticScroll.value);
+
     // Игнорируем клик если уже идет программная прокрутка
     if (isProgrammaticScroll.value) {
+      console.log('Ignoring click - scroll in progress');
       return;
     }
 
@@ -108,10 +112,25 @@ const scrollToSection = index => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const targetPosition = rect.top + scrollTop;
 
+      console.log(
+        'Target position:',
+        targetPosition,
+        'Current scroll:',
+        scrollTop,
+        'Difference:',
+        Math.abs(scrollTop - targetPosition)
+      );
+
       // Проверяем, находимся ли мы уже точно на этом слайде
       // Допустим погрешность в 10 пикселей
       if (Math.abs(scrollTop - targetPosition) < 10) {
+        console.log('Already at target position');
         return; // Уже на этом слайде, ничего не делаем
+      }
+
+      // Очищаем предыдущий таймаут если есть
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
       }
 
       // Устанавливаем флаг программной прокрутки
@@ -120,21 +139,20 @@ const scrollToSection = index => {
       // Обновляем текущую секцию сразу
       currentSection.value = index;
 
-      // Очищаем предыдущий таймаут если есть
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
+      console.log('Scrolling to position:', targetPosition);
 
-      // Используем window.scrollTo для более надежной прокрутки
+      // Используем instant scroll для надежности
       window.scrollTo({
         top: targetPosition,
-        behavior: 'smooth',
+        behavior: 'instant',
       });
+      console.log('ScrollTo executed');
 
-      // Снимаем флаг программной прокрутки после завершения анимации
+      // Снимаем флаг программной прокрутки
       scrollTimeout = setTimeout(() => {
         isProgrammaticScroll.value = false;
-      }, 1200);
+        console.log('Scroll complete, flag reset');
+      }, 300);
     }
   }
 };
@@ -161,6 +179,28 @@ onMounted(async () => {
   const { gsap } = await import('gsap');
   const { ScrollTrigger } = await import('gsap/ScrollTrigger');
   gsap.registerPlugin(ScrollTrigger);
+
+  // Добавляем обработчики для сброса флага программной прокрутки
+  // когда пользователь начинает ручную прокрутку
+  handleUserScroll = () => {
+    if (isProgrammaticScroll.value) {
+      console.log('User initiated scroll detected, resetting flag');
+      // Даем небольшую задержку, чтобы программная прокрутка могла начаться
+      setTimeout(() => {
+        isProgrammaticScroll.value = false;
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = null;
+        }
+      }, 100);
+    }
+  };
+
+  // Слушаем события колесика мыши и тач-событий (только для десктопа)
+  if (!isMobile.value) {
+    window.addEventListener('wheel', handleUserScroll, { passive: true });
+    window.addEventListener('touchstart', handleUserScroll, { passive: true });
+  }
 
   // Создаем отдельный observer для определения активности слайдера (только для десктопа)
   if (!isMobile.value) {
@@ -253,6 +293,12 @@ onUnmounted(() => {
   window.removeEventListener('resize', () => {
     isMobile.value = window.innerWidth <= 599;
   });
+
+  // Удаляем обработчики прокрутки
+  if (handleUserScroll) {
+    window.removeEventListener('wheel', handleUserScroll);
+    window.removeEventListener('touchstart', handleUserScroll);
+  }
 
   if (observer) observer.disconnect();
 
