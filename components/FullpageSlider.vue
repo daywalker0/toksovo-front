@@ -95,11 +95,8 @@ const scrollToSection = index => {
       currentSection.value = index;
     }
   } else {
-    console.log('Click on section', index, 'isProgrammaticScroll:', isProgrammaticScroll.value);
-
     // Игнорируем клик если уже идет программная прокрутка
     if (isProgrammaticScroll.value) {
-      console.log('Ignoring click - scroll in progress');
       return;
     }
 
@@ -112,19 +109,9 @@ const scrollToSection = index => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const targetPosition = rect.top + scrollTop;
 
-      console.log(
-        'Target position:',
-        targetPosition,
-        'Current scroll:',
-        scrollTop,
-        'Difference:',
-        Math.abs(scrollTop - targetPosition)
-      );
-
       // Проверяем, находимся ли мы уже точно на этом слайде
       // Допустим погрешность в 10 пикселей
       if (Math.abs(scrollTop - targetPosition) < 10) {
-        console.log('Already at target position');
         return; // Уже на этом слайде, ничего не делаем
       }
 
@@ -139,19 +126,15 @@ const scrollToSection = index => {
       // Обновляем текущую секцию сразу
       currentSection.value = index;
 
-      console.log('Scrolling to position:', targetPosition);
-
       // Используем instant scroll для надежности
       window.scrollTo({
         top: targetPosition,
         behavior: 'instant',
       });
-      console.log('ScrollTo executed');
 
       // Снимаем флаг программной прокрутки
       scrollTimeout = setTimeout(() => {
         isProgrammaticScroll.value = false;
-        console.log('Scroll complete, flag reset');
       }, 300);
     }
   }
@@ -184,7 +167,6 @@ onMounted(async () => {
   // когда пользователь начинает ручную прокрутку
   handleUserScroll = () => {
     if (isProgrammaticScroll.value) {
-      console.log('User initiated scroll detected, resetting flag');
       // Даем небольшую задержку, чтобы программная прокрутка могла начаться
       setTimeout(() => {
         isProgrammaticScroll.value = false;
