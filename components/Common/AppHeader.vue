@@ -183,14 +183,14 @@ onUnmounted(() => {
 
   &__container {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     font-family: 'Akrobat';
     font-weight: 700;
     text-transform: uppercase;
     font-size: 20px;
     min-height: 45px;
-    padding: 0 20px;
+    padding: 15px 20px 0;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 18px;
@@ -198,7 +198,7 @@ onUnmounted(() => {
 
     @media (max-width: $breakpoint-x) {
       min-height: 60px;
-      padding: 0 20px 15px;
+      padding: 15px 20px 15px;
     }
   }
 
