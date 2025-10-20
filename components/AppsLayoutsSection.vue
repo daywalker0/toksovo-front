@@ -59,7 +59,7 @@
 
         <!-- Главное изображение с навигацией -->
         <div class="main-image-wrapper">
-          <!-- Стрелка назад -->
+          <!-- Стрелка назад (только на мобильных) -->
           <button
             class="nav-arrow nav-arrow--prev"
             :class="{ invisible: currentImageIndex === 0 }"
@@ -81,7 +81,7 @@
             <img :src="currentApartment.images[currentImageIndex]" :alt="currentApartment.title" />
           </div>
 
-          <!-- Стрелка вперед -->
+          <!-- Стрелка вперед (только на мобильных) -->
           <button
             class="nav-arrow nav-arrow--next"
             :class="{ invisible: currentImageIndex >= currentApartment.images.length - 1 }"
@@ -101,6 +101,19 @@
               />
             </svg>
           </button>
+        </div>
+
+        <!-- Тамбнейлы (только для десктопа) -->
+        <div class="thumbnails-wrapper">
+          <div
+            v-for="(image, index) in currentApartment.images"
+            :key="index"
+            class="thumbnail"
+            :class="{ active: currentImageIndex === index }"
+            @click="switchImage(index)"
+          >
+            <img :src="image" :alt="`Thumbnail ${index + 1}`" />
+          </div>
         </div>
       </div>
     </div>
@@ -130,7 +143,7 @@ const apartmentTypes = ref([
     floors: '2-9',
     price: '312 660',
     features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-      images: [appsItem1, appsItem1, appsItem1],
+    images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 1,
@@ -139,7 +152,7 @@ const apartmentTypes = ref([
     floors: '2-9',
     price: '312 660',
     features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-      images: [appsItem1, appsItem1, appsItem1],
+    images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 2,
@@ -148,7 +161,7 @@ const apartmentTypes = ref([
     floors: '2-8',
     price: '285 400',
     features: ['Компактная планировка', 'Балкон с панорамным видом', 'Современная отделка'],
-      images: [appsItem1, appsItem1, appsItem1],
+    images: [appsItem1, appsItem1, appsItem1],
   },
   {
     id: 3,
@@ -157,7 +170,7 @@ const apartmentTypes = ref([
     floors: '3-10',
     price: '345 200',
     features: ['Большая гостиная', 'Две спальни', 'Отдельная кухня', 'Два санузла'],
-      images: [appsItem1, appsItem1, appsItem1],
+    images: [appsItem1, appsItem1, appsItem1],
   },
 ]);
 
@@ -630,6 +643,11 @@ const switchImage = index => {
   background-color: transparent;
   flex-shrink: 0;
 
+  // Скрываем стрелки на десктопе
+  @media (min-width: 600px) {
+    display: none;
+  }
+
   &:hover {
     background-color: $text-color-primary;
     border-color: $text-color-primary;
@@ -662,6 +680,7 @@ const switchImage = index => {
   }
 
   @media (max-width: $breakpoint-x) {
+    display: flex; // Показываем на мобильных
     width: 41px;
     height: 41px;
     min-width: 41px;
@@ -675,6 +694,50 @@ const switchImage = index => {
   &.invisible {
     visibility: hidden;
     pointer-events: none;
+  }
+}
+
+// Тамбнейлы (только для десктопа)
+.thumbnails-wrapper {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+
+  @media (max-width: $breakpoint-x) {
+    display: none; // Скрываем на мобильных
+  }
+}
+
+.thumbnail {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+
+  @media (max-width: $breakpoint-lg) {
+    width: 100px;
+    height: 100px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &:hover {
+    opacity: 1;
+    border-color: $utility-color-1;
+  }
+
+  &.active {
+    opacity: 1;
+    border-color: $text-color-primary;
   }
 }
 </style>
