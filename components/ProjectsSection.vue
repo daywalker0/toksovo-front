@@ -115,11 +115,19 @@ const openDialogVideo = () => {
 @use '@/assets/styles/variables.scss' as *;
 
 ::v-deep(.slide) {
-  padding: 0 !important;
-  border: none !important;
   min-height: 0 !important;
 
+  // На десктопе добавляем отступы и бордер
+  @media (min-width: 600px) {
+    padding: 24px !important;
+    border: 1px solid rgba(44, 50, 44, 0.2) !important;
+    border-radius: 12px !important;
+  }
+
+  // На мобильных убираем отступы и бордер
   @media (max-width: $breakpoint-x) {
+    padding: 0 !important;
+    border: none !important;
     width: 253px !important;
   }
 }
