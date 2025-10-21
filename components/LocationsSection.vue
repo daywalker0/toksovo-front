@@ -423,11 +423,6 @@ onBeforeUnmount(() => {
     padding: 0 40px;
     align-items: flex-start;
   }
-
-  @media (max-width: $breakpoint-sm) {
-    gap: 20px;
-    padding: 0 20px;
-  }
 }
 
 .parallax-column {
@@ -442,10 +437,6 @@ onBeforeUnmount(() => {
     flex-direction: column;
     align-items: center;
     width: 100%;
-  }
-
-  @media (max-width: $breakpoint-sm) {
-    align-items: flex-start;
   }
 
   &.center-column {
@@ -469,11 +460,6 @@ onBeforeUnmount(() => {
     width: 100%;
     margin-bottom: 40px;
   }
-
-  @media (max-width: $breakpoint-sm) {
-    width: 180px;
-    margin-bottom: 30px;
-  }
 }
 
 .card-img {
@@ -484,11 +470,6 @@ onBeforeUnmount(() => {
 
   @media (max-width: $breakpoint-md) {
     height: auto;
-  }
-
-  @media (max-width: $breakpoint-sm) {
-    height: 300px;
-    margin-bottom: 8px;
   }
 }
 
