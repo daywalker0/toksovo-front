@@ -657,6 +657,10 @@ onBeforeUnmount(() => {
   @media (max-width: $breakpoint-lg) {
     font-size: 98px;
   }
+
+  @media (max-width: $breakpoint-md) {
+    display: none;
+  }
 }
 
 /* Стили для пинов */
