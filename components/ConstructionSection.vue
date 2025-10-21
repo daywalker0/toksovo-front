@@ -56,7 +56,11 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
-import constrImg from '@/assets/img/constr-img.jpg';
+import constrImg1 from '@/assets/img/hod-stroitelstva/hod1.jpg';
+import constrImg2 from '@/assets/img/hod-stroitelstva/hod2.jpg';
+import constrImg3 from '@/assets/img/hod-stroitelstva/hod3.jpg';
+import constrImg4 from '@/assets/img/hod-stroitelstva/hod4.jpg';
+import constrImg5 from '@/assets/img/hod-stroitelstva/hod5.jpg';
 import TitleNew from './Common/TitleNew.vue';
 import GalleryDialog from './Common/Dialogs/GalleryDialog.vue';
 import testImg from '@/assets/img/live-in-style-item-1.png';
@@ -69,9 +73,9 @@ const visibleCount = ref(6); // Начальное количество види
 
 const constructionSlides = [
   {
-    title: 'Сентябрь',
-    year: '2024',
-    image: constrImg,
+    title: 'Октябрь',
+    year: '2025',
+    image: constrImg1,
     gallery: [
       { src: galleryTestImg, alt: 'Сентябрь 1' },
       { src: testImg, alt: 'Сентябрь 2' },
@@ -81,63 +85,8 @@ const constructionSlides = [
   },
   {
     title: 'Сентябрь',
-    year: '2024',
-    image: constrImg,
-    gallery: [
-      { src: galleryTestImg, alt: 'Сентябрь 1' },
-      { src: testImg, alt: 'Сентябрь 2' },
-      { src: galleryTestImg, alt: 'Сентябрь 3' },
-      { src: testImg, alt: 'Сентябрь 4' },
-    ],
-  },
-  {
-    title: 'Сентябрь',
-    year: '2024',
-    image: constrImg,
-    gallery: [
-      { src: galleryTestImg, alt: 'Сентябрь 1' },
-      { src: testImg, alt: 'Сентябрь 2' },
-      { src: galleryTestImg, alt: 'Сентябрь 3' },
-      { src: testImg, alt: 'Сентябрь 4' },
-    ],
-  },
-  {
-    title: 'Сентябрь',
-    year: '2024',
-    image: constrImg,
-    gallery: [
-      { src: galleryTestImg, alt: 'Сентябрь 1' },
-      { src: testImg, alt: 'Сентябрь 2' },
-      { src: galleryTestImg, alt: 'Сентябрь 3' },
-      { src: testImg, alt: 'Сентябрь 4' },
-    ],
-  },
-  {
-    title: 'Сентябрь',
-    year: '2024',
-    image: constrImg,
-    gallery: [
-      { src: galleryTestImg, alt: 'Сентябрь 1' },
-      { src: testImg, alt: 'Сентябрь 2' },
-      { src: galleryTestImg, alt: 'Сентябрь 3' },
-      { src: testImg, alt: 'Сентябрь 4' },
-    ],
-  },
-  {
-    title: 'Сентябрь',
-    year: '2024',
-    image: constrImg,
-    gallery: [
-      { src: galleryTestImg, alt: 'Сентябрь 1' },
-      { src: testImg, alt: 'Сентябрь 2' },
-      { src: galleryTestImg, alt: 'Сентябрь 3' },
-      { src: testImg, alt: 'Сентябрь 4' },
-    ],
-  },
-  {
-    title: 'Сентябрь',
-    year: '2024',
-    image: constrImg,
+    year: '2025',
+    image: constrImg2,
     gallery: [
       { src: galleryTestImg, alt: 'Сентябрь 1' },
       { src: testImg, alt: 'Сентябрь 2' },
@@ -147,33 +96,35 @@ const constructionSlides = [
   },
   {
     title: 'Август',
-    year: '2024',
-    image: testImg,
+    year: '2025',
+    image: constrImg3,
     gallery: [
-      { src: galleryTestImg, alt: 'Август 1' },
-      { src: testImg, alt: 'Август 2' },
-      { src: galleryTestImg, alt: 'Август 3' },
+      { src: galleryTestImg, alt: 'Сентябрь 1' },
+      { src: testImg, alt: 'Сентябрь 2' },
+      { src: galleryTestImg, alt: 'Сентябрь 3' },
+      { src: testImg, alt: 'Сентябрь 4' },
     ],
   },
   {
     title: 'Июль',
-    year: '2024',
-    image: constrImg,
+    year: '2025',
+    image: constrImg4,
     gallery: [
-      { src: galleryTestImg, alt: 'Июль 1' },
-      { src: testImg, alt: 'Июль 2' },
-      { src: galleryTestImg, alt: 'Июль 3' },
-      { src: testImg, alt: 'Июль 4' },
-      { src: galleryTestImg, alt: 'Июль 5' },
+      { src: galleryTestImg, alt: 'Сентябрь 1' },
+      { src: testImg, alt: 'Сентябрь 2' },
+      { src: galleryTestImg, alt: 'Сентябрь 3' },
+      { src: testImg, alt: 'Сентябрь 4' },
     ],
   },
   {
     title: 'Июнь',
-    year: '2024',
-    image: testImg,
+    year: '2025',
+    image: constrImg5,
     gallery: [
-      { src: galleryTestImg, alt: 'Июнь 1' },
-      { src: testImg, alt: 'Июнь 2' },
+      { src: galleryTestImg, alt: 'Сентябрь 1' },
+      { src: testImg, alt: 'Сентябрь 2' },
+      { src: galleryTestImg, alt: 'Сентябрь 3' },
+      { src: testImg, alt: 'Сентябрь 4' },
     ],
   },
 ];
