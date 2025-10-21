@@ -74,13 +74,27 @@ const updateActiveSection = () => {
       const rect = element.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      const isVisible = rect.top <= windowHeight * 0.5 && rect.bottom >= windowHeight * 0.5;
+      const isVisible = rect.top <= windowHeight * 0.1 && rect.bottom >= windowHeight * 0.9;
 
       if (isVisible) {
         currentSection = id;
       }
     }
   });
+
+  // Если ни одна секция не соответствует строгим критериям, проверяем hero
+  if (!currentSection) {
+    const heroElement = document.getElementById('hero');
+    if (heroElement) {
+      const rect = heroElement.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Hero считается активным если он видим на экране (даже в нижней части)
+      if (rect.top <= windowHeight && rect.bottom >= 0) {
+        currentSection = 'hero';
+      }
+    }
+  }
 
   if (currentSection && activeSection.value !== currentSection) {
     activeSection.value = currentSection;

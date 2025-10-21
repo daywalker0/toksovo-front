@@ -124,7 +124,14 @@ const isMenuOpen = ref(false);
 
 // Отслеживаем изменение активной секции вместо скролла
 const updateScrolledState = () => {
-  scrolled.value = props.activeSection !== 'hero';
+  // Белый фон появляется только когда пользователь дошел до секции 'about' или дальше
+  scrolled.value = props.activeSection === 'about' || 
+                   props.activeSection === 'master-plan' || 
+                   props.activeSection === 'architecture' || 
+                   props.activeSection === 'infrastructure' || 
+                   props.activeSection === 'layouts' || 
+                   props.activeSection === 'construction' || 
+                   props.activeSection === 'news';
 };
 
 // Следим за изменениями активной секции

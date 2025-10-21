@@ -189,6 +189,10 @@ const openDialogVideo = () => {
   margin-top: 24px;
   flex: 1;
 
+  @media (max-width: $breakpoint-md) {
+      justify-content: space-between;
+    }
+
   @media (max-width: $breakpoint-x) {
     margin-top: 12px;
   }
@@ -268,6 +272,10 @@ const openDialogVideo = () => {
     transition: 0.3s;
     min-height: 48px;
     padding: 12px 24px;
+
+    @media (max-width: $breakpoint-md) {
+      margin-top: 20px;
+    }
 
     &:hover {
       background-color: $accent-color-orange;
