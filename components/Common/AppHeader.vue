@@ -176,10 +176,7 @@ onUnmounted(() => {
   z-index: 12341 !important;
   width: 100%;
   transition: all 0.3s ease;
-
-  @media (max-width: $breakpoint-md) {
-    background-color: rgba(248, 243, 237);
-  }
+  background-color: rgba(248, 243, 237);
 
   &__container {
     display: flex;
@@ -189,8 +186,7 @@ onUnmounted(() => {
     font-weight: 700;
     text-transform: uppercase;
     font-size: 20px;
-    min-height: 45px;
-    padding: 15px 20px 0;
+    min-height: 55px;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 18px;
@@ -322,29 +318,28 @@ onUnmounted(() => {
   }
 }
 
-.header--menu-open {
-  .header__btn-choose a {
-    color: $text-color-light;
-  }
+// Стабильные черные цвета для всех элементов хедера
+.header__btn-choose a {
+  color: #2c322c;
+}
 
-  .header__tel {
-    color: $text-color-light;
-  }
+.header__tel {
+  color: #2c322c;
+}
 
-  .header__tel--icon svg path {
-    fill: $text-color-light;
-  }
+.header__tel--icon svg path {
+  fill: #2c322c;
+}
 
-  .header__burger {
-    color: $text-color-light;
-  }
+.header__burger {
+  color: #2c322c;
+}
 
-  .header__burger--icon svg path {
-    fill: $text-color-light;
-  }
+.header__burger--icon svg path {
+  fill: #2c322c;
+}
 
-  .header__logo svg path {
-    fill: $text-color-light;
-  }
+.header__logo svg path {
+  fill: #2c322c;
 }
 </style>
