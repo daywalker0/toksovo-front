@@ -456,10 +456,6 @@ defineExpose({
       padding: 90px 20px 20px;
     }
 
-    @media (max-height: 900px) {
-      height: calc(100vh - 80px);
-    }
-
     @media (max-height: 730px) {
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -511,6 +507,8 @@ defineExpose({
 
     @media (max-height: 650px) {
       margin-top: 0;
+      height: 250px !important;
+      min-height: 250px !important;
     }
 
     // Скрываем скроллбар, но оставляем функциональность
