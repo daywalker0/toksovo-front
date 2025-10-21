@@ -178,7 +178,7 @@ onUnmounted(() => {
   transition: all 0.3s ease;
 
   @media (max-width: $breakpoint-md) {
-    background-color: rgba(248, 243, 237, 0.95);
+    background-color: rgba(248, 243, 237);
   }
 
   &__container {
