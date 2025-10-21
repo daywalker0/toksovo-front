@@ -1,24 +1,26 @@
 <template>
-  <div class="hero-section section" ref="sectionEl">
-    <div class="hero-section__container container">
-      <div class="hero-section__content">
-        <h1 class="hero-section__title" aria-label="Поинт Токсово">
-          {{ titleText }}
-        </h1>
-        <div
-          class="subtitle-text hero-section__subtitle"
-          aria-label="комфорт, который становится частью вашего дня"
-        >
-          <span class="subtitle-animated">{{ subtitleText }}</span>
+  <div class="hero-section-wrapper">
+    <div class="hero-section section" ref="sectionEl">
+      <div class="hero-section__container container">
+        <div class="hero-section__content">
+          <h1 class="hero-section__title" aria-label="Поинт Токсово">
+            {{ titleText }}
+          </h1>
+          <div
+            class="subtitle-text hero-section__subtitle"
+            aria-label="комфорт, который становится частью вашего дня"
+          >
+            <span class="subtitle-animated">{{ subtitleText }}</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="hero-section__parallax-container" ref="parallaxContainer">
-      <div class="hero-section__sky" ref="skyEl">
-        <img :src="bgSkyImg" alt="Небо на фоне" loading="eager" />
-      </div>
-      <div class="hero-section__bg" ref="renderEl">
-        <img :src="heroBgImg" alt="Жилой комплекс Поинт Токсово" loading="eager" />
+      <div class="hero-section__parallax-container" ref="parallaxContainer">
+        <div class="hero-section__sky" ref="skyEl">
+          <img :src="bgSkyImg" alt="Небо на фоне" loading="eager" />
+        </div>
+        <div class="hero-section__bg" ref="renderEl">
+          <img :src="heroBgImg" alt="Жилой комплекс Поинт Токсово" loading="eager" />
+        </div>
       </div>
     </div>
   </div>
@@ -135,6 +137,14 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 @use '@/assets/styles/variables.scss' as *;
+
+.hero-section-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 300vh;
+  overflow: hidden;
+}
 
 .hero-section {
   position: relative;
