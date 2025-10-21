@@ -7,14 +7,10 @@
       <div v-if="isMobile" class="mobile-slider">
         <DefaultSlider
           :slides="slides"
-          :slides-per-view="'auto'"
-          :space-between="16"
-          :centered-slides="true"
-          :autoplay="false"
-          :show-pagination="false"
-          :show-navigation="false"
+          :slides-per-view="2"
+          :space-between="8"
+          :show-navigation="true"
           :hide-navigation-on-mobile="true"
-          :breakpoints="{}"
         >
           <template #slide="{ slide }">
             <div class="card mobile-card">
@@ -564,20 +560,29 @@ onBeforeUnmount(() => {
 .mobile-slider {
   margin-top: 40px;
 
-  // Переопределяем стили слайдера
-  :deep(.default-swiper) {
-    overflow: visible;
+  @media (max-width: $breakpoint-x) {
+    ::v-deep(.default-slider) {
+      overflow: visible;
+    }
 
-    .swiper-slide {
-      width: 80% !important;
-      transition: transform 0.3s ease;
+    ::v-deep(.slider-container) {
+      overflow: visible;
+    }
+
+    ::v-deep(.default-swiper) {
+      overflow: visible;
+    }
+
+    // Убираем стили слайдов для мобильной версии
+    ::v-deep(.slide) {
       border: none !important;
+      border-radius: 0 !important;
       padding: 0 !important;
-      background-color: transparent !important;
-
+      background: transparent !important;
+      
       &:hover {
         border: none !important;
-        background-color: transparent !important;
+        background: transparent !important;
       }
     }
   }
