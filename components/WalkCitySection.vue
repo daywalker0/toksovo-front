@@ -28,11 +28,11 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import walkCityImg from '@/assets/img/walk-city-img.jpg';
 
-const isMobile = ref(false);
+const isMobile = ref(process.client ? window.innerWidth <= 1280 : false);
 
 onMounted(() => {
   const checkMobile = () => {
-    isMobile.value = window.innerWidth <= 1024;
+    isMobile.value = window.innerWidth <= 1280;
   };
 
   checkMobile();
@@ -57,8 +57,8 @@ onMounted(() => {
   align-items: center;
   overflow: hidden;
 
-  @media (max-width: $breakpoint-md) {
-    height: 90svh;
+  @media (max-width: $breakpoint-lg) {
+    height: 100%;
     width: 100%;
     flex-shrink: initial;
   }
@@ -71,7 +71,7 @@ onMounted(() => {
     position: relative;
     height: 100%;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: $breakpoint-lg) {
       display: flex;
       flex-direction: column;
     }
@@ -89,15 +89,11 @@ onMounted(() => {
     }
 
     @media (max-width: $breakpoint-lg) {
-      margin-left: 80px;
-    }
-
-    @media (max-width: $breakpoint-md) {
       margin-top: 0;
       margin-left: 0;
       display: flex;
       flex-direction: column;
-      padding: 40px 20px;
+      padding: 40px 20px 0;
       height: 100%;
       align-items: center;
       text-align: center;
@@ -117,7 +113,7 @@ onMounted(() => {
     align-items: center;
     gap: 20px;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: $breakpoint-lg) {
       font-size: 50px;
       max-width: 350px;
       line-height: 90%;
@@ -171,10 +167,6 @@ onMounted(() => {
     line-height: 140%;
 
     @media (max-width: $breakpoint-lg) {
-      font-size: 18px;
-    }
-
-    @media (max-width: $breakpoint-md) {
       position: static;
       max-width: 490px;
       font-size: 16px;
@@ -204,12 +196,13 @@ onMounted(() => {
       display: block;
     }
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: $breakpoint-lg) {
       position: static;
       width: 100vw;
       margin-left: -20px;
       margin-right: -20px;
       height: auto;
+      max-height: 400px;
       flex: 1;
       min-height: 450px;
 

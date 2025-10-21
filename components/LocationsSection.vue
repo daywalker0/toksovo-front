@@ -511,7 +511,7 @@ onBeforeUnmount(() => {
     line-height: 80%;
     margin-bottom: 4px;
 
-    @media (max-width: 1240px) {
+    @media (max-width: 1280px) {
       font-size: 24px;
     }
 
@@ -534,7 +534,7 @@ onBeforeUnmount(() => {
     overflow-wrap: break-word;
     hyphens: none;
 
-    @media (max-width: 1240px) {
+    @media (max-width: 1280px) {
       font-size: 16px;
     }
 
@@ -550,7 +550,7 @@ onBeforeUnmount(() => {
     line-height: 80%;
     white-space: nowrap;
 
-    @media (max-width: 1240px) {
+    @media (max-width: 1280px) {
       font-size: 20px;
     }
 

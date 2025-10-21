@@ -606,7 +606,7 @@ const switchImage = index => {
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 1240px) {
+  @media (max-width: 1280px) {
     max-height: 400px;
   }
 
@@ -627,7 +627,7 @@ const switchImage = index => {
   height: auto;
   object-fit: contain;
 
-  @media (max-width: 1240px) {
+  @media (max-width: 1280px) {
     max-height: 400px;
   }
 

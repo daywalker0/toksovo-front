@@ -152,7 +152,7 @@ const props = defineProps({
         slidesPerView: 3,
         spaceBetween: 20,
       },
-      1240: {
+      1280: {
         slidesPerView: 3,
         spaceBetween: 45,
       },
