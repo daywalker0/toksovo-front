@@ -359,7 +359,7 @@ defineExpose({
   z-index: 1000;
   visibility: hidden;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     height: 100svh;
   }
 
@@ -406,8 +406,9 @@ defineExpose({
       padding: 20px 30px 30px;
     }
 
-    @media (max-width: $breakpoint-x) {
-      height: calc(100vh - 120px);
+    @media (max-width: $breakpoint-md) {
+      height: 100vh;
+      height: 100svh;
       justify-content: space-between;
       padding: 90px 20px 20px;
     }
@@ -421,6 +422,10 @@ defineExpose({
     flex-direction: column;
     align-items: center;
     text-align: center;
+
+    @media (max-width: $breakpoint-md) {
+      justify-content: flex-start;
+    }
   }
 
   &__item {
@@ -439,6 +444,10 @@ defineExpose({
     transform: translateX(-50px);
     text-decoration: none;
     color: inherit;
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 32px;
+    }
 
     @media (max-width: $breakpoint-x) {
       font-size: 26px;
@@ -529,6 +538,14 @@ defineExpose({
   font-size: 40px;
   font-weight: 700;
   line-height: 100%;
+
+  @media (max-width: $breakpoint-md) {
+    font-size: 32px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    font-size: 26px;
+  }
 }
 
 .menu__cursor {
@@ -549,12 +566,18 @@ defineExpose({
   width: 100%;
   display: flex;
   justify-content: space-between;
-  @media (max-width: $breakpoint-x) {
+
+  @media (max-width: $breakpoint-md) {
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    padding-bottom: 40px;
+  }
+
+  @media (max-width: $breakpoint-x) {
     padding-bottom: 48px;
   }
+
   &--top {
     display: flex;
     font-weight: 700;
@@ -569,6 +592,11 @@ defineExpose({
   justify-content: center;
   align-items: center;
   margin-bottom: -20px;
+
+  @media (max-width: $breakpoint-md) {
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
 }
 
 .menu--doc-link {
@@ -578,7 +606,8 @@ defineExpose({
   opacity: 0;
   transform: translateX(-30px);
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
+    text-align: center;
     font-size: 12px;
   }
 }

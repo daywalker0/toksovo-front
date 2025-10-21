@@ -177,7 +177,7 @@ onUnmounted(() => {
   width: 100%;
   transition: all 0.3s ease;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     background-color: rgba(248, 243, 237, 0.95);
   }
 
@@ -196,7 +196,7 @@ onUnmounted(() => {
       font-size: 18px;
     }
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       min-height: 60px;
       padding: 15px 20px 15px;
     }
@@ -205,7 +205,8 @@ onUnmounted(() => {
   &__btn-choose {
     position: relative;
     z-index: 9999;
-    @media (max-width: $breakpoint-x) {
+
+    @media (max-width: $breakpoint-md) {
       display: none;
     }
 
@@ -283,7 +284,7 @@ onUnmounted(() => {
     outline: none;
   }
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     transform: none;
   }
 
@@ -292,7 +293,7 @@ onUnmounted(() => {
       width: 155px;
     }
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       width: 135px;
       height: 28px;
     }
@@ -304,7 +305,7 @@ onUnmounted(() => {
   transform: translateX(35px) translateY(-20px);
   pointer-events: none;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     opacity: 1 !important;
     transform: translateY(0px) !important;
     pointer-events: auto !important;
@@ -316,7 +317,7 @@ onUnmounted(() => {
   pointer-events: auto !important;
   transform: translateX(35px) translateY(0) !important;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     transform: translateX(0) translateY(0) !important;
   }
 }
