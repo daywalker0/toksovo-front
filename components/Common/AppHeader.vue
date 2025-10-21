@@ -145,11 +145,14 @@ const openMenu = () => {
 };
 
 const closeMenu = () => {
+  // Меняем цвет сразу при начале закрытия меню
   isMenuOpen.value = false;
 };
 
 const handleMenuToggle = () => {
   if (isMenuOpen.value) {
+    // Меняем цвет сразу при нажатии на кнопку закрытия
+    isMenuOpen.value = false;
     // Закрываем меню
     if (menuComponent.value) {
       menuComponent.value.closeMenu();
@@ -343,5 +346,32 @@ onMounted(() => {
 
 .header__logo svg path {
   fill: #2c322c;
+}
+
+// Белые цвета когда меню открыто
+.header--menu-open {
+  .header__btn-choose a {
+    color: $text-color-light;
+  }
+
+  .header__tel {
+    color: $text-color-light;
+  }
+
+  .header__tel--icon svg path {
+    fill: $text-color-light;
+  }
+
+  .header__burger {
+    color: $text-color-light;
+  }
+
+  .header__burger--icon svg path {
+    fill: $text-color-light;
+  }
+
+  .header__logo svg path {
+    fill: $text-color-light;
+  }
 }
 </style>
