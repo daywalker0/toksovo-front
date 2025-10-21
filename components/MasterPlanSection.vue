@@ -978,13 +978,15 @@ onBeforeUnmount(() => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  background: rgba(230, 223, 216, 0.9);
+  background: rgba(44, 50, 44, 0.4);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
   border-radius: 7px;
   border: 1px solid $text-color-primary;
-  padding: 8px 24px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 6px;
 }
 
 .mobile-nav-text {
@@ -997,8 +999,8 @@ onBeforeUnmount(() => {
 }
 
 .mobile-nav-btn {
-  width: 32px;
-  height: 32px;
+  width: 6px;
+  height: 12px;
   border-radius: 50%;
   background: transparent;
   color: $text-color-white;

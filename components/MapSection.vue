@@ -482,7 +482,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background: #f5f5f5;
+  background: $bg-color-1;
   font-family: 'Akrobat';
 
   @media (max-width: $breakpoint-x) {

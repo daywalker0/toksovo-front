@@ -41,8 +41,9 @@ const props = defineProps({
   @media (max-width: $breakpoint-md) {
     padding-top: 80px;
   }
-  @media (max-width: $breakpoint-sm) {
+  @media (max-width: $breakpoint-x) {
     padding-top: 40px;
+    padding-bottom: 20px;
   }
 }
 
@@ -66,7 +67,7 @@ const props = defineProps({
 
   @media (max-width: $breakpoint-x) {
     max-width: 100%;
-    margin: 20px 0 20px;
+    margin: 20px 0 0px;
     text-align: start;
   }
 }

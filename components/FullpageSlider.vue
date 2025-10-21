@@ -455,7 +455,6 @@ onUnmounted(() => {
 // Мобильная версия с DefaultSlider
 .mobile-slider {
   width: 100%;
-  padding: 20px 0;
 
   // Показываем части соседних слайдов (как в NewsSection)
   ::v-deep(.default-slider) {

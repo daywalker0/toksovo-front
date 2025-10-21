@@ -184,7 +184,7 @@ onMounted(() => {
     }
 
     @media (max-width: $breakpoint-x) {
-      margin-top: 20px;
+      margin-bottom: 50px;
       text-align: left;
     }
   }
