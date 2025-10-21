@@ -236,10 +236,10 @@ const initParallax = () => {
 
   destroyParallax();
 
-  const isMd = window.innerWidth <= 1024;
+  const isSm = window.innerWidth <= 768;
 
-  if (isMd) {
-    // Для md: левая колонка ниже, правая выше
+  if (isSm) {
+    // Для sm и ниже: 2 колонки - левая колонка ниже, правая выше
     gsap.set(leftColumn.value, {
       y: 300,
       force3D: true,
@@ -249,7 +249,7 @@ const initParallax = () => {
       force3D: true,
     });
   } else {
-    // Для больших экранов: 3 колонки
+    // Для md и больше: 3 колонки
     gsap.set(centerColumn.value, {
       y: 0,
       force3D: true,
@@ -264,8 +264,8 @@ const initParallax = () => {
     });
   }
 
-  if (isMd) {
-    // Для md: анимация двух колонок
+  if (isSm) {
+    // Для sm и ниже: анимация двух колонок
     const leftTween = gsap.to(leftColumn.value, {
       y: -500,
       ease: 'none',
@@ -294,7 +294,7 @@ const initParallax = () => {
     });
     triggers.push(rightTween);
   } else {
-    // Для больших экранов: анимация трех колонок
+    // Для md и больше: анимация трех колонок
     const centerTween = gsap.to(centerColumn.value, {
       y: 350,
       ease: 'none',
@@ -374,7 +374,7 @@ onBeforeUnmount(() => {
 .locations-section {
   padding: 60px 0 260px;
 
-  @media (max-width: $breakpoint-md) {
+  @media (max-width: $breakpoint-sm) {
     padding: 60px 0 120px;
   }
 
@@ -397,7 +397,7 @@ onBeforeUnmount(() => {
   margin: 100px 0;
   overflow: visible;
 
-  @media (max-width: $breakpoint-md) {
+  @media (max-width: $breakpoint-sm) {
     margin: 180px 0 -300px;
     min-height: 1200px;
     align-items: flex-start;
@@ -417,11 +417,20 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $breakpoint-md) {
+    gap: 20px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
     gap: 40px;
     max-width: 100%;
     width: 100%;
     padding: 0 40px;
     align-items: flex-start;
+  }
+
+  @media (max-width: 600px) {
+    gap: 20px;
+    padding: 0 20px;
   }
 }
 
@@ -432,7 +441,7 @@ onBeforeUnmount(() => {
   transform: translateZ(0);
   backface-visibility: hidden;
 
-  @media (max-width: $breakpoint-md) {
+  @media (max-width: $breakpoint-sm) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -440,7 +449,7 @@ onBeforeUnmount(() => {
   }
 
   &.center-column {
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: $breakpoint-sm) {
       display: none;
     }
   }
@@ -457,6 +466,11 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $breakpoint-md) {
+    width: 260px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
     width: 100%;
     margin-bottom: 40px;
   }
