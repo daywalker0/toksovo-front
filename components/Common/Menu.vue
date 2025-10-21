@@ -143,6 +143,19 @@ const openMenu = () => {
   // Останавливаем Lenis скролл
   stopScroll();
 
+  // Принудительно включаем скролл для списка меню и отключаем Lenis
+  nextTick(() => {
+    const menuList = document.querySelector('.menu__list');
+    if (menuList) {
+      menuList.style.overflowY = 'auto';
+      menuList.style.webkitOverflowScrolling = 'touch';
+      
+      // Отключаем Lenis для списка меню
+      menuList.setAttribute('data-lenis-prevent', '');
+      menuList.style.touchAction = 'pan-y';
+    }
+  });
+
   if (typeof document !== 'undefined') {
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = 'hidden';
@@ -399,7 +412,7 @@ defineExpose({
     padding: 26px 44px 44px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
 
     @media (max-width: $breakpoint-md) {
@@ -421,15 +434,49 @@ defineExpose({
   &__list {
     list-style: none;
     padding: 0;
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    height: 400px !important;
+    min-height: 400px !important;
+    margin-top: 100px;
 
     @media (max-width: $breakpoint-md) {
       justify-content: flex-start;
     }
+
+    @media (max-height: 650px) {
+      height: 300px !important;
+      min-height: 300px !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    // Скрываем скроллбар, но оставляем функциональность
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+    // Принудительное переполнение для тестирования скролла
+    &::after {
+      content: '';
+      display: block;
+      height: 1000px;
+      width: 1px;
+    }
+
+    // Принудительное включение скролла
+    scroll-behavior: smooth !important;
+    overscroll-behavior: contain !important;
+    
+    // Отключаем Lenis для этого элемента
+    touch-action: pan-y !important;
   }
 
   &__item {
