@@ -49,201 +49,82 @@ onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger);
 
   const isMobile = window.innerWidth <= 599;
-  const isLowEndDevice = window.innerWidth <= 599 && window.innerHeight <= 667;
   const startScale = isMobile ? 3.1 : 2.3;
 
   const titleEl = sectionEl.value?.querySelector('.hero-section__title');
   const subtitleEl = sectionEl.value?.querySelector('.hero-section__subtitle');
 
-  // Оптимизация для слабых устройств - отключаем анимации полностью
-  if (isLowEndDevice) {
-    // Минимальная настройка для слабых устройств
-    gsap.set(renderEl.value, {
-      transformOrigin: '50% 60%',
-      scale: 1, // Устанавливаем финальный масштаб сразу
+  gsap.set(renderEl.value, {
+    transformOrigin: isMobile ? '50% 60%' : '50% 50%',
+    scale: startScale,
+    force3D: true,
+    willChange: 'transform',
+  });
+
+  if (titleEl) {
+    gsap.set(titleEl, {
+      y: 0,
+      opacity: 1,
       force3D: true,
-    });
-
-    if (titleEl) {
-      gsap.set(titleEl, {
-        y: 0,
-        opacity: 1,
-        force3D: true,
-      });
-    }
-
-    if (subtitleEl) {
-      gsap.set(subtitleEl, {
-        y: 0,
-        opacity: 1,
-        force3D: true,
-      });
-    }
-
-    // Простой ScrollTrigger только для opacity
-    ScrollTrigger.create({
-      trigger: sectionEl.value,
-      start: 'top top',
-      end: 'bottom top',
-      refreshPriority: -2, // Очень низкий приоритет
-      onLeave: () => {
-        if (renderEl.value) renderEl.value.style.opacity = '0';
-        if (skyEl.value) skyEl.value.style.opacity = '0';
-      },
-      onEnterBack: () => {
-        if (renderEl.value) renderEl.value.style.opacity = '1';
-        if (skyEl.value) skyEl.value.style.opacity = '1';
-      },
     });
   }
-  // Оптимизация для мобильных устройств
-  else if (isMobile) {
-    // На мобильных упрощаем анимации для лучшей производительности
-    gsap.set(renderEl.value, {
-      transformOrigin: '50% 60%',
-      scale: startScale,
+
+  if (subtitleEl) {
+    gsap.set(subtitleEl, {
+      y: 0,
+      opacity: 1,
       force3D: true,
-      willChange: 'transform',
-    });
-
-    if (titleEl) {
-      gsap.set(titleEl, {
-        y: 0,
-        opacity: 1,
-        force3D: true,
-      });
-    }
-
-    if (subtitleEl) {
-      gsap.set(subtitleEl, {
-        y: 0,
-        opacity: 1,
-        force3D: true,
-      });
-    }
-
-    // Упрощенная анимация для мобильных с меньшей частотой обновления
-    tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: {
-        trigger: sectionEl.value,
-        start: 'top top',
-        end: 'bottom bottom+=800',
-        scrub: 1, // Увеличиваем scrub для менее частых обновлений
-        fastScrollEnd: true,
-        invalidateOnRefresh: true,
-        refreshPriority: -1, // Низкий приоритет для мобильных
-      },
-    });
-
-    tl.to(
-      renderEl.value,
-      {
-        scale: 1,
-        duration: 1,
-        ease: 'none',
-      },
-      0
-    );
-
-    // Упрощаем анимацию подзаголовка на мобильных
-    if (subtitleEl) {
-      gsap.set(subtitleEl, {
-        y: 0,
-        opacity: 1,
-        force3D: true,
-      });
-    }
-
-    // Упрощенный ScrollTrigger для мобильных
-    ScrollTrigger.create({
-      trigger: sectionEl.value,
-      start: 'top top',
-      end: 'bottom top',
-      refreshPriority: -1,
-      onLeave: () => {
-        if (renderEl.value) renderEl.value.style.opacity = '0';
-        if (skyEl.value) skyEl.value.style.opacity = '0';
-      },
-      onEnterBack: () => {
-        if (renderEl.value) renderEl.value.style.opacity = '1';
-        if (skyEl.value) skyEl.value.style.opacity = '1';
-      },
-    });
-  } else {
-    // Полная анимация для десктопа
-    gsap.set(renderEl.value, {
-      transformOrigin: '50% 50%',
-      scale: startScale,
-      force3D: true,
-      willChange: 'transform',
-    });
-
-    if (titleEl) {
-      gsap.set(titleEl, {
-        y: 0,
-        opacity: 1,
-        force3D: true,
-      });
-    }
-
-    if (subtitleEl) {
-      gsap.set(subtitleEl, {
-        y: 0,
-        opacity: 1,
-        force3D: true,
-      });
-    }
-
-    tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: {
-        trigger: sectionEl.value,
-        start: 'top top',
-        end: 'bottom bottom+=1000',
-        scrub: true,
-        fastScrollEnd: true,
-        invalidateOnRefresh: true,
-      },
-    });
-
-    tl.to(
-      renderEl.value,
-      {
-        scale: 1,
-        duration: 1,
-        ease: 'none',
-      },
-      0
-    );
-
-    if (subtitleEl) {
-      tl.to(
-        subtitleEl,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.3,
-          ease: 'power1.out',
-        },
-        0.2
-      );
-    }
-
-    ScrollTrigger.create({
-      trigger: sectionEl.value,
-      start: 'top top',
-      end: 'bottom top',
-      onLeave: () => {
-        if (renderEl.value) renderEl.value.style.opacity = '0';
-        if (skyEl.value) skyEl.value.style.opacity = '0';
-      },
-      onEnterBack: () => {
-        if (renderEl.value) renderEl.value.style.opacity = '1';
-        if (skyEl.value) skyEl.value.style.opacity = '1';
-      },
     });
   }
+
+  tl = gsap.timeline({
+    defaults: { ease: 'none' },
+    scrollTrigger: {
+      trigger: sectionEl.value,
+      start: 'top top',
+      end: 'bottom bottom+=1000',
+      scrub: isMobile ? 0.5 : true,
+      fastScrollEnd: true,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  tl.to(
+    renderEl.value,
+    {
+      scale: 1,
+      duration: 1,
+      ease: 'none',
+    },
+    0
+  );
+
+  if (subtitleEl) {
+    tl.to(
+      subtitleEl,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.3,
+        ease: 'power1.out',
+      },
+      0.2
+    );
+  }
+
+  ScrollTrigger.create({
+    trigger: sectionEl.value,
+    start: 'top top',
+    end: 'bottom top',
+    onLeave: () => {
+      if (renderEl.value) renderEl.value.style.opacity = '0';
+      if (skyEl.value) skyEl.value.style.opacity = '0';
+    },
+    onEnterBack: () => {
+      if (renderEl.value) renderEl.value.style.opacity = '1';
+      if (skyEl.value) skyEl.value.style.opacity = '1';
+    },
+  });
 });
 
 onBeforeUnmount(() => {
@@ -263,24 +144,12 @@ onBeforeUnmount(() => {
   z-index: 1;
   height: 300vh;
   overflow: hidden;
-  
-  // Оптимизация для мобильных устройств
-  @media (max-width: $breakpoint-x) {
-    height: 250vh; // Уменьшаем высоту для мобильных
-    contain: layout style paint; // CSS containment для оптимизации
-  }
 }
 
 .hero-section {
   position: relative;
   min-height: 300vh; // соответствует длине анимации
   overflow: hidden;
-  
-  // Оптимизация для мобильных устройств
-  @media (max-width: $breakpoint-x) {
-    min-height: 250vh; // Уменьшаем высоту для мобильных
-    contain: layout style paint; // CSS containment для оптимизации
-  }
 
   &__container {
     position: relative;
@@ -355,23 +224,13 @@ onBeforeUnmount(() => {
     transform: translateZ(0);
     transition: opacity 0.3s ease;
 
-    // Оптимизация для мобильных устройств
-    @media (max-width: $breakpoint-x) {
-      contain: layout style paint; // CSS containment для оптимизации
-      will-change: auto; // Отключаем will-change на мобильных для экономии ресурсов
-    }
+
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       will-change: transform;
-      
-      // Оптимизация для мобильных устройств
-      @media (max-width: $breakpoint-x) {
-        will-change: auto; // Отключаем will-change на мобильных
-        transform: translateZ(0); // Принудительное использование GPU
-      }
     }
   }
 
@@ -388,11 +247,9 @@ onBeforeUnmount(() => {
     will-change: transform;
     transition: opacity 0.3s ease;
 
-    // Оптимизация для мобильных устройств
+
     @media (max-width: $breakpoint-x) {
       transform-origin: 50% 60%;
-      contain: layout style paint; // CSS containment для оптимизации
-      will-change: transform; // Оставляем только для трансформаций
     }
 
     img {
@@ -401,11 +258,6 @@ onBeforeUnmount(() => {
       object-fit: cover;
       object-position: center bottom;
       display: block;
-      
-      // Оптимизация для мобильных устройств
-      @media (max-width: $breakpoint-x) {
-        transform: translateZ(0); // Принудительное использование GPU
-      }
     }
   }
 }
@@ -448,27 +300,6 @@ onBeforeUnmount(() => {
   .subtitle-animated {
     opacity: 1 !important;
     transform: none !important;
-  }
-}
-
-// Дополнительная оптимизация для слабых устройств
-@media (max-width: $breakpoint-x) and (max-height: 667px) {
-  .hero-section-wrapper {
-    height: 200vh; // Еще больше уменьшаем высоту для маленьких экранов
-  }
-  
-  .hero-section {
-    min-height: 200vh;
-  }
-  
-  .hero-section__container {
-    min-height: 120vh; // Уменьшаем минимальную высоту контейнера
-  }
-  
-  // Отключаем сложные анимации на слабых устройствах
-  .hero-section__bg,
-  .hero-section__sky {
-    will-change: auto;
   }
 }
 </style>

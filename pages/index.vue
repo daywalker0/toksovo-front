@@ -247,98 +247,50 @@ const initHorizontalScroll = () => {
 
 onMounted(() => {
   nextTick(() => {
+    initHorizontalScroll();
+
     const isMobile = window.innerWidth <= 599;
-    
-    // На мобильных устройствах упрощаем инициализацию
-    if (isMobile) {
-      // Упрощенная инициализация для мобильных
-      const refreshDelays = [500, 1500]; // Меньше обновлений
-      refreshDelays.forEach(delay => {
-        setTimeout(() => {
-          ScrollTrigger.refresh();
-        }, delay);
-      });
+    const refreshDelays = isMobile ? [500, 2000] : [100, 300, 500, 1000, 2000, 3000, 4000];
+    refreshDelays.forEach(delay => {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, delay);
+    });
 
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          ScrollTrigger.refresh();
-        }, 500); // Увеличиваем задержку
-      });
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 300);
+    });
 
-      let resizeTimeout;
-      const handleResize = () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          ScrollTrigger.refresh();
-        }, 500); // Увеличиваем задержку
-      };
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        initHorizontalScroll();
+        ScrollTrigger.refresh();
+      }, 250);
+    };
 
-      window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize);
 
-      // Упрощенный обработчик скролла для мобильных
-      let isScrolling = false;
-      const handleScroll = () => {
-        if (isScrolling) return;
-        isScrolling = true;
+    let isScrolling = false;
+    const handleScroll = () => {
+      if (isScrolling) return;
+      isScrolling = true;
 
-        setTimeout(() => {
-          updateActiveSection();
-          isScrolling = false;
-        }, 150); // Увеличиваем задержку для экономии ресурсов
-      };
+      setTimeout(() => {
+        updateActiveSection();
+        isScrolling = false;
+      }, 100);
+    };
 
-      window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-      onBeforeUnmount(() => {
-        window.removeEventListener('scroll', handleScroll);
-        window.removeEventListener('resize', handleResize);
-      });
-    } else {
-      // Полная инициализация для десктопа
-      initHorizontalScroll();
-
-      const refreshDelays = [100, 300, 500, 1000, 2000, 3000, 4000];
-      refreshDelays.forEach(delay => {
-        setTimeout(() => {
-          ScrollTrigger.refresh();
-        }, delay);
-      });
-
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          ScrollTrigger.refresh();
-        }, 300);
-      });
-
-      let resizeTimeout;
-      const handleResize = () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          initHorizontalScroll();
-          ScrollTrigger.refresh();
-        }, 250);
-      };
-
-      window.addEventListener('resize', handleResize);
-
-      let isScrolling = false;
-      const handleScroll = () => {
-        if (isScrolling) return;
-        isScrolling = true;
-
-        setTimeout(() => {
-          updateActiveSection();
-          isScrolling = false;
-        }, 100);
-      };
-
-      window.addEventListener('scroll', handleScroll, { passive: true });
-
-      onBeforeUnmount(() => {
-        window.removeEventListener('scroll', handleScroll);
-        window.removeEventListener('resize', handleResize);
-      });
-    }
+    onBeforeUnmount(() => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    });
   });
 });
 
@@ -386,11 +338,6 @@ onBeforeUnmount(() => {
     transform: none;
     will-change: auto;
   }
-  
-  // Дополнительная оптимизация для мобильных устройств
-  @media (max-width: $breakpoint-x) {
-    contain: layout style paint; // CSS containment для оптимизации
-  }
 
   > * {
     width: 100vw;
@@ -400,11 +347,6 @@ onBeforeUnmount(() => {
     @media (max-width: $breakpoint-lg) {
       height: 100%;
       width: 100%;
-    }
-    
-    // Дополнительная оптимизация для мобильных устройств
-    @media (max-width: $breakpoint-x) {
-      contain: layout style paint; // CSS containment для оптимизации
     }
   }
 }

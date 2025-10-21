@@ -10,38 +10,30 @@ export default defineNuxtPlugin(() => {
 
   // Инициализируем Lenis только на клиенте
   if (process.client) {
-    // Проверяем, не мобильное ли устройство
-    const isMobile = window.innerWidth <= 599;
-    
-    // На мобильных устройствах отключаем Lenis для лучшей производительности
-    if (!isMobile) {
-      // Создаем инстанс Lenis только для десктопа
-      lenis = new Lenis({
-        duration: 1.5, // Длительность инерции для еще большей плавности
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing функция для плавности
-        orientation: 'vertical', // Вертикальный скролл
-        gestureOrientation: 'vertical', // Жесты
-        smoothWheel: true, // Плавный скролл колесом мыши
-        smoothTouch: false, // Оставляем нативный скролл на touch устройствах (для лучшей производительности)
-        wheelMultiplier: 1, // Чувствительность колеса мыши
-        touchMultiplier: 2, // Чувствительность touch
-        infinite: false, // Отключаем бесконечный скролл
-        autoResize: true, // Автоматическое обновление при изменении размера
-        lerp: 0.08, // Увеличенная плавность интерполяции (меньше = плавнее)
-        normalizeWheel: true, // Нормализация скорости колеса для плавности
-      });
-    }
+    // Создаем инстанс Lenis
+    lenis = new Lenis({
+      duration: 1.5, // Длительность инерции для еще большей плавности
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing функция для плавности
+      orientation: 'vertical', // Вертикальный скролл
+      gestureOrientation: 'vertical', // Жесты
+      smoothWheel: true, // Плавный скролл колесом мыши
+      smoothTouch: false, // Оставляем нативный скролл на touch устройствах (для лучшей производительности)
+      wheelMultiplier: 1, // Чувствительность колеса мыши
+      touchMultiplier: 2, // Чувствительность touch
+      infinite: false, // Отключаем бесконечный скролл
+      autoResize: true, // Автоматическое обновление при изменении размера
+      lerp: 0.08, // Увеличенная плавность интерполяции (меньше = плавнее)
+      normalizeWheel: true, // Нормализация скорости колеса для плавности
+    });
 
-    // Интеграция с GSAP ScrollTrigger (только если Lenis активен)
-    if (lenis) {
-      // Обновляем ScrollTrigger при каждом кадре Lenis
-      lenis.on('scroll', ScrollTrigger.update);
+    // Интеграция с GSAP ScrollTrigger
+    // Обновляем ScrollTrigger при каждом кадре Lenis
+    lenis.on('scroll', ScrollTrigger.update);
 
-      // Добавляем Lenis в ticker GSAP для синхронизации
-      gsap.ticker.add(time => {
-        lenis.raf(time * 1000); // Передаем время в миллисекундах
-      });
-    }
+    // Добавляем Lenis в ticker GSAP для синхронизации
+    gsap.ticker.add(time => {
+      lenis.raf(time * 1000); // Передаем время в миллисекундах
+    });
 
     // Отключаем задержку GSAP ticker для максимальной плавности
     gsap.ticker.lagSmoothing(0);
