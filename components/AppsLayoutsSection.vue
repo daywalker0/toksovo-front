@@ -11,10 +11,6 @@
                 <div class="info-label">Площадь</div>
                 <div class="info-value">{{ currentApartment.area }} М²</div>
               </div>
-              <div class="info-item">
-                <div class="info-label">Этажность</div>
-                <div class="info-value">{{ currentApartment.floors }}</div>
-              </div>
             </div>
             <div class="info-item info-item-price">
               <div class="info-label">Стоимость</div>
@@ -38,16 +34,13 @@
       <div class="gallery-block">
         <div class="apps-switcher">
           <div
-            v-for="(apps, index) in apartmentTypes"
-            :key="apps.id"
+            v-for="(category, index) in apartmentCategories"
+            :key="category.id"
             class="apps-switcher--item"
-            :class="{ active: currentType === apps.id }"
-            @click="switchApartmentType(apps.id)"
+            :class="{ active: currentCategory === category.id }"
+            @click="switchCategory(category.id)"
           >
-            <template v-if="apps.id === 0"> Студии </template>
-            <template v-else>
-              {{ apps.id }}
-            </template>
+            {{ category.name }}
           </div>
         </div>
 
@@ -97,13 +90,13 @@
 
         <div class="thumbnails-wrapper">
           <div
-            v-for="(image, index) in currentApartment.images"
-            :key="index"
+            v-for="(apartment, index) in currentCategoryData.apartments"
+            :key="apartment.id"
             class="thumbnail"
-            :class="{ active: currentImageIndex === index }"
-            @click="switchImage(index)"
+            :class="{ active: currentApartmentIndex === index }"
+            @click="switchApartment(index)"
           >
-            <img :src="image" :alt="`Thumbnail ${index + 1}`" />
+            <img :src="apartment.images[0]" :alt="`${apartment.name} thumbnail`" />
           </div>
         </div>
       </div>
@@ -122,63 +115,114 @@ defineProps({
   },
 });
 
-const currentType = ref(0); // текущий выбранный тип квартиры
+const currentCategory = ref(0); // текущая выбранная категория (Студии, 1, 2, 3)
+const currentApartmentIndex = ref(0); // текущая квартира в категории
 const currentImageIndex = ref(0); // текущее изображение в слайдере
 
-// Типы квартир с данными
-const apartmentTypes = ref([
+// Категории квартир
+const apartmentCategories = ref([
   {
     id: 0,
-    name: 'Cтудии',
-    area: '15.8',
-    floors: '2-9',
-    price: '312 660',
-    features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-    images: [appsItem1, appsItem1, appsItem1],
+    name: 'Студии',
+    apartments: [
+      {
+        id: 0,
+        name: '13-1',
+        area: '28,63 м',
+        price: '8 589 000 р',
+        features: ['- Большой балкон'],
+        images: [appsItem1, appsItem1, appsItem1],
+      },
+      {
+        id: 1,
+        name: '14-1',
+        area: '29,54 м',
+        price: '8 862 000 р',
+        features: ['- Большой балкон', '- Панорамное остекление'],
+        images: [appsItem1, appsItem1, appsItem1],
+      },
+      {
+        id: 1,
+        name: '11-1',
+        area: '28,84 м',
+        price: '8 652 000 р',
+        features: ['- Балкон', '- Панорамное остекление', '- Продуманная кухонная зона'],
+        images: [appsItem1, appsItem1, appsItem1],
+      },
+    ]
   },
   {
     id: 1,
-    name: '1-К. №14',
-    area: '31.8',
-    floors: '2-9',
-    price: '312 660',
-    features: ['Просторная кухня гостинная', 'Дополнительная гардеробная'],
-    images: [appsItem1, appsItem1, appsItem1],
+    name: '1',
+    apartments: [
+      {
+        id: 0,
+        name: '15-1',
+        area: '40,68 м',
+        price: '12 204 000 р',
+        features: ['- Просторная кухня-гостиная', '- Балкон на кухне'],
+        images: [appsItem1, appsItem1, appsItem1],
+      },
+      {
+        id: 1,
+        name: '10-1',
+        area: '40,00 м',
+        price: '12 000 000 р',
+        features: ['- Светлая кухня-гостиная ', '- Большой коридор', '- Спальня с двумя окнами'],
+        images: [appsItem1, appsItem1, appsItem1],
+      },
+      {
+        id: 1,
+        name: '9-1',
+        area: '48,67 м',
+        price: '14 601 000 р',
+        features: ['- 2 санузла', '- Гардеробная', '- Просторная кухня-гостиная'],
+        images: [appsItem1, appsItem1, appsItem1],
+      },
+    ]
   },
   {
     id: 2,
-    name: '2-К. №15',
-    area: '41.02',
-    floors: '2-8',
-    price: '285 400',
-    features: ['Компактная планировка', 'Балкон с панорамным видом', 'Современная отделка'],
-    images: [appsItem1, appsItem1, appsItem1],
-  },
-  {
-    id: 3,
-    name: '3К. №16',
-    area: '51.75',
-    floors: '3-10',
-    price: '345 200',
-    features: ['Большая гостиная', 'Две спальни', 'Отдельная кухня', 'Два санузла'],
-    images: [appsItem1, appsItem1, appsItem1],
+    name: '2',
+    apartments: [
+      {
+        id: 0,
+        name: '8-1',
+        area: '56,03 м',
+        price: '16 809 000 р',
+        features: ['- Вид на лес', '- Просторная кухня-гостиная', '- Балкон на кухне'],
+        images: [appsItem1, appsItem1, appsItem1],
+      },
+    ]
   },
 ]);
 
-// Текущие данные квартиры в зависимости от выбранного типа
-const currentApartment = computed(() => {
-  return apartmentTypes.value[currentType.value];
+// Текущая категория квартир
+const currentCategoryData = computed(() => {
+  return apartmentCategories.value[currentCategory.value];
 });
 
-// Функция переключения типа квартиры
-const switchApartmentType = typeIndex => {
-  currentType.value = typeIndex;
-  currentImageIndex.value = 0; // сбрасываем на первое изображение при смене типа
+// Текущая квартира в выбранной категории
+const currentApartment = computed(() => {
+  return currentCategoryData.value.apartments[currentApartmentIndex.value];
+});
+
+// Функция переключения категории квартир
+const switchCategory = categoryIndex => {
+  currentCategory.value = categoryIndex;
+  currentApartmentIndex.value = 0; // сбрасываем на первую квартиру в категории
+  currentImageIndex.value = 0; // сбрасываем на первое изображение
+};
+
+// Функция переключения квартиры в категории
+const switchApartment = apartmentIndex => {
+  currentApartmentIndex.value = apartmentIndex;
+  currentImageIndex.value = 0; // сбрасываем на первое изображение
 };
 
 // Функция переключения изображения
-const switchImage = index => {
-  currentImageIndex.value = index;
+const switchImage = imageIndex => {
+  currentImageIndex.value = imageIndex;
 };
 </script>
 
