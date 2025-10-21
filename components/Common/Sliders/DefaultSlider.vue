@@ -144,6 +144,14 @@ const props = defineProps({
         slidesPerView: 2,
         spaceBetween: 10,
       },
+      428: {
+        slidesPerView: 1,
+        spaceBetween: 8,
+      },
+      599: {
+        slidesPerView: 2,
+        spaceBetween: 8,
+      },
       768: {
         slidesPerView: 3,
         spaceBetween: 20,
@@ -153,10 +161,6 @@ const props = defineProps({
   modules: {
     type: Array,
     default: () => [Pagination, Autoplay],
-  },
-  mobileSlideWidth: {
-    type: Number,
-    default: null, // Если указано, будет использоваться для мобилки
   },
   hideNavigationOnMobile: {
     type: Boolean,

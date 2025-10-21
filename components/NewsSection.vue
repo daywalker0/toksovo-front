@@ -1,7 +1,7 @@
 <template>
   <section class="news-section section" id="news">
     <div class="news-section__container container">
-      <!-- <TitleNew text="Новости" class="news-section__title" /> -->
+      <TitleNew text="Новости" class="news-section__title" />
       <DefaultSlider
         :slides="newsSlides"
         :slides-per-view="2"
