@@ -140,10 +140,6 @@ const props = defineProps({
   breakpoints: {
     type: Object,
     default: () => ({
-      0: {
-        slidesPerView: 2,
-        spaceBetween: 10,
-      },
       428: {
         slidesPerView: 1,
         spaceBetween: 8,
