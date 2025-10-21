@@ -58,7 +58,7 @@
       </div>
 
       <div
-        v-if="hoveredPin"
+        v-if="hoveredPin && showPins"
         class="pin-info-panel"
         :style="panelStyle"
         :data-position="getOptimalPanelPosition(hoveredPin).position"
@@ -170,6 +170,9 @@ const defaultOffers = [
 ];
 
 const handlePinEnter = (pin, index) => {
+  // Не показываем панель, если пины скрыты
+  if (!showPins.value) return;
+
   hoveredPinIndex.value = index;
   hoveredPin.value = {
     ...pin,
@@ -228,6 +231,13 @@ const getMobilePinStyle = pin => {
 };
 
 const handlePanelEnter = () => {
+  // Не даем панели оставаться, если пины скрыты
+  if (!showPins.value) {
+    hoveredPin.value = null;
+    hoveredPinIndex.value = null;
+    return;
+  }
+
   isPanelHovered.value = true;
   if (closeTimeoutId) {
     clearTimeout(closeTimeoutId);
