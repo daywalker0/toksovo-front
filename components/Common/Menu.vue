@@ -363,7 +363,7 @@ defineExpose({
     height: 100svh;
   }
 
-  @media (max-height: 800px) {
+  @media (max-height: 600) {
     height: 100svh;
     height: 100vh;
   }
