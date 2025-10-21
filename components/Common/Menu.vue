@@ -363,6 +363,11 @@ defineExpose({
     height: 100svh;
   }
 
+  @media (max-height: 800px) {
+    height: 100svh;
+    height: 100vh;
+  }
+
   &--open {
     visibility: visible;
   }
@@ -397,13 +402,9 @@ defineExpose({
     justify-content: flex-end;
     align-items: center;
 
-    @media (max-width: $breakpoint-xl) {
-      height: calc(100vh - 170px);
-    }
-
-    @media (max-width: $breakpoint-lg) {
-      height: calc(100vh - 60px);
-      padding: 20px 30px 30px;
+    @media (max-height: 800px) {
+      height: 100svh;
+      height: 100vh;
     }
 
     @media (max-width: $breakpoint-md) {
