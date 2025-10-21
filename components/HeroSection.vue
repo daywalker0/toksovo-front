@@ -117,29 +117,37 @@ onMounted(async () => {
     onLeave: () => {
       if (renderEl.value) {
         renderEl.value.style.opacity = '0';
-        renderEl.value.style.position = 'absolute';
+        renderEl.value.style.visibility = 'hidden';
+        renderEl.value.style.pointerEvents = 'none';
+        renderEl.value.classList.add('hidden');
       }
       if (skyEl.value) {
         skyEl.value.style.opacity = '0';
-        skyEl.value.style.position = 'absolute';
+        skyEl.value.style.visibility = 'hidden';
+        skyEl.value.style.pointerEvents = 'none';
+        skyEl.value.classList.add('hidden');
       }
     },
     onEnterBack: () => {
       if (renderEl.value) {
         renderEl.value.style.opacity = '1';
-        renderEl.value.style.position = 'fixed';
+        renderEl.value.style.visibility = 'visible';
+        renderEl.value.style.pointerEvents = 'auto';
+        renderEl.value.classList.remove('hidden');
       }
       if (skyEl.value) {
         skyEl.value.style.opacity = '1';
-        skyEl.value.style.position = 'fixed';
+        skyEl.value.style.visibility = 'visible';
+        skyEl.value.style.pointerEvents = 'auto';
+        skyEl.value.classList.remove('hidden');
       }
     },
     onEnter: () => {
       if (renderEl.value) {
-        renderEl.value.style.position = 'fixed';
+        renderEl.value.classList.remove('hidden');
       }
       if (skyEl.value) {
-        skyEl.value.style.position = 'fixed';
+        skyEl.value.classList.remove('hidden');
       }
     },
   });
@@ -234,6 +242,13 @@ onBeforeUnmount(() => {
     transform: translateZ(0);
     transition: opacity 0.3s ease;
 
+    &.hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+
+
     img {
       width: 100%;
       height: 100%;
@@ -254,6 +269,12 @@ onBeforeUnmount(() => {
     backface-visibility: hidden;
     will-change: transform;
     transition: opacity 0.3s ease;
+
+    &.hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
 
     @media (max-width: $breakpoint-x) {
       transform-origin: 50% 60%;
