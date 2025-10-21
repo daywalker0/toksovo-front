@@ -17,6 +17,10 @@ html:root {
 html {
   scroll-behavior: auto; // Отключаем smooth scroll для Lenis
   scroll-padding-top: 0;
+
+  @media (max-width: $breakpoint-x) {
+    overflow-x: hidden;
+  }
 }
 
 html.lenis,
@@ -48,6 +52,11 @@ html.lenis body {
 body {
   scroll-behavior: auto; // Отключаем smooth scroll для Lenis
   -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+
+  @media (max-width: $breakpoint-x) {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Убираем transition для элементов с GSAP анимацией */

@@ -244,10 +244,6 @@ const switchImage = imageIndex => {
     display: flex;
     gap: 160px;
 
-    @media (max-width: $breakpoint-sm) {
-      gap: 40px;
-    }
-
     @media (max-width: $breakpoint-x) {
       flex-direction: column;
       gap: 12px;
@@ -312,6 +308,11 @@ const switchImage = imageIndex => {
   font-weight: 500;
 }
 
+@media (max-width: 920px) {
+  .apartments-section__container {
+    gap: 0;
+  }
+}
 .apartment-title {
   font-size: 42px;
   padding-bottom: 38px;

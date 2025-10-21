@@ -234,6 +234,7 @@ const progressAnimationId = ref(null);
 const progressStartTime = ref(null);
 const progressValue = ref(0);
 const setActiveIndex = i => (activeIndex.value = i);
+const resizeTimer = ref(null);
 
 // Функции управления прогрессом
 const animateProgress = timestamp => {
@@ -460,7 +461,6 @@ const animateSlide = (newIndex, direction) => {
   }
 };
 
-let resizeTimer = null;
 
 const S = { w: 131, h: 198, z: 1 };
 const M = { w: 262, h: 394, z: 2 };
@@ -600,8 +600,8 @@ onMounted(async () => {
   checkMobile();
 
   window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
+    clearTimeout(resizeTimer.value);
+    resizeTimer.value = setTimeout(() => {
       checkMobile();
       destroy();
       if (!isMobile.value) build();
@@ -619,7 +619,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  clearTimeout(resizeTimer);
+  clearTimeout(resizeTimer.value);
   stopAutoplay();
   destroy();
 });

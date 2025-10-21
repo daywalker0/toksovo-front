@@ -12,7 +12,7 @@
         :navigation="navigation"
         :effect="effect"
         class="default-swiper"
-        :class="{ 'mobile-swiper': isMobile && mobileSlideWidth }"
+        :class="{ 'mobile-swiper': isMobile}"
         onSlideChange
         @swiper="onSwiper"
         @slide-change="onSlideChange"
@@ -23,7 +23,6 @@
           v-for="(slide, index) in slides"
           :key="getSlideKey(slide, index)"
           class="slide"
-          :style="slideStyle"
         >
           <slot name="slide" :slide="slide" :index="index" :active="activeIndex === index">
             <div class="default-slide-content">
@@ -259,15 +258,6 @@ const mobileConfig = computed(() => {
     return null;
   }
 
-  // Если указана фиксированная ширина слайда - используем auto режим
-  if (props.mobileSlideWidth) {
-    return {
-      slidesPerView: 'auto',
-      spaceBetween: 8,
-      centeredSlides: false,
-    };
-  }
-
   // Иначе - один слайд на весь экран
   return {
     slidesPerView: 1,
@@ -305,17 +295,6 @@ const shouldShowPagination = computed(() => {
   }
   // На десктопе показываем, если showPagination=true
   return props.showPagination;
-});
-
-// Стиль для слайда с фиксированной шириной на мобильных
-const slideStyle = computed(() => {
-  if (isMobile.value && props.mobileSlideWidth) {
-    return {
-      width: `${props.mobileSlideWidth}px`,
-      flexShrink: '0',
-    };
-  }
-  return {};
 });
 
 onMounted(() => {

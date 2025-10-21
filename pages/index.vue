@@ -125,6 +125,8 @@ import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
 import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
 
 const activeSection = ref('hero');
+const handleScroll = ref(null);
+const handleResize = ref(null);
 
 const sectionEnvironment = {
   text: 'Спокойствие свежесть природа',
@@ -264,7 +266,7 @@ onMounted(() => {
     });
 
     let resizeTimeout;
-    const handleResize = () => {
+    handleResize.value = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         initHorizontalScroll();
@@ -272,10 +274,10 @@ onMounted(() => {
       }, 250);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize.value);
 
     let isScrolling = false;
-    const handleScroll = () => {
+    handleScroll.value = () => {
       if (isScrolling) return;
       isScrolling = true;
 
@@ -285,22 +287,28 @@ onMounted(() => {
       }, 100);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    onBeforeUnmount(() => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
-    });
+    window.addEventListener('scroll', handleScroll.value, { passive: true });
   });
 });
 
 onBeforeUnmount(() => {
+  // Очистка горизонтального скролла
   if (horizontalScrollTrigger) {
     horizontalScrollTrigger.scrollTrigger?.kill();
     horizontalScrollTrigger.kill();
     horizontalScrollTrigger = null;
   }
+  
+  // Очистка ScrollTrigger
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  
+  // Очистка event listeners
+  if (handleScroll.value) {
+    window.removeEventListener('scroll', handleScroll.value);
+  }
+  if (handleResize.value) {
+    window.removeEventListener('resize', handleResize.value);
+  }
 });
 </script>
 
@@ -322,6 +330,12 @@ onBeforeUnmount(() => {
     height: auto;
     overflow: visible;
   }
+
+  @media (max-width: $breakpoint-x) {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .horizontal-container {
@@ -335,6 +349,11 @@ onBeforeUnmount(() => {
   @media (max-width: $breakpoint-lg) {
     height: auto;
     flex-direction: column;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    height: auto;
+    flex-direction: column;
     transform: none;
     will-change: auto;
   }
@@ -346,6 +365,11 @@ onBeforeUnmount(() => {
 
     @media (max-width: $breakpoint-lg) {
       height: 100%;
+      width: 100%;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      height: auto;
       width: 100%;
     }
   }
