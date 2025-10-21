@@ -8,7 +8,6 @@
         :slides-per-view="2"
         :space-between="45"
         :show-navigation="true"
-        :mobile-slide-width="253"
         :hide-navigation-on-mobile="true"
       >
         <template #slide="{ slide, active }">
@@ -134,7 +133,6 @@ const openDialogVideo = () => {
   @media (max-width: $breakpoint-x) {
     padding: 0 !important;
     border: none !important;
-    width: 253px !important;
   }
 }
 

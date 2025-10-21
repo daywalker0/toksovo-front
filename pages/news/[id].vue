@@ -342,7 +342,6 @@
           :slides-per-view="2"
           :space-between="45"
           :show-navigation="true"
-          :mobile-slide-width="253"
           :hide-navigation-on-mobile="true"
         >
           <template #slide="{ slide, active }">
@@ -852,17 +851,12 @@ onMounted(async () => {
   height: 300px !important;
 
   @media (max-width: $breakpoint-x) {
-    width: 253px !important;
     flex-shrink: 0;
   }
 }
 
 ::v-deep(.slide) {
   min-height: 0 !important;
-
-  @media (max-width: $breakpoint-x) {
-    width: 253px !important;
-  }
 }
 
 .content {
