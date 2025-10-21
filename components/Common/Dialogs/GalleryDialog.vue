@@ -263,7 +263,6 @@ onUnmounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -272,8 +271,7 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 44px;
-  background: white;
-  border-bottom: 1px solid #e5e5e5;
+  background: $bg-color-1;
   margin-top: 50px;
 }
 
@@ -306,7 +304,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   width: 100%;
-  background: #f8f8f8;
+  background: $bg-color-1;
   padding: 20px;
   overflow: hidden;
   position: relative;
@@ -337,15 +335,13 @@ onUnmounted(() => {
   align-items: center;
   gap: 32px;
   padding: 24px 44px;
-  background: white;
-  border-top: 1px solid #e5e5e5;
+  background: $bg-color-1;
 }
 
 .gallery-progress {
   flex: 1;
   height: 1px;
   background: #e5e5e5;
-  border-radius: 3px;
   overflow: hidden;
   position: relative;
 }
@@ -353,14 +349,12 @@ onUnmounted(() => {
 .progress-bar {
   width: 100%;
   height: 100%;
-  background: #e5e5e5;
-  border-radius: 3px;
+  background: $bg-color-1;
 }
 
 .progress-fill {
   height: 100%;
   background: #333;
-  border-radius: 3px;
   transition: width 0.3s ease;
 }
 

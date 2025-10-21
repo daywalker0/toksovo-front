@@ -336,6 +336,11 @@ const openDialogVideo = () => {
     justify-content: center;
     margin: 0 170px;
 
+    @media (max-width: $breakpoint-lg) {
+      height: 30%;
+      margin: 0 50px;
+    }
+
     @media (max-width: $breakpoint-x) {
       border-radius: 0 !important;
       margin: 0 !important;
@@ -356,6 +361,8 @@ const openDialogVideo = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+
+
   @media (max-width: $breakpoint-x) {
     font-size: 40px;
   }

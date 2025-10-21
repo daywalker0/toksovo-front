@@ -148,7 +148,7 @@ onUnmounted(() => {
 }
 
 .dialog-content {
-  background: white;
+  background: $bg-color-1;
   padding: 32px;
   border-radius: 10px;
   position: relative;
