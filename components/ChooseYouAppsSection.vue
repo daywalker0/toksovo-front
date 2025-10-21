@@ -105,7 +105,7 @@ const overlayOpacity = ref(0);
 const imageScale = ref(0.95);
 const isMobile = ref(false);
 const isMd = ref(
-  typeof window !== 'undefined' ? window.innerWidth <= 1024 && window.innerWidth > 599 : false
+  typeof window !== 'undefined' ? window.innerWidth <= 1024 && window.innerWidth > 768 : false
 );
 
 const handleScroll = () => {
@@ -264,7 +264,7 @@ const handleScroll = () => {
 onMounted(() => {
   // Проверка мобильного устройства
   const checkMobile = () => {
-    isMobile.value = window.innerWidth <= 599;
+    isMobile.value = window.innerWidth <= 768;
     isMd.value = window.innerWidth <= 1024 && window.innerWidth > 599;
   };
   checkMobile();
@@ -296,7 +296,7 @@ onUnmounted(() => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('scroll', handleScroll);
     window.removeEventListener('resize', () => {
-      isMobile.value = window.innerWidth <= 599;
+      isMobile.value = window.innerWidth <= 768;
     });
   }
 });
@@ -314,7 +314,7 @@ onUnmounted(() => {
     margin-top: 100px;
   }
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     height: 100svh;
     margin-top: 0;
   }
@@ -361,7 +361,7 @@ onUnmounted(() => {
   z-index: 10;
   overflow: hidden;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     position: relative;
     height: 100svh;
   }
@@ -413,7 +413,7 @@ onUnmounted(() => {
       order: 2;
     }
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-sm) {
       height: 100svh;
     }
 
