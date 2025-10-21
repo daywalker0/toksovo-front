@@ -100,6 +100,9 @@ const buttonsOpacity = ref(0);
 const overlayOpacity = ref(0);
 const imageScale = ref(0.95);
 const isMobile = ref(false);
+const isMd = ref(
+  typeof window !== 'undefined' ? window.innerWidth <= 1024 && window.innerWidth > 599 : false
+);
 
 const handleScroll = () => {
   // На мобилке не обрабатываем скролл
@@ -146,10 +149,11 @@ const handleScroll = () => {
     // ===== ФАЗА 1: ТОЛЬКО уменьшение картинки =====
     const shrinkProgress = (sectionProgress - 0.1) / 0.3; // 0 -> 1
 
-    // Размеры картинки: от 100vw x 100vh до 650px x 450px
+    // Размеры картинки: от 100vw x 100vh до 350px/650px x 450px
+    const targetWidth = isMd.value ? 350 : 650;
     const currentWidth =
       100 -
-      (100 - (650 / (typeof window !== 'undefined' ? window.innerWidth : 1200)) * 100) *
+      (100 - (targetWidth / (typeof window !== 'undefined' ? window.innerWidth : 1200)) * 100) *
         shrinkProgress;
     const currentHeight = 100 - (100 - (450 / windowHeight) * 100) * shrinkProgress;
 
@@ -178,9 +182,10 @@ const handleScroll = () => {
       imageContainer.value.style.height = '300px';
       imageContainer.value.style.maxWidth = '100%';
     } else {
-      imageContainer.value.style.width = '650px';
+      const targetWidth = isMd.value ? '350px' : '650px';
+      imageContainer.value.style.width = targetWidth;
       imageContainer.value.style.height = '450px';
-      imageContainer.value.style.maxWidth = '650px';
+      imageContainer.value.style.maxWidth = targetWidth;
     }
 
     // Прогресс второй фазы (0 -> 1)
@@ -226,9 +231,10 @@ const handleScroll = () => {
       imageContainer.value.style.height = '300px';
       imageContainer.value.style.maxWidth = '100%';
     } else {
-      imageContainer.value.style.width = '650px';
+      const targetWidth = isMd.value ? '350px' : '650px';
+      imageContainer.value.style.width = targetWidth;
       imageContainer.value.style.height = '450px';
-      imageContainer.value.style.maxWidth = '650px';
+      imageContainer.value.style.maxWidth = targetWidth;
     }
 
     // Текст и кнопки полностью видны
@@ -255,6 +261,7 @@ onMounted(() => {
   // Проверка мобильного устройства
   const checkMobile = () => {
     isMobile.value = window.innerWidth <= 599;
+    isMd.value = window.innerWidth <= 1024 && window.innerWidth > 599;
   };
   checkMobile();
   window.addEventListener('resize', checkMobile);
@@ -275,7 +282,7 @@ onMounted(() => {
         isHandlingScroll = false;
       });
     };
-    
+
     window.addEventListener('scroll', throttledHandleScroll, { passive: true });
     handleScroll();
   }
@@ -382,6 +389,10 @@ onUnmounted(() => {
       width 0.05s ease-out,
       height 0.05s ease-out;
 
+    @media (max-width: $breakpoint-md) {
+      max-width: 350px;
+    }
+
     @media (max-width: $breakpoint-sm) {
       width: 100%;
       height: 300px;
@@ -429,6 +440,10 @@ onUnmounted(() => {
     font-size: 38px;
   }
 
+  @media (max-width: $breakpoint-md) {
+    min-width: 300px;
+  }
+
   @media (max-width: $breakpoint-sm) {
     opacity: 1 !important;
   }
@@ -443,10 +458,18 @@ onUnmounted(() => {
 
   &.button-left {
     left: 115px;
+
+    @media (max-width: $breakpoint-md) {
+      left: calc(50% - 225px - 80px);
+    }
   }
 
   &.button-right {
     right: 115px;
+
+    @media (max-width: $breakpoint-md) {
+      right: calc(50% - 280px - 80px);
+    }
   }
 
   &.dark {
@@ -476,6 +499,10 @@ onUnmounted(() => {
       right: auto !important;
       order: 3;
     }
+  }
+
+  @media (min-width: calc($breakpoint-sm + 1px)) and (max-width: $breakpoint-md) {
+    position: absolute;
   }
 }
 

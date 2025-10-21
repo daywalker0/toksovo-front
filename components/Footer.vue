@@ -145,16 +145,12 @@ const openDialogCallback = () => {
     padding-top: 80px;
     padding-bottom: 20px;
 
-    @media (max-width: $breakpoint-sm) {
-      padding-top: 40px;
-      padding-bottom: 20px;
-    }
-
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       display: flex;
       flex-direction: column;
       gap: 32px;
       padding-top: 32px;
+      padding-bottom: 20px;
     }
   }
 
@@ -164,13 +160,7 @@ const openDialogCallback = () => {
     gap: 40px;
     margin-bottom: 60px;
 
-    @media (max-width: $breakpoint-sm) {
-      grid-template-columns: 1fr;
-      gap: 30px;
-      margin-bottom: 40px;
-    }
-
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       display: flex;
       flex-direction: column;
       gap: 32px;
@@ -190,8 +180,12 @@ const openDialogCallback = () => {
     }
 
     .disclaimer {
-      @media (max-width: $breakpoint-x) {
+      @media (max-width: $breakpoint-md) {
         order: 1;
+        max-width: 650px;
+      }
+
+      @media (max-width: $breakpoint-x) {
         max-width: 220px;
       }
     }
@@ -226,7 +220,7 @@ const openDialogCallback = () => {
   }
 
   &__logo {
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       order: 1;
     }
 
@@ -249,7 +243,7 @@ const openDialogCallback = () => {
     gap: 8px;
     margin: 0 auto;
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       order: 2;
     }
   }
@@ -281,7 +275,7 @@ const openDialogCallback = () => {
     text-transform: uppercase;
     padding: 8px 16px;
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       order: 3;
     }
   }
@@ -291,7 +285,7 @@ const openDialogCallback = () => {
     flex-direction: column;
     align-items: flex-end;
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       align-items: center;
       gap: 2px;
       order: 2;
@@ -306,13 +300,7 @@ const openDialogCallback = () => {
     display: flex;
     justify-content: space-between;
 
-    @media (max-width: $breakpoint-sm) {
-      flex-direction: column;
-      gap: 20px;
-      text-align: center;
-    }
-
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       flex-direction: column;
       gap: 0;
       text-align: center;
@@ -321,7 +309,7 @@ const openDialogCallback = () => {
   }
 
   &__copyright {
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       order: 1;
     }
   }
@@ -339,7 +327,7 @@ const openDialogCallback = () => {
   }
 
   &__development {
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       order: 3;
     }
   }
@@ -360,16 +348,16 @@ const openDialogCallback = () => {
       max-width: 60%;
     }
 
-    @media (max-width: $breakpoint-sm) {
-      font-size: 12px;
+    @media (max-width: $breakpoint-md) {
+      order: 2;
+      margin: 12px auto 32px;
       max-width: 100%;
+      font-size: 12px;
       line-height: 140%;
     }
 
-    @media (max-width: $breakpoint-x) {
-      order: 2;
-      margin: 12px auto 32px;
-      max-width: 340px;
+    @media (max-widt: $breakpoint-x) {
+      max-width: 220px;
     }
   }
 }
@@ -378,29 +366,23 @@ const openDialogCallback = () => {
   text-align: start;
   max-width: 320px;
 
-  @media (max-width: $breakpoint-sm) {
+  @media (max-width: $breakpoint-md) {
+    order: 4;
     text-align: center;
-    max-width: 100%;
+    max-width: 650px;
+    gap: 8px !important;
+    margin: 0 auto;
   }
 
   @media (max-width: $breakpoint-x) {
-    order: 4;
-    text-align: center;
-    max-width: 100%;
-    gap: 8px !important;
     max-width: 220px;
-    margin: 0 auto;
   }
 }
 
 .right-side {
   text-align: end;
 
-  @media (max-width: $breakpoint-sm) {
-    text-align: center;
-  }
-
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     order: 5;
     text-align: center;
     gap: 8px !important;
@@ -413,11 +395,7 @@ const openDialogCallback = () => {
   display: flex;
   flex-direction: column;
 
-  @media (max-width: $breakpoint-sm) {
-    gap: 20px;
-  }
-
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     order: 1;
     gap: 24px;
   }
