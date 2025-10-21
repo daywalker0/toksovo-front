@@ -235,6 +235,7 @@ const openDialogVideo = () => {
     font-family: 'Akrobat';
     font-size: 18px;
     line-height: 140%;
+    margin-bottom: 50px;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 16px;
