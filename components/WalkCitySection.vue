@@ -62,11 +62,6 @@ onMounted(() => {
     width: 100%;
     flex-shrink: initial;
   }
-
-  @media (max-width: $breakpoint-x) {
-    display: none;
-  }
-
   &__container {
     position: relative;
     height: 100%;
@@ -97,6 +92,12 @@ onMounted(() => {
       height: 100%;
       align-items: center;
       text-align: center;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      align-items: flex-start;
+      text-align: start;
+      padding: 20px 0;
     }
   }
 
@@ -194,6 +195,15 @@ onMounted(() => {
       object-fit: cover;
       object-position: center;
       display: block;
+
+      @media (max-width: $breakpoint-x) {
+        object-position: center;
+        height: 450px !important;
+      }
+      @media (max-width: $breakpoint-xs) {
+        object-position: bottom;
+        height: 450px !important;
+      }
     }
 
     @media (max-width: $breakpoint-lg) {
@@ -201,13 +211,18 @@ onMounted(() => {
       width: 100vw;
       margin-left: -20px;
       margin-right: -20px;
+      margin-bottom: -20px;
       height: auto;
       max-height: 400px;
       flex: 1;
       min-height: 450px;
+      aspect-ratio: 4 / 3;
 
       img {
         height: 100%;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
       }
     }
   }
