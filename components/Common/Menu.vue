@@ -363,7 +363,7 @@ defineExpose({
     height: 100svh;
   }
 
-  @media (max-height: 600) {
+  @media (max-height: 600px) {
     height: 100svh;
     height: 100vh;
   }
@@ -402,17 +402,20 @@ defineExpose({
     justify-content: flex-end;
     align-items: center;
 
-    @media (max-height: 800px) {
-      height: 100svh;
-      height: 100vh;
-    }
-
     @media (max-width: $breakpoint-md) {
       height: 100vh;
       height: 100svh;
       justify-content: space-between;
       padding: 90px 20px 20px;
     }
+
+    @media (max-height: 900px) {
+      height: calc(100vh - 80px);
+    } 
+
+    @media (max-height: 650px) {
+      height: calc(100vh);
+    } 
   }
 
   &__list {
