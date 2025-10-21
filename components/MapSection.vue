@@ -512,17 +512,6 @@ onBeforeUnmount(() => {
       border-radius: 0;
       background: transparent;
       padding: 0 0 40px 20px;
-
-      &::after {
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 60px;
-        background: linear-gradient(to left, rgba(245, 245, 245, 0.9) 0%, transparent 100%);
-        pointer-events: none;
-      }
     }
 
     @media (max-width: $breakpoint-x) {
