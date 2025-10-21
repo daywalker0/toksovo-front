@@ -115,40 +115,12 @@ onMounted(async () => {
     start: 'top top',
     end: 'bottom top',
     onLeave: () => {
-      if (renderEl.value) {
-        renderEl.value.style.opacity = '0';
-        renderEl.value.style.visibility = 'hidden';
-        renderEl.value.style.pointerEvents = 'none';
-        renderEl.value.classList.add('hidden');
-      }
-      if (skyEl.value) {
-        skyEl.value.style.opacity = '0';
-        skyEl.value.style.visibility = 'hidden';
-        skyEl.value.style.pointerEvents = 'none';
-        skyEl.value.classList.add('hidden');
-      }
+      if (renderEl.value) renderEl.value.style.opacity = '0';
+      if (skyEl.value) skyEl.value.style.opacity = '0';
     },
     onEnterBack: () => {
-      if (renderEl.value) {
-        renderEl.value.style.opacity = '1';
-        renderEl.value.style.visibility = 'visible';
-        renderEl.value.style.pointerEvents = 'auto';
-        renderEl.value.classList.remove('hidden');
-      }
-      if (skyEl.value) {
-        skyEl.value.style.opacity = '1';
-        skyEl.value.style.visibility = 'visible';
-        skyEl.value.style.pointerEvents = 'auto';
-        skyEl.value.classList.remove('hidden');
-      }
-    },
-    onEnter: () => {
-      if (renderEl.value) {
-        renderEl.value.classList.remove('hidden');
-      }
-      if (skyEl.value) {
-        skyEl.value.classList.remove('hidden');
-      }
+      if (renderEl.value) renderEl.value.style.opacity = '1';
+      if (skyEl.value) skyEl.value.style.opacity = '1';
     },
   });
 });
@@ -242,11 +214,6 @@ onBeforeUnmount(() => {
     transform: translateZ(0);
     transition: opacity 0.3s ease;
 
-    &.hidden {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-    }
 
 
     img {
@@ -270,11 +237,6 @@ onBeforeUnmount(() => {
     will-change: transform;
     transition: opacity 0.3s ease;
 
-    &.hidden {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-    }
 
     @media (max-width: $breakpoint-x) {
       transform-origin: 50% 60%;
