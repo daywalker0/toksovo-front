@@ -336,7 +336,7 @@
     <!-- Другие новости -->
     <section v-if="newsItem" class="other-news-section">
       <div class="other-news-section__container container">
-        <TitleNew text="Другие новости" class="other-news-section__title" />
+        <!-- <TitleNew text="Другие новости" class="other-news-section__title" /> -->
         <DefaultSlider
           :slides="otherNews"
           :slides-per-view="2"
