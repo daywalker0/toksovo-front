@@ -128,6 +128,13 @@ const openDialogVideo = () => {
       border: 1px solid $text-color-white !important;
       background-color: $text-color-white !important;
     }
+
+    @media (max-width: $breakpoint-x) {
+      &:hover {
+        border: 1px solid rgba(44, 50, 44, 0.2) !important;
+        background-color: transparent !important;
+      }
+    }
   }
 
   @media (max-width: $breakpoint-x) {
@@ -292,6 +299,15 @@ const openDialogVideo = () => {
       color: white;
       border-color: $accent-color-orange;
       transition: 0.3s;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      &:hover {
+        background-color: transparent;
+        color: inherit;
+        border-color: inherit;
+        transition: none;
+      }
     }
   }
 }

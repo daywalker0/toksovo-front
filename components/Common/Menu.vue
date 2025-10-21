@@ -592,6 +592,22 @@ defineExpose({
         }
       }
     }
+
+    @media (max-width: $breakpoint-x) {
+      &:hover {
+        .menu__link-text-inner {
+          .menu__link-letter {
+            transform: translateY(0);
+          }
+        }
+
+        .menu__link-text-inner--hover {
+          .menu__link-letter {
+            transform: translateY(100%);
+          }
+        }
+      }
+    }
   }
 
   &__link-text {
@@ -639,6 +655,22 @@ defineExpose({
     }
   }
 
+  @media (max-width: $breakpoint-x) {
+    &__link:hover {
+      .menu__link-text-inner {
+        .menu__link-letter {
+          transition: none;
+        }
+      }
+
+      .menu__link-text-inner--hover {
+        .menu__link-letter {
+          transition: none;
+        }
+      }
+    }
+  }
+
   &__link:not(:hover) {
     .menu__link-text-inner {
       .menu__link-letter {
@@ -666,6 +698,13 @@ defineExpose({
     &:hover {
       color: $text-color-light;
       opacity: 0.8;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      &:hover {
+        color: $text-color-light;
+        opacity: 1;
+      }
     }
   }
 }

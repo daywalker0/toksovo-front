@@ -123,12 +123,20 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import AppHeader from '~/components/Common/AppHeader.vue';
 import Footer from '~/components/Footer.vue';
 
 const router = useRouter();
+
+// Логика для хедера - устанавливаем фон сразу
+onMounted(() => {
+  const header = document.querySelector('.header');
+  if (header) {
+    header.classList.add('header--scrolled');
+  }
+});
 
 // Meta для SEO
 useHead({

@@ -366,6 +366,14 @@ onMounted(() => {
     transition: 0.3s;
   }
 
+  @media (max-width: $breakpoint-x) {
+    &:hover {
+      border: 1px solid $utility-color-1;
+      background-color: transparent;
+      transition: none;
+    }
+  }
+
   :deep(img) {
     width: 100%;
     aspect-ratio: 1 / 1 !important;
@@ -444,6 +452,18 @@ onMounted(() => {
 
     svg path {
       fill: $text-color-white;
+    }
+  }
+
+  @media (max-width: $breakpoint-x) {
+    &:hover {
+      background-color: transparent;
+      border: 1px solid $text-color-primary;
+      transition: none;
+
+      svg path {
+        fill: $text-color-primary;
+      }
     }
   }
   &.disabled {

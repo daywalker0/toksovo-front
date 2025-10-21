@@ -113,6 +113,8 @@ const handleClick = event => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/styles/variables.scss' as *;
+
 .animated-link {
   display: inline-flex;
   align-items: center;
@@ -170,6 +172,26 @@ const handleClick = event => {
         transition: transform 0.3s cubic-bezier(0.76, 0, 0.024, 1);
         transition-delay: var(--letter-delay, 0s);
         color: v-bind('hoverColor || "inherit"');
+      }
+    }
+  }
+
+  // Отключаем hover эффекты на мобильных устройствах
+  @media (max-width: $breakpoint-x) {
+    &:hover:not(.animated-link--no-animation),
+    &.animated-link--force-hover:not(.animated-link--no-animation) {
+      .animated-link__text-inner {
+        .animated-link__letter {
+          transform: translateY(0);
+          transition: none;
+        }
+      }
+
+      .animated-link__text-inner--hover {
+        .animated-link__letter {
+          transform: translateY(100%);
+          transition: none;
+        }
       }
     }
   }

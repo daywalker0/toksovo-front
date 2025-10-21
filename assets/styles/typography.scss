@@ -136,6 +136,16 @@ h2 {
       left: 0;
     }
   }
+
+  @media (max-width: $breakpoint-x) {
+    &:hover {
+      color: inherit;
+
+      &::before {
+        left: 100%;
+      }
+    }
+  }
 }
 
 p,

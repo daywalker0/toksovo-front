@@ -77,4 +77,12 @@ article:not(.gsap-animated):not([data-gsap]) {
       transform: rotate(90deg) scale(0.8, 0.8);
     }
   }
+
+  @media (max-width: $breakpoint-x) {
+    &:hover {
+      svg {
+        transform: none;
+      }
+    }
+  }
 }

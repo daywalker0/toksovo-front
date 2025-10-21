@@ -369,7 +369,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch, nextTick, ref } from 'vue';
+import { computed, onMounted, onUnmounted, watch, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNewsStore } from '~/stores/news';
 import TitleNew from '~/components/Common/TitleNew.vue';
@@ -386,6 +386,10 @@ const { $lenis } = useNuxtApp();
 
 // Флаг первой загрузки
 const isFirstLoad = ref(true);
+
+// Логика для хедера - устанавливаем фон сразу для страниц новостей
+const headerRef = ref(null);
+const forceHeaderBackground = ref(true);
 
 // Получаем данные из store
 const newsItem = computed(() => newsStore.currentNews);
@@ -544,9 +548,45 @@ onMounted(async () => {
     scrollToTop();
   });
 
+  // Логика для хедера - устанавливаем фон сразу
+  headerRef.value = document.querySelector('.header');
+  if (headerRef.value) {
+    headerRef.value.classList.add('header--scrolled');
+    
+    // Добавляем MutationObserver для отслеживания изменений классов
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          // Проверяем, есть ли класс header--scrolled
+          if (forceHeaderBackground.value && !headerRef.value.classList.contains('header--scrolled')) {
+            // Восстанавливаем класс если он был удален
+            headerRef.value.classList.add('header--scrolled');
+          }
+        }
+      });
+    });
+    
+    // Начинаем наблюдение за изменениями атрибутов
+    observer.observe(headerRef.value, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    // Сохраняем observer для очистки
+    headerRef.value._headerObserver = observer;
+  }
+
   // Снимаем флаг первой загрузки
   isFirstLoad.value = false;
 });
+
+// Очистка observer при размонтировании
+onUnmounted(() => {
+  if (headerRef.value && headerRef.value._headerObserver) {
+    headerRef.value._headerObserver.disconnect();
+  }
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -608,6 +648,10 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
 
+  @media (max-width: $breakpoint-md) {
+    margin: 60px;
+  }
+
   &__header {
     display: flex;
     justify-content: space-between;
@@ -661,7 +705,7 @@ onMounted(async () => {
   flex-direction: column;
   gap: 12px;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     display: none; // Скрываем на мобильных
   }
 }
@@ -929,7 +973,7 @@ onMounted(async () => {
 .share-button-mobile {
   display: none;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -967,7 +1011,7 @@ onMounted(async () => {
   z-index: 100000;
   display: none;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     display: block;
   }
 }
@@ -982,7 +1026,7 @@ onMounted(async () => {
   align-items: flex-start;
   gap: 8px;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     display: flex;
   }
 }
@@ -1006,7 +1050,7 @@ onMounted(async () => {
   z-index: 100003;
   display: none;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     display: flex;
   }
 
@@ -1121,7 +1165,7 @@ onMounted(async () => {
 
   .news-article {
     padding: 0;
-    margin: 70px 0 100px; /* Уменьшенный отступ снизу на мобильных */
+    margin: 70px 0 0; /* Уменьшенный отступ снизу на мобильных */
   }
 
   .news-article__content .news-article__title {
