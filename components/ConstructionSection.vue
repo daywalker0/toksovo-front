@@ -1,7 +1,7 @@
 <template>
   <section class="construction-section section" id="construction">
     <div class="construction-section__container container">
-      <!-- <TitleNew text="Ход строительства" class="construction-section__title" /> -->
+      <TitleNew text="Ход строительства" class="construction-section__title" />
 
       <!-- Десктопная версия - слайдер -->
       <DefaultSlider

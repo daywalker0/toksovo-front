@@ -1,7 +1,7 @@
 <template>
   <section class="projects-section section" id="projects">
     <div class="projects-section__container container">
-      <!-- <TitleNew text="Другие проекты" class="projects-section__title" /> -->
+      <TitleNew text="Другие проекты" class="projects-section__title" />
 
       <DefaultSlider
         :slides="projectsSlides"
