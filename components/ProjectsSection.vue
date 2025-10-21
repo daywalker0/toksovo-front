@@ -168,6 +168,10 @@ const openDialogVideo = () => {
   min-height: 500px;
   width: 100%;
 
+  @media (max-width: $breakpoint-lg) {
+    height: auto;
+  }
+
   @media (max-width: $breakpoint-sm) {
     min-height: 390px;
   }
