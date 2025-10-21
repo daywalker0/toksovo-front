@@ -250,7 +250,7 @@ const switchImage = imageIndex => {
 
     @media (max-width: $breakpoint-x) {
       flex-direction: column;
-      gap: 40px;
+      gap: 12px;
       padding-bottom: 60px;
     }
   }
@@ -495,7 +495,7 @@ const switchImage = imageIndex => {
   z-index: 10;
 
   @media (max-width: $breakpoint-x) {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   &--item {
@@ -524,10 +524,10 @@ const switchImage = imageIndex => {
     }
 
     @media (max-width: $breakpoint-x) {
-      min-width: 35px;
-      height: 35px;
-      font-size: 12px;
-      padding: 8px 12px;
+      min-width: 48px;
+      height: 48px;
+      font-size: 16px;
+      padding: 13px 16px;
     }
 
     &:hover {
@@ -673,6 +673,11 @@ const switchImage = imageIndex => {
   @media (max-width: $breakpoint-md) {
     max-height: none;
     flex: 1;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    height: 340px;
+    width: 340px;
   }
 }
 

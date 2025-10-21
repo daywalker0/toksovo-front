@@ -532,6 +532,8 @@ onUnmounted(() => {
   font-size: 40px;
   text-align: center;
   line-height: 120%;
+  max-width: 300px;
+  margin: 0 auto;
 }
 
 .mobile-buttons {
