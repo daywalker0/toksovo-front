@@ -57,6 +57,32 @@
               </span>
             </a>
           </li>
+          
+          <!-- Добавляем документы из right-column только на высоте 730px и менее -->
+          <li class="menu__item menu__item--doc menu__item--doc-mobile">
+            <div class="left-column__declaration menu--doc-link">
+              <AnimatedLink
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                text="Проектная декларация"
+                @mouseenter="isHoveringActiveElement = true"
+                @mouseleave="isHoveringActiveElement = false"
+              />
+            </div>
+          </li>
+          
+          <li class="menu__item menu__item--doc menu__item--doc-mobile">
+            <AnimatedLink
+              href="/constructionDecision.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              text="РАЗРЕШЕНИЕ НА СТРОИТЕЛЬСТВО"
+              customClass="right-column__constr menu--doc-link"
+              @mouseenter="isHoveringActiveElement = true"
+              @mouseleave="isHoveringActiveElement = false"
+            />
+          </li>
         </ul>
       </div>
 
@@ -146,6 +172,8 @@ const openMenu = () => {
   // Принудительно включаем скролл для списка меню и отключаем Lenis
   nextTick(() => {
     const menuList = document.querySelector('.menu__list');
+    const menuContent = document.querySelector('.menu__content');
+    
     if (menuList) {
       menuList.style.overflowY = 'auto';
       menuList.style.webkitOverflowScrolling = 'touch';
@@ -153,6 +181,12 @@ const openMenu = () => {
       // Отключаем Lenis для списка меню
       menuList.setAttribute('data-lenis-prevent', '');
       menuList.style.touchAction = 'pan-y';
+    }
+    
+    if (menuContent) {
+      // Отключаем Lenis для menu__content
+      menuContent.setAttribute('data-lenis-prevent', '');
+      menuContent.style.touchAction = 'pan-y';
     }
   });
 
@@ -405,7 +439,7 @@ defineExpose({
     top: 0;
     left: 0;
     width: 100%;
-    height: calc(100vh - 270px);
+    height: calc(100vh - 130px);
     background: $accent-color-brown;
     transform: translateY(-100%);
     overflow-y: auto;
@@ -424,7 +458,24 @@ defineExpose({
 
     @media (max-height: 900px) {
       height: calc(100vh - 80px);
-    } 
+    }
+
+    @media (max-height: 730px) {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      max-height: calc(100vh - 150px);
+      
+      // Скрываем скроллбар
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      
+      // Отключаем Lenis для этого элемента
+      touch-action: pan-y;
+    }
 
     @media (max-height: 650px) {
       height: calc(100vh);
@@ -440,19 +491,26 @@ defineExpose({
     text-align: center;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    height: 400px !important;
-    min-height: 400px !important;
+    height: 500px !important;
+    min-height: 500px !important;
     margin-top: 100px;
 
     @media (max-width: $breakpoint-md) {
       justify-content: flex-start;
+      margin-top: 0;
+    }
+
+    @media (max-height: 728px) {
+      height: 350px !important;
+      min-height: 350px !important;
+
+      li:nth-child(9) {
+        padding-top: 30px;
+      }
     }
 
     @media (max-height: 650px) {
-      height: 300px !important;
-      min-height: 300px !important;
-      overflow-y: auto !important;
-      -webkit-overflow-scrolling: touch !important;
+      margin-top: 0;
     }
 
     // Скрываем скроллбар, но оставляем функциональность
@@ -481,6 +539,23 @@ defineExpose({
 
   &__item {
     margin-bottom: 14px;
+    
+    &--doc {
+      margin-top: 0;
+      padding-top: 0;
+      
+      &:first-of-type {
+        margin-top: 30px;
+      }
+    }
+    
+    &--doc-mobile {
+      display: none;
+      
+      @media (max-height: 730px) {
+        display: block;
+      }
+    }
   }
 
   &__link {
@@ -583,6 +658,20 @@ defineExpose({
       }
     }
   }
+
+  // Стили для документов
+  &__link--doc {
+    font-size: 16px;
+    font-weight: 400;
+    color: $text-color-light;
+    text-transform: none;
+    letter-spacing: 0;
+    
+    &:hover {
+      color: $text-color-light;
+      opacity: 0.8;
+    }
+  }
 }
 
 .menu__arrow {
@@ -627,6 +716,10 @@ defineExpose({
 
   @media (max-width: $breakpoint-x) {
     padding-bottom: 48px;
+  }
+
+  @media (max-height: 730px) {
+    display: none;
   }
 
   &--top {
