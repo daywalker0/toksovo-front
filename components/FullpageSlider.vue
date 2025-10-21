@@ -1,19 +1,20 @@
 <template>
   <div class="sections-container" :data-slider-id="sliderId">
-    <!-- Мобильная версия - Swiper слайдер -->
+    <!-- Мобильная версия - DefaultSlider -->
     <div v-if="isMobile" class="mobile-slider">
-      <swiper
-        :modules="modules"
-        :slides-per-view="'auto'"
+      <DefaultSlider
+        :slides="mobileSlides"
+        :slides-per-view="1.1"
         :space-between="8"
         :centered-slides="true"
-        class="mobile-swiper"
-        @slideChange="onSlideChange"
+        :show-navigation="false"
+        :hide-navigation-on-mobile="true"
+        :breakpoints="fullpageBreakpoints"
       >
-        <swiper-slide v-for="(section, index) in sections" :key="index" class="mobile-swiper-slide">
-          <div class="mobile-slide" :style="{ backgroundImage: `url(${section.image})` }"></div>
-        </swiper-slide>
-      </swiper>
+        <template #slide="{ slide, active }">
+          <div class="mobile-slide" :style="{ backgroundImage: `url(${slide.image})` }"></div>
+        </template>
+      </DefaultSlider>
     </div>
 
     <!-- Десктопная версия -->
@@ -53,9 +54,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, toRefs, nextTick } from 'vue';
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import 'swiper/css';
+import { ref, onMounted, onUnmounted, toRefs, nextTick, computed, watch } from 'vue';
+import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
 const props = defineProps({
   sections: {
@@ -75,18 +75,41 @@ const isIndicatorVisible = ref(false);
 const isInSlider = ref(false);
 const isMobile = ref(false);
 const isProgrammaticScroll = ref(false); // Флаг программной прокрутки
+// Computed свойство для мобильных слайдов
+const mobileSlides = computed(() => {
+  return sections.value.map((section, index) => ({
+    id: index,
+    image: section.image,
+    title: section.title || '',
+    description: section.description || ''
+  }));
+});
 
-const modules = [];
+// Кастомные breakpoints для FullpageSlider (адаптированные под NewsSection, но с 1 слайдом)
+const fullpageBreakpoints = computed(() => ({
+  0: {
+    slidesPerView: 1.1, // Показываем 1 слайд + части предыдущего и следующего
+    spaceBetween: 8,
+    centeredSlides: true,
+  },
+  428: {
+    slidesPerView: 1.1, // Показываем 1 слайд + части предыдущего и следующего
+    spaceBetween: 8,
+    centeredSlides: true,
+  },
+  599: {
+    slidesPerView: 1.1, // Показываем 1 слайд + части предыдущего и следующего
+    spaceBetween: 8,
+    centeredSlides: true,
+  },
+}));
 
 let observer;
 let scrollTriggers = [];
 let scrollTimeout = null;
 let handleUserScroll = null;
 
-// Обработчик изменения слайда в Swiper
-const onSlideChange = swiper => {
-  currentSection.value = swiper.activeIndex;
-};
+// Обработчик изменения слайда (не нужен для упрощенной версии)
 
 const scrollToSection = index => {
   if (isMobile.value) {
@@ -429,27 +452,44 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
-// Мобильная версия с Swiper
+// Мобильная версия с DefaultSlider
 .mobile-slider {
   width: 100%;
   padding: 20px 0;
-}
 
-.mobile-swiper {
-  width: 100%;
-  height: 340px;
-}
+  // Показываем части соседних слайдов (как в NewsSection)
+  ::v-deep(.default-slider) {
+    overflow: visible;
+  }
 
-.mobile-swiper-slide {
-  width: 340px !important;
-  height: 340px;
+  ::v-deep(.slider-container) {
+    overflow: visible;
+  }
+
+  ::v-deep(.default-swiper) {
+    overflow: visible;
+  }
+
+  // Убираем стили слайдов для мобильной версии
+  ::v-deep(.slide) {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    
+    &:hover {
+      border: none !important;
+      background: transparent !important;
+    }
+  }
 }
 
 .mobile-slide {
   width: 100%;
-  height: 100%;
+  height: 340px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  border-radius: 0;
 }
 </style>
