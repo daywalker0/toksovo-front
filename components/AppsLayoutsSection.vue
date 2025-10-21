@@ -47,8 +47,8 @@
         <div class="main-image-wrapper">
           <button
             class="nav-arrow nav-arrow--prev"
-            :class="{ invisible: currentImageIndex === 0 }"
-            @click="currentImageIndex > 0 && switchImage(currentImageIndex - 1)"
+            :class="{ invisible: currentApartmentIndex === 0 }"
+            @click="currentApartmentIndex > 0 && switchApartment(currentApartmentIndex - 1)"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -63,16 +63,16 @@
           </button>
 
           <div class="main-image">
-            <img :src="currentApartment.images[currentImageIndex]" :alt="currentApartment.title" />
+            <img :src="currentApartment.image" :alt="currentApartment.name" />
           </div>
 
           <!-- Стрелка вперед (только на мобильных) -->
           <button
             class="nav-arrow nav-arrow--next"
-            :class="{ invisible: currentImageIndex >= currentApartment.images.length - 1 }"
+            :class="{ invisible: currentApartmentIndex >= currentCategoryData.apartments.length - 1 }"
             @click="
-              currentImageIndex < currentApartment.images.length - 1 &&
-              switchImage(currentImageIndex + 1)
+              currentApartmentIndex < currentCategoryData.apartments.length - 1 &&
+              switchApartment(currentApartmentIndex + 1)
             "
           >
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
@@ -96,7 +96,7 @@
             :class="{ active: currentApartmentIndex === index }"
             @click="switchApartment(index)"
           >
-            <img :src="apartment.images[0]" :alt="`${apartment.name} thumbnail`" />
+            <img :src="apartment.image" :alt="`${apartment.name} thumbnail`" />
           </div>
         </div>
       </div>
@@ -106,7 +106,13 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import appsItem1 from '@/assets/img/apps-item-1.png';
+import appsItem131 from '@/assets/img/kvartiry/studk13-1.png';
+import appsItem141 from '@/assets/img/kvartiry/studk14-1.png';
+import appsItem111 from '@/assets/img/kvartiry/studk11-1.png';
+import appsItem151 from '@/assets/img/kvartiry/1k15-1.png';
+import appsItem101 from '@/assets/img/kvartiry/1k10-1.png';
+import appsItem91 from '@/assets/img/kvartiry/1k9-1.png';
+import appsItem81 from '@/assets/img/kvartiry/2k8-1.png';
 
 defineProps({
   apartments: {
@@ -131,7 +137,7 @@ const apartmentCategories = ref([
         area: '28,63 м',
         price: '8 589 000 р',
         features: ['- Большой балкон'],
-        images: [appsItem1, appsItem1, appsItem1],
+        image: appsItem131,
       },
       {
         id: 1,
@@ -139,7 +145,7 @@ const apartmentCategories = ref([
         area: '29,54 м',
         price: '8 862 000 р',
         features: ['- Большой балкон', '- Панорамное остекление'],
-        images: [appsItem1, appsItem1, appsItem1],
+        image: appsItem141,
       },
       {
         id: 1,
@@ -147,7 +153,7 @@ const apartmentCategories = ref([
         area: '28,84 м',
         price: '8 652 000 р',
         features: ['- Балкон', '- Панорамное остекление', '- Продуманная кухонная зона'],
-        images: [appsItem1, appsItem1, appsItem1],
+        image: appsItem111,
       },
     ]
   },
@@ -161,7 +167,7 @@ const apartmentCategories = ref([
         area: '40,68 м',
         price: '12 204 000 р',
         features: ['- Просторная кухня-гостиная', '- Балкон на кухне'],
-        images: [appsItem1, appsItem1, appsItem1],
+        image: appsItem151,
       },
       {
         id: 1,
@@ -169,7 +175,7 @@ const apartmentCategories = ref([
         area: '40,00 м',
         price: '12 000 000 р',
         features: ['- Светлая кухня-гостиная ', '- Большой коридор', '- Спальня с двумя окнами'],
-        images: [appsItem1, appsItem1, appsItem1],
+        image: appsItem101,
       },
       {
         id: 1,
@@ -177,7 +183,7 @@ const apartmentCategories = ref([
         area: '48,67 м',
         price: '14 601 000 р',
         features: ['- 2 санузла', '- Гардеробная', '- Просторная кухня-гостиная'],
-        images: [appsItem1, appsItem1, appsItem1],
+        image: appsItem91,
       },
     ]
   },
@@ -191,7 +197,7 @@ const apartmentCategories = ref([
         area: '56,03 м',
         price: '16 809 000 р',
         features: ['- Вид на лес', '- Просторная кухня-гостиная', '- Балкон на кухне'],
-        images: [appsItem1, appsItem1, appsItem1],
+        image: appsItem81,
       },
     ]
   },
@@ -270,7 +276,6 @@ const switchImage = imageIndex => {
     padding: 24px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: flex-start;
     height: 100%;
     min-height: 760px;
@@ -490,6 +495,13 @@ const switchImage = imageIndex => {
   flex-direction: row;
   justify-content: center;
   gap: 8px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
+
+  @media (max-width: $breakpoint-x) {
+    margin-bottom: 16px;
+  }
 
   &--item {
     min-width: 54px;
@@ -507,11 +519,20 @@ const switchImage = imageIndex => {
     padding: 14px 16px;
     cursor: pointer;
     background-color: transparent;
+    position: relative;
+    z-index: 11;
 
     @media (max-width: $breakpoint-lg) {
       min-width: 41px;
       height: 41px;
       font-size: 14px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      min-width: 35px;
+      height: 35px;
+      font-size: 12px;
+      padding: 8px 12px;
     }
 
     &:hover {
@@ -592,10 +613,7 @@ const switchImage = imageIndex => {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-
-  @media (max-width: $breakpoint-md) {
-    margin-top: auto;
-  }
+  margin-top: auto;
 
   @media (max-width: $breakpoint-x) {
     font-size: 14px;
@@ -628,6 +646,7 @@ const switchImage = imageIndex => {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   gap: 20px;
 
   @media (max-width: $breakpoint-md) {
@@ -637,7 +656,6 @@ const switchImage = imageIndex => {
 
   @media (max-width: $breakpoint-x) {
     gap: 12px;
-    height: 340px;
     flex: none;
     min-height: auto;
   }
