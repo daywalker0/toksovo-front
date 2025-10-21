@@ -459,7 +459,6 @@ defineExpose({
     @media (max-height: 730px) {
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      max-height: calc(100vh - 150px);
       
       // Скрываем скроллбар
       &::-webkit-scrollbar {
@@ -506,7 +505,6 @@ defineExpose({
     }
 
     @media (max-height: 650px) {
-      margin-top: 0;
       height: 250px !important;
       min-height: 250px !important;
     }
