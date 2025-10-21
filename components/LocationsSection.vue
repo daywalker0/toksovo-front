@@ -296,7 +296,7 @@ const initParallax = () => {
   } else {
     // Для md и больше: анимация трех колонок
     const centerTween = gsap.to(centerColumn.value, {
-      y: 150,
+      y: 80,
       ease: 'none',
       scrollTrigger: {
         trigger: parallaxSection.value,
@@ -309,7 +309,7 @@ const initParallax = () => {
     triggers.push(centerTween);
 
     const leftTween = gsap.to(leftColumn.value, {
-      y: -200,
+      y: -150,
       ease: 'none',
       scrollTrigger: {
         trigger: parallaxSection.value,
@@ -322,7 +322,7 @@ const initParallax = () => {
     triggers.push(leftTween);
 
     const rightTween = gsap.to(rightColumn.value, {
-      y: -300,
+      y: -100,
       ease: 'none',
       scrollTrigger: {
         trigger: parallaxSection.value,
