@@ -1,9 +1,9 @@
 <template>
   <div>
     <AppHeader :active-section="activeSection" />
-    <section id="hero">
+    <!-- <section id="hero">
       <HeroSection />
-    </section>
+    </section> -->
     <div class="main-sections">
       <section id="about">
         <TextBlockSection :text="sectionEnvironment.text" :subtitle="sectionEnvironment.subtitle" />
