@@ -115,12 +115,32 @@ onMounted(async () => {
     start: 'top top',
     end: 'bottom top',
     onLeave: () => {
-      if (renderEl.value) renderEl.value.style.opacity = '0';
-      if (skyEl.value) skyEl.value.style.opacity = '0';
+      if (renderEl.value) {
+        renderEl.value.style.opacity = '0';
+        renderEl.value.style.position = 'absolute';
+      }
+      if (skyEl.value) {
+        skyEl.value.style.opacity = '0';
+        skyEl.value.style.position = 'absolute';
+      }
     },
     onEnterBack: () => {
-      if (renderEl.value) renderEl.value.style.opacity = '1';
-      if (skyEl.value) skyEl.value.style.opacity = '1';
+      if (renderEl.value) {
+        renderEl.value.style.opacity = '1';
+        renderEl.value.style.position = 'fixed';
+      }
+      if (skyEl.value) {
+        skyEl.value.style.opacity = '1';
+        skyEl.value.style.position = 'fixed';
+      }
+    },
+    onEnter: () => {
+      if (renderEl.value) {
+        renderEl.value.style.position = 'fixed';
+      }
+      if (skyEl.value) {
+        skyEl.value.style.position = 'fixed';
+      }
     },
   });
 });
