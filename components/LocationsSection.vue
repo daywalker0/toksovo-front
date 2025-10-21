@@ -110,7 +110,7 @@
               <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Ресторан «ЛетоБар»</div>
+                  <div class="card-content--name">Песочный пляж</div>
                   <div class="card-content--distance">0,9 км</div>
                 </div>
                 <div class="card-content__subtitle">на прилегающей территории</div>
@@ -120,20 +120,20 @@
               <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Ресторан «ЛетоБар»</div>
-                  <div class="card-content--distance">0,9 км</div>
+                  <div class="card-content--name">Учебно-тренировочный центр</div>
+                  <div class="card-content--distance">3,4 км</div>
                 </div>
-                <div class="card-content__subtitle">на прилегающей территории</div>
+                <div class="card-content__subtitle">«Кавголово»</div>
               </div>
             </div>
             <div class="card">
               <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Ресторан «ЛетоБар»</div>
-                  <div class="card-content--distance">0,9 км</div>
+                  <div class="card-content--name">Парк семейного отдыха</div>
+                  <div class="card-content--distance">11 км</div>
                 </div>
-                <div class="card-content__subtitle">на прилегающей территории</div>
+                <div class="card-content__subtitle">«Зубровник»</div>
               </div>
             </div>
           </div>
@@ -219,6 +219,123 @@ const slides = ref([
 let triggers = [];
 let resizeTimer = null;
 
+const destroyParallax = () => {
+  triggers.forEach(tween => {
+    tween.scrollTrigger?.kill();
+    tween.kill();
+  });
+  triggers = [];
+};
+
+const initParallax = () => {
+  if (isMobile.value) return;
+
+  if (!parallaxSection.value || !leftColumn.value || !centerColumn.value || !rightColumn.value) {
+    return;
+  }
+
+  destroyParallax();
+
+  const isMd = window.innerWidth <= 1024;
+
+  if (isMd) {
+    // Для md: левая колонка ниже, правая выше
+    gsap.set(leftColumn.value, {
+      y: 300,
+      force3D: true,
+    });
+    gsap.set(rightColumn.value, {
+      y: 0,
+      force3D: true,
+    });
+  } else {
+    // Для больших экранов: 3 колонки
+    gsap.set(centerColumn.value, {
+      y: 0,
+      force3D: true,
+    });
+    gsap.set(leftColumn.value, {
+      y: 150,
+      force3D: true,
+    });
+    gsap.set(rightColumn.value, {
+      y: 300,
+      force3D: true,
+    });
+  }
+
+  if (isMd) {
+    // Для md: анимация двух колонок
+    const leftTween = gsap.to(leftColumn.value, {
+      y: -500,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: parallaxSection.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+        invalidateOnRefresh: true,
+        markers: false, // Поставить true для отладки
+      },
+    });
+    triggers.push(leftTween);
+
+    const rightTween = gsap.to(rightColumn.value, {
+      y: -300,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: parallaxSection.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+        invalidateOnRefresh: true,
+        markers: false, // Поставить true для отладки
+      },
+    });
+    triggers.push(rightTween);
+  } else {
+    // Для больших экранов: анимация трех колонок
+    const centerTween = gsap.to(centerColumn.value, {
+      y: 350,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: parallaxSection.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
+    });
+    triggers.push(centerTween);
+
+    const leftTween = gsap.to(leftColumn.value, {
+      y: -400,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: parallaxSection.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
+    });
+    triggers.push(leftTween);
+
+    const rightTween = gsap.to(rightColumn.value, {
+      y: -700,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: parallaxSection.value,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
+    });
+    triggers.push(rightTween);
+  }
+};
+
 onMounted(async () => {
   await nextTick();
 
@@ -229,76 +346,25 @@ onMounted(async () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       checkMobile();
+      if (!isMobile.value) {
+        initParallax();
+        ScrollTrigger.refresh();
+      } else {
+        destroyParallax();
+      }
     }, 150);
   });
 
   gsap.registerPlugin(ScrollTrigger);
 
-  if (isMobile.value) return;
-
-  if (!parallaxSection.value || !leftColumn.value || !centerColumn.value || !rightColumn.value) {
-    return;
+  if (!isMobile.value) {
+    initParallax();
   }
-
-  gsap.set(centerColumn.value, {
-    y: 0,
-    force3D: true,
-  });
-  gsap.set(leftColumn.value, {
-    y: 150,
-    force3D: true,
-  });
-  gsap.set(rightColumn.value, {
-    y: 300,
-    force3D: true,
-  });
-
-  const centerTween = gsap.to(centerColumn.value, {
-    y: 350,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: parallaxSection.value,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: true,
-      invalidateOnRefresh: true,
-    },
-  });
-  triggers.push(centerTween);
-
-  const leftTween = gsap.to(leftColumn.value, {
-    y: -400,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: parallaxSection.value,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: true,
-      invalidateOnRefresh: true,
-    },
-  });
-  triggers.push(leftTween);
-
-  const rightTween = gsap.to(rightColumn.value, {
-    y: -700,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: parallaxSection.value,
-      start: 'top bottom',
-      end: 'bottom top',
-      scrub: true,
-      invalidateOnRefresh: true,
-    },
-  });
-  triggers.push(rightTween);
 });
 
 onBeforeUnmount(() => {
   clearTimeout(resizeTimer);
-  triggers.forEach(tween => {
-    tween.scrollTrigger?.kill();
-    tween.kill();
-  });
+  destroyParallax();
 });
 </script>
 
@@ -307,6 +373,10 @@ onBeforeUnmount(() => {
 
 .locations-section {
   padding: 60px 0 260px;
+
+  @media (max-width: $breakpoint-md) {
+    padding: 60px 0 120px;
+  }
 
   @media (max-width: $breakpoint-x) {
     padding: 40px 0 60px;
@@ -325,6 +395,13 @@ onBeforeUnmount(() => {
   justify-content: center;
   position: relative;
   margin: 100px 0;
+  overflow: visible;
+
+  @media (max-width: $breakpoint-md) {
+    margin: 180px 0 -300px;
+    min-height: 1200px;
+    align-items: flex-start;
+  }
 }
 
 .parallax-container {
@@ -340,8 +417,16 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $breakpoint-md) {
-    gap: 15px;
-    max-width: 800px;
+    gap: 40px;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 40px;
+    align-items: flex-start;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    gap: 20px;
+    padding: 0 20px;
   }
 }
 
@@ -351,6 +436,23 @@ onBeforeUnmount(() => {
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    align-items: flex-start;
+  }
+
+  &.center-column {
+    @media (max-width: $breakpoint-md) {
+      display: none;
+    }
+  }
 }
 
 .card {
@@ -364,7 +466,7 @@ onBeforeUnmount(() => {
   }
 
   @media (max-width: $breakpoint-md) {
-    width: 240px;
+    width: 100%;
     margin-bottom: 40px;
   }
 
@@ -377,7 +479,12 @@ onBeforeUnmount(() => {
 .card-img {
   width: 100%;
   height: 488px;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
+
+  @media (max-width: $breakpoint-md) {
+    height: auto;
+  }
 
   @media (max-width: $breakpoint-sm) {
     height: 300px;

@@ -38,9 +38,11 @@ const props = defineProps({
   position: relative;
   z-index: 2;
 
+  @media (max-width: $breakpoint-md) {
+    padding-top: 80px;
+  }
   @media (max-width: $breakpoint-sm) {
     padding-top: 40px;
-    padding-bottom: 0px;
   }
 }
 
@@ -58,8 +60,8 @@ const props = defineProps({
   overflow-wrap: break-word;
   hyphens: none;
 
-  @media (max-width: $breakpoint-sm) {
-    margin: 40px auto 0;
+  @media (max-width: $breakpoint-md) {
+    margin: 32px auto 0;
   }
 
   @media (max-width: $breakpoint-x) {

@@ -880,8 +880,16 @@ onBeforeUnmount(() => {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 
+    @media (max-width: $breakpoint-md) {
+      height: 336px;
+      width: 365px;
+    }
+
     &__wrap {
       padding: 36px;
+      @media (max-width: $breakpoint-md) {
+        padding: 26px;
+      }
     }
   }
 
@@ -916,6 +924,10 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
 
+    @media (max-width: $breakpoint-md) {
+      font-size: 20px;
+    }
+
     &:hover {
       opacity: 1;
     }
@@ -932,6 +944,10 @@ onBeforeUnmount(() => {
     color: $accent-color-green;
     cursor: auto !important;
 
+    @media (max-width: $breakpoint-md) {
+      font-size: 23px;
+    }
+
     .icon {
       opacity: 1;
       width: fit-content;
@@ -946,6 +962,10 @@ onBeforeUnmount(() => {
     opacity: 0.8;
     color: $text-color-primary;
     margin-top: 10px;
+
+    @media (max-width: $breakpoint-md) {
+      font-size: 16px;
+    }
   }
 
   .accordion-content {
