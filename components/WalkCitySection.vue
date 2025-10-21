@@ -83,6 +83,11 @@ onMounted(() => {
     position: static;
     z-index: 3;
 
+    @media (max-width: 1366px) {
+      margin-top: 50px;
+      margin-left: 50px;
+    }
+
     @media (max-width: $breakpoint-lg) {
       margin-left: 80px;
     }

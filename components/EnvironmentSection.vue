@@ -880,14 +880,14 @@ onBeforeUnmount(() => {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: 1366px) {
       height: 336px;
       width: 365px;
     }
 
     &__wrap {
       padding: 36px;
-      @media (max-width: $breakpoint-md) {
+      @media (max-width: 1366px) {
         padding: 26px;
       }
     }
@@ -924,7 +924,7 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: 1366px) {
       font-size: 20px;
     }
 
@@ -944,7 +944,7 @@ onBeforeUnmount(() => {
     color: $accent-color-green;
     cursor: auto !important;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: 1366px) {
       font-size: 23px;
     }
 
@@ -963,7 +963,7 @@ onBeforeUnmount(() => {
     color: $text-color-primary;
     margin-top: 10px;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: 1366px) {
       font-size: 16px;
     }
   }
