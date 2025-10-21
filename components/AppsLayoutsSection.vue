@@ -236,11 +236,7 @@ const switchImage = imageIndex => {
 @use '@/assets/styles/variables.scss' as *;
 
 .apartments-section {
-  min-height: 100vh;
-
-  @media (max-width: $breakpoint-x) {
-    min-height: 100svh;
-  }
+  min-height: auto;
 
   &__container {
     height: 100%;
@@ -299,7 +295,6 @@ const switchImage = imageIndex => {
   gap: 1.5rem;
 
   @media (max-width: $breakpoint-md) {
-    min-height: 700px;
     justify-content: flex-start;
   }
 
@@ -651,7 +646,6 @@ const switchImage = imageIndex => {
 
   @media (max-width: $breakpoint-md) {
     flex: 1;
-    min-height: 500px;
   }
 
   @media (max-width: $breakpoint-x) {
