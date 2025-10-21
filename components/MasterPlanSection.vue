@@ -470,6 +470,14 @@ onMounted(async () => {
           } else if (self.progress <= 0.8 && showPins.value) {
             showPins.value = false;
             showFilterButton.value = false;
+            // Скрываем панель когда пины скрываются
+            hoveredPin.value = null;
+            hoveredPinIndex.value = null;
+            // Очищаем таймеры
+            if (closeTimeoutId) {
+              clearTimeout(closeTimeoutId);
+              closeTimeoutId = null;
+            }
           }
         },
         onComplete: () => {
