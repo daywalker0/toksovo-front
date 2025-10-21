@@ -53,13 +53,15 @@
 
       <section class="sticky-content">
         <div class="content" ref="content">
-          <button
-            class="button button-left"
-            :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
-            :style="{ opacity: buttonsOpacity }"
-          >
-            Генплан
-          </button>
+          <div class="button-block button-block-left">
+            <button
+              class="button button-left"
+              :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
+              :style="{ opacity: buttonsOpacity }"
+            >
+              Генплан
+            </button>
+          </div>
 
           <div
             class="content--center"
@@ -73,13 +75,15 @@
             </div>
           </div>
 
-          <button
-            class="button button-right"
-            :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
-            :style="{ opacity: buttonsOpacity }"
-          >
-            Каталог квартир
-          </button>
+          <div class="button-block button-block-right">
+            <button
+              class="button button-right"
+              :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
+              :style="{ opacity: buttonsOpacity }"
+            >
+              Каталог квартир
+            </button>
+          </div>
         </div>
       </section>
     </template>
@@ -368,8 +372,16 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   width: 100%;
-  gap: 40px;
+  gap: 50%;
   padding: 0 40px;
+
+  @media (max-width: $breakpoint-lg) {
+    gap: 75%;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    gap: 50%;
+  }
 
   @media (max-width: $breakpoint-sm) {
     flex-direction: column;
@@ -377,8 +389,9 @@ onUnmounted(() => {
     padding: 20px;
     align-items: center;
   }
+}
 
-  &--center {
+.content--center {
     width: 100vw;
     height: 100vh;
     max-width: none;
@@ -410,6 +423,18 @@ onUnmounted(() => {
       object-fit: cover;
       display: block;
     }
+  }
+
+.button-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100vh;
+
+  @media (max-width: $breakpoint-sm) {
+    height: auto;
+    flex: none;
   }
 }
 
@@ -450,59 +475,17 @@ onUnmounted(() => {
 }
 
 .button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   transition: opacity 0.3s ease-out;
   flex-shrink: 0;
-
-  &.button-left {
-    left: 115px;
-
-    @media (max-width: $breakpoint-md) {
-      left: calc(50% - 225px - 80px);
-    }
-  }
-
-  &.button-right {
-    right: 115px;
-
-    @media (max-width: $breakpoint-md) {
-      right: calc(50% - 280px - 80px);
-    }
-  }
 
   &.dark {
     color: $text-color-white;
     border: 1px solid $text-color-white;
   }
 
-  @media (min-width: 769px) {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
   @media (max-width: $breakpoint-sm) {
-    position: static !important;
-    transform: none !important;
-    margin: 0;
     width: 200px;
     opacity: 1 !important;
-
-    &.button-left {
-      left: auto !important;
-      order: 1;
-    }
-
-    &.button-right {
-      right: auto !important;
-      order: 3;
-    }
-  }
-
-  @media (min-width: calc($breakpoint-sm + 1px)) and (max-width: $breakpoint-md) {
-    position: absolute;
   }
 }
 
