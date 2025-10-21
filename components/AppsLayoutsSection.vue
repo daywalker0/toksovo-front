@@ -231,6 +231,10 @@ const switchImage = index => {
     height: 100%;
     min-height: 760px;
 
+    @media (max-width: $breakpoint-md) {
+      justify-content: flex-start;
+    }
+
     @media (max-width: $breakpoint-x) {
       min-height: auto;
       padding: 20px;
@@ -245,10 +249,16 @@ const switchImage = index => {
   justify-content: space-between;
   gap: 1.5rem;
 
+  @media (max-width: $breakpoint-md) {
+    min-height: 700px;
+    justify-content: flex-start;
+  }
+
   @media (max-width: $breakpoint-x) {
     order: 1;
     width: 100%;
     margin-top: 20px;
+    min-height: auto;
   }
 }
 
@@ -263,6 +273,10 @@ const switchImage = index => {
   padding-bottom: 38px;
   width: 100%;
   margin-bottom: 12px;
+
+  @media (max-width: 1366px) {
+    padding-bottom: 0;
+  }
 
   @media (max-width: $breakpoint-lg) {
     padding-bottom: 24px;
@@ -348,8 +362,8 @@ const switchImage = index => {
   padding-bottom: 48px;
   border-bottom: none;
 
-  @media (max-width: $breakpoint-lg) {
-    padding-bottom: 24px;
+  @media (max-width: 1366px) {
+    padding-bottom: 0;
   }
 
   @media (max-width: $breakpoint-x) {
@@ -535,6 +549,10 @@ const switchImage = index => {
   position: relative;
   overflow: hidden;
 
+  @media (max-width: $breakpoint-md) {
+    margin-top: auto;
+  }
+
   @media (max-width: $breakpoint-x) {
     font-size: 14px;
   }
@@ -568,9 +586,16 @@ const switchImage = index => {
   justify-content: center;
   gap: 20px;
 
+  @media (max-width: $breakpoint-md) {
+    flex: 1;
+    min-height: 500px;
+  }
+
   @media (max-width: $breakpoint-x) {
     gap: 12px;
     height: 340px;
+    flex: none;
+    min-height: auto;
   }
 }
 
@@ -590,7 +615,8 @@ const switchImage = index => {
   }
 
   @media (max-width: $breakpoint-md) {
-    max-height: 300px;
+    max-height: none;
+    flex: 1;
   }
 }
 
@@ -610,7 +636,11 @@ const switchImage = index => {
   }
 
   @media (max-width: $breakpoint-md) {
-    max-height: 300px;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    object-fit: contain;
   }
 
   @media (max-width: $breakpoint-x) {

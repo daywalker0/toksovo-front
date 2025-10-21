@@ -274,7 +274,8 @@ const openDialogVideo = () => {
 }
 
 .image-container {
-  height: 373px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 8px;
 
@@ -283,18 +284,6 @@ const openDialogVideo = () => {
     height: 100%;
     object-fit: cover;
     display: block;
-  }
-
-  @media (max-width: $breakpoint-lg) {
-    height: 300px;
-  }
-
-  @media (max-width: $breakpoint-md) {
-    height: 250px;
-  }
-
-  @media (max-width: $breakpoint-x) {
-    height: 253px;
   }
 }
 

@@ -27,19 +27,19 @@
           >
             <div class="map__category-name">
               <div
-                v-html="categoryIcon(cat.key, hoveredCategory === cat.key)"
+                v-html="categoryIcon(cat.key, !isMd && hoveredCategory === cat.key)"
                 class="map__icon"
                 :class="{
                   'map__icon--inactive': !cat.active,
-                  'map__icon--hovered': hoveredCategory === cat.key,
+                  'map__icon--hovered': !isMd && hoveredCategory === cat.key,
                 }"
               />
               <AnimatedLink
                 :text="cat.name"
                 customClass="map__category-name-link"
-                hoverColor="#ff6b35"
-                :forceHover="hoveredCategory === cat.key"
-                :disableAnimation="!cat.active"
+                :hoverColor="isMd ? '' : '#ff6b35'"
+                :forceHover="!isMd && hoveredCategory === cat.key"
+                :disableAnimation="isMd || !cat.active"
               />
             </div>
 
@@ -316,6 +316,7 @@ const isSidebarOpen = ref(true);
 const hoveredCategory = ref(null);
 // Инициализируем isMobile сразу правильно для SSR/CSR
 const isMobile = ref(process.client ? window.innerWidth <= 599 : false);
+const isMd = ref(process.client ? window.innerWidth <= 1024 : false);
 const isMapDialogOpen = ref(false);
 const isMapReady = ref(false);
 
@@ -453,6 +454,7 @@ function openMapDialog() {
 const checkMobile = () => {
   if (process.client) {
     isMobile.value = window.innerWidth <= 599;
+    isMd.value = window.innerWidth <= 1024;
   }
 };
 
@@ -498,6 +500,30 @@ onBeforeUnmount(() => {
     background-color: $bg-color-2;
     min-width: 305px;
     color: $accent-color-green;
+
+    @media (max-width: $breakpoint-md) {
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      min-width: unset;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      padding: 0 0 40px 20px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 60px;
+        background: linear-gradient(to left, rgba(245, 245, 245, 0.9) 0%, transparent 100%);
+        pointer-events: none;
+      }
+    }
 
     @media (max-width: $breakpoint-x) {
       display: none;
@@ -561,6 +587,10 @@ onBeforeUnmount(() => {
 
   &__sidebar-content {
     padding: 24px;
+
+    @media (max-width: $breakpoint-md) {
+      padding: 0;
+    }
   }
 
   &__sidebar-title {
@@ -575,6 +605,10 @@ onBeforeUnmount(() => {
     user-select: none;
     transition: color 0.2s ease;
     font-size: 22px;
+
+    @media (max-width: $breakpoint-md) {
+      display: none;
+    }
   }
 
   &__m {
@@ -597,6 +631,27 @@ onBeforeUnmount(() => {
       max-height 0.3s ease;
     overflow: hidden;
     margin-top: 20px;
+
+    @media (max-width: $breakpoint-md) {
+      margin-top: 0;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 8px;
+      padding-right: 60px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+
+      // Скрываем скроллбар
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
   }
 
   &__category {
@@ -611,13 +666,41 @@ onBeforeUnmount(() => {
     cursor: pointer;
     transition: all 0.3s ease;
 
+    @media (max-width: $breakpoint-md) {
+      padding: 8px 16px;
+      border-radius: 50px;
+      background: $bg-color-2;
+      border: none;
+      color: $text-color-secondary;
+      font-size: 14px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      width: auto;
+      justify-content: flex-start;
+
+      &:not(.inactive) {
+        background: $accent-color-orange;
+        color: $text-color-white;
+
+        .map__category-name-link,
+        .map__category-count,
+        .map__icon {
+          color: $text-color-white;
+        }
+      }
+    }
+
     &:hover {
-      .map__category-count {
-        color: $accent-color-orange;
+      @media (min-width: calc($breakpoint-md + 1px)) {
+        .map__category-name-link {
+          color: $accent-color-orange;
+        }
       }
 
-      .map__category-name-link {
-        color: $accent-color-orange;
+      @media (max-width: $breakpoint-md) {
+        &.inactive {
+          opacity: 0.8;
+        }
       }
     }
   }
@@ -626,15 +709,34 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
 
+    @media (max-width: $breakpoint-md) {
+      gap: 8px;
+      align-items: flex-start;
+    }
+
     &-link {
       margin-left: 10px;
       transition: color 0.3s ease;
+
+      @media (max-width: $breakpoint-md) {
+        margin-left: 0;
+      }
     }
   }
 
   &__icon {
     width: 20px;
     height: 20px;
+
+    @media (max-width: $breakpoint-md) {
+      width: 16px;
+      height: 16px;
+
+      :deep(svg path),
+      :deep(svg g) {
+        fill: currentColor;
+      }
+    }
 
     &--inactive {
       opacity: 0.5;
@@ -650,6 +752,10 @@ onBeforeUnmount(() => {
     transition: color 0.3s ease;
     font-weight: 700;
 
+    @media (max-width: $breakpoint-md) {
+      display: none;
+    }
+
     &--hovered {
       color: #ff6b35;
     }
@@ -663,6 +769,16 @@ onBeforeUnmount(() => {
 
   .map__category-count {
     color: #c0c1c0;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    background: #e0e0e0 !important;
+    color: $text-color-secondary;
+
+    .map__category-name-link,
+    .map__category-count {
+      color: $text-color-secondary;
+    }
   }
 }
 

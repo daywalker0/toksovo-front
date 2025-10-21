@@ -492,6 +492,13 @@ onBeforeUnmount(() => {
   }
 }
 
+.mobile-slider {
+  .card-img {
+    aspect-ratio: 1 / 1;
+    height: auto;
+  }
+}
+
 .card-content {
   margin-top: 20px;
 
@@ -585,15 +592,10 @@ onBeforeUnmount(() => {
     margin: 0;
 
     .card-img {
-      height: 488px;
-
-      @media (max-width: $breakpoint-x) {
-        height: 400px;
-      }
-
-      @media (max-width: $breakpoint-xs) {
-        height: 338px;
-      }
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      height: auto;
+      object-fit: cover;
     }
   }
 }

@@ -327,7 +327,8 @@ onMounted(() => {
 }
 
 .image-container {
-  height: 373px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 8px;
 
@@ -336,22 +337,6 @@ onMounted(() => {
     height: 100%;
     object-fit: cover;
     display: block;
-  }
-
-  @media (max-width: $breakpoint-lg) {
-    height: 300px;
-  }
-
-  @media (max-width: $breakpoint-md) {
-    height: 250px;
-  }
-
-  @media (max-width: $breakpoint-x) {
-    height: 180px;
-  }
-
-  @media (max-width: $breakpoint-sm) {
-    height: 200px;
   }
 }
 </style>

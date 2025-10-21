@@ -149,6 +149,10 @@ const props = defineProps({
         spaceBetween: 20,
       },
       1024: {
+        slidesPerView: 2,
+        spaceBetween: 20,
+      },
+      1240: {
         slidesPerView: 3,
         spaceBetween: 45,
       },
@@ -358,8 +362,7 @@ onMounted(() => {
 }
 
 .slide {
-  height: 100%;
-  min-height: 300px;
+  height: auto;
   border: 1px solid $utility-color-1;
   border-radius: 7px;
   padding: 20px;
@@ -369,6 +372,18 @@ onMounted(() => {
     border: 1px solid $text-color-white;
     background-color: $text-color-white;
     transition: 0.3s;
+  }
+
+  :deep(img) {
+    width: 100%;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover;
+    display: block;
+  }
+
+  :deep(.card-img) {
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
   }
 }
 
