@@ -1,7 +1,7 @@
 <template>
   <div class="text-block-section section">
     <div class="content">
-      <TitleNew :text="text" mode="letters-slide-up" />
+      <!-- <TitleNew :text="text" mode="letters-slide-up" /> -->
       <p class="subtitle-text subtitle-text-section">{{ subtitle }}</p>
     </div>
   </div>
@@ -70,4 +70,5 @@ const props = defineProps({
     text-align: start;
   }
 }
+
 </style>

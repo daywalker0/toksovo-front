@@ -1,7 +1,7 @@
 <template>
   <div class="locations-section section">
     <div class="locations-section__container container">
-      <TitleNew text="Локации рядом" />
+      <!-- <TitleNew text="Локации рядом" /> -->
 
       <!-- Мобильная версия - слайдер -->
       <div v-if="isMobile" class="mobile-slider">
@@ -594,4 +594,5 @@ onBeforeUnmount(() => {
     }
   }
 }
+
 </style>
