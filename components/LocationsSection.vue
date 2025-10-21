@@ -255,11 +255,11 @@ const initParallax = () => {
       force3D: true,
     });
     gsap.set(leftColumn.value, {
-      y: 150,
+      y: 100,
       force3D: true,
     });
     gsap.set(rightColumn.value, {
-      y: 300,
+      y: 200,
       force3D: true,
     });
   }
@@ -296,7 +296,7 @@ const initParallax = () => {
   } else {
     // Для md и больше: анимация трех колонок
     const centerTween = gsap.to(centerColumn.value, {
-      y: 350,
+      y: 150,
       ease: 'none',
       scrollTrigger: {
         trigger: parallaxSection.value,
@@ -309,7 +309,7 @@ const initParallax = () => {
     triggers.push(centerTween);
 
     const leftTween = gsap.to(leftColumn.value, {
-      y: -400,
+      y: -200,
       ease: 'none',
       scrollTrigger: {
         trigger: parallaxSection.value,
@@ -322,7 +322,7 @@ const initParallax = () => {
     triggers.push(leftTween);
 
     const rightTween = gsap.to(rightColumn.value, {
-      y: -700,
+      y: -300,
       ease: 'none',
       scrollTrigger: {
         trigger: parallaxSection.value,
@@ -372,7 +372,7 @@ onBeforeUnmount(() => {
 @use '@/assets/styles/variables.scss' as *;
 
 .locations-section {
-  padding: 60px 0 260px;
+  padding: 60px 0;
 
   @media (max-width: $breakpoint-sm) {
     padding: 60px 0 120px;
