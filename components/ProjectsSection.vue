@@ -147,6 +147,18 @@ const openDialogVideo = () => {
 .projects-section {
   @media (max-width: $breakpoint-x) {
     margin-bottom: 60px;
+
+    ::v-deep(.default-slider) {
+      overflow: visible;
+    }
+
+    ::v-deep(.slider-container) {
+      overflow: visible;
+    }
+
+    ::v-deep(.default-swiper) {
+      overflow: visible;
+    }
   }
   &__title {
     margin: 0 auto;
