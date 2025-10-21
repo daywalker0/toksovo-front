@@ -189,7 +189,7 @@ let horizontalScrollTrigger = null;
 gsap.registerPlugin(ScrollTrigger);
 
 const initHorizontalScroll = () => {
-  if (window.innerWidth <= 599) {
+  if (window.innerWidth <= 1024) {
     if (horizontalScrollTrigger) {
       horizontalScrollTrigger.scrollTrigger?.kill();
       horizontalScrollTrigger.kill();
@@ -304,7 +304,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   position: relative;
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     height: auto;
     overflow: visible;
   }
@@ -318,7 +318,7 @@ onBeforeUnmount(() => {
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
 
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-md) {
     height: auto;
     flex-direction: column;
     transform: none;
@@ -330,9 +330,9 @@ onBeforeUnmount(() => {
     height: 100vh;
     flex-shrink: 0;
 
-    @media (max-width: $breakpoint-x) {
-      height: 100svh;
-      width: 100vw;
+    @media (max-width: $breakpoint-md) {
+      height: 90svh;
+      width: 100%;
     }
   }
 }

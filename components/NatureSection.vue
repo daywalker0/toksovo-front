@@ -31,7 +31,7 @@ const isMobile = ref(false);
 
 onMounted(() => {
   const checkMobile = () => {
-    isMobile.value = window.innerWidth <= 599;
+    isMobile.value = window.innerWidth <= 1024;
   };
 
   checkMobile();
@@ -51,6 +51,15 @@ onMounted(() => {
   height: 100vh;
   flex-shrink: 0;
   background-color: $accent-color-green;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  @media (max-width: $breakpoint-md) {
+    height: 90svh;
+    width: 100%;
+    flex-shrink: initial;
+  }
 
   @media (max-width: $breakpoint-x) {
     height: 100svh;
@@ -59,17 +68,13 @@ onMounted(() => {
     backface-visibility: hidden;
     transform: translateZ(0);
   }
-  display: flex;
-  align-items: center;
-  overflow: hidden;
 
   &__container {
     position: relative;
     height: 100%;
     z-index: 3;
 
-    @media (max-width: $breakpoint-x) {
-      height: 100%;
+    @media (max-width: $breakpoint-md) {
       display: flex;
       flex-direction: column;
     }
@@ -85,13 +90,15 @@ onMounted(() => {
       margin-left: 80px;
     }
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       margin-top: 0;
       margin-left: 0;
       display: flex;
       flex-direction: column;
-      padding: 20px 0;
+      padding: 40px 20px;
       height: 100%;
+      align-items: center;
+      text-align: center;
     }
   }
 
@@ -108,9 +115,15 @@ onMounted(() => {
     align-items: center;
     gap: 20px;
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       font-size: 50px;
-      max-width: 100%;
+      max-width: 500px;
+      margin-bottom: 20px;
+      line-height: 90%;
+      text-align: center;
+    }
+
+    @media (max-width: $breakpoint-x) {
       text-align: left;
       line-height: 90%;
     }
@@ -159,12 +172,16 @@ onMounted(() => {
       font-size: 18px;
     }
 
-    @media (max-width: $breakpoint-x) {
+    @media (max-width: $breakpoint-md) {
       position: static;
-      max-width: 100%;
+      max-width: 490px;
       font-size: 16px;
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    @media (max-width: $breakpoint-x) {
       margin-top: 20px;
-      margin-bottom: 30px;
       text-align: left;
     }
   }
@@ -185,12 +202,14 @@ onMounted(() => {
       display: block;
     }
 
-    @media (max-width: $breakpoint-x) {
-      position: relative; // чтобы overlay внутри позиционировался правильно
-      width: 100%;
+    @media (max-width: $breakpoint-md) {
+      position: static;
+      width: 100vw;
+      margin-left: -20px;
+      margin-right: -20px;
       height: auto;
       flex: 1;
-      min-height: 400px;
+      min-height: 450px;
 
       img {
         height: 100%;
