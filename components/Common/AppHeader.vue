@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import Menu from './Menu.vue';
 import AnimatedLink from './AnimatedLink.vue';
@@ -122,16 +122,13 @@ const scrolled = ref(false);
 const menuComponent = ref(null);
 const isMenuOpen = ref(false);
 
-let isHandlingScroll = false;
-const handleScroll = () => {
-  if (isHandlingScroll) return;
-  isHandlingScroll = true;
-
-  requestAnimationFrame(() => {
-    scrolled.value = typeof window !== 'undefined' ? window.scrollY > 50 : false;
-    isHandlingScroll = false;
-  });
+// Отслеживаем изменение активной секции вместо скролла
+const updateScrolledState = () => {
+  scrolled.value = props.activeSection !== 'hero';
 };
+
+// Следим за изменениями активной секции
+watch(() => props.activeSection, updateScrolledState, { immediate: true });
 
 const openMenu = () => {
   if (menuComponent.value) {
@@ -157,15 +154,8 @@ const handleMenuToggle = () => {
 };
 
 onMounted(() => {
-  if (typeof window !== 'undefined') {
-    window.addEventListener('scroll', handleScroll);
-  }
-});
-
-onUnmounted(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('scroll', handleScroll);
-  }
+  // Инициализируем состояние при монтировании
+  updateScrolledState();
 });
 </script>
 
@@ -176,7 +166,12 @@ onUnmounted(() => {
   z-index: 12341 !important;
   width: 100%;
   transition: all 0.3s ease;
-  background-color: rgba(248, 243, 237);
+  background-color: transparent;
+
+  // Белый фон только когда пользователь дошел до второй секции (не hero)
+  &.header--scrolled {
+    background-color: rgba(248, 243, 237);
+  }
 
   &__container {
     display: flex;
