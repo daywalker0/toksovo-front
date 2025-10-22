@@ -158,7 +158,6 @@ onUnmounted(() => {
   padding: 0;
 
   @media (max-width: $breakpoint-x) {
-    height: 100svh;
     height: 100vh;
     height: 100dvh;
     height: -webkit-fill-available;
@@ -173,11 +172,10 @@ onUnmounted(() => {
     flex-direction: column;
 
     @media (max-width: $breakpoint-x) {
-      height: 100svh;
       height: 100vh;
       height: 100dvh;
       height: -webkit-fill-available;
-      min-height: 100svh;
+      min-height: 100vh;
     }
   }
 
@@ -228,11 +226,8 @@ onUnmounted(() => {
     background: #f0f0f0; // Добавляем фоновый цвет на случай если карта не загрузится
 
     @media (max-width: $breakpoint-x) {
-      height: 100svh;
-      height: 100vh;
-      height: 100dvh;
-      height: -webkit-fill-available;
-      min-height: 100svh;
+      height: 100%;
+      min-height: 0;
       flex: 1;
     }
   }
