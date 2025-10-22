@@ -35,7 +35,7 @@
           <!-- Левая колонка -->
           <div class="parallax-column left-column" ref="leftColumn">
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc6" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Ресторан «ЛетоБар»</div>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc9" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Конный клуб</div>
@@ -55,7 +55,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc5" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Экотропа</div>
@@ -69,7 +69,7 @@
           <!-- Центральная колонка -->
           <div class="parallax-column center-column" ref="centerColumn">
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc2" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Песочный пляж</div>
@@ -79,7 +79,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc4" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Учебно-тренировочный центр</div>
@@ -89,7 +89,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc7" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Парк семейного отдыха</div>
@@ -103,7 +103,7 @@
           <!-- Правая колонка -->
           <div class="parallax-column right-column" ref="rightColumn">
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc1" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Песочный пляж</div>
@@ -113,7 +113,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc8" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Учебно-тренировочный центр</div>
@@ -123,7 +123,7 @@
               </div>
             </div>
             <div class="card">
-              <img class="card-img" :src="locationCardImg" alt="card" loading="lazy" />
+              <img class="card-img" :src="loc3" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Парк семейного отдыха</div>
@@ -145,7 +145,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import TitleNew from './Common/TitleNew.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
-import locationCardImg from '@/assets/img/location-card.png';
+import loc1 from '@/assets/img/locations/loc-1.jpg'
+import loc2 from '@/assets/img/locations/loc-2.jpg'
+import loc3 from '@/assets/img/locations/loc-3.jpg'
+import loc4 from '@/assets/img/locations/loc-4.jpg'
+import loc5 from '@/assets/img/locations/loc-5.jpg'
+import loc6 from '@/assets/img/locations/loc-6.jpg'
+import loc7 from '@/assets/img/locations/loc-7.jpg'
+import loc8 from '@/assets/img/locations/loc-8.jpg'
+import loc9 from '@/assets/img/locations/loc-9.jpg'
 
 const parallaxSection = ref(null);
 const leftColumn = ref(null);
@@ -157,55 +165,55 @@ const isMobile = ref(false);
 // Массив всех слайдов для мобильной версии
 const slides = ref([
   {
-    image: locationCardImg,
+    image: loc1,
     name: 'Ресторан «ЛетоБар»',
     distance: '0,9 км',
     subtitle: 'на прилегающей территории',
   },
   {
-    image: locationCardImg,
+    image: loc2,
     name: 'Песочный пляж',
     distance: '0,9 км',
     subtitle: 'на прилегающей территории',
   },
   {
-    image: locationCardImg,
+    image: loc3,
     name: 'Ресторан «ЛетоБар»',
     distance: '0,9 км',
     subtitle: 'на прилегающей территории',
   },
   {
-    image: locationCardImg,
+    image: loc4,
     name: 'Конный клуб',
     distance: '3 км',
     subtitle: '',
   },
   {
-    image: locationCardImg,
+    image: loc5,
     name: 'Учебно-тренировочный центр',
     distance: '3,4 км',
     subtitle: '«Кавголово»',
   },
   {
-    image: locationCardImg,
+    image: loc6,
     name: 'Ресторан «ЛетоБар»',
     distance: '0,9 км',
     subtitle: 'на прилегающей территории',
   },
   {
-    image: locationCardImg,
+    image: loc7,
     name: 'Экотропа',
     distance: '10 км',
     subtitle: '«Малиновая гора»',
   },
   {
-    image: locationCardImg,
+    image: loc8,
     name: 'Парк семейного отдыха',
     distance: '11 км',
     subtitle: '«Зубровник»',
   },
   {
-    image: locationCardImg,
+    image: loc9,
     name: 'Ресторан «ЛетоБар»',
     distance: '0,9 км',
     subtitle: 'на прилегающей территории',
