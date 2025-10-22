@@ -319,6 +319,8 @@ const handleSubmit = () => {
   @media (max-width: $breakpoint-x) {
     align-items: flex-end !important;
     padding: 0 !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
   }
 }
 
@@ -326,11 +328,12 @@ const handleSubmit = () => {
   @media (max-width: $breakpoint-x) {
     max-width: 100% !important;
     width: 100% !important;
-    height: 100svh !important;
-    max-height: 100svh !important;
+    height: calc(100vh - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - env(safe-area-inset-bottom)) !important;
     margin: 0 !important;
     border-radius: 0 !important;
-    padding: 40px 20px 20px 20px !important;
+    padding: calc(40px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)) 20px !important;
+    background: $bg-color-1 !important;
   }
 }
 

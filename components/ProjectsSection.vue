@@ -179,10 +179,10 @@ const openDialogVideo = () => {
 }
 
 .custom-slide {
-  height: 600px;
+  height: 500px;
   display: flex;
   flex-direction: column;
-  min-height: 500px;
+  min-height: 450px;
   width: 100%;
 
   @media (max-width: $breakpoint-lg) {
@@ -190,7 +190,7 @@ const openDialogVideo = () => {
   }
 
   @media (max-width: $breakpoint-sm) {
-    min-height: 390px;
+    min-height: 340px;
   }
 
   @media (max-width: $breakpoint-x) {
