@@ -57,8 +57,8 @@ onMounted(async () => {
     // Просто устанавливаем финальные значения без анимации
     if (renderEl.value) {
       gsap.set(renderEl.value, {
-        scale: 2.5,
-        y: 0,
+        scale: 3,
+        y: -160,
         force3D: true,
         willChange: 'transform',
       });
