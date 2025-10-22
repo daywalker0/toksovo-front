@@ -42,7 +42,7 @@ export function usePrivateHousingData() {
       return {
         title: 'Приватный формат жилья',
         content: 'Пространство, где каждое утро начинается в тишине и уединении.',
-        image: privateHousingSection1,
+        image: privat,
       };
     }
     return items.value[activeIndex.value] || items.value[0];

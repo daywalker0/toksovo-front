@@ -313,11 +313,14 @@ const toggleItem = index => {
       const direction = index > currentIndex.value ? 'right' : 'left';
       animateSlide(index, direction);
     }
+  } else if (currentIndex.value === index) {
+    // Если кликаем на уже активный элемент, просто обновляем галерею
+    updateGalleryImages();
   }
 };
 const slides = computed(() => {
   if (!items.value || !Array.isArray(items.value))
-    return [imgSlide, imgSlide, imgSlide, imgSlide, imgSlide];
+    return [];
   return items.value.map(it => it.image);
 });
 
@@ -346,22 +349,25 @@ const goToNextSlide = (isAutomatic = false) => {
     startAutoplay();
   }
 
+  // Переключаем активный элемент аккордеона
+  const nextActiveIndex = (activeIndex.value + 1) % items.value.length;
+  setActiveIndex(nextActiveIndex);
+  
+  // Обновляем currentIndex на новый активный индекс
+  currentIndex.value = nextActiveIndex;
+
   if (isMobile.value) {
     isAnimating.value = true;
-    const nextIndex = (currentIndex.value + 1) % slides.value.length;
     slideDirection.value = 'right';
-    nextSlideIndex.value = nextIndex;
-    activeIndex.value = nextIndex;
+    nextSlideIndex.value = nextActiveIndex;
 
     setTimeout(() => {
-      currentIndex.value = nextIndex;
+      currentIndex.value = nextActiveIndex;
       nextSlideIndex.value = null;
       isAnimating.value = false;
     }, 600);
   } else {
-    const nextIndex = (currentIndex.value + 1) % slides.value.length;
-    animateSlide(nextIndex, 'right');
-    setActiveIndex(nextIndex);
+    animateSlide(nextActiveIndex, 'right');
   }
 };
 
@@ -373,23 +379,52 @@ const goToPrevSlide = (isAutomatic = false) => {
     startAutoplay();
   }
 
+  // Переключаем активный элемент аккордеона
+  const prevActiveIndex = (activeIndex.value - 1 + items.value.length) % items.value.length;
+  setActiveIndex(prevActiveIndex);
+  
+  // Обновляем currentIndex на новый активный индекс
+  currentIndex.value = prevActiveIndex;
+
   if (isMobile.value) {
     isAnimating.value = true;
-    const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
     slideDirection.value = 'left';
-    nextSlideIndex.value = prevIndex;
-    activeIndex.value = prevIndex;
+    nextSlideIndex.value = prevActiveIndex;
 
     setTimeout(() => {
-      currentIndex.value = prevIndex;
+      currentIndex.value = prevActiveIndex;
       nextSlideIndex.value = null;
       isAnimating.value = false;
     }, 600);
   } else {
-    const prevIndex = (currentIndex.value - 1 + slides.value.length) % slides.value.length;
-    animateSlide(prevIndex, 'left');
-    setActiveIndex(prevIndex);
+    animateSlide(prevActiveIndex, 'left');
   }
+};
+
+const updateGalleryImages = () => {
+  if (!galleryRef.value) return;
+  
+  const galleryItems = galleryRef.value.querySelectorAll('.gallery-item');
+  galleryItems.forEach((item, index) => {
+    const img = item.querySelector('img');
+    if (img) {
+      // Центральный слайд показывает активный элемент аккордеона
+      // Боковые слайды показывают соседние элементы
+      const centerIndex = Math.floor(galleryItems.length / 2);
+      let imageIndex;
+      
+      if (index === centerIndex) {
+        // Центральный элемент - активный элемент аккордеона
+        imageIndex = activeIndex.value;
+      } else {
+        // Боковые элементы - соседние к активному
+        const offset = index - centerIndex;
+        imageIndex = (activeIndex.value + offset + items.value.length) % items.value.length;
+      }
+      
+      img.src = slides.value[imageIndex];
+    }
+  });
 };
 
 const animateSlide = (newIndex, direction) => {
@@ -409,7 +444,7 @@ const animateSlide = (newIndex, direction) => {
     if (centerImg) {
       // Создаем временное изображение для анимации
       const tempImg = document.createElement('img');
-      tempImg.src = slides.value[newIndex];
+      tempImg.src = slides.value[activeIndex.value]; // Центральный слайд показывает активный элемент
       tempImg.style.position = 'absolute';
       tempImg.style.top = '0';
       tempImg.style.left = '0';
@@ -433,7 +468,7 @@ const animateSlide = (newIndex, direction) => {
         duration: 0.6,
         ease: 'power2.inOut',
         onComplete: () => {
-          centerImg.src = slides.value[newIndex];
+          updateGalleryImages();
           centerItem.removeChild(tempImg);
           centerItem.style.position = originalPosition;
           isAnimating.value = false;
@@ -449,9 +484,7 @@ const animateSlide = (newIndex, direction) => {
     const centerItem = galleryItems[centerIndex];
     const centerImg = centerItem?.querySelector('img');
 
-    if (centerImg) {
-      centerImg.src = slides.value[newIndex];
-    }
+    updateGalleryImages();
     isAnimating.value = false;
   } else {
     setTimeout(() => {
@@ -592,6 +625,9 @@ async function build() {
   );
 
   tlRef.value = tl;
+  
+  // Обновляем изображения в галерее после создания
+  updateGalleryImages();
 }
 
 onMounted(async () => {
