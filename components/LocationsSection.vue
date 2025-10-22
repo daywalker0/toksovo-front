@@ -271,7 +271,6 @@ const initParallax = () => {
         end: 'bottom top',
         scrub: 1,
         invalidateOnRefresh: true,
-        markers: false, // Поставить true для отладки
       },
     });
     triggers.push(leftTween);
@@ -285,7 +284,6 @@ const initParallax = () => {
         end: 'bottom top',
         scrub: 1,
         invalidateOnRefresh: true,
-        markers: false, // Поставить true для отладки
       },
     });
     triggers.push(rightTween);
