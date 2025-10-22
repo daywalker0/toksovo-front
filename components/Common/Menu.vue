@@ -456,7 +456,7 @@ defineExpose({
       padding: 90px 20px 20px;
     }
 
-    @media (max-height: 730px) {
+    @media (max-height: 730px) and (min-width: 600px) {
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       
@@ -472,7 +472,7 @@ defineExpose({
       touch-action: pan-y;
     }
 
-    @media (max-height: 650px) {
+    @media (max-height: 650px) and (min-width: 600px) {
       height: calc(100vh);
     } 
   }
@@ -495,7 +495,7 @@ defineExpose({
       margin-top: 0;
     }
 
-    @media (max-height: 728px) {
+    @media (max-height: 728px) and (min-width: 600px) {
       height: 350px !important;
       min-height: 350px !important;
 
@@ -504,7 +504,7 @@ defineExpose({
       }
     }
 
-    @media (max-height: 650px) {
+    @media (max-height: 650px) and (min-width: 600px) {
       height: 250px !important;
       min-height: 250px !important;
     }
@@ -548,7 +548,7 @@ defineExpose({
     &--doc-mobile {
       display: none;
       
-      @media (max-height: 730px) {
+      @media (max-height: 730px) and (min-width: 600px) {
         display: block;
       }
     }
@@ -753,7 +753,7 @@ defineExpose({
     padding-bottom: 48px;
   }
 
-  @media (max-height: 730px) {
+  @media (max-height: 730px) and (min-width: 600px) {
     display: none;
   }
 
