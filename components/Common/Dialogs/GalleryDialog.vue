@@ -5,30 +5,30 @@
       class="gallery-overlay"
       @click="closeOnOverlay && $emit('update:modelValue', false)"
     >
-      <button
-        class="gallery-close"
-        @click="$emit('update:modelValue', false)"
-        aria-label="Закрыть галерею"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
-            fill="#F8F3ED"
-          />
-        </svg>
-      </button>
       <div class="gallery-content" @click.stop>
         <div class="gallery-header">
           <div class="gallery-info">
             <h3 class="gallery-title">{{ slide?.title }}</h3>
             <p class="gallery-year">{{ slide?.year }}</p>
           </div>
+          <button
+            class="gallery-close"
+            @click="$emit('update:modelValue', false)"
+            aria-label="Закрыть галерею"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+                fill="#2C322C"
+              />
+            </svg>
+          </button>
         </div>
 
         <div class="gallery-main" data-lenis-prevent>
@@ -285,23 +285,21 @@ onUnmounted(() => {
   padding: 44px;
   background: $bg-color-1;
   margin-top: 50px;
+  position: relative;
 }
 
 .gallery-close {
-  position: absolute;
-  top: 24px;
-  right: 24px;
   width: 48px;
   height: 48px;
-  border: 1px solid $text-color-white;
-  border-radius: 50px;
+  border: 1px solid $text-color-primary;
+  border-radius: 50%;
   background: transparent;
+  color: #333;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  z-index: 10;
 
   svg {
     transition: transform 0.3s ease;
@@ -561,8 +559,6 @@ onUnmounted(() => {
   .gallery-close {
     width: 40px;
     height: 40px;
-    top: calc(20px + env(safe-area-inset-top));
-    right: 20px;
   }
 
   .mobile-hidden {
