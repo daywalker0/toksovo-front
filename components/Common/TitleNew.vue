@@ -151,7 +151,7 @@ function initAnimation() {
         ease: vars.ease || 'power1.out',
         stagger: vars.stagger || 0.05,
         duration: vars.duration || 0.3,
-        markers: true,
+        markers: false,
       });
 
       createScrollTrigger(el, tl);
