@@ -124,6 +124,10 @@ const handleSubmit = () => {
 .callback-dialog {
   max-width: 460px;
   width: 100%;
+
+  @media (max-width: $breakpoint-x) {
+    max-width: 100%;
+  }
 }
 
 .callback-title {
@@ -300,11 +304,14 @@ const handleSubmit = () => {
   }
 }
 
-/* Стили для позиционирования диалога */
-:deep(.dialog-content:has(.callback-dialog) ~ .dialog-close) {
-  @media (max-width: $breakpoint-x) {
-    top: 20px !important;
-    right: 20px !important;
+/* Стили для кнопки закрытия - только мобильная версия */
+@media (max-width: 599px) {
+  :deep(.dialog-close) {
+    border: 1px solid #2C322C !important;
+    
+    svg path {
+      fill: #2C322C !important;
+    }
   }
 }
 
@@ -319,11 +326,23 @@ const handleSubmit = () => {
   @media (max-width: $breakpoint-x) {
     max-width: 100% !important;
     width: 100% !important;
-    height: 80vh !important;
-    max-height: 80vh !important;
+    height: 100svh !important;
+    max-height: 100svh !important;
     margin: 0 !important;
-    border-radius: 20px 20px 0 0 !important;
+    border-radius: 0 !important;
     padding: 40px 20px 20px 20px !important;
+  }
+}
+
+/* Позиционирование кнопки закрытия - только мобильная версия */
+@media (max-width: 599px) {
+  :deep(.dialog-close) {
+    position: absolute !important;
+    top: calc(20px + env(safe-area-inset-top)) !important;
+    right: 20px !important;
+    width: 40px !important;
+    height: 40px !important;
+    z-index: 10 !important;
   }
 }
 </style>
