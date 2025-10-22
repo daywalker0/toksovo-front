@@ -112,10 +112,11 @@ const handleToggleCategory = cat => {
   emit('toggle-category', cat);
 };
 
-// Touch обработчики для скролла
+// Оптимизированные touch обработчики
 let startX = 0;
 let startY = 0;
 let isScrolling = false;
+let lastTime = 0;
 
 const handleTouchStart = (e) => {
   if (!filterTabs.value) return;
@@ -123,10 +124,16 @@ const handleTouchStart = (e) => {
   startX = e.touches[0].clientX;
   startY = e.touches[0].clientY;
   isScrolling = false;
+  lastTime = Date.now();
 };
 
 const handleTouchMove = (e) => {
   if (!filterTabs.value || !e.touches[0]) return;
+  
+  // Throttling для производительности
+  const now = Date.now();
+  if (now - lastTime < 16) return; // ~60fps
+  lastTime = now;
   
   const currentX = e.touches[0].clientX;
   const currentY = e.touches[0].clientY;
@@ -135,11 +142,13 @@ const handleTouchMove = (e) => {
   const diffY = Math.abs(currentY - startY);
   
   // Если горизонтальное движение больше вертикального
-  if (diffX > diffY && diffX > 10) {
-    isScrolling = true;
+  if (diffX > diffY && diffX > 15) {
+    if (!isScrolling) {
+      isScrolling = true;
+    }
     
-    // Принудительно скроллим
-    const deltaX = startX - currentX;
+    // Плавный скролл с коэффициентом
+    const deltaX = (startX - currentX) * 0.8;
     filterTabs.value.scrollLeft += deltaX;
     startX = currentX;
     
@@ -148,6 +157,29 @@ const handleTouchMove = (e) => {
 };
 
 const handleTouchEnd = (e) => {
+  if (isScrolling) {
+    // Добавляем инерцию для плавности
+    const velocity = Math.abs(startX - e.changedTouches[0].clientX);
+    if (velocity > 5) {
+      const direction = startX > e.changedTouches[0].clientX ? 1 : -1;
+      const momentum = velocity * 0.3;
+      
+      let currentScroll = filterTabs.value.scrollLeft;
+      const targetScroll = currentScroll + (momentum * direction);
+      
+      // Плавная анимация до целевой позиции
+      const animate = () => {
+        currentScroll += (targetScroll - currentScroll) * 0.1;
+        filterTabs.value.scrollLeft = currentScroll;
+        
+        if (Math.abs(targetScroll - currentScroll) > 1) {
+          requestAnimationFrame(animate);
+        }
+      };
+      requestAnimationFrame(animate);
+    }
+  }
+  
   isScrolling = false;
 };
 
@@ -319,6 +351,8 @@ onUnmounted(() => {
     padding-right: 20px;
     -webkit-overflow-scrolling: touch;
     touch-action: manipulation;
+    will-change: scroll-position;
+    transform: translateZ(0); // Аппаратное ускорение
 
     // Скрываем скроллбар но оставляем функциональность
     scrollbar-width: none; /* Firefox */
