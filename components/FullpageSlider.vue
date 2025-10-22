@@ -88,17 +88,17 @@ const mobileSlides = computed(() => {
 // Кастомные breakpoints для FullpageSlider (адаптированные под NewsSection, но с 1 слайдом)
 const fullpageBreakpoints = computed(() => ({
   0: {
-    slidesPerView: 1.1, // Показываем 1 слайд + части предыдущего и следующего
+    slidesPerView: 1.1,
     spaceBetween: 8,
     centeredSlides: true,
   },
   428: {
-    slidesPerView: 1.1, // Показываем 1 слайд + части предыдущего и следующего
+    slidesPerView: 1.1,
     spaceBetween: 8,
     centeredSlides: true,
   },
   599: {
-    slidesPerView: 1.1, // Показываем 1 слайд + части предыдущего и следующего
+    slidesPerView: 1.1,
     spaceBetween: 8,
     centeredSlides: true,
   },

@@ -13,7 +13,6 @@
         :effect="effect"
         class="default-swiper"
         :class="{ 'mobile-swiper': isMobile}"
-        onSlideChange
         @swiper="onSwiper"
         @slide-change="onSlideChange"
         @resize="onResize"
@@ -268,15 +267,18 @@ const mobileConfig = computed(() => {
 
 // Объединяем конфиг с мобильными параметрами
 const effectiveSlidesPerView = computed(() => {
-  return mobileConfig.value ? mobileConfig.value.slidesPerView : props.slidesPerView;
+  const value = mobileConfig.value ? mobileConfig.value.slidesPerView : props.slidesPerView;
+  return typeof value === 'string' ? parseFloat(value) : value;
 });
 
 const effectiveSpaceBetween = computed(() => {
-  return mobileConfig.value ? mobileConfig.value.spaceBetween : props.spaceBetween;
+  const value = mobileConfig.value ? mobileConfig.value.spaceBetween : props.spaceBetween;
+  return typeof value === 'string' ? parseFloat(value) : value;
 });
 
 const effectiveCenteredSlides = computed(() => {
-  return mobileConfig.value ? mobileConfig.value.centeredSlides : props.centeredSlides;
+  const value = mobileConfig.value ? mobileConfig.value.centeredSlides : props.centeredSlides;
+  return typeof value === 'string' ? value === 'true' : value;
 });
 
 // Показывать ли навигацию
