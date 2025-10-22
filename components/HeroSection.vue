@@ -58,7 +58,7 @@ onMounted(async () => {
     if (renderEl.value) {
       gsap.set(renderEl.value, {
         scale: 3,
-        y: -160,
+        y: -150,
         force3D: true,
         willChange: 'transform',
       });
