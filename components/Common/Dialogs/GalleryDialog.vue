@@ -505,15 +505,16 @@ onUnmounted(() => {
 
   .gallery-content {
     width: 100% !important;
-    height: 90vh !important;
-    max-height: 90vh !important;
+    height: calc(100vh - env(safe-area-inset-bottom)) !important;
+    max-height: calc(100vh - env(safe-area-inset-bottom)) !important;
     margin: 0 !important;
     border-radius: 0 !important;
     padding: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
   }
 
   .gallery-header {
-    padding: 20px 20px 16px 20px;
+    padding: calc(20px + env(safe-area-inset-top)) 20px 16px 20px;
     margin-top: 0;
     border-bottom: 1px solid #e5e5e5;
   }
@@ -560,7 +561,7 @@ onUnmounted(() => {
   .gallery-close {
     width: 40px;
     height: 40px;
-    top: 20px;
+    top: calc(20px + env(safe-area-inset-top));
     right: 20px;
   }
 
