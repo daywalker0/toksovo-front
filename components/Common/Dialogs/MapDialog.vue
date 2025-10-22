@@ -32,7 +32,6 @@
             class="map-dialog__filter-tabs"
             @touchstart="handleTouchStart"
             @touchmove="handleTouchMove"
-            @touchend="handleTouchEnd"
           >
             <!-- Категории -->
             <button
@@ -101,7 +100,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'toggle-category']);
 
-// Ref для контейнера фильтров
+// Ref для контейнера
 const filterTabs = ref(null);
 
 const closeDialog = () => {
@@ -112,75 +111,24 @@ const handleToggleCategory = cat => {
   emit('toggle-category', cat);
 };
 
-// Оптимизированные touch обработчики
+// Простые обработчики для iPhone
 let startX = 0;
-let startY = 0;
-let isScrolling = false;
-let lastTime = 0;
 
 const handleTouchStart = (e) => {
-  if (!filterTabs.value) return;
-  
   startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
-  isScrolling = false;
-  lastTime = Date.now();
 };
 
 const handleTouchMove = (e) => {
-  if (!filterTabs.value || !e.touches[0]) return;
-  
-  // Throttling для производительности
-  const now = Date.now();
-  if (now - lastTime < 16) return; // ~60fps
-  lastTime = now;
+  if (!filterTabs.value) return;
   
   const currentX = e.touches[0].clientX;
-  const currentY = e.touches[0].clientY;
+  const deltaX = startX - currentX;
   
-  const diffX = Math.abs(currentX - startX);
-  const diffY = Math.abs(currentY - startY);
+  // Просто скроллим
+  filterTabs.value.scrollLeft += deltaX;
+  startX = currentX;
   
-  // Если горизонтальное движение больше вертикального
-  if (diffX > diffY && diffX > 15) {
-    if (!isScrolling) {
-      isScrolling = true;
-    }
-    
-    // Плавный скролл с коэффициентом
-    const deltaX = (startX - currentX) * 0.8;
-    filterTabs.value.scrollLeft += deltaX;
-    startX = currentX;
-    
-    e.preventDefault();
-  }
-};
-
-const handleTouchEnd = (e) => {
-  if (isScrolling) {
-    // Добавляем инерцию для плавности
-    const velocity = Math.abs(startX - e.changedTouches[0].clientX);
-    if (velocity > 5) {
-      const direction = startX > e.changedTouches[0].clientX ? 1 : -1;
-      const momentum = velocity * 0.3;
-      
-      let currentScroll = filterTabs.value.scrollLeft;
-      const targetScroll = currentScroll + (momentum * direction);
-      
-      // Плавная анимация до целевой позиции
-      const animate = () => {
-        currentScroll += (targetScroll - currentScroll) * 0.1;
-        filterTabs.value.scrollLeft = currentScroll;
-        
-        if (Math.abs(targetScroll - currentScroll) > 1) {
-          requestAnimationFrame(animate);
-        }
-      };
-      requestAnimationFrame(animate);
-    }
-  }
-  
-  isScrolling = false;
+  e.preventDefault();
 };
 
 const { stop: stopScroll, start: startScroll } = useLenis();
@@ -345,14 +293,11 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: nowrap;
     gap: 8px;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
     padding-bottom: 8px;
     padding-right: 20px;
-    -webkit-overflow-scrolling: touch;
-    touch-action: manipulation;
-    will-change: scroll-position;
-    transform: translateZ(0); // Аппаратное ускорение
+    touch-action: none;
 
     // Скрываем скроллбар но оставляем функциональность
     scrollbar-width: none; /* Firefox */
