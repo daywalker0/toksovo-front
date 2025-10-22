@@ -128,6 +128,7 @@ onMounted(async () => {
       center: props.center,
       zoom: props.zoom,
       controls: [],
+      suppressMapOpenBlock: true, // Скрываем кнопку "Открыть в Яндекс.Картах"
     });
 
     map.behaviors.disable('scrollZoom');
@@ -319,6 +320,28 @@ function zoomOut() {
     height: calc(100vh + env(safe-area-inset-bottom)) !important;
     min-height: calc(100vh + env(safe-area-inset-bottom)) !important;
     position: relative;
+  }
+
+  // Скрываем кнопку "Открыть в Яндекс.Картах"
+  :deep(.ymaps-2-1-79-copyright) {
+    display: none !important;
+  }
+  
+  :deep(.ymaps-2-1-79-map-copyrights-promo) {
+    display: none !important;
+  }
+  
+  // Дополнительные селекторы для скрытия кнопки
+  :deep(.ymaps-2-1-79-copyrights-promo) {
+    display: none !important;
+  }
+  
+  :deep(.ymaps-2-1-79-copyrights-promo__link) {
+    display: none !important;
+  }
+  
+  :deep(.ymaps-2-1-79-copyrights-promo__text) {
+    display: none !important;
   }
 }
 
