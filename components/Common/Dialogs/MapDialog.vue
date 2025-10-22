@@ -250,7 +250,7 @@ onUnmounted(() => {
 
     @media (max-width: $breakpoint-x) {
       position: absolute;
-      bottom: 0;
+      bottom: 20px;
       left: 0;
       right: 0;
       width: 100%;
