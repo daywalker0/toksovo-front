@@ -102,12 +102,15 @@ function createScrollTrigger(triggerElement, tl) {
     trigger: triggerElement,
     start: 'top 100%',
     end: 'bottom 70%',
-    scrub: isMobile ? false : true,
+    // scrub: isMobile ? false : true,
     animation: tl,
     invalidateOnRefresh: true,
-    onLeaveBack: () => tl.progress(0),
+    once: isMobile,
+    onLeaveBack: isMobile ? null : () => tl.progress(0),
     onEnter: isMobile ? () => tl.play() : undefined,
-    toggleActions: 'play none none reverse',
+    toggleActions: isMobile ? 'play none none none' : 'play none none reverse',
+
+    onLeaveBack: null,
     immediateRender: false,
   });
   triggers.push(st);
@@ -148,6 +151,7 @@ function initAnimation() {
         ease: vars.ease || 'power1.out',
         stagger: vars.stagger || 0.05,
         duration: vars.duration || 0.3,
+        markers: true,
       });
 
       createScrollTrigger(el, tl);
@@ -220,26 +224,33 @@ function initAnimation() {
 
   $$('[scrub-each-word]').forEach(el => {
     const isMobile = window.innerWidth <= 599;
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 90%',
-        end: 'top center',
-        scrub: isMobile ? false : true,
-        onEnter: isMobile ? () => tl.play() : undefined,
-      },
-    });
+
+    const tl = gsap.timeline({ paused: true });
+
     tl.from(el.querySelectorAll('.word'), {
       opacity: 0.2,
-      duration: isMobile ? 0.4 : 0.2,
+      duration: 0.4,
       ease: 'power1.out',
-      stagger: { each: isMobile ? 0.1 : 0.4 },
+      stagger: { each: 0.1 },
     });
+
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 90%',
+      end: 'top center',
+      animation: tl,
+      once: isMobile,
+      scrub: isMobile ? false : true,
+      toggleActions: isMobile ? 'play none none none' : 'play none none reverse',
+      invalidateOnRefresh: false,
+    });
+
+    triggers.push(st);
     timelines.push(tl);
   });
 
   nextTick(() => {
-    ScrollTrigger.refresh();
+    // ScrollTrigger.refresh();
   });
 }
 
@@ -247,30 +258,18 @@ let resizeT;
 function handleResize() {
   clearTimeout(resizeT);
   resizeT = setTimeout(async () => {
-    updateLines();
+    // updateLines();
     await nextTick();
     initAnimation();
+    ScrollTrigger.refresh();
   }, 150);
 }
 
 onMounted(async () => {
   if (!process.client) return;
-
   updateLines();
   await nextTick();
-
-  setTimeout(() => {
-    initAnimation();
-
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 500);
-  }, 100);
-
+  initAnimation();
   window.addEventListener('resize', handleResize);
 });
 
@@ -280,7 +279,8 @@ watch(
     if (!process.client) return;
     updateLines();
     await nextTick();
-    initAnimation();
+    // initAnimation();
+    ScrollTrigger.refresh();
   }
 );
 
