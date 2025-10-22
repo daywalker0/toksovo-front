@@ -162,7 +162,11 @@ onUnmounted(() => {
     height: 100dvh;
     height: -webkit-fill-available;
     padding: 0;
-    padding-bottom: env(safe-area-inset-bottom);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   &__container {
@@ -173,10 +177,10 @@ onUnmounted(() => {
     flex-direction: column;
 
     @media (max-width: $breakpoint-x) {
-      height: calc(100vh - env(safe-area-inset-bottom));
-      height: calc(100dvh - env(safe-area-inset-bottom));
+      height: 100vh;
+      height: 100dvh;
       height: -webkit-fill-available;
-      min-height: calc(100vh - env(safe-area-inset-bottom));
+      min-height: 100vh;
     }
   }
 
@@ -204,7 +208,7 @@ onUnmounted(() => {
     }
 
     @media (max-width: $breakpoint-x) {
-      top: calc(env(safe-area-inset-top) + 10px);
+      top: calc(env(safe-area-inset-top) + 50px);
       right: 10px;
       width: 36px;
       height: 36px;
