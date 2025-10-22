@@ -75,6 +75,19 @@ onMounted(async () => {
       const maxAttempts = 100; // Увеличиваем время ожидания для мобильных устройств
 
       const checkContainer = () => {
+        // Принудительно устанавливаем размеры для мобильных устройств
+        if (isMobile && mapContainer.value) {
+          const parentElement = mapContainer.value.parentElement;
+          if (parentElement) {
+            const parentWidth = parentElement.offsetWidth || window.innerWidth;
+            const parentHeight = parentElement.offsetHeight || window.innerHeight;
+            
+            mapContainer.value.style.width = `${parentWidth}px`;
+            mapContainer.value.style.height = `${parentHeight}px`;
+            mapContainer.value.style.minHeight = `${parentHeight}px`;
+          }
+        }
+        
         // Проверяем наличие ref и его размеры
         if (
           mapContainer.value &&
@@ -96,12 +109,15 @@ onMounted(async () => {
           console.error('Map container failed to initialize:', {
             element: mapContainer.value,
             width: mapContainer.value?.offsetWidth,
-            height: mapContainer.value?.offsetHeight
+            height: mapContainer.value?.offsetHeight,
+            parentElement: mapContainer.value?.parentElement,
+            parentWidth: mapContainer.value?.parentElement?.offsetWidth,
+            parentHeight: mapContainer.value?.parentElement?.offsetHeight
           });
           
           if (isMobile && debugInfo.value) {
             debugInfo.value.status = 'Ошибка контейнера';
-            debugInfo.value.error = 'Контейнер не инициализирован';
+            debugInfo.value.error = `Контейнер: ${mapContainer.value ? 'найден' : 'не найден'}, Размеры: ${mapContainer.value?.offsetWidth || 0}x${mapContainer.value?.offsetHeight || 0}`;
           }
           
           reject(
@@ -176,8 +192,26 @@ onMounted(async () => {
     // Принудительно обновляем размеры карты для мобильных устройств
     setTimeout(() => {
       if (map && mapContainer.value) {
+        // Принудительно устанавливаем размеры для мобильных устройств
+        if (isMobile) {
+          const parentElement = mapContainer.value.parentElement;
+          if (parentElement) {
+            const parentWidth = parentElement.offsetWidth || window.innerWidth;
+            const parentHeight = parentElement.offsetHeight || window.innerHeight;
+            
+            mapContainer.value.style.width = `${parentWidth}px`;
+            mapContainer.value.style.height = `${parentHeight}px`;
+            mapContainer.value.style.minHeight = `${parentHeight}px`;
+          }
+        }
+        
         map.container.fitToViewport();
         console.log('Map container fitted to viewport');
+        
+        if (isMobile && debugInfo.value) {
+          debugInfo.value.status = 'Карта готова';
+          debugInfo.value.dimensions = `${mapContainer.value.offsetWidth}x${mapContainer.value.offsetHeight}`;
+        }
       }
     }, 100);
 
@@ -331,6 +365,13 @@ function zoomOut() {
 .map-container {
   width: 100%;
   height: 100%;
+  
+  @media (max-width: 599px) {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    position: relative;
+  }
 }
 
 .custom-zoom {
