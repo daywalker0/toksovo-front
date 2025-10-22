@@ -368,8 +368,8 @@ function zoomOut() {
   
   @media (max-width: 599px) {
     width: 100vw !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
+    height: calc(100vh - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
     position: relative;
   }
 }
