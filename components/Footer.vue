@@ -274,6 +274,9 @@ const openDialogCallback = () => {
     font-weight: 700;
     text-transform: uppercase;
     padding: 8px 16px;
+    color: inherit !important;
+    text-decoration: none !important;
+    -webkit-tap-highlight-color: transparent;
 
     @media (max-width: $breakpoint-md) {
       order: 3;

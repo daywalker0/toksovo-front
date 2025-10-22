@@ -74,6 +74,31 @@ article:not(.gsap-animated):not([data-gsap]) {
   // transition: transform 0.3s ease;
 }
 
+/* Сброс стилей ссылок для всех кнопок */
+button,
+.button,
+[class*="button"],
+[class*="btn"] {
+  color: inherit !important;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  
+  &:focus {
+    outline: none;
+  }
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
 /* Общие стили для всех кнопок закрытия в диалогах */
 .dialog-close,
 .gallery-close {
