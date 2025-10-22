@@ -282,7 +282,7 @@ onUnmounted(() => {
       left: 0;
       right: 0;
       width: 100%;
-      padding: 0 0 20px 20px;
+      padding: 20px 0 20px 20px;
       padding-bottom: max(20px, env(safe-area-inset-bottom));
       background: transparent;
     }
