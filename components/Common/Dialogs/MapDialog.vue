@@ -27,7 +27,13 @@
 
         <!-- Фильтры внизу -->
         <div class="map-dialog__filters">
-          <div class="map-dialog__filter-tabs">
+          <div 
+            ref="filterTabs"
+            class="map-dialog__filter-tabs"
+            @touchstart="handleTouchStart"
+            @touchmove="handleTouchMove"
+            @touchend="handleTouchEnd"
+          >
             <!-- Категории -->
             <button
               v-for="cat in categories"
@@ -47,7 +53,7 @@
 </template>
 
 <script setup>
-import { watch, computed, onUnmounted } from 'vue';
+import { watch, computed, onUnmounted, ref } from 'vue';
 import YandexMap from '~/components/YandexMap.vue';
 
 // Иконки категорий
@@ -95,12 +101,54 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'toggle-category']);
 
+// Ref для контейнера фильтров
+const filterTabs = ref(null);
+
 const closeDialog = () => {
   emit('update:modelValue', false);
 };
 
 const handleToggleCategory = cat => {
   emit('toggle-category', cat);
+};
+
+// Touch обработчики для скролла
+let startX = 0;
+let startY = 0;
+let isScrolling = false;
+
+const handleTouchStart = (e) => {
+  if (!filterTabs.value) return;
+  
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  isScrolling = false;
+};
+
+const handleTouchMove = (e) => {
+  if (!filterTabs.value || !e.touches[0]) return;
+  
+  const currentX = e.touches[0].clientX;
+  const currentY = e.touches[0].clientY;
+  
+  const diffX = Math.abs(currentX - startX);
+  const diffY = Math.abs(currentY - startY);
+  
+  // Если горизонтальное движение больше вертикального
+  if (diffX > diffY && diffX > 10) {
+    isScrolling = true;
+    
+    // Принудительно скроллим
+    const deltaX = startX - currentX;
+    filterTabs.value.scrollLeft += deltaX;
+    startX = currentX;
+    
+    e.preventDefault();
+  }
+};
+
+const handleTouchEnd = (e) => {
+  isScrolling = false;
 };
 
 const { stop: stopScroll, start: startScroll } = useLenis();
@@ -269,10 +317,8 @@ onUnmounted(() => {
     overflow-y: hidden;
     padding-bottom: 8px;
     padding-right: 20px;
-    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
-    overscroll-behavior-x: contain;
+    touch-action: manipulation;
 
     // Скрываем скроллбар но оставляем функциональность
     scrollbar-width: none; /* Firefox */
