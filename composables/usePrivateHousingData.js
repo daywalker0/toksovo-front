@@ -1,6 +1,9 @@
 import { ref, computed } from 'vue';
-import privateHousingSection1 from '@/assets/img/private-housing-section.jpg';
-import privateHousingSection2 from '@/assets/img/live-in-style-item-2.png';
+import fourEt from '@/assets/img/environment/4et.jpg'
+import ecol from '@/assets/img/environment/ecol.jpg'
+import inf from '@/assets/img/environment/inf.jpg'
+import otd from '@/assets/img/environment/otd.jpg'
+import privat from '@/assets/img/environment/privat.jpg'
 
 export function usePrivateHousingData() {
   const items = ref([
@@ -8,28 +11,28 @@ export function usePrivateHousingData() {
       title: 'Приватный формат жилья',
       content:
         'Пространство, где каждое утро начинается в тишине и уединении. Здесь вы можете наслаждаться личным комфортом без лишнего шума и суеты города.',
-      image: privateHousingSection1,
+      image: privat,
     },
     {
       title: 'Экология: лес и озеро',
       content:
         'Описание экологических преимуществ - близость к лесу и озеру, чистый воздух и природное окружение.',
-      image: privateHousingSection2,
+      image: ecol,
     },
     {
       title: 'Чистовая отделка',
       content: 'Информация о чистовой отделке помещений по стандартам ХОВЕР.',
-      image: privateHousingSection1,
+      image: otd,
     },
     {
       title: 'Инфраструктура',
       content: 'Описание доступной инфраструктуры района и жилого комплекса.',
-      image: privateHousingSection2,
+      image: inf,
     },
     {
       title: '4 этажа',
       content: 'Характеристики четырехэтажного здания, преимущества такой этажности.',
-      image: privateHousingSection1,
+      image: fourEt,
     },
   ]);
 

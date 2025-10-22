@@ -203,7 +203,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrivateHousingData } from '@/composables/usePrivateHousingData';
 import AnimatedLink from './Common/AnimatedLink.vue';
-import imgSlide from '../assets/img/private-housing-section.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
