@@ -302,10 +302,6 @@ onUnmounted(() => {
     gap: 8px;
     min-width: max-content;
 
-    &:last-child {
-      margin-right: 20px;
-    }
-
     &.active {
       background: $accent-color-orange;
       color: $text-color-white;
