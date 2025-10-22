@@ -265,12 +265,14 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: nowrap;
     gap: 8px;
-    overflow-x: auto;
+    overflow-x: scroll;
     overflow-y: hidden;
     padding-bottom: 8px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    touch-action: manipulation;
+    touch-action: pan-x pinch-zoom;
+    overscroll-behavior-x: contain;
+    white-space: nowrap;
 
     // Скрываем скроллбар но оставляем функциональность
     scrollbar-width: none; /* Firefox */
@@ -294,9 +296,11 @@ onUnmounted(() => {
     transition: all 0.3s ease;
     white-space: nowrap;
     flex-shrink: 0;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: max-content;
 
     &.active {
       background: $accent-color-orange;
