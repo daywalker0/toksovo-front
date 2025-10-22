@@ -79,7 +79,7 @@ button,
 .button,
 [class*="button"],
 [class*="btn"] {
-  color: inherit !important;
+  color: inherit;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   font-family: inherit;
