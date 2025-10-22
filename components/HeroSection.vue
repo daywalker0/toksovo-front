@@ -53,13 +53,40 @@ onMounted(async () => {
 
   const titleEl = sectionEl.value?.querySelector('.hero-section__title');
   const subtitleEl = sectionEl.value?.querySelector('.hero-section__subtitle');
+  if (!isMobile) {
+    gsap.set(renderEl.value, {
+      // transformOrigin: isMobile ? '50% 60%' : '50% 50%',
+      scale: startScale,
+      force3D: true,
+      willChange: 'transform',
+    });
+  } else {
+    gsap.set(renderEl.value, {
+      scale: 3.2,
+      y: -100,
+    });
+    tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: sectionEl.value,
+        start: 'center-=300 top',
+        end: 'bottom bottom-=500',
+        scrub: 1,
+        fastScrollEnd: true,
+        invalidateOnRefresh: true,
+      },
+    });
 
-  gsap.set(renderEl.value, {
-    transformOrigin: isMobile ? '50% 60%' : '50% 50%',
-    scale: startScale,
-    force3D: true,
-    willChange: 'transform',
-  });
+    tl.to(
+      renderEl.value,
+      {
+        scale: 2.5,
+        duration: 5,
+        ease: 'none',
+      },
+      0
+    );
+  }
 
   if (titleEl) {
     gsap.set(titleEl, {
@@ -76,29 +103,31 @@ onMounted(async () => {
       force3D: true,
     });
   }
+  if (!isMobile) {
+    tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: sectionEl.value,
+        start: 'top top',
+        end: 'bottom bottom+=500',
+        scrub: isMobile ? 0.5 : true,
+        fastScrollEnd: true,
+        invalidateOnRefresh: true,
+      },
+    });
+  }
 
-  tl = gsap.timeline({
-    defaults: { ease: 'none' },
-    scrollTrigger: {
-      trigger: sectionEl.value,
-      start: 'top top',
-      end: 'bottom bottom+=1000',
-      scrub: isMobile ? 0.5 : true,
-      fastScrollEnd: true,
-      invalidateOnRefresh: true,
-    },
-  });
-
-  tl.to(
-    renderEl.value,
-    {
-      scale: 1,
-      duration: 1,
-      ease: 'none',
-    },
-    0
-  );
-
+  if (!isMobile) {
+    tl.to(
+      renderEl.value,
+      {
+        scale: 1,
+        duration: 1,
+        ease: 'none',
+      },
+      0
+    );
+  }
   if (subtitleEl) {
     tl.to(
       subtitleEl,
@@ -144,13 +173,19 @@ onBeforeUnmount(() => {
   z-index: 1;
   height: 300vh;
   overflow: hidden;
+  @media (max-width: $breakpoint-x) {
+    position: static;
+    height: 100vh;
+  }
 }
 
 .hero-section {
   position: relative;
   min-height: 300vh; // соответствует длине анимации
   overflow: hidden;
-
+  @media (max-width: $breakpoint-x) {
+    min-height: 100vh;
+  }
   &__container {
     position: relative;
     z-index: 2; // контент над фоном
@@ -158,6 +193,9 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    @media (max-width: $breakpoint-x) {
+      min-height: 100vh;
+    }
   }
 
   &__content {
@@ -223,9 +261,11 @@ onBeforeUnmount(() => {
     backface-visibility: hidden;
     transform: translateZ(0);
     transition: opacity 0.3s ease;
-
-
-
+    @media (max-width: $breakpoint-x) {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
     img {
       width: 100%;
       height: 100%;
@@ -247,11 +287,14 @@ onBeforeUnmount(() => {
     will-change: transform;
     transition: opacity 0.3s ease;
 
-
     @media (max-width: $breakpoint-x) {
       transform-origin: 50% 60%;
     }
-
+    @media (max-width: $breakpoint-x) {
+      position: absolute;
+      // transform: scale(3.2) translateY(25%);
+      z-index: 10;
+    }
     img {
       width: 100%;
       height: auto;
@@ -261,7 +304,11 @@ onBeforeUnmount(() => {
     }
   }
 }
-
+.hero-section__parallax-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
 .char {
   display: inline-block;
   opacity: 0;

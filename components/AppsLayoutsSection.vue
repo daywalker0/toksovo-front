@@ -9,7 +9,7 @@
             <div class="info-row">
               <div class="info-item">
                 <div class="info-label">Площадь</div>
-                <div class="info-value">{{ currentApartment.area }} М²</div>
+                <div class="info-value">{{ currentApartment.area }} m²</div>
               </div>
             </div>
             <div class="info-item info-item-price">
@@ -69,7 +69,9 @@
           <!-- Стрелка вперед (только на мобильных) -->
           <button
             class="nav-arrow nav-arrow--next"
-            :class="{ invisible: currentApartmentIndex >= currentCategoryData.apartments.length - 1 }"
+            :class="{
+              invisible: currentApartmentIndex >= currentCategoryData.apartments.length - 1,
+            }"
             @click="
               currentApartmentIndex < currentCategoryData.apartments.length - 1 &&
               switchApartment(currentApartmentIndex + 1)
@@ -134,28 +136,28 @@ const apartmentCategories = ref([
       {
         id: 0,
         name: '13-1',
-        area: '28,63 м',
-        price: '8 589 000 р',
+        area: '28,63',
+        price: '8 589 000',
         features: ['- Большой балкон'],
         image: appsItem131,
       },
       {
         id: 1,
         name: '14-1',
-        area: '29,54 м',
-        price: '8 862 000 р',
+        area: '29,54',
+        price: '8 862 000',
         features: ['- Большой балкон', '- Панорамное остекление'],
         image: appsItem141,
       },
       {
         id: 1,
         name: '11-1',
-        area: '28,84 м',
-        price: '8 652 000 р',
+        area: '28,84',
+        price: '8 652 000',
         features: ['- Балкон', '- Панорамное остекление', '- Продуманная кухонная зона'],
         image: appsItem111,
       },
-    ]
+    ],
   },
   {
     id: 1,
@@ -164,28 +166,28 @@ const apartmentCategories = ref([
       {
         id: 0,
         name: '15-1',
-        area: '40,68 м',
-        price: '12 204 000 р',
+        area: '40,68',
+        price: '12 204 000',
         features: ['- Просторная кухня-гостиная', '- Балкон на кухне'],
         image: appsItem151,
       },
       {
         id: 1,
         name: '10-1',
-        area: '40,00 м',
-        price: '12 000 000 р',
+        area: '40,00',
+        price: '12 000 000',
         features: ['- Светлая кухня-гостиная ', '- Большой коридор', '- Спальня с двумя окнами'],
         image: appsItem101,
       },
       {
         id: 1,
         name: '9-1',
-        area: '48,67 м',
-        price: '14 601 000 р',
+        area: '48,67',
+        price: '14 601 000',
         features: ['- 2 санузла', '- Гардеробная', '- Просторная кухня-гостиная'],
         image: appsItem91,
       },
-    ]
+    ],
   },
   {
     id: 2,
@@ -194,12 +196,12 @@ const apartmentCategories = ref([
       {
         id: 0,
         name: '8-1',
-        area: '56,03 м',
-        price: '16 809 000 р',
+        area: '56,03',
+        price: '16 809 000',
         features: ['- Вид на лес', '- Просторная кухня-гостиная', '- Балкон на кухне'],
         image: appsItem81,
       },
-    ]
+    ],
   },
 ]);
 
@@ -256,8 +258,10 @@ const switchImage = imageIndex => {
   width: 420px;
   background-color: $bg-color-2;
   border-radius: 7px;
-  min-height: 760px;
 
+  @media (max-width: 1080px) {
+    flex: 1.4;
+  }
   @media (max-width: $breakpoint-x) {
     width: 100%;
     min-height: auto;
@@ -270,7 +274,6 @@ const switchImage = imageIndex => {
     flex-direction: column;
     align-items: flex-start;
     height: 100%;
-    min-height: 760px;
 
     @media (max-width: $breakpoint-md) {
       justify-content: flex-start;
@@ -288,7 +291,6 @@ const switchImage = imageIndex => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1.5rem;
 
   @media (max-width: $breakpoint-md) {
     justify-content: flex-start;
@@ -307,7 +309,10 @@ const switchImage = imageIndex => {
   color: #6b7280;
   font-weight: 500;
 }
-
+.apartments-section__container {
+  max-width: 1440px;
+  margin: 0px auto;
+}
 @media (max-width: 920px) {
   .apartments-section__container {
     gap: 0;
@@ -315,9 +320,8 @@ const switchImage = imageIndex => {
 }
 .apartment-title {
   font-size: 42px;
-  padding-bottom: 38px;
+  padding-bottom: 32px;
   width: 100%;
-  margin-bottom: 12px;
 
   @media (max-width: 1366px) {
     padding-bottom: 0;
@@ -455,7 +459,6 @@ const switchImage = imageIndex => {
   border-top: 1px solid $utility-color-1;
   width: 100%;
   padding-top: 12px;
-  margin-bottom: 100px;
   min-height: 200px;
 
   &--title {
@@ -644,6 +647,7 @@ const switchImage = imageIndex => {
   justify-content: center;
   overflow: hidden;
   gap: 20px;
+  flex: 1;
 
   @media (max-width: $breakpoint-md) {
     flex: 1;
@@ -653,12 +657,14 @@ const switchImage = imageIndex => {
     gap: 12px;
     flex: none;
     min-height: auto;
+    aspect-ratio: 1 / 1;
   }
 }
 
 .main-image {
   width: 100%;
   height: 100%;
+  max-height: 470px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -667,7 +673,7 @@ const switchImage = imageIndex => {
     max-height: 400px;
   }
 
-  @media (max-width: $breakpoint-lg) {
+  @media (max-width: $breakpoint-sm) {
     max-height: 350px;
   }
 
@@ -689,13 +695,13 @@ const switchImage = imageIndex => {
   height: auto;
   object-fit: contain;
 
-  @media (max-width: 1280px) {
-    max-height: 400px;
-  }
+  // @media (max-width: 1280px) {
+  //   max-height: 400px;
+  // }
 
-  @media (max-width: $breakpoint-lg) {
-    max-height: 350px;
-  }
+  // @media (max-width: $breakpoint-lg) {
+  //   max-height: 350px;
+  // }
 
   @media (max-width: $breakpoint-md) {
     max-height: none;
@@ -706,12 +712,15 @@ const switchImage = imageIndex => {
   }
 
   @media (max-width: $breakpoint-x) {
-    object-fit: cover;
     height: 100%;
+    min-height: auto;
   }
 }
 
 .nav-arrow {
+  position: absolute;
+  top: 50%;
+
   width: 54px;
   height: 54px;
   min-width: 54px;
@@ -745,10 +754,12 @@ const switchImage = imageIndex => {
 
   &--prev {
     order: -1;
+    left: 0;
   }
 
   &--next {
     order: 1;
+    right: 0;
   }
 
   @media (max-width: $breakpoint-lg) {
