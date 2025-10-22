@@ -159,7 +159,10 @@ onUnmounted(() => {
 
   @media (max-width: $breakpoint-x) {
     height: 100svh;
+    height: 100vh;
+    height: 100dvh;
     height: -webkit-fill-available;
+    padding: 0;
   }
 
   &__container {
@@ -171,7 +174,10 @@ onUnmounted(() => {
 
     @media (max-width: $breakpoint-x) {
       height: 100svh;
+      height: 100vh;
+      height: 100dvh;
       height: -webkit-fill-available;
+      min-height: 100svh;
     }
   }
 
@@ -198,6 +204,16 @@ onUnmounted(() => {
       transform: rotate(90deg);
     }
 
+    @media (max-width: $breakpoint-x) {
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
     svg {
       transition: transform 0.3s ease;
     }
@@ -209,10 +225,15 @@ onUnmounted(() => {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    background: #f0f0f0; // Добавляем фоновый цвет на случай если карта не загрузится
 
     @media (max-width: $breakpoint-x) {
-      height: 100%;
-      min-height: 0;
+      height: 100svh;
+      height: 100vh;
+      height: 100dvh;
+      height: -webkit-fill-available;
+      min-height: 100svh;
+      flex: 1;
     }
   }
 
@@ -227,20 +248,16 @@ onUnmounted(() => {
     z-index: 10001;
 
     @media (max-width: $breakpoint-x) {
-      padding: 0 0 20px 20px;
-      padding-bottom: max(20px, calc(env(safe-area-inset-bottom) + 10px));
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      padding: 20px 20px 0 20px;
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+      background: transparent;
     }
 
-    &::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 60px;
-      background: linear-gradient(to left, rgba(0, 0, 0, 0.3) 0%, transparent 100%);
-      pointer-events: none;
-    }
   }
 
   &__filter-tabs {
@@ -248,7 +265,7 @@ onUnmounted(() => {
     flex-wrap: nowrap;
     gap: 8px;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     padding-bottom: 8px;
     padding-right: 16px; // Добавляем отступ справа для последних элементов
     scroll-behavior: smooth; // Плавная прокрутка
