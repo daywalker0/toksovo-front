@@ -27,7 +27,13 @@
 
         <!-- Фильтры внизу -->
         <div class="map-dialog__filters">
-          <div class="map-dialog__filter-tabs">
+          <div 
+            ref="filterTabs"
+            class="map-dialog__filter-tabs"
+            @touchstart="handleTouchStart"
+            @touchmove="handleTouchMove"
+            @touchend="handleTouchEnd"
+          >
             <!-- Категории -->
             <button
               v-for="cat in categories"
@@ -47,7 +53,7 @@
 </template>
 
 <script setup>
-import { watch, computed, onUnmounted } from 'vue';
+import { watch, computed, onUnmounted, ref } from 'vue';
 import YandexMap from '~/components/YandexMap.vue';
 
 // Иконки категорий
@@ -95,12 +101,57 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'toggle-category']);
 
+// Refs для touch-событий
+const filterTabs = ref(null);
+let touchStartX = 0;
+let touchStartY = 0;
+let isScrolling = false;
+
 const closeDialog = () => {
   emit('update:modelValue', false);
 };
 
 const handleToggleCategory = cat => {
   emit('toggle-category', cat);
+};
+
+// Обработчики touch-событий для свайпа
+const handleTouchStart = (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  isScrolling = false;
+};
+
+const handleTouchMove = (e) => {
+  if (!filterTabs.value) return;
+  
+  const touchCurrentX = e.touches[0].clientX;
+  const touchCurrentY = e.touches[0].clientY;
+  
+  const diffX = Math.abs(touchCurrentX - touchStartX);
+  const diffY = Math.abs(touchCurrentY - touchStartY);
+  
+  // Если горизонтальное движение больше вертикального, разрешаем скролл
+  if (diffX > diffY) {
+    isScrolling = true;
+    e.preventDefault();
+  }
+};
+
+const handleTouchEnd = (e) => {
+  if (!isScrolling) return;
+  
+  const touchEndX = e.changedTouches[0].clientX;
+  const diffX = touchStartX - touchEndX;
+  
+  // Если свайп достаточно сильный, скроллим контейнер
+  if (Math.abs(diffX) > 50) {
+    const scrollAmount = diffX > 0 ? 200 : -200;
+    filterTabs.value.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+  }
 };
 
 const { stop: stopScroll, start: startScroll } = useLenis();
@@ -266,10 +317,11 @@ onUnmounted(() => {
     flex-wrap: nowrap;
     gap: 8px;
     overflow-x: auto;
-    overflow-y: visible;
+    overflow-y: hidden;
     padding-bottom: 8px;
     scroll-behavior: smooth; // Плавная прокрутка
     -webkit-overflow-scrolling: touch; // Плавный свайп на iOS
+    touch-action: pan-x; // Разрешаем только горизонтальный свайп
 
     // Скрываем скроллбар но оставляем функциональность
     scrollbar-width: none; /* Firefox */
