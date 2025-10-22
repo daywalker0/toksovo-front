@@ -265,14 +265,14 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: nowrap;
     gap: 8px;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     padding-bottom: 8px;
+    padding-right: 20px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x pinch-zoom;
+    touch-action: pan-x;
     overscroll-behavior-x: contain;
-    white-space: nowrap;
 
     // Скрываем скроллбар но оставляем функциональность
     scrollbar-width: none; /* Firefox */
