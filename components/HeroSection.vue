@@ -49,19 +49,42 @@ onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger);
 
   const isMobile = window.innerWidth <= 599;
-  const startScale = isMobile ? 3.1 : 2.3;
-
   const titleEl = sectionEl.value?.querySelector('.hero-section__title');
   const subtitleEl = sectionEl.value?.querySelector('.hero-section__subtitle');
+  
+  // Отключаем анимацию на мобильных устройствах (599px и менее)
+  if (isMobile) {
+    // Просто устанавливаем финальные значения без анимации
+    if (renderEl.value) {
+      gsap.set(renderEl.value, {
+        scale: 2.5,
+        y: 0,
+        force3D: true,
+        willChange: 'transform',
+      });
+    }
+    
+    if (titleEl) {
+      gsap.set(titleEl, {
+        y: 0,
+        opacity: 1,
+        force3D: true,
+      });
+    }
 
-  // Общая установка для renderEl
-  gsap.set(renderEl.value, {
-    scale: startScale,
-    y: isMobile ? -100 : '60%',
-    force3D: true,
-    willChange: 'transform',
-  });
+    if (subtitleEl) {
+      gsap.set(subtitleEl, {
+        y: 0,
+        opacity: 1,
+        force3D: true,
+      });
+    }
+    
+    return;
+  }
 
+  // Закомментированный код анимации для мобилки (можно вернуть позже)
+  /*
   if (isMobile) {
     // Мобильная версия
     tl = gsap.timeline({
@@ -86,41 +109,52 @@ onMounted(async () => {
       0
     );
   } else {
-    // Десктоп версия
-    tl = gsap.timeline({
-      defaults: { ease: 'none' },
-      scrollTrigger: {
-        trigger: sectionEl.value,
-        start: 'top top',
-        end: 'bottom bottom+=500',
-        scrub: true,
-        fastScrollEnd: true,
-        invalidateOnRefresh: true,
-      },
-    });
+  */
+  
+  const startScale = 2.3;
 
+  // Общая установка для renderEl
+  gsap.set(renderEl.value, {
+    scale: startScale,
+    y: '60%',
+    force3D: true,
+    willChange: 'transform',
+  });
+
+  // Десктоп версия
+  tl = gsap.timeline({
+    defaults: { ease: 'none' },
+    scrollTrigger: {
+      trigger: sectionEl.value,
+      start: 'top top',
+      end: 'bottom bottom+=500',
+      scrub: true,
+      fastScrollEnd: true,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  tl.to(
+    renderEl.value,
+    {
+      y: 0,
+      scale: 1,
+      duration: 1,
+      ease: 'none',
+    },
+    0
+  );
+  if (subtitleEl) {
     tl.to(
-      renderEl.value,
+      subtitleEl,
       {
         y: 0,
-        scale: 1,
-        duration: 1,
-        ease: 'none',
+        opacity: 1,
+        duration: 0.3,
+        ease: 'power1.out',
       },
-      0
+      0.2
     );
-    if (subtitleEl) {
-      tl.to(
-        subtitleEl,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.3,
-          ease: 'power1.out',
-        },
-        0.2
-      );
-    }
   }
 
   if (titleEl) {
@@ -138,6 +172,7 @@ onMounted(async () => {
       force3D: true,
     });
   }
+  // */
 
   ScrollTrigger.create({
     trigger: sectionEl.value,
