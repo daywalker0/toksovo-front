@@ -244,7 +244,7 @@ onUnmounted(() => {
     left: 0;
     width: 100%;
     background: transparent;
-    padding: 0 0 40px 20px;
+    padding: 0 20px 40px 20px;
     padding-bottom: max(40px, env(safe-area-inset-bottom));
     z-index: 10001;
 
@@ -254,7 +254,7 @@ onUnmounted(() => {
       left: 0;
       right: 0;
       width: 100%;
-      padding: 20px 20px 0 20px;
+      padding: 0 0 20px 20px;
       padding-bottom: max(20px, env(safe-area-inset-bottom));
       background: transparent;
     }
@@ -268,7 +268,6 @@ onUnmounted(() => {
     overflow-x: auto;
     overflow-y: visible;
     padding-bottom: 8px;
-    padding-right: 16px; // Добавляем отступ справа для последних элементов
     scroll-behavior: smooth; // Плавная прокрутка
     -webkit-overflow-scrolling: touch; // Плавный свайп на iOS
 
