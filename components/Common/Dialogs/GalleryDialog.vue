@@ -5,37 +5,38 @@
       class="gallery-overlay"
       @click="closeOnOverlay && $emit('update:modelValue', false)"
     >
+      <button
+        class="gallery-close"
+        @click="$emit('update:modelValue', false)"
+        aria-label="Закрыть галерею"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+            fill="#F8F3ED"
+          />
+        </svg>
+      </button>
       <div class="gallery-content" @click.stop>
         <div class="gallery-header">
           <div class="gallery-info">
             <h3 class="gallery-title">{{ slide?.title }}</h3>
             <p class="gallery-year">{{ slide?.year }}</p>
           </div>
-          <button
-            class="gallery-close"
-            @click="$emit('update:modelValue', false)"
-            aria-label="Закрыть галерею"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
-                fill="#2C322C"
-              />
-            </svg>
-          </button>
         </div>
 
         <div class="gallery-main" data-lenis-prevent>
           <Swiper
             :modules="[Navigation]"
-            :slides-per-view="2"
+            :slides-per-view="isMobile ? 2 : 2"
             :space-between="16"
+            :direction="isMobile ? 'vertical' : 'horizontal'"
             :navigation="{
               prevEl: prevButtonRef,
               nextEl: nextButtonRef,
@@ -53,7 +54,7 @@
           </Swiper>
         </div>
 
-        <div class="gallery-controls">
+        <div class="gallery-controls" :class="{ 'mobile-hidden': isMobile }">
           <div class="gallery-progress">
             <div class="progress-bar">
               <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
@@ -122,6 +123,7 @@ const currentIndex = ref(0);
 const prevButtonRef = ref(null);
 const nextButtonRef = ref(null);
 const swiperInstance = ref(null);
+const isMobile = ref(false);
 
 const totalSlides = computed(() => props.slide?.gallery?.length || 0);
 const visibleSlidesCount = 2;
@@ -145,6 +147,13 @@ const onSwiper = swiper => {
 
 const onSlideChange = swiper => {
   currentIndex.value = swiper.activeIndex;
+};
+
+// Функция для определения мобильного устройства
+const checkIsMobile = () => {
+  if (process.client) {
+    isMobile.value = window.innerWidth <= 599;
+  }
 };
 
 const handleKeydown = event => {
@@ -223,12 +232,15 @@ watch(
 onMounted(() => {
   if (typeof document !== 'undefined') {
     document.addEventListener('keydown', handleKeydown);
+    window.addEventListener('resize', checkIsMobile);
+    checkIsMobile(); // Проверяем при монтировании
   }
 });
 
 onUnmounted(() => {
   if (typeof document !== 'undefined') {
     document.removeEventListener('keydown', handleKeydown);
+    window.removeEventListener('resize', checkIsMobile);
   }
   unlockScroll();
 
@@ -276,17 +288,20 @@ onUnmounted(() => {
 }
 
 .gallery-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
   width: 48px;
   height: 48px;
-  border: 1px solid $text-color-primary;
-  border-radius: 50%;
+  border: 1px solid $text-color-white;
+  border-radius: 50px;
   background: transparent;
-  color: #333;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  z-index: 10;
 
   svg {
     transition: transform 0.3s ease;
@@ -478,6 +493,79 @@ onUnmounted(() => {
   .nav-button {
     width: 36px;
     height: 36px;
+  }
+}
+
+/* Мобильная версия (599px и менее) - как DialogCallback */
+@media (max-width: 599px) {
+  .gallery-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  .gallery-content {
+    width: 100% !important;
+    height: 90vh !important;
+    max-height: 90vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+
+  .gallery-header {
+    padding: 20px 20px 16px 20px;
+    margin-top: 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .gallery-title {
+    font-size: 32px;
+    margin-bottom: 4px;
+  }
+
+  .gallery-year {
+    font-size: 14px;
+  }
+
+  .gallery-main {
+    flex: 1;
+    padding: 16px 20px;
+    overflow: hidden;
+  }
+
+  .gallery-swiper {
+    height: 100%;
+  }
+
+  .gallery-slide {
+    height: calc(50% - 8px);
+    margin-bottom: 16px;
+  }
+
+  .gallery-slide:last-child {
+    margin-bottom: 0;
+  }
+
+  .gallery-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .gallery-controls {
+    display: none;
+  }
+
+  .gallery-close {
+    width: 40px;
+    height: 40px;
+    top: 20px;
+    right: 20px;
+  }
+
+  .mobile-hidden {
+    display: none !important;
   }
 }
 
