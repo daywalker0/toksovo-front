@@ -2,12 +2,6 @@
   <div class="yandex-map-wrapper">
     <div ref="mapContainer" class="map-container"></div>
 
-    <!-- Отладочная информация для мобильных устройств -->
-    <div v-if="debugInfo" class="debug-info">
-      <div class="debug-item">Статус: {{ debugInfo.status }}</div>
-      <div class="debug-item">Размеры: {{ debugInfo.dimensions }}</div>
-      <div class="debug-item">Ошибка: {{ debugInfo.error || 'Нет' }}</div>
-    </div>
 
     <!-- Кастомные кнопки зума -->
     <div v-if="showZoomControls" class="custom-zoom">
@@ -50,23 +44,13 @@ let ymaps = null;
 // Список всех маркеров (по id)
 const allMarkers = new Map();
 
-// Отладочная информация для мобильных устройств
-const debugInfo = ref(null);
 
 onMounted(async () => {
   if (!process.client) return;
 
   const apiKey = 'f95ebb9f-42ae-4c53-be82-de5a3c134a71';
 
-  // Показываем отладочную информацию на мобильных устройствах
   const isMobile = window.innerWidth <= 599;
-  if (isMobile) {
-    debugInfo.value = {
-      status: 'Инициализация...',
-      dimensions: 'Проверка...',
-      error: null
-    };
-  }
 
   try {
     // Ждем, пока контейнер появится в DOM и получит свои размеры
@@ -99,26 +83,13 @@ onMounted(async () => {
             height: mapContainer.value.offsetHeight
           });
           
-          if (isMobile && debugInfo.value) {
-            debugInfo.value.status = 'Контейнер готов';
-            debugInfo.value.dimensions = `${mapContainer.value.offsetWidth}x${mapContainer.value.offsetHeight}`;
-          }
-          
           resolve();
         } else if (attempts >= maxAttempts) {
           console.error('Map container failed to initialize:', {
             element: mapContainer.value,
             width: mapContainer.value?.offsetWidth,
-            height: mapContainer.value?.offsetHeight,
-            parentElement: mapContainer.value?.parentElement,
-            parentWidth: mapContainer.value?.parentElement?.offsetWidth,
-            parentHeight: mapContainer.value?.parentElement?.offsetHeight
+            height: mapContainer.value?.offsetHeight
           });
-          
-          if (isMobile && debugInfo.value) {
-            debugInfo.value.status = 'Ошибка контейнера';
-            debugInfo.value.error = `Контейнер: ${mapContainer.value ? 'найден' : 'не найден'}, Размеры: ${mapContainer.value?.offsetWidth || 0}x${mapContainer.value?.offsetHeight || 0}`;
-          }
           
           reject(
             new Error('Map container failed to initialize: element not found or has no dimensions')
@@ -141,14 +112,8 @@ onMounted(async () => {
       script.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${apiKey}`;
       script.onload = () => {
         console.log('Yandex Maps script loaded');
-        if (isMobile && debugInfo.value) {
-          debugInfo.value.status = 'Скрипт загружен';
-        }
         window.ymaps.ready(() => {
           console.log('Yandex Maps ready');
-          if (isMobile && debugInfo.value) {
-            debugInfo.value.status = 'API готово';
-          }
           resolve(window.ymaps);
         });
       };
@@ -159,23 +124,11 @@ onMounted(async () => {
       document.head.appendChild(script);
     });
 
-    console.log('Creating map with container:', mapContainer.value);
-    console.log('Container dimensions:', {
-      width: mapContainer.value.offsetWidth,
-      height: mapContainer.value.offsetHeight
-    });
-
     map = new ymaps.Map(mapContainer.value, {
       center: props.center,
       zoom: props.zoom,
       controls: [],
     });
-
-    console.log('Map created successfully:', map);
-
-    if (isMobile && debugInfo.value) {
-      debugInfo.value.status = 'Карта создана';
-    }
 
     map.behaviors.disable('scrollZoom');
     map.options.set('minZoom', 10);
@@ -207,11 +160,6 @@ onMounted(async () => {
         
         map.container.fitToViewport();
         console.log('Map container fitted to viewport');
-        
-        if (isMobile && debugInfo.value) {
-          debugInfo.value.status = 'Карта готова';
-          debugInfo.value.dimensions = `${mapContainer.value.offsetWidth}x${mapContainer.value.offsetHeight}`;
-        }
       }
     }, 100);
 
@@ -368,8 +316,8 @@ function zoomOut() {
   
   @media (max-width: 599px) {
     width: 100vw !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
+    height: calc(100vh + env(safe-area-inset-bottom)) !important;
+    min-height: calc(100vh + env(safe-area-inset-bottom)) !important;
     position: relative;
   }
 }
@@ -416,24 +364,4 @@ function zoomOut() {
   border-bottom-right-radius: 50%;
 }
 
-.debug-info {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 12px;
-  z-index: 1000;
-  max-width: 200px;
-}
-
-.debug-item {
-  margin-bottom: 5px;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
 </style>

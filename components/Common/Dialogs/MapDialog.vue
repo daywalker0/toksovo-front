@@ -167,6 +167,7 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   &__container {
@@ -177,10 +178,10 @@ onUnmounted(() => {
     flex-direction: column;
 
     @media (max-width: $breakpoint-x) {
-      height: 100vh;
-      height: 100dvh;
+      height: calc(100vh + env(safe-area-inset-bottom));
+      height: calc(100dvh + env(safe-area-inset-bottom));
       height: -webkit-fill-available;
-      min-height: 100vh;
+      min-height: calc(100vh + env(safe-area-inset-bottom));
     }
   }
 
@@ -208,7 +209,7 @@ onUnmounted(() => {
     }
 
     @media (max-width: $breakpoint-x) {
-      top: calc(env(safe-area-inset-top) + 50px);
+      top: calc(env(safe-area-inset-top) + 30px);
       right: 10px;
       width: 36px;
       height: 36px;
