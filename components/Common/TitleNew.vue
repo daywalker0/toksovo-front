@@ -122,6 +122,17 @@ function createScrollTrigger(triggerElement, tl) {
 
 function initAnimation() {
   if (!titleRef.value || !process.client) return;
+  
+  // Отключаем анимацию на мобильных устройствах (599px и менее)
+  const isMobile = window.innerWidth <= 599;
+  if (isMobile) {
+    const textSplit = titleRef.value.querySelector('[data-text-split]');
+    if (textSplit) {
+      gsap.set(textSplit, { opacity: 1 });
+    }
+    return;
+  }
+  
   gsap.registerPlugin(ScrollTrigger);
   killAll();
 
