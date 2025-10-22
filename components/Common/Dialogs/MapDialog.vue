@@ -159,6 +159,7 @@ onUnmounted(() => {
 
   @media (max-width: $breakpoint-x) {
     height: 100svh;
+    height: -webkit-fill-available;
   }
 
   &__container {
@@ -169,8 +170,8 @@ onUnmounted(() => {
     flex-direction: column;
 
     @media (max-width: $breakpoint-x) {
-      max-height: 100svh;
-      max-height: -webkit-fill-available;
+      height: 100svh;
+      height: -webkit-fill-available;
     }
   }
 
@@ -206,6 +207,7 @@ onUnmounted(() => {
     flex: 1;
     position: relative;
     width: 100%;
+    height: 100%;
     overflow: hidden;
 
     @media (max-width: $breakpoint-x) {
