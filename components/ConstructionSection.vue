@@ -56,9 +56,9 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
-import constrImg1 from '@/assets/img/hod-stroitelstva/hod1.jpg';
-import constrImg2 from '@/assets/img/hod-stroitelstva/hod2.jpg';
-import constrImg3 from '@/assets/img/hod-stroitelstva/hod3.jpg';
+import constrImg1 from '@/assets/img/hod-stroitelstva/hod1.jfif';
+import constrImg2 from '@/assets/img/hod-stroitelstva/hod2.jfif';
+import constrImg3 from '@/assets/img/hod-stroitelstva/hod3.jfif';
 import constrImg4 from '@/assets/img/hod-stroitelstva/hod4.jpg';
 import constrImg5 from '@/assets/img/hod-stroitelstva/hod5.jpg';
 import TitleNew from './Common/TitleNew.vue';
