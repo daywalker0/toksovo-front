@@ -39,7 +39,7 @@
               <div class="card-content">
                 <div class="card-content__title">
                   <div class="card-content--name">Ресторан «ЛетоБар»</div>
-                  <div class="card-content--distance">0,9 км</div>
+                  <div class="card-content--distance">0,8км</div>
                 </div>
                 <div class="card-content__subtitle">на прилегающей территории</div>
               </div>
@@ -106,30 +106,27 @@
               <img class="card-img" :src="loc1" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Песочный пляж</div>
-                  <div class="card-content--distance">0,9 км</div>
+                  <div class="card-content--name">Экотропа "Курголовская"</div>
+                  <div class="card-content--distance">1 км</div>
                 </div>
-                <div class="card-content__subtitle">на прилегающей территории</div>
               </div>
             </div>
             <div class="card">
               <img class="card-img" :src="loc8" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Учебно-тренировочный центр</div>
-                  <div class="card-content--distance">3,4 км</div>
+                  <div class="card-content--name">Горнолыжный комплекс "Северный склон"</div>
+                  <div class="card-content--distance">5 км</div>
                 </div>
-                <div class="card-content__subtitle">«Кавголово»</div>
               </div>
             </div>
             <div class="card">
               <img class="card-img" :src="loc3" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Парк семейного отдыха</div>
-                  <div class="card-content--distance">11 км</div>
+                  <div class="card-content--name">Охта парк</div>
+                  <div class="card-content--distance">13 км</div>
                 </div>
-                <div class="card-content__subtitle">«Зубровник»</div>
               </div>
             </div>
           </div>
