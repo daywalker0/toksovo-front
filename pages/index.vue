@@ -117,7 +117,7 @@ import NewsSection from '@/components/NewsSection.vue';
 import ProjectsSection from '@/components/ProjectsSection.vue';
 import ChooseYouAppsSection from '@/components/ChooseYouAppsSection.vue';
 import Footer from '@/components/Footer.vue';
-import liveInStyleItem1 from '@/assets/img/jitvstile/1.jpg';
+import liveInStyleItem1 from '@/assets/img/jitvstile/1.jfif';
 import liveInStyleItem2 from '@/assets/img/jitvstile/2.jpg';
 import liveInStyleItem3 from '@/assets/img/jitvstile/3.jpg';
 import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';

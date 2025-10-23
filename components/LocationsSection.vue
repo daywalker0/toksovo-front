@@ -508,6 +508,7 @@ onBeforeUnmount(() => {
     text-transform: uppercase;
     font-family: 'Akrobat';
     line-height: 1.2;
+    gap: 1rem;
     margin-bottom: 4px;
 
     @media (max-width: 1280px) {
