@@ -503,11 +503,11 @@ onBeforeUnmount(() => {
   &__title {
     display: flex;
     justify-content: space-between;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     text-transform: uppercase;
     font-family: 'Akrobat';
-    line-height: 80%;
+    line-height: 1.2;
     margin-bottom: 4px;
 
     @media (max-width: 1280px) {
