@@ -58,10 +58,9 @@
               <img class="card-img" :src="loc5" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Экотропа</div>
+                  <div class="card-content--name">Экотропа «Малиновая гора»</div>
                   <div class="card-content--distance">10 км</div>
                 </div>
-                <div class="card-content__subtitle">«Малиновая гора»</div>
               </div>
             </div>
           </div>
@@ -82,20 +81,18 @@
               <img class="card-img" :src="loc4" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Учебно-тренировочный центр</div>
+                  <div class="card-content--name">Учебно-тренировочный центр "Кавголово"</div>
                   <div class="card-content--distance">3,4 км</div>
                 </div>
-                <div class="card-content__subtitle">«Кавголово»</div>
               </div>
             </div>
             <div class="card">
               <img class="card-img" :src="loc7" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Парк семейного отдыха</div>
+                  <div class="card-content--name">Парк семейного отдыха "Зубровник"</div>
                   <div class="card-content--distance">11 км</div>
                 </div>
-                <div class="card-content__subtitle">«Зубровник»</div>
               </div>
             </div>
           </div>
