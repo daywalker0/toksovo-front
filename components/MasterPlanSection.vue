@@ -125,8 +125,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue';
-import genPlanImg from '@/assets/img/gen-plan.jpg';
-
+import genPlanImg from '@/assets/img/gen-plan.jfif';
 const sectionRef = ref(null);
 const overlayTopRef = ref(null);
 const overlayBottomRef = ref(null);
@@ -146,20 +145,20 @@ let closeTimeoutId = null;
 
 // Данные для пинов
 const pins = ref([
-  { id: 1, x: 13, y: 22, label: 'Объект 1', active: true },
-  { id: 2, x: 18, y: 15, label: 'Парк', active: false },
-  { id: 3, x: 30, y: 20, label: 'Школа', active: true },
-  { id: 4, x: 38, y: 15, label: 'Торговый центр', active: true },
-  { id: 5, x: 50, y: 12, label: 'Больница', active: false },
-  { id: 6, x: 62, y: 9, label: 'Спорткомплекс', active: true },
-  { id: 7, x: 35, y: 40, label: 'Детский сад', active: false },
-  { id: 8, x: 50, y: 35, label: 'Библиотека', active: true },
-  { id: 9, x: 60, y: 25, label: 'Кафе', active: false },
-  { id: 10, x: 75, y: 20, label: 'Аптека', active: true },
-  { id: 11, x: 50, y: 65, label: 'Банк', active: false },
-  { id: 12, x: 67, y: 48, label: 'Почта', active: true },
-  { id: 13, x: 75, y: 40, label: 'Автосервис', active: false },
-  { id: 14, x: 87, y: 32, label: 'Салон красоты', active: true },
+  { id: 1, x: 12, y: 28, label: 'Объект 1', active: true },
+  { id: 2, x: 16, y: 18, label: 'Парк', active: false },
+  { id: 3, x: 26, y: 29, label: 'Школа', active: true },
+  { id: 4, x: 37, y: 18, label: 'Торговый центр', active: true },
+  { id: 5, x: 51, y: 16, label: 'Больница', active: false },
+  { id: 6, x: 62, y: 14, label: 'Спорткомплекс', active: true },
+  { id: 7, x: 35, y: 47, label: 'Детский сад', active: false },
+  { id: 8, x: 52, y: 43, label: 'Библиотека', active: true },
+  { id: 9, x: 58, y: 30, label: 'Кафе', active: false },
+  { id: 10, x: 75, y: 27, label: 'Аптека', active: true },
+  { id: 11, x: 50, y: 75, label: 'Банк', active: false },
+  { id: 12, x: 67, y: 60, label: 'Почта', active: true },
+  { id: 13, x: 75, y: 45, label: 'Автосервис', active: false },
+  { id: 14, x: 87, y: 38, label: 'Салон красоты', active: true },
 ]);
 
 const defaultOffers = [
@@ -846,6 +845,9 @@ onBeforeUnmount(() => {
 .button--orange {
   background-color: $accent-color-orange;
   color: $text-color-white;
+  font-family: 'Akrobat';
+  text-transform: uppercase;
+  font-weight: 700;
   border: none;
   font-size: 18px;
   transition: all 0.3s ease;
@@ -865,7 +867,6 @@ onBeforeUnmount(() => {
   }
 
   &:hover {
-    transform: translateY(-2px);
     color: $text-color-white;
 
     &::before {
