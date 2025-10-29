@@ -25,6 +25,7 @@
           loading="eager"
         />
       </div>
+      <div class="environment-section__gradient"></div>
       <div class="environment-section__content">
         <div class="content-block">
           <!-- Круговой прогресс-бар -->
@@ -359,9 +360,6 @@ const goToNextSlide = (isAutomatic = false) => {
   // Переключаем активный элемент аккордеона
   const nextActiveIndex = (activeIndex.value + 1) % items.value.length;
   setActiveIndex(nextActiveIndex);
-  
-  // Обновляем currentIndex на новый активный индекс
-  currentIndex.value = nextActiveIndex;
 
   if (isMobile.value) {
     isAnimating.value = true;
@@ -374,6 +372,7 @@ const goToNextSlide = (isAutomatic = false) => {
       isAnimating.value = false;
     }, 600);
   } else {
+    currentIndex.value = nextActiveIndex;
     animateSlide(nextActiveIndex, 'right');
   }
 };
@@ -389,9 +388,6 @@ const goToPrevSlide = (isAutomatic = false) => {
   // Переключаем активный элемент аккордеона
   const prevActiveIndex = (activeIndex.value - 1 + items.value.length) % items.value.length;
   setActiveIndex(prevActiveIndex);
-  
-  // Обновляем currentIndex на новый активный индекс
-  currentIndex.value = prevActiveIndex;
 
   if (isMobile.value) {
     isAnimating.value = true;
@@ -404,6 +400,7 @@ const goToPrevSlide = (isAutomatic = false) => {
       isAnimating.value = false;
     }, 600);
   } else {
+    currentIndex.value = prevActiveIndex;
     animateSlide(prevActiveIndex, 'left');
   }
 };
@@ -694,18 +691,6 @@ onBeforeUnmount(() => {
       display: none;
     }
 
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 450px;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
-      z-index: 2;
-      pointer-events: none;
-    }
-
     .slide-image {
       position: absolute;
       top: 0;
@@ -722,15 +707,37 @@ onBeforeUnmount(() => {
 
     .slide-next {
       z-index: 2;
-      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+      @media (max-width: $breakpoint-x) {
+        z-index: 10;
+      }
 
       &.from-right {
-        animation-name: slideInFromRight;
+        @media (max-width: $breakpoint-x) {
+          animation: slideInFromRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
       }
 
       &.from-left {
-        animation-name: slideInFromLeft;
+        @media (max-width: $breakpoint-x) {
+          animation: slideInFromLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
       }
+    }
+  }
+
+  &__gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 450px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+    z-index: 15;
+    pointer-events: none;
+
+    @media (min-width: 600px) {
+      display: none;
     }
   }
 
@@ -747,6 +754,7 @@ onBeforeUnmount(() => {
     @media (max-width: $breakpoint-x) {
       padding: 10px;
       bottom: 0;
+      z-index: 20;
     }
 
     @media (min-width: 600px) {
