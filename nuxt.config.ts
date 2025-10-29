@@ -38,6 +38,9 @@ export default defineNuxtConfig({
         },
         { property: 'og:type', content: 'website' },
       ],
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+      ],
     },
   },
 

@@ -273,7 +273,7 @@ const openDialogCallback = () => {
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
-    padding: 8px 16px;
+    padding: 14px 28px;
     color: inherit !important;
     text-decoration: none !important;
     -webkit-tap-highlight-color: transparent;
@@ -394,7 +394,7 @@ const openDialogCallback = () => {
 }
 
 .center {
-  gap: 32px;
+  gap: 32px !important;
   display: flex;
   flex-direction: column;
 
