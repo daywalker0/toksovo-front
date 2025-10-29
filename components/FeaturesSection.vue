@@ -52,26 +52,12 @@ import slideImg from '@/assets/img/features-slide-bg.jpg'
 
 const activeTab = ref(1);
 
-// Определяем табы
-const tabs = ref([
-  { id: 1, title: 'Природа и локация' },
-  { id: 2, title: 'Отдых и оздоровление' },
-  { id: 3, title: 'Спорт и активность' },
-  { id: 4, title: 'Интерьеры' },
-  { id: 5, title: 'Инфраструктура' }
-]);
-
-const setActiveTab = (tabId) => {
-  activeTab.value = tabId;
-};
-
-// Кастомные breakpoints чтобы всегда показывать нужное количество слайдов
 const customBreakpoints = {
   320: {
     slidesPerView: 1,
     spaceBetween: 8
   },
-  428: {
+  599: {
     slidesPerView: 2,
     spaceBetween: 8
   },
@@ -83,6 +69,19 @@ const customBreakpoints = {
     slidesPerView: 4,
     spaceBetween: 45
   }
+};
+
+// Определяем табы
+const tabs = ref([
+  { id: 1, title: 'Природа и локация' },
+  { id: 2, title: 'Отдых и оздоровление' },
+  { id: 3, title: 'Спорт и активность' },
+  { id: 4, title: 'Интерьеры' },
+  { id: 5, title: 'Инфраструктура' }
+]);
+
+const setActiveTab = (tabId) => {
+  activeTab.value = tabId;
 };
 
 // Моковые данные для слайдов
@@ -144,27 +143,67 @@ const getTabSlides = (tabId) => {
   border: none;
   padding: 0;
   outline: none;
+  flex-shrink: 0;
 
   &:hover {
-    transition: none;
     border: none;
   }
 }
 
+::v-deep(.swiper-slide) {
+  transition: none !important;
+}
+
 .tabs-slider-section {
   margin-bottom: 200px;
+
+  &__container {
+    @media (max-width: $breakpoint-x) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    margin-bottom: 120px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    margin-bottom: 60px;
+  }
+
+  &__title {
+    @media (max-width: $breakpoint-sm) {
+      margin-bottom: 32px;
+    }
+    @media (max-width: $breakpoint-x) {
+      padding-left: 20px;
+      padding-right: 20px;
+      margin-bottom: 20px;
+    }
+  }
 }
 
 .tabs {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 12px;
   margin-bottom: 40px;
   flex-wrap: wrap;
 
+  @media (max-width: $breakpoint-sm) {
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
   @media (max-width: $breakpoint-x) {
-    gap: 12px;
-    margin-bottom: 30px;
+    flex-wrap: nowrap;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: flex-start;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
@@ -179,14 +218,31 @@ const getTabSlides = (tabId) => {
   font-weight: 700;
   line-height: 110%;
   cursor: pointer;
-  transition: all 0.3s ease;
   white-space: nowrap;
   text-transform: uppercase;
+
+  @media (max-width: $breakpoint-sm) {
+    font-size: 13px;
+    line-height: 140%;
+    padding: 10px 16px;
+  }
+
+  
+  @media (max-width: $breakpoint-x) {
+    font-size: 14px;
+    line-height: 140%;
+    padding: 13px 16px;
+  }
 
   &:hover {
     border-color: $text-color-primary;
     background-color: $text-color-primary;
     color: $text-color-white;
+    @media (max-width: $breakpoint-x) {
+      border-color: $utility-color-1;
+      background-color: transparent;
+      color: $text-color-secondary;
+    }
   }
 
   &.active {
@@ -198,6 +254,10 @@ const getTabSlides = (tabId) => {
 
 .tab-content {
   position: relative;
+  @media (max-width: $breakpoint-x) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 .tab-pane {
@@ -211,11 +271,13 @@ const getTabSlides = (tabId) => {
 // Стили для слайдов
 .custom-slide {
   height: 407px;
-  cursor: pointer;
   border-radius: 7px;
   overflow: hidden;
-  transition: transform 0.3s ease;
   width: 100%;
+
+  @media (max-width: $breakpoint-x) {
+    height: 338px;
+  }
 }
 
 .slide-image {
