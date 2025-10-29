@@ -105,8 +105,9 @@ export const useMainStore = defineStore('main', () => {
     return mainData.value?.data?.blocks?.find(
       block => block.__component === 'blocks.preimushhestva-zhizni' || 
              block.__component === 'blocks.environment' ||
-             block.__component === 'blocks.privatnyj-format'
-    )
+             block.__component === 'blocks.privatnyj-format' ||
+             block.__component === 'blocks.cpokojstvie-svezhest-priroda'
+    );
   })
 
   const getChooseAppsBlock = computed(() => {

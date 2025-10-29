@@ -14,8 +14,9 @@
       <section id="about">
         <TextBlockSection 
           :text="calmNatureBlock?.title" 
-          :subtitle="calmNatureBlock?.description" 
+          :subtitle="calmNatureBlock?.subtitle" 
         />
+        <EnvironmentSection v-if="environmentBlock?.slider?.length" :data="environmentBlock" />
         <LocationsSection v-if="locationsBlock?.location_card?.length" :data="locationsBlock" />
       </section>
 
@@ -31,13 +32,13 @@
       <section id="architecture">
         <TextBlockSection 
           :text="styleLivingBlock?.title" 
-          :subtitle="styleLivingBlock?.description" 
+          :subtitle="styleLivingBlock?.subtitle" 
         />
         <FullpageSlider :sections="styleLivingBlock?.slider || []" />
         
         <TextBlockSection 
           :text="firstStepsBlock?.title" 
-          :subtitle="firstStepsBlock?.description" 
+          :subtitle="firstStepsBlock?.subtitle" 
         />
         <FullpageSlider :sections="firstStepsBlock?.slider || []" />
       </section>
@@ -45,7 +46,7 @@
       <section id="infrastructure">
         <TextBlockSection 
           :text="mapBlock?.title" 
-          :subtitle="mapBlock?.description" 
+          :subtitle="mapBlock?.subtitle" 
         />
         <MapSection :zoom="16" :data="mapBlock" />
       </section>

@@ -5,15 +5,23 @@ export function usePrivateHousingData(externalData = null) {
 
   // Получаем данные из API
   const items = computed(() => {
-    if (!externalData?.value?.items || !Array.isArray(externalData.value.items) || externalData.value.items.length === 0) {
+    // Поддержка разных названий полей из Strapi
+    const dataArray = externalData?.value?.slider || externalData?.value?.items || [];
+    
+    if (!Array.isArray(dataArray) || dataArray.length === 0) {
       return [];
     }
     
-    return externalData.value.items.map(item => ({
+    const mapped = dataArray.map(item => ({
       title: item.title || '',
-      content: item.content || item.description || '',
-      image: getMediaUrl(item.image),
+      content: item.subtitle || item.content || item.description || '',
+      image: getMediaUrl(item.bg_image || item.image),
     }));
+    
+    // DEBUG: проверяем что маппится
+    console.log('🌿 Environment items mapped:', mapped);
+    
+    return mapped;
   });
 
   const activeIndex = ref(0);
