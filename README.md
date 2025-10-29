@@ -1,75 +1,61 @@
-# Nuxt Minimal Starter
+# ПОИНТ ТОКСОВО
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Официальный сайт жилого комплекса ПОИНТ ТОКСОВО в Токсово, Ленинградская область.
 
-## Setup
+## Технологии
 
-Make sure to install dependencies:
+- **Nuxt 3** - Vue.js фреймворк для SSR и статической генерации
+- **Vue 3** - прогрессивный JavaScript фреймворк
+- **GSAP** - библиотека анимаций
+- **Lenis** - плавная прокрутка
+- **Swiper** - современные слайдеры
+- **Pinia** - state management
+- **Sass** - препроцессор CSS
+
+## Установка
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Разработка
 
-Start the development server on `http://localhost:3000`:
+Запуск dev-сервера на `http://localhost:3000`:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
 ## Production
 
-Build the application for production:
+Сборка для продакшена:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm run generate
 ```
 
-Locally preview production build:
+Результат сборки находится в папке `.output/public/`
 
-```bash
-# npm
-npm run preview
+## Структура проекта
 
-# pnpm
-pnpm preview
+- `assets/` - статические ресурсы (стили, шрифты, изображения)
+- `components/` - Vue компоненты
+- `composables/` - переиспользуемые composition функции
+- `pages/` - страницы приложения
+- `stores/` - Pinia stores
+- `plugins/` - Nuxt плагины
+- `public/` - публичные файлы (favicon, robots.txt)
 
-# yarn
-yarn preview
+## Переменные окружения
 
-# bun
-bun run preview
+Создайте файл `.env` в корне проекта:
+
+```env
+NUXT_PUBLIC_YANDEX_MAPS_API_KEY=your_api_key
+NUXT_PUBLIC_API_URL=your_api_url
+NUXT_PUBLIC_API_TOKEN=your_api_token
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Лицензия
+
+© 2025 ПОИНТ ТОКСОВО. Все права защищены.
