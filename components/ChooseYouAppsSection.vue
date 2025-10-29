@@ -8,7 +8,7 @@
       <div class="mobile-content">
         <div class="mobile-text">Выберите свою квартиру для жизни</div>
         <div class="mobile-buttons">
-          <button class="mobile-button">
+          <button class="mobile-button" @click="scrollToMasterPlan">
             <span class="button-title">Генплан</span>
             <div class="button-action">
               <span>Перейти</span>
@@ -58,6 +58,7 @@
               class="button button-left"
               :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
               :style="{ opacity: buttonsOpacity }"
+              @click="scrollToMasterPlan"
             >
               Генплан
             </button>
@@ -94,6 +95,8 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import chooseYourLife from '@/assets/img/choose-your-life.jpg';
 
+const { scrollTo } = useLenis();
+
 const section = ref(null);
 const darkBg = ref(null);
 const imageContainer = ref(null);
@@ -107,6 +110,16 @@ const isMobile = ref(false);
 const isMd = ref(
   typeof window !== 'undefined' ? window.innerWidth <= 1024 && window.innerWidth > 768 : false
 );
+
+const scrollToMasterPlan = () => {
+  scrollTo('#master-plan', {
+    offset: -100,
+    duration: 1.2,
+    onComplete: () => {
+      window.history.replaceState(window.history.state, '', window.location.pathname);
+    },
+  });
+};
 
 const handleScroll = () => {
   // На мобилке не обрабатываем скролл
