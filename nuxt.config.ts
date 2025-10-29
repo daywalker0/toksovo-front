@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    baseURL: '/toksovo-front/',
     head: {
       title: 'ПОИНТ ТОКСОВО',
       titleTemplate: '%s - Жилой комплекс в Токсово',

@@ -2,7 +2,6 @@
   "name": "nuxt-app",
   "type": "module",
   "private": true,
-  "homepage": "https://daywalker0.github.io/toksovo-front/",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
