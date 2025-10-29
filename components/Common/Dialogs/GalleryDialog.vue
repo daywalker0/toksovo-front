@@ -49,7 +49,7 @@
               :key="index"
               class="gallery-slide"
             >
-              <img :src="image.url" :alt="image.alternativeText" class="gallery-image" loading="lazy" />
+              <img :src="getMediaUrl(image)" :alt="image.alternativeText" class="gallery-image" loading="lazy" />
             </SwiperSlide>
           </Swiper>
         </div>
@@ -101,6 +101,8 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
+
+const { getMediaUrl } = useMedia()
 
 const props = defineProps({
   modelValue: {

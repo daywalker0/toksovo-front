@@ -31,13 +31,15 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
+const { getMediaUrl } = useMedia()
+
 const props = defineProps({
   data: Object
 })
 
 const title = computed(() => props.data.title)
 const description = computed(() => props.data.description)
-const image = computed(() => props.data.image.url)
+const image = computed(() => getMediaUrl(props.data.image))
 
 const formattedTitle = computed(() => {
   if (!props.data?.title) return []

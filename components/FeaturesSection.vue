@@ -32,7 +32,7 @@
           >
             <template #slide="{ slide }">
               <div class="custom-slide">
-                <div class="slide-image" :style="{ backgroundImage: `url(${slide.image.url})` }">
+                <div class="slide-image" :style="{ backgroundImage: `url(${getMediaUrl(slide.image)})` }">
                   <div class="slide-text">{{ slide.title }}</div>
                 </div>
               </div>
@@ -48,6 +48,8 @@
 import { ref } from 'vue';
 import TitleNew from './Common/TitleNew.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
+
+const { getMediaUrl } = useMedia()
 
 const props = defineProps({
   data: Object

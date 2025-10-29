@@ -12,7 +12,7 @@
         :breakpoints="fullpageBreakpoints"
       >
         <template #slide="{ slide, active }">
-          <div class="mobile-slide" :style="{ backgroundImage: `url(${slide.image})` }"></div>
+          <div class="mobile-slide" :style="{ backgroundImage: `url(${getMediaUrl(slide.image)})` }"></div>
         </template>
       </DefaultSlider>
     </div>
@@ -31,7 +31,7 @@
           :data-slider-id="sliderId"
           @click.prevent.stop="scrollToSection(index)"
         >
-          <img :src="section.image.url" loading="eager" />
+          <img :src="getMediaUrl(section.image)" loading="eager" />
         </div>
       </div>
 
@@ -47,7 +47,7 @@
           'section-next': currentSection === index + 1,
         }"
       >
-        <div class="section-bg" :style="{ backgroundImage: `url(${section.image.url})` }"></div>
+        <div class="section-bg" :style="{ backgroundImage: `url(${getMediaUrl(section.image)})` }"></div>
       </section>
     </template>
   </div>
@@ -56,6 +56,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted, toRefs, nextTick, computed, watch } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
+
+const { getMediaUrl } = useMedia()
 
 const props = defineProps({
   sections: {
@@ -79,7 +81,7 @@ const isProgrammaticScroll = ref(false); // Флаг программной пр
 const mobileSlides = computed(() => {
   return sections.value.map((section, index) => ({
     id: index,
-    image: section.image.url,
+    image: getMediaUrl(section.image),
   }));
 });
 

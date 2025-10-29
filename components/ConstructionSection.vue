@@ -14,7 +14,7 @@
         <template #slide="{ slide, active }">
           <div :class="['custom-slide', { active }]" @click="openGallery(slide)">
             <div class="image-container">
-              <img :src="slide.cover_image[0].url" :alt="slide.month" class="slide-image" loading="lazy" />
+              <img :src="getMediaUrl(slide.cover_image[0])" :alt="slide.month" class="slide-image" loading="lazy" />
             </div>
             <div class="content">
               <div class="content--title">{{ slide.month }}</div>
@@ -33,7 +33,7 @@
           @click="openGallery(slide)"
         >
           <div class="image-container">
-            <img :src="slide.cover_image[0].url" :alt="slide.month" class="slide-image" loading="lazy" />
+            <img :src="getMediaUrl(slide.cover_image[0])" :alt="slide.month" class="slide-image" loading="lazy" />
           </div>
           <div class="content">
             <div class="content--title">{{ slide.month }}</div>
@@ -58,6 +58,8 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 import TitleNew from './Common/TitleNew.vue';
 import GalleryDialog from './Common/Dialogs/GalleryDialog.vue';
+
+const { getMediaUrl } = useMedia()
 
 const props = defineProps({
   data: Object
