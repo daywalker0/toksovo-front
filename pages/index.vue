@@ -26,6 +26,8 @@
           <WalkCitySection :data="natureLivingBlock2" />
         </div>
       </div>
+
+      <VideoReviewsSection :data="videoReviewsBlock" />
       
       <FeaturesSection :data="featuresBlock" />
 
@@ -94,6 +96,7 @@ const firstStepsBlock = computed(() => mainStore.getFirstStepsBlock)
 const mapBlock = computed(() => mainStore.getMapBlock)
 const layoutsBlock = computed(() => mainStore.getLayoutsBlock)
 const featuresBlock = computed(() => mainStore.getFeaturesBlock)
+const videoReviewsBlock = computed(() => mainStore.getVideoReviewsBlock || {})
 const constructionBlock = computed(() => mainStore.getConstructionBlock)
 const newsBlock = computed(() => mainStore.getNewsBlock)
 const projectsBlock = computed(() => mainStore.getProjectsBlock)

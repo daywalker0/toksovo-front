@@ -108,6 +108,12 @@ export const useMainStore = defineStore('main', () => {
     );
   })
 
+  const getVideoReviewsBlock = computed(() => {
+    return mainData.value?.data?.blocks?.find(
+      block => block.__component === 'blocks.video-obzory'
+    )
+  })
+
   return {
     mainData,
     loading,
@@ -123,6 +129,7 @@ export const useMainStore = defineStore('main', () => {
     getMapBlock,
     getLayoutsBlock,
     getFeaturesBlock,
+    getVideoReviewsBlock,
     getConstructionBlock,
     getNewsBlock,
     getProjectsBlock,

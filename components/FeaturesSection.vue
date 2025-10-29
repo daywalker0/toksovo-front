@@ -118,6 +118,7 @@ const setActiveTab = (tabId) => {
   }
 
   @media (max-width: $breakpoint-x) {
+    margin-top: 60px;
     margin-bottom: 60px;
   }
 
