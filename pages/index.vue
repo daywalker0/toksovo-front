@@ -26,6 +26,8 @@
           <WalkCitySection :data="natureLivingBlock2" />
         </div>
       </div>
+      
+      <FeaturesSection :data="featuresBlock" />
 
       <MasterPlanSection :data="genplanBlock" />
 
@@ -58,8 +60,6 @@
         />
         <AppsLayoutsSection :data="layoutsBlock" />
       </section>
-
-      <FeaturesSection :data="featuresBlock" />
 
       <ConstructionSection :data="constructionBlock" />
       <NewsSection :data="newsBlock" />

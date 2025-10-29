@@ -104,7 +104,7 @@ const setActiveTab = (tabId) => {
 }
 
 .tabs-slider-section {
-  margin-bottom: 200px;
+  margin: 120px 0px;
 
   &__container {
     @media (max-width: $breakpoint-x) {
