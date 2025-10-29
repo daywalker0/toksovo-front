@@ -101,6 +101,22 @@ export const useMainStore = defineStore('main', () => {
     )
   })
 
+  const getEnvironmentBlock = computed(() => {
+    return mainData.value?.data?.blocks?.find(
+      block => block.__component === 'blocks.preimushhestva-zhizni' || 
+             block.__component === 'blocks.environment' ||
+             block.__component === 'blocks.privatnyj-format'
+    )
+  })
+
+  const getChooseAppsBlock = computed(() => {
+    return mainData.value?.data?.blocks?.find(
+      block => block.__component === 'blocks.vyberite-svoyu-kvartiru' ||
+             block.__component === 'blocks.choose-apartment' ||
+             block.__component === 'blocks.vybor-kvartiry'
+    )
+  })
+
   return {
     mainData,
     loading,
@@ -118,6 +134,8 @@ export const useMainStore = defineStore('main', () => {
     getFeaturesBlock,
     getConstructionBlock,
     getNewsBlock,
-    getProjectsBlock
+    getProjectsBlock,
+    getEnvironmentBlock,
+    getChooseAppsBlock
   }
 })

@@ -198,11 +198,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed, toRef, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePrivateHousingData } from '@/composables/usePrivateHousingData';
 import AnimatedLink from './Common/AnimatedLink.vue';
+
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
+});
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -217,7 +224,7 @@ const {
   hoverSide,
   toggleItem: originalToggleItem,
   onMouseMove: handleMouseMove,
-} = usePrivateHousingData();
+} = usePrivateHousingData(toRef(props, 'data'));
 
 const sectionRef = ref(null);
 const galleryRef = ref(null);

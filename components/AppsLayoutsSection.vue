@@ -116,98 +116,133 @@ import appsItem101 from '@/assets/img/kvartiry/1k10-1.png';
 import appsItem91 from '@/assets/img/kvartiry/1k9-1.png';
 import appsItem81 from '@/assets/img/kvartiry/2k8-1.png';
 
-defineProps({
-  apartments: {
-    type: Array,
-    required: true,
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
   },
 });
+
+const { getMediaUrl } = useMedia();
 
 const currentCategory = ref(0); // текущая выбранная категория (Студии, 1, 2, 3)
 const currentApartmentIndex = ref(0); // текущая квартира в категории
 const currentImageIndex = ref(0); // текущее изображение в слайдере
 
-// Категории квартир
-const apartmentCategories = ref([
-  {
-    id: 0,
-    name: 'Студии',
-    apartments: [
-      {
-        id: 0,
-        name: '13-1',
-        area: '28,63',
-        price: '8 589 000',
-        features: ['- Большой балкон'],
-        image: appsItem131,
-      },
-      {
-        id: 1,
-        name: '14-1',
-        area: '29,54',
-        price: '8 862 000',
-        features: ['- Большой балкон', '- Панорамное остекление'],
-        image: appsItem141,
-      },
-      {
-        id: 1,
-        name: '11-1',
-        area: '28,84',
-        price: '8 652 000',
-        features: ['- Балкон', '- Панорамное остекление', '- Продуманная кухонная зона'],
-        image: appsItem111,
-      },
-    ],
-  },
-  {
-    id: 1,
-    name: '1',
-    apartments: [
-      {
-        id: 0,
-        name: '15-1',
-        area: '40,68',
-        price: '12 204 000',
-        features: ['- Просторная кухня-гостиная', '- Балкон на кухне'],
-        image: appsItem151,
-      },
-      {
-        id: 1,
-        name: '10-1',
-        area: '40,00',
-        price: '12 000 000',
-        features: ['- Светлая кухня-гостиная ', '- Большой коридор', '- Спальня с двумя окнами'],
-        image: appsItem101,
-      },
-      {
-        id: 1,
-        name: '9-1',
-        area: '48,67',
-        price: '14 601 000',
-        features: ['- 2 санузла', '- Гардеробная', '- Просторная кухня-гостиная'],
-        image: appsItem91,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: '2',
-    apartments: [
-      {
-        id: 0,
-        name: '8-1',
-        area: '56,03',
-        price: '16 809 000',
-        features: ['- Вид на лес', '- Просторная кухня-гостиная', '- Балкон на кухне'],
-        image: appsItem81,
-      },
-    ],
-  },
-]);
+// Категории квартир из API или fallback на моки
+const apartmentCategories = computed(() => {
+  // Если есть данные из API
+  if (props.data?.kvartiries && Array.isArray(props.data.kvartiries) && props.data.kvartiries.length > 0) {
+    // Группируем квартиры по категориям (студии, 1-комн, 2-комн и т.д.)
+    const grouped = {};
+    
+    props.data.kvartiries.forEach(apt => {
+      const categoryName = apt.category || 'Другие';
+      if (!grouped[categoryName]) {
+        grouped[categoryName] = [];
+      }
+      
+      grouped[categoryName].push({
+        id: apt.id || apt.documentId,
+        name: apt.name || apt.title,
+        area: apt.area?.toString() || '0',
+        price: apt.price?.toString() || '0',
+        features: apt.features || [],
+        image: getMediaUrl(apt.image),
+        floors: apt.floors || '',
+      });
+    });
+    
+    // Преобразуем в массив категорий
+    return Object.keys(grouped).map((name, index) => ({
+      id: index,
+      name: name,
+      apartments: grouped[name],
+    }));
+  }
+  
+  // Fallback: моки для разработки
+  return [
+    {
+      id: 0,
+      name: 'Студии',
+      apartments: [
+        {
+          id: 0,
+          name: '13-1',
+          area: '28,63',
+          price: '8 589 000',
+          features: ['- Большой балкон'],
+          image: appsItem131,
+        },
+        {
+          id: 1,
+          name: '14-1',
+          area: '29,54',
+          price: '8 862 000',
+          features: ['- Большой балкон', '- Панорамное остекление'],
+          image: appsItem141,
+        },
+        {
+          id: 2,
+          name: '11-1',
+          area: '28,84',
+          price: '8 652 000',
+          features: ['- Балкон', '- Панорамное остекление', '- Продуманная кухонная зона'],
+          image: appsItem111,
+        },
+      ],
+    },
+    {
+      id: 1,
+      name: '1',
+      apartments: [
+        {
+          id: 0,
+          name: '15-1',
+          area: '40,68',
+          price: '12 204 000',
+          features: ['- Просторная кухня-гостиная', '- Балкон на кухне'],
+          image: appsItem151,
+        },
+        {
+          id: 1,
+          name: '10-1',
+          area: '40,00',
+          price: '12 000 000',
+          features: ['- Светлая кухня-гостиная ', '- Большой коридор', '- Спальня с двумя окнами'],
+          image: appsItem101,
+        },
+        {
+          id: 2,
+          name: '9-1',
+          area: '48,67',
+          price: '14 601 000',
+          features: ['- 2 санузла', '- Гардеробная', '- Просторная кухня-гостиная'],
+          image: appsItem91,
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: '2',
+      apartments: [
+        {
+          id: 0,
+          name: '8-1',
+          area: '56,03',
+          price: '16 809 000',
+          features: ['- Вид на лес', '- Просторная кухня-гостиная', '- Балкон на кухне'],
+          image: appsItem81,
+        },
+      ],
+    },
+  ];
+});
 
 // Текущая категория квартир
 const currentCategoryData = computed(() => {
-  return apartmentCategories.value[currentCategory.value];
+  return apartmentCategories.value[currentCategory.value] || apartmentCategories.value[0];
 });
 
 // Текущая квартира в выбранной категории

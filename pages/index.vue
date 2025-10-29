@@ -16,7 +16,7 @@
           :text="calmNatureBlock?.title" 
           :subtitle="calmNatureBlock?.description" 
         />
-        <EnvironmentSection />
+        <EnvironmentSection :data="environmentBlock" />
         <LocationsSection :data="locationsBlock" />
       </section>
 
@@ -56,7 +56,7 @@
           :text="layoutsBlock?.title"
           :subtitle="layoutsBlock?.description"
         />
-        <AppsLayoutsSection :apartments="apartments" :data="layoutsBlock" />
+        <AppsLayoutsSection :data="layoutsBlock" />
       </section>
 
       <FeaturesSection :data="featuresBlock" />
@@ -65,7 +65,7 @@
       <NewsSection :data="newsBlock" />
       <ProjectsSection :data="projectsBlock" />
       
-      <ChooseYouAppsSection />
+      <ChooseYouAppsSection :data="chooseAppsBlock" />
 
       <Footer />
     </div>
@@ -78,18 +78,13 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import AppHeader from '~/components/Common/AppHeader.vue';
 import Footer from '@/components/Footer.vue';
-import liveInStyleItem1 from '@/assets/img/jitvstile/1.jfif';
-import liveInStyleItem2 from '@/assets/img/jitvstile/2.jpg';
-import liveInStyleItem3 from '@/assets/img/jitvstile/3.jpg';
-import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';
-import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
-import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
 
 const mainStore = useMainStore()
 await mainStore.fetchMainData()
 
 const heroBlock = computed(() => mainStore.getHeroBlock)
 const calmNatureBlock = computed(() => mainStore.getCalmNatureBlock)
+const environmentBlock = computed(() => mainStore.getEnvironmentBlock)
 const locationsBlock = computed(() => mainStore.getLocationsBlock)
 const natureLivingBlock1 = computed(() => mainStore.getNatureLivingBlock.life_benefit_card[0])
 const natureLivingBlock2 = computed(() => mainStore.getNatureLivingBlock.life_benefit_card[1])
@@ -102,6 +97,7 @@ const featuresBlock = computed(() => mainStore.getFeaturesBlock)
 const constructionBlock = computed(() => mainStore.getConstructionBlock)
 const newsBlock = computed(() => mainStore.getNewsBlock)
 const projectsBlock = computed(() => mainStore.getProjectsBlock)
+const chooseAppsBlock = computed(() => mainStore.getChooseAppsBlock)
 
 const updateActiveSection = () => {
   const sections = [
@@ -153,77 +149,6 @@ const updateActiveSection = () => {
 const activeSection = ref('hero');
 const handleScroll = ref(null);
 const handleResize = ref(null);
-
-const sectionEnvironment = {
-  text: 'Спокойствие свежесть природа',
-  subtitle: `Утро встречает вас чистым воздухом и спокойствием — прогулка, кофе на террасе или время с
-    семьёй. Днём вы легко погружаетесь в деловую жизнь города, ведь вся инфраструктура
-    и удобства находятся неподалёку. Вечером же Токсово возвращает ощущение свободы, когда можно
-    насладиться тишиной, уединением и красотой природы.`,
-};
-
-const sectionNewStyle = {
-  text: 'Жить в стиле',
-  subtitle: `Современная архитектура комплекса сочетает лаконичные формы и натуральные материалы.
-    Большие окна наполняют квартиры светом,
-    а фасады гармонично вписываются в природное окружение.
-    Каждый дом продуман так, чтобы создавать ощущение уюта и спокойствия.`,
-  sliderImages: [
-    { image: liveInStyleItem1 },
-    { image: liveInStyleItem2 },
-    { image: liveInStyleItem3 },
-  ],
-};
-
-const sectionFirstSteps = {
-  text: 'Жить с первых шагов',
-  subtitle: `Лобби встречает жителей тёплой атмосферой и современным дизайном.
-    Натуральные материалы, спокойные линии и продуманное освещение.
-    Здесь начинается настроение дома — с комфорта и стиля уже на входе.`,
-  sliderImages: [
-    { image: firstStepsItem1 },
-    { image: firstStepsItem2 },
-    { image: firstStepsItem3 },
-  ],
-};
-
-const sectionLiveNearby = {
-  text: 'Жить там, где все рядом',
-  subtitle: `Инфраструктура района создана для жизни без лишних забот.
-    Рядом с домом — магазины, парки и места для отдыха.
-    Всё необходимое находится на расстоянии прогулки,
-    чтобы комфорт начинался не только дома, но и вокруг него.`,
-};
-
-const sectionLiveOwnSpace = {
-  text: 'Жить в своем пространстве',
-  subtitle: `Продуманные планировки объединяют уют и функциональность.
-    Пространство организовано так, чтобы каждый метр работал на комфорт.
-    Здесь легко найти решение под свой ритм жизни и привычки.`,
-};
-
-const apartments = [
-  {
-    name: '1-К. №14',
-    area: 21.8,
-    floors: '2–9',
-    price: '5 312 660',
-    features: ['Просторная кухня гостиная', 'Дополнительная гардеробная'],
-    imgs: [firstStepsItem1, firstStepsItem1, firstStepsItem1, firstStepsItem1],
-    area1: '15,54',
-    area2: '10,43',
-  },
-  {
-    name: '1-К. №14',
-    area: 21.8,
-    floors: '2–9',
-    price: '5 312 660',
-    features: ['Просторная кухня гостиная', 'Дополнительная гардеробная'],
-    imgs: [firstStepsItem1, firstStepsItem1, firstStepsItem1, firstStepsItem1],
-    area1: '15,54',
-    area2: '10,43',
-  },
-];
 
 const horizontalWrapper = ref(null);
 let horizontalScrollTrigger = null;
