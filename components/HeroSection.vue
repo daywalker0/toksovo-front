@@ -278,7 +278,7 @@ onBeforeUnmount(() => {
   }
 
   &__subtitle {
-    font-size: 36px;
+    font-size: 24px;
     line-height: 110%;
     max-width: 460px;
     margin: 0 auto;
