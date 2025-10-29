@@ -51,7 +51,7 @@
         <MapSection :zoom="16" :data="mapBlock" />
       </section>
 
-      <section id="layouts" v-if="layoutsBlock?.kvartiries?.length">
+      <section id="layouts" v-if="layoutsBlock?.plan_slider?.length">
         <TextBlockSection
           :text="layoutsBlock?.title"
           :subtitle="layoutsBlock?.description"

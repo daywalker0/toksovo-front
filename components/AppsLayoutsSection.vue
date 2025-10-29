@@ -9,23 +9,23 @@
             <div class="info-row">
               <div class="info-item">
                 <div class="info-label">Площадь</div>
-                <div class="info-value">{{ currentApartment.area }} m²</div>
+                <div class="info-value">{{ currentApartment.area }}</div>
               </div>
             </div>
             <div class="info-item info-item-price">
               <div class="info-label">Стоимость</div>
-              <div class="info-value">{{ currentApartment.price }} ₽</div>
+              <div class="info-value">{{ currentApartment.price }}</div>
             </div>
           </div>
 
-          <div class="apartment-features">
-            <div class="apartment-features--title info-label">Особенности квартиры</div>
-            <ul>
-              <li v-for="(feat, i) in currentApartment.features" :key="i">
-                {{ feat }}
-              </li>
-            </ul>
-          </div>
+            <div class="apartment-features">
+              <div class="apartment-features--title info-label">Особенности квартиры</div>
+              <ul>
+                <li v-for="(feat, i) in currentApartment.features" :key="i">
+                  {{ feat }}
+                </li>
+              </ul>
+            </div>
 
           <button class="more-btn">ПОДРОБНЕЕ</button>
         </div>
@@ -124,27 +124,33 @@ const currentImageIndex = ref(0); // текущее изображение в с
 
 // Категории квартир из API
 const apartmentCategories = computed(() => {
-  if (!props.data?.kvartiries || !Array.isArray(props.data.kvartiries) || props.data.kvartiries.length === 0) {
+  const apartments = props.data?.plan_slider || props.data?.kvartiries || [];
+  
+  if (!Array.isArray(apartments) || apartments.length === 0) {
     return [];
   }
 
   // Группируем квартиры по категориям (студии, 1-комн, 2-комн и т.д.)
   const grouped = {};
   
-  props.data.kvartiries.forEach(apt => {
-    const categoryName = apt.category || 'Другие';
+  apartments.forEach(apt => {
+    const categoryName = apt.type || apt.category || 'Другие';
     if (!grouped[categoryName]) {
       grouped[categoryName] = [];
     }
     
+    const mappedFeatures = (apt.apartment_features || apt.features || []).map(f => 
+      typeof f === 'string' ? f : f.value || f.title || f.name || ''
+    );
+    
     grouped[categoryName].push({
       id: apt.id || apt.documentId,
-      name: apt.name || apt.title,
-      area: apt.area?.toString() || '0',
+      name: apt.plan_name || apt.name || apt.title,
+      area: apt.square || apt.area?.toString() || '0',
       price: apt.price?.toString() || '0',
-      features: apt.features || [],
+      features: mappedFeatures,
       image: getMediaUrl(apt.image),
-      floors: apt.floors || '',
+      floors: apt.floor || apt.floors || '',
     });
   });
   

@@ -12,16 +12,11 @@ export function usePrivateHousingData(externalData = null) {
       return [];
     }
     
-    const mapped = dataArray.map(item => ({
+    return dataArray.map(item => ({
       title: item.title || '',
       content: item.subtitle || item.content || item.description || '',
       image: getMediaUrl(item.bg_image || item.image),
     }));
-    
-    // DEBUG: проверяем что маппится
-    console.log('🌿 Environment items mapped:', mapped);
-    
-    return mapped;
   });
 
   const activeIndex = ref(0);
