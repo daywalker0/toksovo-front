@@ -694,6 +694,18 @@ onBeforeUnmount(() => {
       display: none;
     }
 
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 450px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+      z-index: 2;
+      pointer-events: none;
+    }
+
     .slide-image {
       position: absolute;
       top: 0;
@@ -727,7 +739,7 @@ onBeforeUnmount(() => {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 2;
+    z-index: 3;
     padding: 40px;
     display: flex;
     justify-content: center;
@@ -756,9 +768,10 @@ onBeforeUnmount(() => {
     padding: 20px 15px;
     max-width: 100%;
     border-radius: 8px;
-    min-height: 250px;
     display: flex;
     flex-direction: column;
+    background: transparent;
+    box-shadow: none;
   }
 }
 
@@ -774,6 +787,13 @@ onBeforeUnmount(() => {
   circle {
     transition: stroke-dashoffset 0.1s linear;
   }
+
+  @media (max-width: $breakpoint-x) {
+    margin-bottom: 12px;
+    circle:nth-child(2) {
+      stroke: $accent-color-orange;
+    }
+  }
 }
 
 .content-title {
@@ -785,8 +805,11 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
 
   @media (max-width: $breakpoint-x) {
-    font-size: 24px;
-    margin: 0 0 15px 0;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 100%;
+    color: white;
+    margin: 0 0 6px 0;
     width: 100%;
     text-align: center;
   }
@@ -801,9 +824,13 @@ onBeforeUnmount(() => {
   margin: 0 0 30px 0;
 
   @media (max-width: $breakpoint-x) {
-    font-size: 16px;
-    margin: 0 0 20px 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 140%;
+    color: rgba(255, 255, 255, 0.6);
     text-align: center;
+    max-width: 340px;
+    margin: 0 auto;
   }
 }
 
@@ -811,7 +838,7 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 12px;
   justify-content: center;
-  margin-top: auto;
+  margin-top: 16px
 }
 
 .nav-button {
@@ -827,10 +854,23 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease;
   color: $accent-color-green;
 
+  @media (max-width: $breakpoint-x) {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: white;
+    color: #000;
+  }
+
   &:hover:not(:disabled) {
     background: $accent-color-green;
     color: white;
     transform: scale(1.05);
+    
+    @media (max-width: $breakpoint-x) {
+      background: white;
+      color: #000;
+    }
   }
 
   &:disabled {
@@ -841,6 +881,11 @@ onBeforeUnmount(() => {
   svg {
     width: 20px;
     height: 20px;
+    
+    @media (max-width: $breakpoint-x) {
+      width: 16px;
+      height: 16px;
+    }
   }
 }
 
