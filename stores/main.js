@@ -1,4 +1,3 @@
-// stores/main.js
 export const useMainStore = defineStore('main', () => {
   const { get } = useApi()
   
@@ -22,7 +21,6 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  // Геттеры для каждого блока
   const getHeroBlock = computed(() => {
     return mainData.value?.data?.blocks?.find(
       block => block.__component === 'blocks.glavnyj-blok-s-renderom'

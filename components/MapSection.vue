@@ -331,18 +331,14 @@ const isMd = ref(process.client ? window.innerWidth <= 1024 : false);
 const isMapDialogOpen = ref(false);
 const isMapReady = ref(false);
 
-// Разные центры карты для десктопа и мобильных
 const mapCenter = computed(() => {
-  // Всегда используем дефолтный центр (Токсово)
   return isMobile.value ? [60.19, 30.53] : [60.193412, 30.52625];
 });
 
 const mapZoom = computed(() => {
-  // Можно также настроить зум для мобильных
   return isMobile.value ? props.zoom : props.zoom;
 });
 
-// Маппинг категорий на иконки
 const categoryIconsMap = {
   culture: { black: cultureBlack, white: cultureWhite },
   medicine: { black: medicineBlack, white: medicineWhite },
@@ -354,7 +350,6 @@ const categoryIconsMap = {
   services: { black: servicesBlack, white: servicesWhite },
 };
 
-// категории: берём из данных бэкенда или используем дефолтные
 const categories = ref([
   { name: 'Культура и отдых', key: 'culture', icon: cultureBlack, active: true },
   { name: 'Медицина', key: 'medicine', icon: medicineBlack, active: true },
@@ -366,34 +361,27 @@ const categories = ref([
   { name: 'Услуги', key: 'services', icon: servicesBlack, active: true },
 ]);
 
-// locations — список всех локаций из бэкенда
 const locations = ref([]);
 
-// Функция для парсинга координат из строки или массива
 const parseCoordinates = (coords) => {
   if (!coords) return null;
   
-  // Если это массив
   if (Array.isArray(coords) && coords.length === 2) {
     return [parseFloat(coords[0]), parseFloat(coords[1])];
   }
   
-  // Если это строка
   if (typeof coords === 'string') {
-    // Пробуем разделить по запятой
     const parts = coords.split(',').map(s => s.trim());
     if (parts.length === 2) {
       return [parseFloat(parts[0]), parseFloat(parts[1])];
     }
     
-    // Пробуем разделить по пробелу
     const spaceParts = coords.trim().split(/\s+/);
     if (spaceParts.length === 2) {
       return [parseFloat(spaceParts[0]), parseFloat(spaceParts[1])];
     }
   }
   
-  // Если это объект с lat/lng или latitude/longitude
   if (typeof coords === 'object' && coords !== null) {
     if (coords.lat !== undefined && coords.lng !== undefined) {
       return [parseFloat(coords.lat), parseFloat(coords.lng)];
@@ -406,7 +394,6 @@ const parseCoordinates = (coords) => {
   return null;
 };
 
-// Маппинг названий категорий на ключи
 const getCategoryKeyFromName = (name) => {
   const nameLower = name?.toLowerCase() || '';
   
@@ -419,18 +406,15 @@ const getCategoryKeyFromName = (name) => {
   if (nameLower.includes('спорт')) return 'sport';
   if (nameLower.includes('услуг')) return 'services';
   
-  return 'culture'; // default
+  return 'culture';
 };
 
-// Инициализация данных из пропсов
 const initializeData = () => {
   if (!props.data) return;
 
-  // Проверяем наличие gruppy_pinovs (группы пинов)
   const groups = props.data.gruppy_pinovs || props.data.groups || [];
   
   if (Array.isArray(groups) && groups.length > 0) {
-    // Собираем все пины из всех групп
     const allPins = [];
     const categoriesFromData = [];
     
@@ -439,7 +423,6 @@ const initializeData = () => {
       const categoryKey = getCategoryKeyFromName(categoryName);
       const iconSet = categoryIconsMap[categoryKey] || categoryIconsMap.culture;
       
-      // Добавляем категорию в список
       categoriesFromData.push({
         name: categoryName,
         key: categoryKey,
@@ -447,7 +430,6 @@ const initializeData = () => {
         active: true,
       });
       
-      // Обрабатываем пины из группы
       const pinies = group.pinies || group.pins || [];
       
       pinies.forEach((pin, pinIndex) => {
@@ -478,14 +460,12 @@ const initializeData = () => {
     
     locations.value = allPins;
     
-    // Обновляем категории из групп
     if (categoriesFromData.length > 0) {
       categories.value = categoriesFromData;
     }
   }
 };
 
-// Следим за изменениями данных
 watch(
   () => props.data,
   () => {
@@ -568,7 +548,6 @@ function openMapDialog() {
   isMapDialogOpen.value = true;
 }
 
-// Проверка мобильного устройства
 const checkMobile = () => {
   if (process.client) {
     isMobile.value = window.innerWidth <= 599;
@@ -578,7 +557,6 @@ const checkMobile = () => {
 
 onMounted(() => {
   checkMobile();
-  // Устанавливаем флаг готовности карты после определения типа устройства
   isMapReady.value = true;
 
   if (process.client) {

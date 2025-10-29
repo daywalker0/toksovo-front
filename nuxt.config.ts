@@ -42,16 +42,11 @@ export default defineNuxtConfig({
     },
   },
 
-  // Отключаем SSR
   ssr: false,
 
-  // Статическая сборка
-  target: 'static',
   nitro: {
     preset: 'static',
     prerender: {
-      // отключаем сканирование сайта
-      crawl: false,
       routes: [],
     },
   },
@@ -73,11 +68,10 @@ export default defineNuxtConfig({
 
   vite: {
     build: {
-      // Папка для ассетов
       assetsDir: '_nuxt',
     },
     plugins: [
-      // @ts-ignore - Оптимизация изображений при сборке
+      // @ts-ignore
       viteImagemin({
         plugins: {
           // @ts-ignore

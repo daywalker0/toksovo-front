@@ -225,12 +225,10 @@ const openMenu = () => {
     }
 
     if (menuList) {
-      // Анимируем каждый пункт меню отдельно с задержкой
       const menuItems = menuList.querySelectorAll('.menu__item');
       menuItems.forEach((item, index) => {
         const link = item.querySelector('.menu__link');
         if (link) {
-          // Временно убираем активный класс для анимации
           const wasActive = link.classList.contains('menu__link--active');
           if (wasActive) {
             link.classList.remove('menu__link--active');
@@ -241,13 +239,11 @@ const openMenu = () => {
           link.style.transition = 'none';
           link.offsetHeight;
 
-          // Каждый элемент появляется с задержкой 0.08s после предыдущего
           const delay = 0.3 + index * 0.08;
           link.style.transition = `opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`;
           link.style.opacity = '1';
           link.style.transform = 'translateX(0)';
 
-          // Восстанавливаем активный класс после анимации
           if (wasActive) {
             setTimeout(
               () => {
@@ -516,17 +512,7 @@ defineExpose({
 
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
-
-    // Принудительное переполнение для тестирования скролла
-    &::after {
-      content: '';
-      display: block;
-      height: 1000px;
-      width: 1px;
-    }
-
-    // Принудительное включение скролла
-    scroll-behavior: smooth !important;
+    scroll-behavior: smooth;
     overscroll-behavior: contain !important;
     
     // Отключаем Lenis для этого элемента

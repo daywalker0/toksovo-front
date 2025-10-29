@@ -332,15 +332,10 @@ const panelStyle = computed(() => {
   };
 });
 
-const handleCatalogClick = () => {
-  // TODO: Реализовать переход в каталог квартир
-};
+const handleCatalogClick = () => {};
 
-const handleFilterClick = () => {
-  // TODO: Реализовать открытие фильтра
-};
+const handleFilterClick = () => {};
 
-// Мобильные стили и функции
 const mobileImageStyle = computed(() => {
   return {};
 });
