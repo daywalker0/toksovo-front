@@ -15,11 +15,38 @@ html:root {
 
 /* Базовые настройки скролла для Lenis */
 html {
-  scroll-behavior: auto; // Отключаем smooth scroll для Lenis
+  scroll-behavior: auto;
   scroll-padding-top: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
 
   @media (max-width: $breakpoint-x) {
     overflow-x: hidden;
+  }
+}
+
+/* Стилизация скроллбара */
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-button {
+  height: 0;
+  width: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  min-height: 50px;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.7);
   }
 }
 
