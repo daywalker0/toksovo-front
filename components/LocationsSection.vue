@@ -1,7 +1,7 @@
 <template>
   <div class="locations-section section">
     <div class="locations-section__container container">
-      <TitleNew text="Локации рядом" />
+      <TitleNew :text="title" />
 
       <!-- Мобильная версия - слайдер -->
       <div v-if="isMobile" class="mobile-slider">
@@ -34,96 +34,42 @@
         <div class="parallax-container">
           <!-- Левая колонка -->
           <div class="parallax-column left-column" ref="leftColumn">
-            <div class="card">
-              <img class="card-img" :src="loc6" alt="card" loading="lazy" />
+            <div v-for="(location, index) in locationsByColumn.left" :key="`left-${index}`" class="card">
+              <img class="card-img" :src="location.image" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Ресторан «ЛетоБар»</div>
-                  <div class="card-content--distance">0,8км</div>
+                  <div class="card-content--name">{{ location.name }}</div>
+                  <div class="card-content--distance">{{ location.distance }}</div>
                 </div>
-                <div class="card-content__subtitle">на прилегающей территории</div>
-              </div>
-            </div>
-
-            <div class="card">
-              <img class="card-img" :src="loc9" alt="card" loading="lazy" />
-              <div class="card-content">
-                <div class="card-content__title">
-                  <div class="card-content--name">Конный клуб</div>
-                  <div class="card-content--distance">3 км</div>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <img class="card-img" :src="loc5" alt="card" loading="lazy" />
-              <div class="card-content">
-                <div class="card-content__title">
-                  <div class="card-content--name">Экотропа «Малиновая гора»</div>
-                  <div class="card-content--distance">10 км</div>
-                </div>
+                <div v-if="location.subtitle" class="card-content__subtitle">{{ location.subtitle }}</div>
               </div>
             </div>
           </div>
 
           <!-- Центральная колонка -->
           <div class="parallax-column center-column" ref="centerColumn">
-            <div class="card">
-              <img class="card-img" :src="loc2" alt="card" loading="lazy" />
+            <div v-for="(location, index) in locationsByColumn.center" :key="`center-${index}`" class="card">
+              <img class="card-img" :src="location.image" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Песочный пляж</div>
-                  <div class="card-content--distance">0,9 км</div>
+                  <div class="card-content--name">{{ location.name }}</div>
+                  <div class="card-content--distance">{{ location.distance }}</div>
                 </div>
-                <div class="card-content__subtitle">на прилегающей территории</div>
-              </div>
-            </div>
-            <div class="card">
-              <img class="card-img" :src="loc4" alt="card" loading="lazy" />
-              <div class="card-content">
-                <div class="card-content__title">
-                  <div class="card-content--name">Учебно-тренировочный центр "Кавголово"</div>
-                  <div class="card-content--distance">3,4 км</div>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <img class="card-img" :src="loc7" alt="card" loading="lazy" />
-              <div class="card-content">
-                <div class="card-content__title">
-                  <div class="card-content--name">Парк семейного отдыха "Зубровник"</div>
-                  <div class="card-content--distance">11 км</div>
-                </div>
+                <div v-if="location.subtitle" class="card-content__subtitle">{{ location.subtitle }}</div>
               </div>
             </div>
           </div>
 
           <!-- Правая колонка -->
           <div class="parallax-column right-column" ref="rightColumn">
-            <div class="card">
-              <img class="card-img" :src="loc1" alt="card" loading="lazy" />
+            <div v-for="(location, index) in locationsByColumn.right" :key="`right-${index}`" class="card">
+              <img class="card-img" :src="location.image" alt="card" loading="lazy" />
               <div class="card-content">
                 <div class="card-content__title">
-                  <div class="card-content--name">Экотропа "Курголовская"</div>
-                  <div class="card-content--distance">1 км</div>
+                  <div class="card-content--name">{{ location.name }}</div>
+                  <div class="card-content--distance">{{ location.distance }}</div>
                 </div>
-              </div>
-            </div>
-            <div class="card">
-              <img class="card-img" :src="loc8" alt="card" loading="lazy" />
-              <div class="card-content">
-                <div class="card-content__title">
-                  <div class="card-content--name">Горнолыжный комплекс "Северный склон"</div>
-                  <div class="card-content--distance">5 км</div>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <img class="card-img" :src="loc3" alt="card" loading="lazy" />
-              <div class="card-content">
-                <div class="card-content__title">
-                  <div class="card-content--name">Охта парк</div>
-                  <div class="card-content--distance">13 км</div>
-                </div>
+                <div v-if="location.subtitle" class="card-content__subtitle">{{ location.subtitle }}</div>
               </div>
             </div>
           </div>
@@ -136,18 +82,21 @@
 <script setup>
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import TitleNew from './Common/TitleNew.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
-import loc1 from '@/assets/img/locations/loc-1.jpg'
-import loc2 from '@/assets/img/locations/loc-2.jpg'
-import loc3 from '@/assets/img/locations/loc-3.jpg'
-import loc4 from '@/assets/img/locations/loc-4.jpg'
-import loc5 from '@/assets/img/locations/loc-5.jpg'
-import loc6 from '@/assets/img/locations/loc-6.jpg'
-import loc7 from '@/assets/img/locations/loc-7.jpg'
-import loc8 from '@/assets/img/locations/loc-8.jpg'
-import loc9 from '@/assets/img/locations/loc-9.jpg'
+
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
+});
+
+const { getMediaUrl } = useMedia();
+
+// Заголовок секции
+const title = computed(() => props.data?.title || 'Локации рядом');
 
 const parallaxSection = ref(null);
 const leftColumn = ref(null);
@@ -156,63 +105,47 @@ const rightColumn = ref(null);
 
 const isMobile = ref(false);
 
-// Массив всех слайдов для мобильной версии
-const slides = ref([
-  {
-    image: loc1,
-    name: 'Ресторан «ЛетоБар»',
-    distance: '0,9 км',
-    subtitle: 'на прилегающей территории',
-  },
-  {
-    image: loc2,
-    name: 'Песочный пляж',
-    distance: '0,9 км',
-    subtitle: 'на прилегающей территории',
-  },
-  {
-    image: loc3,
-    name: 'Ресторан «ЛетоБар»',
-    distance: '0,9 км',
-    subtitle: 'на прилегающей территории',
-  },
-  {
-    image: loc4,
-    name: 'Конный клуб',
-    distance: '3 км',
-    subtitle: '',
-  },
-  {
-    image: loc5,
-    name: 'Учебно-тренировочный центр',
-    distance: '3,4 км',
-    subtitle: '«Кавголово»',
-  },
-  {
-    image: loc6,
-    name: 'Ресторан «ЛетоБар»',
-    distance: '0,9 км',
-    subtitle: 'на прилегающей территории',
-  },
-  {
-    image: loc7,
-    name: 'Экотропа',
-    distance: '10 км',
-    subtitle: '«Малиновая гора»',
-  },
-  {
-    image: loc8,
-    name: 'Парк семейного отдыха',
-    distance: '11 км',
-    subtitle: '«Зубровник»',
-  },
-  {
-    image: loc9,
-    name: 'Ресторан «ЛетоБар»',
-    distance: '0,9 км',
-    subtitle: 'на прилегающей территории',
-  },
-]);
+// Получаем локации по колонкам из API
+const locationsByColumn = computed(() => {
+  if (!props.data?.locations || !Array.isArray(props.data.locations) || props.data.locations.length === 0) {
+    return {
+      left: [],
+      center: [],
+      right: []
+    };
+  }
+
+  // Группируем по колонкам
+  const grouped = {
+    left: [],
+    center: [],
+    right: []
+  };
+  
+  props.data.locations.forEach(loc => {
+    const column = loc.column || 'center'; // по умолчанию центральная
+    const item = {
+      image: getMediaUrl(loc.image),
+      name: loc.name || loc.title,
+      distance: loc.distance,
+      subtitle: loc.subtitle || '',
+    };
+    
+    if (grouped[column]) {
+      grouped[column].push(item);
+    } else {
+      grouped.center.push(item); // если колонка неизвестна, в центр
+    }
+  });
+  
+  return grouped;
+});
+
+// Массив всех слайдов для мобильной версии (все локации в один массив)
+const slides = computed(() => {
+  const cols = locationsByColumn.value;
+  return [...cols.left, ...cols.center, ...cols.right];
+});
 
 let triggers = [];
 let resizeTimer = null;

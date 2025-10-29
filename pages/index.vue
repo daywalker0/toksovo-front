@@ -16,8 +16,8 @@
           :text="calmNatureBlock?.title" 
           :subtitle="calmNatureBlock?.description" 
         />
-        <EnvironmentSection :data="environmentBlock" />
-        <LocationsSection :data="locationsBlock" />
+        <EnvironmentSection v-if="environmentBlock?.items?.length" :data="environmentBlock" />
+        <LocationsSection v-if="locationsBlock?.locations?.length" :data="locationsBlock" />
       </section>
 
       <div ref="horizontalWrapper" class="horizontal-wrapper">
@@ -51,7 +51,7 @@
         <MapSection :zoom="16" :data="mapBlock" />
       </section>
 
-      <section id="layouts">
+      <section id="layouts" v-if="layoutsBlock?.kvartiries?.length">
         <TextBlockSection
           :text="layoutsBlock?.title"
           :subtitle="layoutsBlock?.description"
@@ -65,7 +65,7 @@
       <NewsSection :data="newsBlock" />
       <ProjectsSection :data="projectsBlock" />
       
-      <ChooseYouAppsSection :data="chooseAppsBlock" />
+      <ChooseYouAppsSection v-if="chooseAppsBlock?.image" :data="chooseAppsBlock" />
 
       <Footer />
     </div>

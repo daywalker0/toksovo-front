@@ -92,7 +92,6 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import chooseYourLife from '@/assets/img/choose-your-life.jpg';
 
 const props = defineProps({
   data: {
@@ -103,12 +102,12 @@ const props = defineProps({
 
 const { getMediaUrl } = useMedia();
 
-// Получаем изображение из API или используем fallback
+// Получаем изображение из API
 const backgroundImage = computed(() => {
   if (props.data?.image) {
     return getMediaUrl(props.data.image);
   }
-  return chooseYourLife; // fallback на статическое изображение
+  return '';
 });
 
 const section = ref(null);

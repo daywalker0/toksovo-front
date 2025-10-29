@@ -1,64 +1,26 @@
 import { ref, computed } from 'vue';
-import fourEt from '@/assets/img/environment/4et.jpg'
-import ecol from '@/assets/img/environment/ecol.jpg'
-import inf from '@/assets/img/environment/inf.jpg'
-import otd from '@/assets/img/environment/otd.jpg'
-import privat from '@/assets/img/environment/privat.jpg'
 
 export function usePrivateHousingData(externalData = null) {
   const { getMediaUrl } = useMedia();
 
-  // Если есть внешние данные из API - используем их
+  // Получаем данные из API
   const items = computed(() => {
-    if (externalData?.value?.items && Array.isArray(externalData.value.items) && externalData.value.items.length > 0) {
-      return externalData.value.items.map(item => ({
-        title: item.title || '',
-        content: item.content || item.description || '',
-        image: getMediaUrl(item.image),
-      }));
+    if (!externalData?.value?.items || !Array.isArray(externalData.value.items) || externalData.value.items.length === 0) {
+      return [];
     }
     
-    // Fallback: моки для разработки
-    return [
-      {
-        title: 'Приватный формат жилья',
-        content:
-          'Пространство, где каждое утро начинается в тишине и уединении. Здесь вы можете наслаждаться личным комфортом без лишнего шума и суеты города.',
-        image: privat,
-      },
-      {
-        title: 'Экология: лес и озеро',
-        content:
-          'Описание экологических преимуществ - близость к лесу и озеру, чистый воздух и природное окружение.',
-        image: ecol,
-      },
-      {
-        title: 'Чистовая отделка',
-        content: 'Информация о чистовой отделке помещений по стандартам ХОВЕР.',
-        image: otd,
-      },
-      {
-        title: 'Инфраструктура',
-        content: 'Описание доступной инфраструктуры района и жилого комплекса.',
-        image: inf,
-      },
-      {
-        title: '4 этажа',
-        content: 'Характеристики четырехэтажного здания, преимущества такой этажности.',
-        image: fourEt,
-      },
-    ];
+    return externalData.value.items.map(item => ({
+      title: item.title || '',
+      content: item.content || item.description || '',
+      image: getMediaUrl(item.image),
+    }));
   });
 
   const activeIndex = ref(0);
   const activeItem = computed(() => {
     const itemsList = items.value;
     if (!itemsList || !Array.isArray(itemsList) || itemsList.length === 0) {
-      return {
-        title: 'Приватный формат жилья',
-        content: 'Пространство, где каждое утро начинается в тишине и уединении.',
-        image: privat,
-      };
+      return null;
     }
     return itemsList[activeIndex.value] || itemsList[0];
   });
