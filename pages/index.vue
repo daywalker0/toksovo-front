@@ -40,6 +40,8 @@
         <AppsLayoutsSection :apartments="apartments" />
       </section>
 
+      <FeaturesSection />
+
       <ConstructionSection />
       <NewsSection />
       <ProjectsSection />
@@ -116,6 +118,7 @@ import ConstructionSection from '@/components/ConstructionSection.vue';
 import NewsSection from '@/components/NewsSection.vue';
 import ProjectsSection from '@/components/ProjectsSection.vue';
 import ChooseYouAppsSection from '@/components/ChooseYouAppsSection.vue';
+import FeaturesSection from '~/components/FeaturesSection.vue';
 import Footer from '@/components/Footer.vue';
 import liveInStyleItem1 from '@/assets/img/jitvstile/1.jfif';
 import liveInStyleItem2 from '@/assets/img/jitvstile/2.jpg';
