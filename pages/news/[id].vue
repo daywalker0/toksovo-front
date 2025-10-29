@@ -563,6 +563,11 @@ watch(
   () => route.params.id,
   async newId => {
     if (newId && process.client && !isFirstLoad.value) {
+      // Загружаем все новости, если они еще не загружены
+      if (!newsStore.isNewsLoaded) {
+        await newsStore.fetchNews();
+      }
+      
       // Загружаем новость
       await newsStore.fetchNewsById(newId);
 
@@ -579,6 +584,13 @@ watch(
 
 onMounted(async () => {
   const documentId = route.params.id;
+  
+  // Загружаем все новости, если они еще не загружены (для блока "Другие новости")
+  if (!newsStore.isNewsLoaded) {
+    await newsStore.fetchNews();
+  }
+  
+  // Загружаем текущую новость
   await newsStore.fetchNewsById(documentId);
 
   // Скроллим страницу вверх после первой загрузки

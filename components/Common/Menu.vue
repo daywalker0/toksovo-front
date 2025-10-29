@@ -361,7 +361,7 @@ const scrollToSection = link => {
           offset: -100,
           duration: 1.2,
           onComplete: () => {
-            window.history.replaceState(null, '', window.location.pathname);
+            window.history.replaceState(window.history.state, '', window.location.pathname);
           },
         });
       }, 100);
