@@ -169,10 +169,21 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import YandexMap from '~/components/YandexMap.vue';
 import AnimatedLink from './Common/AnimatedLink.vue';
 import MapDialog from './Common/Dialogs/MapDialog.vue';
+
+const props = defineProps({
+  data: {
+    type: Object,
+    default: () => ({}),
+  },
+  zoom: {
+    type: Number,
+    default: 15,
+  },
+});
 
 const cultureBlack = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_886_110)">
@@ -322,16 +333,28 @@ const isMapReady = ref(false);
 
 // Разные центры карты для десктопа и мобильных
 const mapCenter = computed(() => {
-  // На мобильных устройствах используем другой центр
+  // Всегда используем дефолтный центр (Токсово)
   return isMobile.value ? [60.19, 30.53] : [60.193412, 30.52625];
 });
 
 const mapZoom = computed(() => {
   // Можно также настроить зум для мобильных
-  return isMobile.value ? 15 : 15;
+  return isMobile.value ? props.zoom : props.zoom;
 });
 
-// категории: без хардкодного count
+// Маппинг категорий на иконки
+const categoryIconsMap = {
+  culture: { black: cultureBlack, white: cultureWhite },
+  medicine: { black: medicineBlack, white: medicineWhite },
+  education: { black: educationBlack, white: educationWhite },
+  finance: { black: financeBlack, white: financeWhite },
+  torg: { black: torgBlack, white: torgWhite },
+  food: { black: foodBlack, white: foodWhite },
+  sport: { black: sportBlack, white: sportWhite },
+  services: { black: servicesBlack, white: servicesWhite },
+};
+
+// категории: берём из данных бэкенда или используем дефолтные
 const categories = ref([
   { name: 'Культура и отдых', key: 'culture', icon: cultureBlack, active: true },
   { name: 'Медицина', key: 'medicine', icon: medicineBlack, active: true },
@@ -343,38 +366,133 @@ const categories = ref([
   { name: 'Услуги', key: 'services', icon: servicesBlack, active: true },
 ]);
 
-// locations — список всех локаций (несколько с одинаковой category)
-// пример: id, coords, category
-const locations = ref([
-  { id: 1, coords: [60.1925, 30.5285], category: 'culture', icon: cultureWhite, color: '#4C5E36' },
-  { id: 2, coords: [60.1931, 30.529], category: 'culture', icon: cultureWhite, color: '#4C5E36' },
-  {
-    id: 3,
-    coords: [60.1932, 30.5318],
-    category: 'medicine',
-    icon: medicineWhite,
-    color: '#4C5E36',
+// locations — список всех локаций из бэкенда
+const locations = ref([]);
+
+// Функция для парсинга координат из строки или массива
+const parseCoordinates = (coords) => {
+  if (!coords) return null;
+  
+  // Если это массив
+  if (Array.isArray(coords) && coords.length === 2) {
+    return [parseFloat(coords[0]), parseFloat(coords[1])];
+  }
+  
+  // Если это строка
+  if (typeof coords === 'string') {
+    // Пробуем разделить по запятой
+    const parts = coords.split(',').map(s => s.trim());
+    if (parts.length === 2) {
+      return [parseFloat(parts[0]), parseFloat(parts[1])];
+    }
+    
+    // Пробуем разделить по пробелу
+    const spaceParts = coords.trim().split(/\s+/);
+    if (spaceParts.length === 2) {
+      return [parseFloat(spaceParts[0]), parseFloat(spaceParts[1])];
+    }
+  }
+  
+  // Если это объект с lat/lng или latitude/longitude
+  if (typeof coords === 'object' && coords !== null) {
+    if (coords.lat !== undefined && coords.lng !== undefined) {
+      return [parseFloat(coords.lat), parseFloat(coords.lng)];
+    }
+    if (coords.latitude !== undefined && coords.longitude !== undefined) {
+      return [parseFloat(coords.latitude), parseFloat(coords.longitude)];
+    }
+  }
+  
+  return null;
+};
+
+// Маппинг названий категорий на ключи
+const getCategoryKeyFromName = (name) => {
+  const nameLower = name?.toLowerCase() || '';
+  
+  if (nameLower.includes('культур')) return 'culture';
+  if (nameLower.includes('медицин')) return 'medicine';
+  if (nameLower.includes('образован')) return 'education';
+  if (nameLower.includes('финанс')) return 'finance';
+  if (nameLower.includes('торг')) return 'torg';
+  if (nameLower.includes('еда') || nameLower.includes('еду')) return 'food';
+  if (nameLower.includes('спорт')) return 'sport';
+  if (nameLower.includes('услуг')) return 'services';
+  
+  return 'culture'; // default
+};
+
+// Инициализация данных из пропсов
+const initializeData = () => {
+  if (!props.data) return;
+
+  // Проверяем наличие gruppy_pinovs (группы пинов)
+  const groups = props.data.gruppy_pinovs || props.data.groups || [];
+  
+  if (Array.isArray(groups) && groups.length > 0) {
+    // Собираем все пины из всех групп
+    const allPins = [];
+    const categoriesFromData = [];
+    
+    groups.forEach((group, groupIndex) => {
+      const categoryName = group.name || group.title || 'Культура и отдых';
+      const categoryKey = getCategoryKeyFromName(categoryName);
+      const iconSet = categoryIconsMap[categoryKey] || categoryIconsMap.culture;
+      
+      // Добавляем категорию в список
+      categoriesFromData.push({
+        name: categoryName,
+        key: categoryKey,
+        icon: iconSet.black,
+        active: true,
+      });
+      
+      // Обрабатываем пины из группы
+      const pinies = group.pinies || group.pins || [];
+      
+      pinies.forEach((pin, pinIndex) => {
+        const coords = parseCoordinates(
+          pin.coordinates 
+          || pin.coords 
+          || pin.location 
+          || pin.coord
+          || pin.koordinaty
+          || pin.geo
+          || pin.position
+        );
+        
+        if (!coords) return;
+
+        const location = {
+          id: pin.id || pin.documentId || `${groupIndex}-${pinIndex}`,
+          coords: coords,
+          category: categoryKey,
+          icon: iconSet.white,
+          color: pin.color || group.color || '#4C5E36',
+          name: pin.name || pin.title || pin.nazvanie || 'Локация',
+        };
+        
+        allPins.push(location);
+      });
+    });
+    
+    locations.value = allPins;
+    
+    // Обновляем категории из групп
+    if (categoriesFromData.length > 0) {
+      categories.value = categoriesFromData;
+    }
+  }
+};
+
+// Следим за изменениями данных
+watch(
+  () => props.data,
+  () => {
+    initializeData();
   },
-  {
-    id: 4,
-    coords: [60.194, 30.533],
-    category: 'education',
-    icon: educationWhite,
-    color: '#4C5E36',
-  },
-  { id: 5, coords: [60.1941, 30.5342], category: 'finance', icon: financeWhite, color: '#4C5E36' },
-  { id: 6, coords: [60.1939, 30.5346], category: 'food', icon: foodWhite, color: '#4C5E36' },
-  { id: 7, coords: [60.1964, 30.5326], category: 'sport', icon: sportWhite, color: '#4C5E36' },
-  {
-    id: 8,
-    coords: [60.1954, 30.5326],
-    category: 'services',
-    icon: servicesWhite,
-    color: '#4C5E36',
-  },
-  { id: 9, coords: [60.1974, 30.5326], category: 'torg', icon: torgWhite, color: '#4C5E36' },
-  // <- добавляй реальные локации сюда
-]);
+  { deep: true, immediate: true }
+);
 
 function toggleCategory(cat) {
   cat.active = !cat.active;
