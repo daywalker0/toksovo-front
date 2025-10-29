@@ -34,7 +34,7 @@
       <div class="gallery-block">
         <div class="apps-switcher">
           <div
-            v-for="(category, index) in apartmentCategories"
+            v-for="(category) in apartmentCategories"
             :key="category.id"
             class="apps-switcher--item"
             :class="{ active: currentCategory === category.id }"
@@ -183,11 +183,6 @@ const switchCategory = categoryIndex => {
 const switchApartment = apartmentIndex => {
   currentApartmentIndex.value = apartmentIndex;
   currentImageIndex.value = 0; // сбрасываем на первое изображение
-};
-
-// Функция переключения изображения
-const switchImage = imageIndex => {
-  currentImageIndex.value = imageIndex;
 };
 </script>
 

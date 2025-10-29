@@ -56,7 +56,6 @@ const props = defineProps({
 })
 
 const title = computed(() => props.data.title)
-const description = computed(() => props.data.description)
 const tabs = computed(() => props.data.osobennostis)
 
 const activeTab = ref(tabs.value[0].id);

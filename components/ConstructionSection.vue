@@ -66,7 +66,6 @@ const props = defineProps({
 })
 
 const title = computed(() => props.data.title)
-const description = computed(() => props.data.description)
 const processСards = computed(() => props.data.process_cards)
 
 const isGalleryOpen = ref(false);

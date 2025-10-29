@@ -11,7 +11,7 @@
         :hide-navigation-on-mobile="true"
         :breakpoints="fullpageBreakpoints"
       >
-        <template #slide="{ slide, active }">
+        <template #slide="{ slide }">
           <div class="mobile-slide" :style="{ backgroundImage: `url(${getMediaUrl(slide.image)})` }"></div>
         </template>
       </DefaultSlider>
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, toRefs, nextTick, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, toRefs, nextTick, computed } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
 const { getMediaUrl } = useMedia()

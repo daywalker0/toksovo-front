@@ -139,13 +139,8 @@ const isNextDisabled = computed(() => {
 const progressPercentage = computed(() => {
   if (totalSlides.value === 0) return 0;
   if (totalSlides.value <= visibleSlidesCount) return 100;
-  const maxIndex = totalSlides.value - visibleSlidesCount;
   return ((currentIndex.value + visibleSlidesCount) / totalSlides.value) * 100;
 });
-
-const onSwiper = swiper => {
-  swiperInstance.value = swiper;
-};
 
 const onSlideChange = swiper => {
   currentIndex.value = swiper.activeIndex;

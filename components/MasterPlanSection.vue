@@ -336,10 +336,6 @@ const handleCatalogClick = () => {};
 
 const handleFilterClick = () => {};
 
-const mobileImageStyle = computed(() => {
-  return {};
-});
-
 const scrollLeft = () => {
   if (scrollContainer.value) {
     scrollContainer.value.scrollBy({
@@ -404,8 +400,6 @@ onMounted(async () => {
     const centerX = vw / 2;
     const centerY = vh / 2;
 
-    const initialW = 422;
-    const initialH = 563;
     const textGap = 120;
     const textTop = '44%';
 

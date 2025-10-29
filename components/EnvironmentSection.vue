@@ -485,8 +485,6 @@ const animateSlide = (newIndex, direction) => {
     // Если секция не развернута, просто меняем изображение без анимации
     const galleryItems = galleryRef.value.querySelectorAll('.gallery-item');
     const centerIndex = Math.floor(galleryItems.length / 2);
-    const centerItem = galleryItems[centerIndex];
-    const centerImg = centerItem?.querySelector('img');
 
     updateGalleryImages();
     isAnimating.value = false;

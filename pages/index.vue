@@ -82,6 +82,7 @@ import AppHeader from '~/components/Common/AppHeader.vue';
 import Footer from '@/components/Footer.vue';
 
 const mainStore = useMainStore()
+// eslint-disable-next-line
 await mainStore.fetchMainData()
 
 const heroBlock = computed(() => mainStore.getHeroBlock)

@@ -150,15 +150,6 @@ useHead({
     { name: 'keywords', content: 'политика конфиденциальности, защита данных, ПОИНТ ТОКСОВО' },
   ],
 });
-
-// Текущая дата для "Последнее обновление"
-const currentDate = computed(() => {
-  return new Date().toLocaleDateString('ru-RU', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-});
 </script>
 
 <style lang="scss" scoped>

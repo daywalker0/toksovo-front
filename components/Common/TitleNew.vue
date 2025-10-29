@@ -109,8 +109,6 @@ function createScrollTrigger(triggerElement, tl) {
     onLeaveBack: isMobile ? null : () => tl.progress(0),
     onEnter: isMobile ? () => tl.play() : undefined,
     toggleActions: isMobile ? 'play none none none' : 'play none none reverse',
-
-    onLeaveBack: null,
     immediateRender: false,
   });
   triggers.push(st);
