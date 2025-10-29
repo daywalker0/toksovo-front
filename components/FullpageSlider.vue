@@ -31,7 +31,7 @@
           :data-slider-id="sliderId"
           @click.prevent.stop="scrollToSection(index)"
         >
-          <img :src="section.image" loading="eager" />
+          <img :src="section.image.url" loading="eager" />
         </div>
       </div>
 
@@ -47,7 +47,7 @@
           'section-next': currentSection === index + 1,
         }"
       >
-        <div class="section-bg" :style="{ backgroundImage: `url(${section.image})` }"></div>
+        <div class="section-bg" :style="{ backgroundImage: `url(${section.image.url})` }"></div>
       </section>
     </template>
   </div>
@@ -79,9 +79,7 @@ const isProgrammaticScroll = ref(false); // Флаг программной пр
 const mobileSlides = computed(() => {
   return sections.value.map((section, index) => ({
     id: index,
-    image: section.image,
-    title: section.title || '',
-    description: section.description || ''
+    image: section.image.url,
   }));
 });
 

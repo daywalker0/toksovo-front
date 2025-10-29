@@ -1,7 +1,7 @@
 <template>
   <section class="tabs-slider-section section">
     <div class="tabs-slider-section__container container">
-      <TitleNew text="Особенности" class="tabs-slider-section__title" />
+      <TitleNew :text="title" class="tabs-slider-section__title" />
       
       <!-- Табы -->
       <div class="tabs">
@@ -23,7 +23,7 @@
           :class="['tab-pane', { active: activeTab === tab.id }]"
         >
           <DefaultSlider
-            :slides="getTabSlides(tab.id)"
+            :slides="tab.peculiarities"
             :slides-per-view="4"
             :space-between="45"
             :show-navigation="true"
@@ -32,8 +32,8 @@
           >
             <template #slide="{ slide }">
               <div class="custom-slide">
-                <div class="slide-image" :style="{ backgroundImage: `url(${slide.image})` }">
-                  <div class="slide-text">{{ slide.text }}</div>
+                <div class="slide-image" :style="{ backgroundImage: `url(${slide.image.url})` }">
+                  <div class="slide-text">{{ slide.title }}</div>
                 </div>
               </div>
             </template>
@@ -48,9 +48,16 @@
 import { ref } from 'vue';
 import TitleNew from './Common/TitleNew.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
-import slideImg from '@/assets/img/features-slide-bg.jpg'
 
-const activeTab = ref(1);
+const props = defineProps({
+  data: Object
+})
+
+const title = computed(() => props.data.title)
+const description = computed(() => props.data.description)
+const tabs = computed(() => props.data.osobennostis)
+
+const activeTab = ref(tabs.value[0].id);
 
 const customBreakpoints = {
   320: {
@@ -71,68 +78,8 @@ const customBreakpoints = {
   }
 };
 
-// Определяем табы
-const tabs = ref([
-  { id: 1, title: 'Природа и локация' },
-  { id: 2, title: 'Отдых и оздоровление' },
-  { id: 3, title: 'Спорт и активность' },
-  { id: 4, title: 'Интерьеры' },
-  { id: 5, title: 'Инфраструктура' }
-]);
-
 const setActiveTab = (tabId) => {
   activeTab.value = tabId;
-};
-
-// Моковые данные для слайдов
-const getTabSlides = (tabId) => {
-  const mockSlides = [
-    {
-      id: 1,
-      image: slideImg,
-      text: 'Подогреваемые бассейны во дворе'
-    },
-    {
-      id: 2,
-      image: slideImg,
-      text: 'Банный комплекс'
-    },
-    {
-      id: 3,
-      image: slideImg,
-      text: 'Зоны отдыха с шезлонгами'
-    },
-    {
-      id: 4,
-      image: slideImg,
-      text: 'Зона барбекю'
-    },
-    {
-      id: 5,
-      image: slideImg,
-      text: 'Зоны отдыха с шезлонгами'
-    },
-    {
-      id: 6,
-      image: slideImg,
-      text: 'Банный комплекс'
-    }
-  ];
-
-  switch (tabId) {
-    case 1:
-      return mockSlides.slice(0, 6);
-    case 2:
-      return mockSlides.slice(0, 4);
-    case 3:
-      return mockSlides.slice(1, 5);
-    case 4:
-      return mockSlides.slice(2, 6);
-    case 5:
-      return mockSlides.slice(0, 5);
-    default:
-      return mockSlides.slice(0, 4);
-  }
 };
 </script>
 

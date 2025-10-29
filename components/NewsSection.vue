@@ -37,11 +37,19 @@ import { useNewsStore } from '~/stores/news';
 import TitleNew from './Common/TitleNew.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
+const props = defineProps({
+  data: Object
+})
+
+const title = computed(() => props.data.title)
+const description = computed(() => props.data.description)
+const tabs = computed(() => props.data.osobennostis)
+
 const router = useRouter();
 const newsStore = useNewsStore();
 
-const handleNewsClick = newsId => {
-  router.push(`/news/${newsId}`);
+const handleNewsClick = documentId => {
+  router.push(`/news/${documentId}`);
 };
 
 // Получаем новости из store

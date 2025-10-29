@@ -3,21 +3,25 @@
     <div class="walk-city-section__container container">
       <div class="walk-city-section__content">
         <h2 v-if="!isMobile" class="walk-city-section__title">
-          <span class="title-word title-word--right">Гулять</span>
-          <span class="title-word title-word--left">без</span>
-          <span class="title-word title-word--right">города</span>
+          <span 
+            v-for="(word, index) in formattedTitle" 
+            :key="index"
+            class="title-word"
+            :class="word.class"
+          >
+            {{ word.text }}
+          </span>
         </h2>
 
-        <h2 v-else class="walk-city-section__title">Гулять без города</h2>
+        <h2 v-else class="walk-city-section__title">
+          {{ title }}
+        </h2>
 
         <div class="walk-city-section__subtitle subtitle-text">
-          Здесь не нужны долгие поездки ради отдыха: рядом парки, оздоровительные маршруты и
-          живописные тропы. Можно после работы пройтись вдоль озера, покататься на велосипеде или
-          встретить закат на смотровой площадке. Всё лучшее для активного и спокойного отдыха уже
-          рядом.
+          {{ description }}
         </div>
         <div class="walk-city-section__image">
-          <img :src="walkCityImg" alt="nature-img-1" loading="lazy" />
+          <img :src="image" alt="nature-img-1" loading="lazy" />
         </div>
       </div>
     </div>
@@ -26,7 +30,23 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import walkCityImg from '@/assets/img/walk-city-img.jpg';
+
+const props = defineProps({
+  data: Object
+})
+
+const title = computed(() => props.data.title)
+const description = computed(() => props.data.description)
+const image = computed(() => props.data.image.url)
+
+const formattedTitle = computed(() => {
+  if (!props.data?.title) return []
+  
+  return props.data.title.split(' ').map((word, index) => ({
+    text: word,
+    class: index % 2 === 0 ? 'title-word--right' : 'title-word--left'
+  }))
+})
 
 const isMobile = ref(process.client ? window.innerWidth <= 1280 : false);
 

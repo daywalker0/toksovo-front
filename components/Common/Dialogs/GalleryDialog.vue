@@ -49,7 +49,7 @@
               :key="index"
               class="gallery-slide"
             >
-              <img :src="image.src" :alt="image.alt" class="gallery-image" loading="lazy" />
+              <img :src="image.url" :alt="image.alternativeText" class="gallery-image" loading="lazy" />
             </SwiperSlide>
           </Swiper>
         </div>

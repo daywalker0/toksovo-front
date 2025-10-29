@@ -169,14 +169,14 @@
 
           <div class="news-article__meta">
             <div class="news-article__date">
-              <span class="date-number">{{ newsItem.number }}</span>
-              <span class="date-month">{{ newsItem.month }}</span>
-              <span class="date-year">{{ newsItem.year }}</span>
+              <span class="date-number">{{ newsItem.number || newsItem.day || new Date(newsItem.createdAt).getDate() }}</span>
+              <span class="date-month">{{ newsItem.month || new Date(newsItem.createdAt).toLocaleDateString('ru-RU', { month: 'long' }) }}</span>
+              <span class="date-year">{{ newsItem.year || new Date(newsItem.createdAt).getFullYear() }}</span>
             </div>
           </div>
 
           <div class="news-article__text">
-            <p v-for="(paragraph, index) in newsItem.fullText" :key="index">
+            <p v-for="(paragraph, index) in (newsItem.fullText || newsItem.content?.split('\n') || [newsItem.description])" :key="index">
               {{ paragraph }}
             </p>
           </div>
@@ -398,13 +398,13 @@ const error = computed(() => newsStore.error);
 
 // Получаем другие новости (исключая текущую)
 const otherNews = computed(() => {
-  const currentId = newsItem.value?.id;
-  return newsStore.getLatestNews(6).filter(news => news.id !== currentId);
+  const currentDocumentId = newsItem.value?.documentId || newsItem.value?.id;
+  return newsStore.getLatestNews(6).filter(news => news.id !== currentDocumentId);
 });
 
 // Обработчик клика на новость
-const handleNewsClick = newsId => {
-  router.push(`/news/${newsId}`);
+const handleNewsClick = documentId => {
+  router.push(`/news/${documentId}`);
 };
 
 // Обработчики социальных сетей
@@ -539,8 +539,8 @@ watch(
 );
 
 onMounted(async () => {
-  const newsId = route.params.id;
-  await newsStore.fetchNewsById(newsId);
+  const documentId = route.params.id;
+  await newsStore.fetchNewsById(documentId);
 
   // Скроллим страницу вверх после первой загрузки
   await nextTick();

@@ -14,7 +14,6 @@ export default defineNuxtConfig({
       apiToken: process.env.NUXT_PUBLIC_API_TOKEN
     },
   },
-  // Базовый URL для GitHub Pages
   app: {
     baseURL: '/toksovo-front/',
     head: {

@@ -34,13 +34,13 @@
           :text="styleLivingBlock?.title" 
           :subtitle="styleLivingBlock?.description" 
         />
-        <FullpageSlider :sections="styleLivingBlock?.images || []" />
+        <FullpageSlider :sections="styleLivingBlock?.slider || []" />
         
         <TextBlockSection 
           :text="firstStepsBlock?.title" 
           :subtitle="firstStepsBlock?.description" 
         />
-        <FullpageSlider :sections="firstStepsBlock?.images || []" />
+        <FullpageSlider :sections="firstStepsBlock?.slider || []" />
       </section>
 
       <section id="infrastructure">

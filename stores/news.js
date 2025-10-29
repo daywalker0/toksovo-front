@@ -13,16 +13,24 @@ export const useNewsStore = defineStore('news', {
     // Получить все новости
     getAllNews: state => state.news,
 
-    // Получить новость по ID
-    getNewsById: state => id => {
-      return state.news.find(news => news.id === id);
+    // Получить новость по documentId (Strapi использует documentId)
+    getNewsById: state => (documentId) => {
+      return state.news.find(news => news.documentId === documentId || news.id === documentId);
     },
 
     // Получить последние новости (для слайдера)
     getLatestNews:
       state =>
       (limit = 4) => {
-        return state.news.slice(0, limit);
+        // Преобразуем данные в нужный формат для слайдера
+        return state.news.slice(0, limit).map(news => ({
+          id: news.documentId || news.id,
+          text: news.title || news.text,
+          number: news.day || new Date(news.createdAt).getDate().toString(),
+          month: news.month || new Date(news.createdAt).toLocaleDateString('ru-RU', { month: 'long' }),
+          year: news.year || new Date(news.createdAt).getFullYear().toString(),
+          ...news
+        }));
       },
 
     // Проверить, загружены ли новости
@@ -40,13 +48,15 @@ export const useNewsStore = defineStore('news', {
         const newsApi = useNewsApi();
         const apiNews = await newsApi.fetchAllNews();
 
-        // Проверяем, что API вернул массив, а не HTML
-        if (Array.isArray(apiNews)) {
+        // Проверяем, что API вернул массив
+        if (Array.isArray(apiNews) && apiNews.length > 0) {
           this.news = apiNews;
+          console.log('✅ Новости успешно загружены из API:', apiNews.length);
         } else {
-          throw new Error('API вернул неверный формат данных');
+          throw new Error('API вернул пустой массив');
         }
       } catch (apiError) {
+        console.warn('⚠️ Ошибка загрузки из API, используем mock данные:', apiError);
         const mockNews = [
           {
             id: '1',
@@ -123,14 +133,14 @@ export const useNewsStore = defineStore('news', {
       }
     },
 
-    // Загрузить конкретную новость по ID
-    async fetchNewsById(id) {
+    // Загрузить конкретную новость по documentId
+    async fetchNewsById(documentId) {
       this.loading = true;
       this.error = null;
 
       try {
         // Сначала проверяем, есть ли новость уже в store
-        const existingNews = this.getNewsById(id);
+        const existingNews = this.getNewsById(documentId);
         if (existingNews) {
           this.currentNews = existingNews;
           this.loading = false;
@@ -140,28 +150,31 @@ export const useNewsStore = defineStore('news', {
         // Пытаемся загрузить конкретную новость из API
         try {
           const newsApi = useNewsApi();
-          const apiNews = await newsApi.fetchNewsById(id);
+          const apiNews = await newsApi.fetchNewsById(documentId);
 
-          // Проверяем, что API вернул объект, а не HTML
-          if (apiNews && typeof apiNews === 'object' && !apiNews.startsWith) {
+          // Проверяем, что API вернул объект
+          if (apiNews && typeof apiNews === 'object') {
             this.currentNews = apiNews;
+            console.log('✅ Новость успешно загружена из API:', apiNews.documentId);
+
+            // Добавляем в общий список, если его там нет
+            const existingInList = this.news.find(news => news.documentId === documentId);
+            if (!existingInList) {
+              this.news.push(apiNews);
+            }
+
+            return apiNews;
           } else {
             throw new Error('API вернул неверный формат данных');
           }
-
-          // Добавляем в общий список, если его там нет
-          const existingInList = this.news.find(news => news.id === id);
-          if (!existingInList) {
-            this.news.push(apiNews);
-          }
-
-          return apiNews;
         } catch (apiError) {
+          console.warn('⚠️ Ошибка загрузки новости из API:', apiError);
+          
           if (!this.isNewsLoaded) {
             await this.fetchNews();
           }
 
-          const news = this.getNewsById(id);
+          const news = this.getNewsById(documentId);
           if (news) {
             this.currentNews = news;
             return news;

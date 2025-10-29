@@ -19,7 +19,7 @@
           {{ description }}
         </div>
         <div class="nature-section__image">
-          <img :src="natureImg" alt="nature-img-1" loading="lazy" />
+          <img :src="image" alt="nature-img-1" loading="lazy" />
         </div>
       </div>
     </div>
@@ -28,7 +28,6 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import natureImg from '@/assets/img/nature-img-1.jpg';
 
 const props = defineProps({
   data: Object
@@ -36,6 +35,7 @@ const props = defineProps({
 
 const title = computed(() => props.data.title)
 const description = computed(() => props.data.description)
+const image = computed(() => props.data.image.url)
 
 const formattedTitle = computed(() => {
   if (!props.data?.title) return []

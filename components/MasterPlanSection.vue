@@ -33,8 +33,8 @@
       <div v-if="!isMobile" ref="overlayLeftRef" class="overlay-bar overlay-left"></div>
       <div v-if="!isMobile" ref="overlayRightRef" class="overlay-bar overlay-right"></div>
 
-      <div v-if="!isMobile" ref="textLeftRef" class="text-left">Ген.</div>
-      <div v-if="!isMobile" ref="textRightRef" class="text-right">План</div>
+      <div v-if="!isMobile" ref="textLeftRef" class="text-left">{{ title1 }}</div>
+      <div v-if="!isMobile" ref="textRightRef" class="text-right">{{ title2 }}</div>
 
       <div v-if="showPins && !isMobile" class="pins-container">
         <div
@@ -126,6 +126,14 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue';
 import genPlanImg from '@/assets/img/gen-plan.jfif';
+
+const props = defineProps({
+  data: Object
+})
+
+const title1 = computed(() => props.data.title_1)
+const title2 = computed(() => props.data.title_2)
+
 const sectionRef = ref(null);
 const overlayTopRef = ref(null);
 const overlayBottomRef = ref(null);
