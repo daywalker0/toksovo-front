@@ -131,6 +131,7 @@ h2 {
 
   &:hover {
     color: $text-color-white;
+    border-radius: 7px;
 
     &::before {
       left: 0;
@@ -140,6 +141,7 @@ h2 {
   @media (max-width: $breakpoint-x) {
     &:hover {
       color: inherit;
+      border-radius: 50px;
 
       &::before {
         left: 100%;

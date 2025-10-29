@@ -321,9 +321,6 @@ onMounted(async () => {
     }
 
     &:hover {
-      background-color: $accent-color-orange;
-      color: white;
-      border-color: $accent-color-orange;
       transition: 0.3s;
     }
 

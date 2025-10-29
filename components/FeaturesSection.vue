@@ -169,6 +169,7 @@ const setActiveTab = (tabId) => {
   cursor: pointer;
   white-space: nowrap;
   text-transform: uppercase;
+  transition: all 0.3s ease;
 
   @media (max-width: $breakpoint-sm) {
     font-size: 13px;
@@ -183,7 +184,8 @@ const setActiveTab = (tabId) => {
     padding: 13px 16px;
   }
 
-  &:hover {
+  &:hover:not(.active) {
+    border-radius: 7px;
     border-color: $text-color-primary;
     background-color: $text-color-primary;
     color: $text-color-white;

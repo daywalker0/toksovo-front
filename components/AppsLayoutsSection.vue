@@ -491,10 +491,8 @@ const switchImage = imageIndex => {
       padding: 13px 16px;
     }
 
-    &:hover {
-      background-color: $text-color-primary;
-      border-color: $text-color-primary;
-      color: $text-color-white;
+    &:hover:not(.active) {
+      border-radius: 7px;
       transition: 0.3s;
     }
     &.active {
@@ -589,6 +587,7 @@ const switchImage = imageIndex => {
 
   &:hover {
     color: $text-color-white;
+    border-radius: 7px;
 
     &::before {
       left: 0;

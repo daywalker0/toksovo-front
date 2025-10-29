@@ -856,25 +856,14 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  border-radius: 100px;
 
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background-color: $text-color-primary;
-    transition: left 0.3s ease;
-    z-index: -1;
+    display: none;
   }
 
   &:hover {
-    color: $text-color-white;
-
-    &::before {
-      left: 0;
-    }
+    border-radius: 7px;
   }
 
   &:active {
