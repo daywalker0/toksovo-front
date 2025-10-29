@@ -65,7 +65,7 @@
       <NewsSection :data="newsBlock" />
       <ProjectsSection :data="projectsBlock" />
       
-      <ChooseYouAppsSection />
+      <ChooseYouAppsSection v-if="chooseAppsBlock?.image" :data="chooseAppsBlock" />
 
       <Footer />
     </div>

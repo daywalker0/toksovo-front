@@ -1,7 +1,7 @@
 <template>
-  <section class="projects-section section" id="projects">
+  <section v-if="projectsSlides.length > 0" class="projects-section section" id="projects">
     <div class="projects-section__container container">
-      <TitleNew text="Другие проекты" class="projects-section__title" />
+      <TitleNew :text="title" class="projects-section__title" />
 
       <DefaultSlider
         :slides="projectsSlides"
@@ -52,62 +52,87 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
-import projectItem1 from '@/assets/img/project-item-1.jpg';
-import projectItem2 from '@/assets/img/project-item-2.jpg';
-import projectItem3 from '@/assets/img/project-item-3.jpg';
 import Dialog from './Common/Dialogs/Dialog.vue';
 import TitleNew from './Common/TitleNew.vue';
+import { useMedia } from '~/composables/useMedia';
+import { useProjectsApi } from '~/composables/useProjectsApi';
+
+const props = defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
+});
+
+const { getMediaUrl } = useMedia();
+const { fetchAllProjects } = useProjectsApi();
 
 const showDialogVideo = ref(false);
+const projects = ref([]);
 
-const projectsSlides = [
-  {
-    title: 'ЖК «Северный меридиан»',
-    city: 'г. Бугры',
-    rented: 'Сдача: IV кв. 2025',
-    image: projectItem1,
-    houses: null,
-    apps: 339,
-    floors: 9,
-    link: '#',
-  },
-  {
-    title: 'ЖК «Октябрьский 78»',
-    city: 'г. Всеволжск',
-    rented: 'Дом сдан в 2023',
-    image: projectItem2,
-    link: '#',
-    houses: 2,
-    apps: 80,
-    floors: 6,
-  },
-  {
-    title: 'ЖК «Октябрьский 78»',
-    city: 'г. Всеволжск',
-    rented: 'Дом сдан в 2022',
-    image: projectItem3,
-    link: '#',
-    houses: null,
-    apps: 65,
-    floors: 6,
-  },
-  {
-    title: 'ЖК «Северный меридиан»',
-    city: 'г. Бугры',
-    rented: 'Сдача: IV кв. 2025',
-    image: projectItem1,
-    houses: null,
-    apps: 339,
-    floors: 9,
-    link: '#',
-  },
-];
+// Заголовок секции
+const title = computed(() => props.data?.title || 'Другие проекты');
+
+// Получаем проекты из API
+const projectsSlides = computed(() => {
+  if (!Array.isArray(projects.value) || projects.value.length === 0) {
+    return [];
+  }
+  
+  return projects.value.map(project => {
+    // Парсим project_features для извлечения houses, apps, floors
+    let houses = null;
+    let apps = null;
+    let floors = null;
+    
+    if (project.project_features && Array.isArray(project.project_features)) {
+      project.project_features.forEach(feature => {
+        const value = feature.value || '';
+        const lowerValue = value.toLowerCase();
+        
+        if (lowerValue.includes('дом')) {
+          // Извлекаем число из строки типа "2 дома"
+          const match = value.match(/(\d+)/);
+          if (match) houses = parseInt(match[1]);
+        } else if (lowerValue.includes('квартир')) {
+          // Извлекаем число из строки типа "65 квартир"
+          const match = value.match(/(\d+)/);
+          if (match) apps = parseInt(match[1]);
+        } else if (lowerValue.includes('этаж')) {
+          // Извлекаем число из строки типа "6 этажей"
+          const match = value.match(/(\d+)/);
+          if (match) floors = parseInt(match[1]);
+        }
+      });
+    }
+    
+    return {
+      title: project.title || project.name || '',
+      city: project.location || project.city || '',
+      rented: project.date || project.rented || project.delivery_date || '',
+      image: getMediaUrl(project.cover_image || project.image),
+      houses,
+      apps,
+      floors,
+      link: project.link || '#',
+    };
+  });
+});
 
 const openDialogVideo = () => {
   showDialogVideo.value = true;
 };
+
+// Загружаем проекты при монтировании
+onMounted(async () => {
+  try {
+    projects.value = await fetchAllProjects();
+  } catch (error) {
+    projects.value = [];
+  }
+});
 </script>
 
 <style lang="scss" scoped>
