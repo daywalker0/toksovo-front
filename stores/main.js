@@ -110,14 +110,6 @@ export const useMainStore = defineStore('main', () => {
     );
   })
 
-  const getChooseAppsBlock = computed(() => {
-    return mainData.value?.data?.blocks?.find(
-      block => block.__component === 'blocks.vyberite-svoyu-kvartiru' ||
-             block.__component === 'blocks.choose-apartment' ||
-             block.__component === 'blocks.vybor-kvartiry'
-    )
-  })
-
   return {
     mainData,
     loading,
@@ -137,6 +129,5 @@ export const useMainStore = defineStore('main', () => {
     getNewsBlock,
     getProjectsBlock,
     getEnvironmentBlock,
-    getChooseAppsBlock
   }
 })

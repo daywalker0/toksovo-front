@@ -2,7 +2,7 @@
   <div class="choose-your-apps-section section" ref="section">
     <!-- Мобильная версия -->
     <div v-if="isMobile" class="mobile-version">
-      <div class="mobile-background" :style="{ backgroundImage: `url(${backgroundImage})` }">
+      <div class="mobile-background" :style="{ backgroundImage: `url(${chooseYourLife})` }">
         <div class="mobile-overlay"></div>
       </div>
       <div class="mobile-content">
@@ -69,7 +69,7 @@
             :style="{ transform: `scale(${imageScale})` }"
           >
             <div class="image-overlay" :style="{ opacity: overlayOpacity }"></div>
-            <img :src="backgroundImage" alt="preview" loading="eager" />
+            <img :src="chooseYourLife" alt="preview" loading="eager" />
             <div class="text" :style="{ opacity: textOpacity }">
               Выберите свою квартиру для жизни
             </div>
@@ -91,24 +91,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-
-const props = defineProps({
-  data: {
-    type: Object,
-    default: null,
-  },
-});
-
-const { getMediaUrl } = useMedia();
-
-// Получаем изображение из API
-const backgroundImage = computed(() => {
-  if (props.data?.image) {
-    return getMediaUrl(props.data.image);
-  }
-  return '';
-});
+import { ref, onMounted, onUnmounted } from 'vue';
+import chooseYourLife from '@/assets/img/choose-your-life.jpg';
 
 const section = ref(null);
 const darkBg = ref(null);

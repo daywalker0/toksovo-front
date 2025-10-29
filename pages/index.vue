@@ -65,7 +65,7 @@
       <NewsSection :data="newsBlock" />
       <ProjectsSection :data="projectsBlock" />
       
-      <ChooseYouAppsSection v-if="chooseAppsBlock?.image" :data="chooseAppsBlock" />
+      <ChooseYouAppsSection />
 
       <Footer />
     </div>
@@ -97,7 +97,6 @@ const featuresBlock = computed(() => mainStore.getFeaturesBlock)
 const constructionBlock = computed(() => mainStore.getConstructionBlock)
 const newsBlock = computed(() => mainStore.getNewsBlock)
 const projectsBlock = computed(() => mainStore.getProjectsBlock)
-const chooseAppsBlock = computed(() => mainStore.getChooseAppsBlock)
 
 const updateActiveSection = () => {
   const sections = [
