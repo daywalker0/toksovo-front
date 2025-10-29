@@ -8,7 +8,7 @@
       <div class="gallery-content" @click.stop>
         <div class="gallery-header">
           <div class="gallery-info">
-            <h3 class="gallery-title">{{ slide?.title }}</h3>
+            <h3 class="gallery-title">{{ slide?.month }}</h3>
             <p class="gallery-year">{{ slide?.year }}</p>
           </div>
           <button
