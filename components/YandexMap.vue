@@ -78,19 +78,8 @@ onMounted(async () => {
           mapContainer.value.offsetWidth > 0 &&
           mapContainer.value.offsetHeight > 0
         ) {
-          console.log('Map container ready:', {
-            width: mapContainer.value.offsetWidth,
-            height: mapContainer.value.offsetHeight
-          });
-          
           resolve();
         } else if (attempts >= maxAttempts) {
-          console.error('Map container failed to initialize:', {
-            element: mapContainer.value,
-            width: mapContainer.value?.offsetWidth,
-            height: mapContainer.value?.offsetHeight
-          });
-          
           reject(
             new Error('Map container failed to initialize: element not found or has no dimensions')
           );
@@ -111,14 +100,11 @@ onMounted(async () => {
       const script = document.createElement('script');
       script.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=${apiKey}`;
       script.onload = () => {
-        console.log('Yandex Maps script loaded');
         window.ymaps.ready(() => {
-          console.log('Yandex Maps ready');
           resolve(window.ymaps);
         });
       };
       script.onerror = (error) => {
-        console.error('Yandex Maps script error:', error);
         reject(error);
       };
       document.head.appendChild(script);
@@ -160,13 +146,11 @@ onMounted(async () => {
         }
         
         map.container.fitToViewport();
-        console.log('Map container fitted to viewport');
       }
     }, 100);
 
     emit('ready', { map, ymaps });
   } catch (err) {
-    console.error('Map initialization error:', err);
     emit('error', err);
     
     // Добавляем fallback для мобильных устройств

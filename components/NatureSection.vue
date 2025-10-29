@@ -3,17 +3,20 @@
     <div class="nature-section__container container">
       <div class="nature-section__content">
         <h2 v-if="!isMobile" class="nature-section__title">
-          <span class="title-word title-word--right">Жить</span>
-          <span class="title-word title-word--left">среди</span>
-          <span class="title-word title-word--right">природы</span>
+          <span 
+            v-for="(word, index) in formattedTitle" 
+            :key="index"
+            class="title-word"
+            :class="word.class"
+          >
+            {{ word.text }}
+          </span>
         </h2>
 
-        <h2 v-else class="nature-section__title">Жить среди природы</h2>
+        <h2 v-else class="nature-section__title">{{ title }}</h2>
 
         <div class="nature-section__subtitle subtitle-text">
-          Жилой комплекс окружён лесами, озёрами и экотропами, где можно гулять в любое время года.
-          Утренние пробежки, прогулки с детьми и пикники на свежем воздухе становятся частью
-          повседневной жизни. Природа буквально в нескольких шагах от дома.
+          {{ description }}
         </div>
         <div class="nature-section__image">
           <img :src="natureImg" alt="nature-img-1" loading="lazy" />
@@ -26,6 +29,22 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import natureImg from '@/assets/img/nature-img-1.jpg';
+
+const props = defineProps({
+  data: Object
+})
+
+const title = computed(() => props.data.title)
+const description = computed(() => props.data.description)
+
+const formattedTitle = computed(() => {
+  if (!props.data?.title) return []
+  
+  return props.data.title.split(' ').map((word, index) => ({
+    text: word,
+    class: index % 2 === 0 ? 'title-word--right' : 'title-word--left'
+  }))
+})
 
 const isMobile = ref(process.client ? window.innerWidth <= 1280 : false);
 

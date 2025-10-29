@@ -3,12 +3,12 @@
     <div class="hero-section section" ref="sectionEl">
       <div class="hero-section__container container">
         <div class="hero-section__content">
-          <h1 class="hero-section__title" aria-label="Поинт Токсово">
+          <h1 class="hero-section__title" :aria-label="titleText">
             {{ titleText }}
           </h1>
           <div
             class="subtitle-text hero-section__subtitle"
-            aria-label="комфорт, который становится частью вашего дня"
+            :aria-label="subtitleText"
           >
             <span class="subtitle-animated">{{ subtitleText }}</span>
           </div>
@@ -31,8 +31,13 @@ import { onMounted, onBeforeUnmount, ref } from 'vue';
 import bgSkyImg from '@/assets/img/bg-sky.jpg';
 import heroBgImg from '@/assets/img/hero-bg.png';
 
-const titleText = 'Поинт Токсово';
-const subtitleText = 'комфорт, который становится частью вашего дня';
+const props = defineProps({
+  title: String,
+  description: String,
+})
+
+const titleText = computed(() => props.title)
+const subtitleText = computed(() => props.description)
 
 const sectionEl = ref(null);
 const renderEl = ref(null);

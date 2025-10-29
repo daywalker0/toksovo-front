@@ -1,50 +1,70 @@
 <template>
   <div>
     <AppHeader :active-section="activeSection" />
+    
     <section id="hero">
-      <HeroSection />
+      <HeroSection 
+        :title="heroBlock?.title"
+        :description="heroBlock?.description"
+        :image="heroBlock?.image"
+      />
     </section>
+    
     <div class="main-sections">
       <section id="about">
-        <TextBlockSection :text="sectionEnvironment.text" :subtitle="sectionEnvironment.subtitle" />
+        <TextBlockSection 
+          :text="calmNatureBlock?.title" 
+          :subtitle="calmNatureBlock?.description" 
+        />
         <EnvironmentSection />
-        <LocationsSection />
+        <LocationsSection :data="locationsBlock" />
       </section>
 
       <div ref="horizontalWrapper" class="horizontal-wrapper">
         <div class="horizontal-container">
-          <NatureSection />
-          <WalkCitySection />
+          <NatureSection :data="natureLivingBlock1" />
+          <WalkCitySection :data="natureLivingBlock2" />
         </div>
       </div>
 
-      <MasterPlanSection />
+      <MasterPlanSection :data="genplanBlock" />
 
       <section id="architecture">
-        <TextBlockSection :text="sectionNewStyle.text" :subtitle="sectionNewStyle.subtitle" />
-        <FullpageSlider :sections="sectionNewStyle.sliderImages" />
-        <TextBlockSection :text="sectionFirstSteps.text" :subtitle="sectionFirstSteps.subtitle" />
-        <FullpageSlider :sections="sectionFirstSteps.sliderImages" />
+        <TextBlockSection 
+          :text="styleLivingBlock?.title" 
+          :subtitle="styleLivingBlock?.description" 
+        />
+        <FullpageSlider :sections="styleLivingBlock?.images || []" />
+        
+        <TextBlockSection 
+          :text="firstStepsBlock?.title" 
+          :subtitle="firstStepsBlock?.description" 
+        />
+        <FullpageSlider :sections="firstStepsBlock?.images || []" />
       </section>
 
       <section id="infrastructure">
-        <TextBlockSection :text="sectionLiveNearby.text" :subtitle="sectionLiveNearby.subtitle" />
-        <MapSection :zoom="16" />
+        <TextBlockSection 
+          :text="mapBlock?.title" 
+          :subtitle="mapBlock?.description" 
+        />
+        <MapSection :zoom="16" :data="mapBlock" />
       </section>
 
       <section id="layouts">
         <TextBlockSection
-          :text="sectionLiveOwnSpace.text"
-          :subtitle="sectionLiveOwnSpace.subtitle"
+          :text="layoutsBlock?.title"
+          :subtitle="layoutsBlock?.description"
         />
-        <AppsLayoutsSection :apartments="apartments" />
+        <AppsLayoutsSection :apartments="apartments" :data="layoutsBlock" />
       </section>
 
-      <FeaturesSection />
+      <FeaturesSection :data="featuresBlock" />
 
-      <ConstructionSection />
-      <NewsSection />
-      <ProjectsSection />
+      <ConstructionSection :data="constructionBlock" />
+      <NewsSection :data="newsBlock" />
+      <ProjectsSection :data="projectsBlock" />
+      
       <ChooseYouAppsSection />
 
       <Footer />
@@ -56,6 +76,32 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import AppHeader from '~/components/Common/AppHeader.vue';
+import Footer from '@/components/Footer.vue';
+import liveInStyleItem1 from '@/assets/img/jitvstile/1.jfif';
+import liveInStyleItem2 from '@/assets/img/jitvstile/2.jpg';
+import liveInStyleItem3 from '@/assets/img/jitvstile/3.jpg';
+import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';
+import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
+import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
+
+const mainStore = useMainStore()
+await mainStore.fetchMainData()
+
+const heroBlock = computed(() => mainStore.getHeroBlock)
+const calmNatureBlock = computed(() => mainStore.getCalmNatureBlock)
+const locationsBlock = computed(() => mainStore.getLocationsBlock)
+const natureLivingBlock1 = computed(() => mainStore.getNatureLivingBlock.life_benefit_card[0])
+const natureLivingBlock2 = computed(() => mainStore.getNatureLivingBlock.life_benefit_card[1])
+const genplanBlock = computed(() => mainStore.getGenplanBlock)
+const styleLivingBlock = computed(() => mainStore.getStyleLivingBlock)
+const firstStepsBlock = computed(() => mainStore.getFirstStepsBlock)
+const mapBlock = computed(() => mainStore.getMapBlock)
+const layoutsBlock = computed(() => mainStore.getLayoutsBlock)
+const featuresBlock = computed(() => mainStore.getFeaturesBlock)
+const constructionBlock = computed(() => mainStore.getConstructionBlock)
+const newsBlock = computed(() => mainStore.getNewsBlock)
+const projectsBlock = computed(() => mainStore.getProjectsBlock)
 
 const updateActiveSection = () => {
   const sections = [
@@ -103,29 +149,6 @@ const updateActiveSection = () => {
     // Не обновляем URL при прокрутке
   }
 };
-import AppHeader from '~/components/Common/AppHeader.vue';
-import HeroSection from '@/components/HeroSection.vue';
-import EnvironmentSection from '@/components/EnvironmentSection.vue';
-import LocationsSection from '@/components/LocationsSection.vue';
-import NatureSection from '@/components/NatureSection.vue';
-import WalkCitySection from '@/components/WalkCitySection.vue';
-import MasterPlanSection from '@/components/MasterPlanSection.vue';
-import FullpageSlider from '@/components/FullpageSlider.vue';
-import TextBlockSection from '@/components/TextBlockSection.vue';
-import MapSection from '~/components/MapSection.vue';
-import AppsLayoutsSection from '@/components/AppsLayoutsSection.vue';
-import ConstructionSection from '@/components/ConstructionSection.vue';
-import NewsSection from '@/components/NewsSection.vue';
-import ProjectsSection from '@/components/ProjectsSection.vue';
-import ChooseYouAppsSection from '@/components/ChooseYouAppsSection.vue';
-import FeaturesSection from '~/components/FeaturesSection.vue';
-import Footer from '@/components/Footer.vue';
-import liveInStyleItem1 from '@/assets/img/jitvstile/1.jfif';
-import liveInStyleItem2 from '@/assets/img/jitvstile/2.jpg';
-import liveInStyleItem3 from '@/assets/img/jitvstile/3.jpg';
-import firstStepsItem1 from '@/assets/img/first-steps-item-1.png';
-import firstStepsItem2 from '@/assets/img/first-steps-item-2.png';
-import firstStepsItem3 from '@/assets/img/first-steps-item-3.png';
 
 const activeSection = ref('hero');
 const handleScroll = ref(null);

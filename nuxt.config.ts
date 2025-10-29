@@ -10,6 +10,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       YANDEX_MAPS_API_KEY: process.env.NUXT_PUBLIC_YANDEX_MAPS_API_KEY || '',
+      apiUrl: process.env.NUXT_PUBLIC_API_URL,
+      apiToken: process.env.NUXT_PUBLIC_API_TOKEN
     },
   },
   // Базовый URL для GitHub Pages
