@@ -16,8 +16,7 @@
           :text="calmNatureBlock?.title" 
           :subtitle="calmNatureBlock?.description" 
         />
-        <EnvironmentSection v-if="environmentBlock?.items?.length" :data="environmentBlock" />
-        <LocationsSection v-if="locationsBlock?.locations?.length" :data="locationsBlock" />
+        <LocationsSection v-if="locationsBlock?.location_card?.length" :data="locationsBlock" />
       </section>
 
       <div ref="horizontalWrapper" class="horizontal-wrapper">

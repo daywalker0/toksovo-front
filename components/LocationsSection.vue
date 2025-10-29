@@ -107,7 +107,9 @@ const isMobile = ref(false);
 
 // Получаем локации по колонкам из API
 const locationsByColumn = computed(() => {
-  if (!props.data?.locations || !Array.isArray(props.data.locations) || props.data.locations.length === 0) {
+  const locations = props.data?.location_card || props.data?.locations || [];
+  
+  if (!Array.isArray(locations) || locations.length === 0) {
     return {
       left: [],
       center: [],
@@ -122,13 +124,16 @@ const locationsByColumn = computed(() => {
     right: []
   };
   
-  props.data.locations.forEach(loc => {
-    const column = loc.column || 'center'; // по умолчанию центральная
+  locations.forEach((loc, index) => {
+    // Если есть явное указание колонки - используем его
+    // Иначе автоматически распределяем: 0,3,6,... -> left, 1,4,7,... -> center, 2,5,8,... -> right
+    const column = loc.column || ['left', 'center', 'right'][index % 3];
+    
     const item = {
       image: getMediaUrl(loc.image),
       name: loc.name || loc.title,
       distance: loc.distance,
-      subtitle: loc.subtitle || '',
+      subtitle: loc.description || loc.subtitle || '', // description из Strapi
     };
     
     if (grouped[column]) {
