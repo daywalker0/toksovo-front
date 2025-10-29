@@ -278,8 +278,26 @@ const openDialogCallback = () => {
     text-decoration: none !important;
     -webkit-tap-highlight-color: transparent;
 
+    &::before {
+      display: none;
+    }
+
+    &:hover {
+      border-radius: 7px;
+      background-color: $accent-color-orange;
+      border: 1px solid $accent-color-orange;
+      color: $text-color-white !important;
+    }
+
     @media (max-width: $breakpoint-md) {
       order: 3;
+      
+      &:hover {
+        border-radius: 50px;
+        background-color: transparent;
+        color: inherit !important;
+        border-color: inherit;
+      }
     }
   }
 

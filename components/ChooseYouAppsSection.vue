@@ -475,12 +475,28 @@ onUnmounted(() => {
 }
 
 .button {
-  transition: opacity 0.3s ease-out;
+  transition: all 0.3s ease-out;
   flex-shrink: 0;
+
+  &::before {
+    display: none;
+  }
 
   &.dark {
     color: $text-color-white;
     border: 1px solid $text-color-white;
+  }
+
+  &.light {
+    color: $text-color-primary;
+    border: 1px solid $text-color-primary;
+  }
+
+  &:hover {
+    border-radius: 7px;
+    background-color: $accent-color-orange;
+    border: 1px solid $accent-color-orange;
+    color: $text-color-white;
   }
 
   @media (max-width: $breakpoint-sm) {

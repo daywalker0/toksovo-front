@@ -316,16 +316,25 @@ onMounted(async () => {
     min-height: 48px;
     padding: 12px 24px;
 
+    &::before {
+      display: none;
+    }
+
     @media (max-width: $breakpoint-md) {
       margin-top: 20px;
     }
 
     &:hover {
+      border-radius: 7px;
+      background-color: $accent-color-orange;
+      border: 1px solid $accent-color-orange;
+      color: $text-color-white;
       transition: 0.3s;
     }
 
     @media (max-width: $breakpoint-x) {
       &:hover {
+        border-radius: 50px;
         background-color: transparent;
         color: inherit;
         border-color: inherit;
