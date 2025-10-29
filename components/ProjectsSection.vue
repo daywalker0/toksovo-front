@@ -177,6 +177,7 @@ onMounted(async () => {
   font-size: 118px;
 }
 .projects-section {
+  margin-bottom: 200px;
   @media (max-width: $breakpoint-x) {
     margin-bottom: 60px;
 
