@@ -7,7 +7,6 @@ export const useNewsApi = () => {
       // Strapi возвращает { data: [...], meta: {} }
       return response.data || []
     } catch (error) {
-      console.error('❌ Ошибка загрузки новостей:', error)
       throw new Error('Не удалось загрузить новости')
     }
   }
@@ -18,7 +17,6 @@ export const useNewsApi = () => {
       // Strapi возвращает { data: {...}, meta: {} }
       return response.data || null
     } catch (error) {
-      console.error('❌ Ошибка загрузки новости:', error)
       throw new Error('Не удалось загрузить новость')
     }
   }
@@ -29,7 +27,6 @@ export const useNewsApi = () => {
       // Strapi возвращает { data: [...], meta: {} }
       return response.data || []
     } catch (error) {
-      console.error('❌ Ошибка загрузки последних новостей:', error)
       throw new Error('Не удалось загрузить последние новости')
     }
   }

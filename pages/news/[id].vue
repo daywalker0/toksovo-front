@@ -176,7 +176,22 @@
           </div>
 
           <div class="news-article__text">
-            <p v-for="(paragraph, index) in (newsItem.fullText || newsItem.content?.split('\n') || [newsItem.description])" :key="index">
+            <!-- Если есть blocks из Strapi - рендерим их -->
+            <template v-if="newsItem.blocks && newsItem.blocks.length > 0">
+              <div v-for="(block, index) in newsItem.blocks" :key="index" class="news-block">
+                <!-- Текстовый блок -->
+                <div v-if="block.__component === 'element-news.tekst'" class="news-block__text" v-html="formatMarkdown(block.text)"></div>
+                
+                <!-- Фото или видео -->
+                <div v-else-if="block.__component === 'element-news.foto-ili-video' && block.value" class="news-block__media">
+                  <img v-if="block.value.url" :src="getMediaUrl(block.value)" :alt="block.value.alternativeText || newsItem.title" loading="lazy" />
+                </div>
+              </div>
+            </template>
+            
+            <!-- Fallback: если нет blocks, показываем description -->
+            <p v-else-if="newsItem.description">{{ newsItem.description }}</p>
+            <p v-else-if="newsItem.fullText" v-for="(paragraph, index) in newsItem.fullText" :key="index">
               {{ paragraph }}
             </p>
           </div>
@@ -380,6 +395,30 @@ import Footer from '~/components/Footer.vue';
 const route = useRoute();
 const router = useRouter();
 const newsStore = useNewsStore();
+
+const { getMediaUrl } = useMedia();
+
+// Простая функция для форматирования markdown в HTML
+const formatMarkdown = (text) => {
+  if (!text) return '';
+  
+  // Заголовки
+  let html = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+  
+  // Жирный текст
+  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+  
+  // Курсив
+  html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+  
+  // Параграфы
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = '<p>' + html + '</p>';
+  
+  return html;
+};
 
 // Получаем Lenis для программного скролла
 const { $lenis } = useNuxtApp();
@@ -840,6 +879,92 @@ onUnmounted(() => {
       &:last-child {
         margin-bottom: 0;
       }
+    }
+  }
+}
+
+.news-block {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__text {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 140%;
+    color: $text-color-primary;
+    font-family: 'Akrobat';
+
+    :deep(h1) {
+      font-size: 36px;
+      font-weight: 600;
+      margin: 32px 0 20px 0;
+      font-family: 'Bona Nova SC';
+    }
+
+    :deep(h2) {
+      font-size: 32px;
+      font-weight: 600;
+      margin: 28px 0 16px 0;
+      font-family: 'Bona Nova SC';
+    }
+
+    :deep(h3) {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 24px 0 12px 0;
+      font-family: 'Bona Nova SC';
+    }
+
+    :deep(p) {
+      margin: 0 0 16px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    :deep(strong) {
+      font-weight: 700;
+    }
+
+    :deep(em) {
+      font-style: italic;
+    }
+  }
+
+  &__media {
+    margin: 32px 0;
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__text {
+      font-size: 18px;
+
+      :deep(h1) {
+        font-size: 28px;
+      }
+
+      :deep(h2) {
+        font-size: 24px;
+      }
+
+      :deep(h3) {
+        font-size: 20px;
+      }
+    }
+
+    &__media {
+      margin: 24px 0;
     }
   }
 }

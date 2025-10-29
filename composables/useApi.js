@@ -17,7 +17,6 @@ export const useApi = () => {
       
       return response
     } catch (error) {
-      console.error('❌ API Error:', error)
       throw error
     }
   }

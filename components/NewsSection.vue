@@ -1,7 +1,7 @@
 <template>
   <section class="news-section section" id="news">
     <div class="news-section__container container">
-      <TitleNew text="Новости" class="news-section__title" />
+      <TitleNew :text="title || 'Новости'" class="news-section__title" />
       <DefaultSlider
         :slides="newsSlides"
         :slides-per-view="2"
@@ -41,9 +41,7 @@ const props = defineProps({
   data: Object
 })
 
-const title = computed(() => props.data.title)
-const description = computed(() => props.data.description)
-const tabs = computed(() => props.data.osobennostis)
+const title = computed(() => props.data?.title)
 
 const router = useRouter();
 const newsStore = useNewsStore();
@@ -52,16 +50,34 @@ const handleNewsClick = documentId => {
   router.push(`/news/${documentId}`);
 };
 
-// Получаем новости из store
+// Получаем новости: сначала проверяем, есть ли они в props.data (из Strapi блока),
+// если нет - загружаем из store
 const newsSlides = computed(() => {
+  // Если в блоке есть связанные новости - используем их
+  if (props.data?.novostis && Array.isArray(props.data.novostis) && props.data.novostis.length > 0) {
+    return props.data.novostis.map(news => ({
+      ...news, // Сначала копируем все поля
+      numericId: news.id,
+      id: news.documentId, // Перезаписываем id на documentId
+      documentId: news.documentId,
+      text: news.title || news.text,
+      number: news.day || new Date(news.createdAt).getDate().toString(),
+      month: news.month || new Date(news.createdAt).toLocaleDateString('ru-RU', { month: 'long' }),
+      year: news.year || new Date(news.createdAt).getFullYear().toString(),
+    }));
+  }
+  
+  // Иначе используем новости из store
   const news = newsStore.getLatestNews(4);
-  // Убеждаемся, что возвращается массив
   return Array.isArray(news) ? news : [];
 });
 
-// Загружаем новости при монтировании компонента
+// Загружаем новости при монтировании компонента только если их нет в блоке
 onMounted(async () => {
-  if (!newsStore.isNewsLoaded) {
+  // Если новостей нет в блоке - загружаем из API
+  const hasNewsInBlock = props.data?.novostis && Array.isArray(props.data.novostis) && props.data.novostis.length > 0;
+  
+  if (!hasNewsInBlock && !newsStore.isNewsLoaded) {
     await newsStore.fetchNews();
   }
 });
