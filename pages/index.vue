@@ -102,6 +102,17 @@ const constructionBlock = computed(() => mainStore.getConstructionBlock)
 const newsBlock = computed(() => mainStore.getNewsBlock)
 const projectsBlock = computed(() => mainStore.getProjectsBlock)
 
+// SEO из главного фетча
+const pageTitle = computed(() => mainStore.mainData?.data?.title || '');
+const pageDescription = computed(() => mainStore.mainData?.data?.description || '');
+
+useSeoMeta({
+  title: () => pageTitle.value,
+  ogTitle: () => pageTitle.value,
+  description: () => pageDescription.value,
+  ogDescription: () => pageDescription.value,
+});
+
 const updateActiveSection = () => {
   const sections = [
     { id: 'hero', element: document.getElementById('hero') },
