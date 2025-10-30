@@ -1,7 +1,7 @@
 <template>
   <section class="video-reviews-section" id="videos">
     <div class="video-container container">
-      <TitleNew text="Видео-обзоры" class="section-title" />
+      <TitleNew :text="props.data?.title || 'Видео-обзоры'" class="section-title" />
       
       <div class="video-main">
         <Swiper
@@ -93,9 +93,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import TitleNew from '~/components/Common/TitleNew.vue';
 import VideoDialog from '~/components/Common/Dialogs/VideoDialog.vue';
-import sampleVideo from '@/assets/sample-5s.mp4';
-import thumbnailImage1 from '@/assets/img/preview-video-1.png';
-import thumbnailImage2 from '@/assets/img/preview-video-2.png';
+import { useMedia } from '@/composables/useMedia';
 
 const props = defineProps({
   data: {
@@ -110,46 +108,33 @@ const currentIndex = ref(0);
 const prevButtonRef = ref(null);
 const nextButtonRef = ref(null);
 const swiperInstance = ref(null);
+const { getMediaUrl } = useMedia();
 
 const videoSlides = computed(() => {
-  if (props.data?.videos && Array.isArray(props.data.videos)) {
-    return props.data.videos;
+  const rawVideos = props.data?.videos || props.data?.items || [];
+  if (Array.isArray(rawVideos) && rawVideos.length) {
+    return rawVideos.map((item, index) => {
+      // Возможные поля из Strapi для видео и превью
+      const title = item.title || item.name || '';
+      const description = item.description || item.subtitle || '';
+      const videoMedia = item.video || item.file || item.url;
+      const thumbMedia = item.video_main || item.thumbnail || item.preview || item.image || item.poster;
+
+      const url = typeof videoMedia === 'string' ? videoMedia : getMediaUrl(videoMedia);
+      const thumbnail = typeof thumbMedia === 'string' ? getMediaUrl(thumbMedia) : getMediaUrl(thumbMedia);
+
+      return {
+        id: item.id || index + 1,
+        title,
+        description,
+        url,
+        thumbnail,
+        // duration может прийти с бэка, иначе опционально
+        duration: item.duration || ''
+      };
+    }).filter(v => v.url);
   }
-  
-  return [
-    {
-      id: 1,
-      title: 'Видео-обзор проекта',
-      description: 'Подробный видео-обзор жилого комплекса',
-      url: sampleVideo,
-      thumbnail: thumbnailImage1,
-      duration: '0:05'
-    },
-    {
-      id: 2,
-      title: 'Планировки квартир',
-      description: 'Разбор различных планировок и их особенностей',
-      url: sampleVideo,
-      thumbnail: thumbnailImage2,
-      duration: '0:05'
-    },
-    {
-      id: 3,
-      title: 'Ход строительства',
-      description: 'Актуальная информация о строительстве объекта',
-      url: sampleVideo,
-      thumbnail: thumbnailImage1,
-      duration: '0:05'
-    },
-    {
-      id: 4,
-      title: 'Инфраструктура района',
-      description: 'Обзор окружающей инфраструктуры и транспортной доступности',
-      url: sampleVideo,
-      thumbnail: thumbnailImage2,
-      duration: '0:05'
-    }
-  ];
+  return [];
 });
 
 const totalSlides = computed(() => videoSlides.value.length);
@@ -175,7 +160,17 @@ const onSlideChange = (swiper) => {
   currentIndex.value = swiper.activeIndex;
 };
 
-const getVideoThumbnail = () => {
+const getVideoThumbnail = (url) => {
+  if (!url) return '';
+  // Поддержка превью для YouTube ссылок
+  try {
+    const ytIdMatch = url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+    if (ytIdMatch && ytIdMatch[1]) {
+      return `https://img.youtube.com/vi/${ytIdMatch[1]}/hqdefault.jpg`;
+    }
+  } catch (e) {
+    // no-op
+  }
   return '';
 };
 
