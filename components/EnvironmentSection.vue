@@ -108,9 +108,7 @@
               <div class="accordion-header" @click="toggleItem(index)">
                 <div class="icon">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <!-- Фоновый круг -->
                     <circle cx="8" cy="8" r="6.5" stroke="#E6DFD8" stroke-width="3" fill="none" />
-                    <!-- Прогресс круг -->
                     <circle
                       cx="8"
                       cy="8"
@@ -137,9 +135,6 @@
                   :disableAnimation="activeIndex === index"
                   :disablePointer="activeIndex === index"
                 />
-              </div>
-              <div v-show="activeIndex === index" class="accordion-content">
-                <p>{{ item.content }}</p>
               </div>
             </div>
           </div>
@@ -250,7 +245,7 @@ const animateProgress = timestamp => {
   }
 
   const elapsed = timestamp - progressStartTime.value;
-  const duration = 3000; // 3 секунды
+  const duration = 5000;
   const progress = Math.min((elapsed / duration) * 100, 100);
 
   progressValue.value = progress;
@@ -283,10 +278,10 @@ const startAutoplay = () => {
 
   autoplayInterval.value = setInterval(() => {
     if (!isAnimating.value) {
-      goToNextSlide(true); // true = автоматическое переключение
-      startProgress(); // Перезапускаем прогресс
+      goToNextSlide(true);
+      startProgress();
     }
-  }, 3000);
+  }, 5000);
 };
 
 const stopAutoplay = () => {
@@ -963,7 +958,8 @@ onBeforeUnmount(() => {
   }
 
   .controls-block {
-    height: 384px;
+    height: auto;
+    min-height: 200px;
     width: 421px;
     border-radius: 7px;
     position: relative;
@@ -974,7 +970,6 @@ onBeforeUnmount(() => {
     transition: all 0.3s ease;
 
     @media (max-width: 1366px) {
-      height: 336px;
       width: 365px;
     }
 
@@ -998,11 +993,7 @@ onBeforeUnmount(() => {
   }
 
   .accordion-item.active {
-    padding: 0 0 30px;
-  }
-
-  .accordion-item.active:not(:first-child) {
-    padding: 30px 0;
+    padding-bottom: 8px;
   }
 
   .accordion-header {
@@ -1048,22 +1039,6 @@ onBeforeUnmount(() => {
     }
   }
 
-  .accordion-content p {
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 140%;
-    opacity: 0.8;
-    color: $text-color-primary;
-    margin-top: 10px;
-
-    @media (max-width: 1366px) {
-      font-size: 16px;
-    }
-  }
-
-  .accordion-content {
-    animation: fadeIn 0.3s ease;
-  }
 
   .image-control {
     position: absolute;
