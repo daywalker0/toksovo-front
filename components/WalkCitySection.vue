@@ -5,35 +5,63 @@
         <h2 class="walk-city-section__title">Все для лучшей жизни</h2>
       </div>
       
-      <div class="walk-city-section__slider">
-        <DefaultSlider
-          :slides="slides"
-          :slides-per-view="4"
-          :space-between="45"
-          :show-navigation="false"
-          :show-pagination="false"
-          :breakpoints="customBreakpoints"
-        >
-          <template #slide="{ slide }">
-            <div class="custom-slide">
-              <div class="slide-image" :style="{ backgroundImage: `url(${slide.image?.startsWith('http') ? slide.image : getMediaUrl(slide.image)})` }">
-                <div class="slide-text">{{ slide.title }}</div>
-              </div>
+      <DefaultSlider
+        v-if="isDesktop"
+        :slides="slides"
+        :slides-per-view="4"
+        :space-between="45"
+        :show-navigation="false"
+        :show-pagination="false"
+        :breakpoints="desktopBreakpoints"
+        class="walk-city-section__slider"
+      >
+        <template #slide="{ slide }">
+          <div class="custom-card">
+            <div class="slide-image" :style="{ backgroundImage: `url(${slide.image?.startsWith('http') ? slide.image : getMediaUrl(slide.image)})` }">
+              <div class="slide-text">{{ slide.title }}</div>
             </div>
-          </template>
-        </DefaultSlider>
+          </div>
+        </template>
+      </DefaultSlider>
+
+      <div v-else class="walk-city-section__grid">
+        <div
+          v-for="slide in slides"
+          :key="slide.id"
+          class="custom-card"
+        >
+          <div class="slide-image" :style="{ backgroundImage: `url(${slide.image?.startsWith('http') ? slide.image : getMediaUrl(slide.image)})` }">
+            <div class="slide-text">{{ slide.title }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
 const { getMediaUrl } = useMedia();
 
 const props = defineProps({
   data: Object
+});
+
+const isDesktop = ref(false);
+
+const checkScreenSize = () => {
+  isDesktop.value = window.innerWidth > 1024;
+};
+
+onMounted(() => {
+  checkScreenSize();
+  window.addEventListener('resize', checkScreenSize);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkScreenSize);
 });
 
 const slides = computed(() => {
@@ -84,20 +112,8 @@ const slides = computed(() => {
   return hardcodedSlides;
 });
 
-const customBreakpoints = {
-  320: {
-    slidesPerView: 1,
-    spaceBetween: 8
-  },
-  599: {
-    slidesPerView: 2,
-    spaceBetween: 8
-  },
-  768: {
-    slidesPerView: 3,
-    spaceBetween: 20
-  },
-  1240: {
+const desktopBreakpoints = {
+  1024: {
     slidesPerView: 4,
     spaceBetween: 45
   }
@@ -203,9 +219,29 @@ const customBreakpoints = {
       padding-right: 0;
     }
   }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 45px;
+    position: relative;
+
+    @media (max-width: 1023px) {
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      gap: 8px;
+    }
+
+    @media (max-width: $breakpoint-x) {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
 }
 
-.custom-slide {
+.custom-card {
   height: 407px;
   border-radius: 7px;
   overflow: hidden;
