@@ -27,13 +27,20 @@
       <div class="video-content" @click.stop>
         <div class="video-player" ref="playerContainer">
           <video
-            :src="video?.url"
+            :src="videoUrl"
             controls
             autoplay
             class="video-native"
+            @error="handleVideoError"
+            @loadedmetadata="handleVideoLoaded"
+            preload="metadata"
           >
             Ваш браузер не поддерживает воспроизведение видео.
           </video>
+        </div>
+        <div v-if="videoError" class="video-error">
+          <p>Не удалось загрузить видео</p>
+          <p class="error-url">{{ videoUrl }}</p>
         </div>
       </div>
     </div>
@@ -41,7 +48,8 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { useMedia } from '@/composables/useMedia';
 
 const props = defineProps({
   modelValue: {
@@ -57,6 +65,25 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 const playerContainer = ref(null);
+const videoError = ref(false);
+const { getMediaUrl } = useMedia();
+
+const videoUrl = computed(() => {
+  if (!props.video?.url) return '';
+  return getMediaUrl(props.video.url);
+});
+
+const handleVideoError = (event) => {
+  if (process.dev) {
+    // eslint-disable-next-line no-console
+    console.error('Video loading error:', event);
+  }
+  videoError.value = true;
+};
+
+const handleVideoLoaded = () => {
+  videoError.value = false;
+};
 
 const closeDialog = () => {
   emit('update:modelValue', false);
@@ -86,6 +113,7 @@ watch(
   () => props.modelValue,
   (newValue) => {
     if (newValue) {
+      videoError.value = false;
       lockScroll();
       if (process.client) {
         const header = document.querySelector('.header');
@@ -103,6 +131,13 @@ watch(
         }
       }
     }
+  }
+);
+
+watch(
+  () => props.video,
+  () => {
+    videoError.value = false;
   }
 );
 
@@ -247,6 +282,30 @@ onUnmounted(() => {
 
 .video-dialog-leave-to .video-content {
   transform: scale(0.9);
+}
+
+.video-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  z-index: 10;
+
+  p {
+    margin: 8px 0;
+  }
+
+  .error-url {
+    font-size: 12px;
+    opacity: 0.7;
+    word-break: break-all;
+    max-width: 400px;
+  }
 }
 </style>
 

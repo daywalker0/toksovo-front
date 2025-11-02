@@ -120,8 +120,8 @@ const videoSlides = computed(() => {
       const videoMedia = item.video || item.file || item.url;
       const thumbMedia = item.video_main || item.thumbnail || item.preview || item.image || item.poster;
 
-      const url = typeof videoMedia === 'string' ? videoMedia : getMediaUrl(videoMedia);
-      const thumbnail = typeof thumbMedia === 'string' ? getMediaUrl(thumbMedia) : getMediaUrl(thumbMedia);
+      const url = getMediaUrl(videoMedia);
+      const thumbnail = getMediaUrl(thumbMedia);
 
       return {
         id: item.id || index + 1,
