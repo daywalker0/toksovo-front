@@ -137,7 +137,7 @@ const setActiveTab = (tabId) => {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 40px;
+  margin: 40px 0;
   flex-wrap: wrap;
 
   @media (max-width: $breakpoint-sm) {

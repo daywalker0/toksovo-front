@@ -1,7 +1,7 @@
 <template>
   <div class="locations-section section">
     <div class="locations-section__container container">
-      <TitleNew :text="title" />
+      <TextBlockSection :text="title" :subtitle="subtitle" />
 
       <!-- Мобильная версия - слайдер -->
       <div v-if="isMobile" class="mobile-slider">
@@ -83,7 +83,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
-import TitleNew from './Common/TitleNew.vue';
+import TextBlockSection from './TextBlockSection.vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
 const props = defineProps({
@@ -95,8 +95,8 @@ const props = defineProps({
 
 const { getMediaUrl } = useMedia();
 
-// Заголовок секции
 const title = computed(() => props.data?.title || 'Локации рядом');
+const subtitle = computed(() => props.data?.subtitle || props.data?.description || '');
 
 const parallaxSection = ref(null);
 const leftColumn = ref(null);
@@ -314,12 +314,6 @@ onBeforeUnmount(() => {
 
   @media (max-width: $breakpoint-x) {
     padding: 40px 0 60px;
-  }
-
-  &__title {
-    max-width: 508px;
-    text-align: center;
-    margin: 0 auto;
   }
 }
 
