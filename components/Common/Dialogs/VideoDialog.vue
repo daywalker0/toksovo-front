@@ -26,7 +26,17 @@
 
       <div class="video-content" @click.stop>
         <div class="video-player" ref="playerContainer">
+          <iframe
+            v-if="isEmbedVideo"
+            :src="embedUrl"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            class="video-embed"
+          ></iframe>
+          
           <video
+            v-else
             :src="videoUrl"
             controls
             autoplay
@@ -38,7 +48,7 @@
             Ваш браузер не поддерживает воспроизведение видео.
           </video>
         </div>
-        <div v-if="videoError" class="video-error">
+        <div v-if="videoError && !isEmbedVideo" class="video-error">
           <p>Не удалось загрузить видео</p>
           <p class="error-url">{{ videoUrl }}</p>
         </div>
@@ -71,6 +81,143 @@ const { getMediaUrl } = useMedia();
 const videoUrl = computed(() => {
   if (!props.video?.url) return '';
   return getMediaUrl(props.video.url);
+});
+
+const isDirectVideoFile = computed(() => {
+  const url = videoUrl.value;
+  if (!url) return false;
+  
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.ogv', '.avi', '.mov', '.m4v', '.mkv'];
+  const urlLower = url.toLowerCase();
+  return videoExtensions.some(ext => urlLower.includes(ext));
+});
+
+const isEmbedVideo = computed(() => {
+  const url = videoUrl.value;
+  if (!url) return false;
+  
+  if (isDirectVideoFile.value) {
+    return false;
+  }
+  
+  const videoHosts = [
+    'youtube.com',
+    'youtu.be',
+    'rutube.ru',
+    'vimeo.com',
+    'dailymotion.com',
+    'vk.com/video',
+    'ok.ru/video',
+    'twitch.tv',
+  ];
+  
+  const isKnownHost = videoHosts.some(host => url.includes(host));
+  
+  if (isKnownHost) {
+    return true;
+  }
+  
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return true;
+  }
+  
+  return false;
+});
+
+const embedUrl = computed(() => {
+  const url = videoUrl.value;
+  if (!url) return '';
+  
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    let videoId = '';
+    
+    const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+    if (watchMatch) {
+      videoId = watchMatch[1];
+    }
+    else if (url.includes('youtu.be/')) {
+      const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      if (shortMatch) {
+        videoId = shortMatch[1];
+      }
+    }
+    else if (url.includes('youtube.com/embed/')) {
+      return url.split('?')[0] + '?autoplay=1';
+    }
+    
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    }
+  }
+  
+  if (url.includes('rutube.ru')) {
+    let videoId = '';
+    
+    const videoMatch = url.match(/rutube\.ru\/video\/([a-zA-Z0-9_-]+)/);
+    if (videoMatch) {
+      videoId = videoMatch[1];
+    }
+    else if (url.includes('rutube.ru/play/embed/')) {
+      const embedMatch = url.match(/rutube\.ru\/play\/embed\/([a-zA-Z0-9_-]+)/);
+      if (embedMatch) {
+        videoId = embedMatch[1];
+      } else {
+        return url.split('?')[0] + '?autoplay=1';
+      }
+    }
+    
+    if (videoId) {
+      return `https://rutube.ru/play/embed/${videoId}?autoplay=1`;
+    }
+  }
+  
+  if (url.includes('vimeo.com')) {
+    let videoId = '';
+    
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch) {
+      videoId = vimeoMatch[1];
+    }
+    else if (url.includes('player.vimeo.com/video/')) {
+      const embedMatch = url.match(/player\.vimeo\.com\/video\/(\d+)/);
+      if (embedMatch) {
+        videoId = embedMatch[1];
+      } else {
+        return url.split('?')[0] + '?autoplay=1';
+      }
+    }
+    
+    if (videoId) {
+      return `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+    }
+  }
+  
+  if (url.includes('dailymotion.com')) {
+    let videoId = '';
+    
+    const dmMatch = url.match(/dailymotion\.com\/video\/([a-zA-Z0-9]+)/);
+    if (dmMatch) {
+      videoId = dmMatch[1];
+    }
+    else if (url.includes('dailymotion.com/embed/video/')) {
+      const embedMatch = url.match(/dailymotion\.com\/embed\/video\/([a-zA-Z0-9]+)/);
+      if (embedMatch) {
+        videoId = embedMatch[1];
+      } else {
+        return url.split('?')[0] + '?autoplay=1';
+      }
+    }
+    
+    if (videoId) {
+      return `https://www.dailymotion.com/embed/video/${videoId}?autoplay=1`;
+    }
+  }
+  
+  if (!isDirectVideoFile.value) {
+    return url.includes('?') ? url + '&autoplay=1' : url + '?autoplay=1';
+  }
+  
+  return url;
 });
 
 const handleVideoError = (event) => {
@@ -259,6 +406,18 @@ onUnmounted(() => {
   height: 100%;
   object-fit: contain;
   background: #000;
+}
+
+.video-embed {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  border: none;
+  background: #000;
+  
+  @media (max-width: 599px) {
+    min-height: 100%;
+  }
 }
 
 .video-dialog-enter-active,

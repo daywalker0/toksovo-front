@@ -39,22 +39,23 @@
                 </div>
               </div>
 
-              <button @click="openDialogVideo()" class="content--button button">Видео</button>
+              <button @click="openDialogVideo(slide)" class="content--button button">Видео</button>
             </div>
           </div>
         </template>
       </DefaultSlider>
     </div>
-    <Dialog v-model="showDialogVideo" :close-on-overlay="true" class="video-dialog">
-      <div class="video-dialog-content">ВИДЕО</div>
-    </Dialog>
+    <VideoDialog 
+      v-model="showDialogVideo" 
+      :video="selectedVideo"
+    />
   </section>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
-import Dialog from './Common/Dialogs/Dialog.vue';
+import VideoDialog from './Common/Dialogs/VideoDialog.vue';
 import TitleNew from './Common/TitleNew.vue';
 import { useMedia } from '~/composables/useMedia';
 import { useProjectsApi } from '~/composables/useProjectsApi';
@@ -70,7 +71,12 @@ const { getMediaUrl } = useMedia();
 const { fetchAllProjects } = useProjectsApi();
 
 const showDialogVideo = ref(false);
+const selectedVideo = ref(null);
 const projects = ref([]);
+
+const projectVideos = {
+  default: 'https://rutube.ru/video/36fc5c318c469a404d7254f66ddfdfef/',
+};
 
 // Заголовок секции
 const title = computed(() => props.data?.title || 'Другие проекты');
@@ -108,7 +114,15 @@ const projectsSlides = computed(() => {
       });
     }
     
+    const projectId = project.id || project.title || project.name || '';
+    const videoUrl = project.video || 
+                     projectVideos[project.title] || 
+                     projectVideos[project.name] ||
+                     projectVideos[projectId] ||
+                     projectVideos.default;
+    
     return {
+      id: project.id || projectId,
       title: project.title || project.name || '',
       city: project.location || project.city || '',
       rented: project.date || project.rented || project.delivery_date || '',
@@ -117,19 +131,26 @@ const projectsSlides = computed(() => {
       apps,
       floors,
       link: project.link || '#',
+      videoUrl: videoUrl,
     };
   });
 });
 
-const openDialogVideo = () => {
-  showDialogVideo.value = true;
+const openDialogVideo = (slide) => {
+  if (slide && slide.videoUrl) {
+    selectedVideo.value = {
+      url: slide.videoUrl,
+      title: slide.title || 'Видео проекта',
+    };
+    showDialogVideo.value = true;
+  }
 };
 
 // Загружаем проекты при монтировании
 onMounted(async () => {
   try {
     projects.value = await fetchAllProjects();
-  } catch (error) {
+  } catch {
     projects.value = [];
   }
 });
@@ -168,14 +189,6 @@ onMounted(async () => {
   }
 }
 
-::v-deep(.dialog-content) {
-  width: 80%;
-  height: 80%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 118px;
-}
 .projects-section {
   margin-bottom: 200px;
   @media (max-width: $breakpoint-x) {
@@ -370,46 +383,5 @@ onMounted(async () => {
   }
 }
 
-/* Стили для видео диалога */
-::v-deep(.video-dialog) {
-  .dialog-content {
-    max-width: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 170px;
-
-    @media (max-width: $breakpoint-lg) {
-      height: 30%;
-      margin: 0 50px;
-    }
-
-    @media (max-width: $breakpoint-x) {
-      border-radius: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      height: 214px;
-    }
-  }
-
-  .dialog-close {
-    top: 20px;
-    right: 20px;
-  }
-}
-
-.video-dialog-content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-
-  @media (max-width: $breakpoint-x) {
-    font-size: 40px;
-  }
-}
 
 </style>
