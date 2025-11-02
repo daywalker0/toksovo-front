@@ -102,7 +102,7 @@ onMounted(() => {
   }
 
   &__content {
-    margin-top: 200px;
+    margin-top: 104px;
     margin-left: 0px;
     position: static;
     z-index: 4;
@@ -136,11 +136,10 @@ onMounted(() => {
     z-index: 10;
     line-height: 80%;
     margin: 0;
-    text-align: center;
-    max-width: 510px;
+    text-align: left;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 20px;
 
     @media (max-width: $breakpoint-lg) {
@@ -148,7 +147,7 @@ onMounted(() => {
       max-width: 500px;
       margin-bottom: 20px;
       line-height: 90%;
-      text-align: center;
+      text-align: left;
     }
 
     @media (max-width: $breakpoint-x) {
@@ -161,23 +160,10 @@ onMounted(() => {
       font-size: inherit;
       font-weight: inherit;
       line-height: inherit;
-
-      &--right {
-        text-align: right;
-        margin-left: auto;
-        max-width: 70%;
-
-        &:last-child {
-          margin-left: 80%;
-          max-width: 120%;
-        }
-      }
-
-      &--left {
-        text-align: left;
-        margin-right: auto;
-        max-width: 80%;
-      }
+      text-align: left;
+      margin-left: 0;
+      margin-right: auto;
+      max-width: 100%;
     }
   }
 
@@ -215,7 +201,7 @@ onMounted(() => {
     top: 0;
     right: 0;
     bottom: 0;
-    width: 60%;
+    width: 58%;
     height: 100%;
 
     img {
