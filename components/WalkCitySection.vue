@@ -210,6 +210,7 @@ const desktopBreakpoints = {
     @media (max-width: $breakpoint-lg) {
       margin-top: 40px;
       margin-bottom: 40px;
+      width: 100%;
     }
 
     @media (max-width: $breakpoint-x) {
@@ -281,6 +282,10 @@ const desktopBreakpoints = {
 
   @media (max-width: $breakpoint-x) {
     height: 338px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    height: 250px;
   }
 }
 

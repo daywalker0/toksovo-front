@@ -147,12 +147,12 @@ onMounted(() => {
       max-width: 500px;
       margin-bottom: 20px;
       line-height: 90%;
-      text-align: left;
+      text-align: center;
     }
 
     @media (max-width: $breakpoint-x) {
-      text-align: left;
       line-height: 90%;
+      max-width: 100%;
     }
 
     .title-word {
