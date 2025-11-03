@@ -39,7 +39,13 @@
                 </div>
               </div>
 
-              <button @click="openDialogVideo(slide)" class="content--button button">Видео</button>
+              <button 
+                v-if="slide.hasVideo && slide.videoUrl" 
+                @click="openDialogVideo(slide)" 
+                class="content--button button"
+              >
+                Видео
+              </button>
             </div>
           </div>
         </template>
@@ -78,17 +84,19 @@ const projectVideos = {
   default: 'https://rutube.ru/video/36fc5c318c469a404d7254f66ddfdfef/',
 };
 
-// Заголовок секции
 const title = computed(() => props.data?.title || 'Другие проекты');
 
-// Получаем проекты из API
 const projectsSlides = computed(() => {
   if (!Array.isArray(projects.value) || projects.value.length === 0) {
     return [];
   }
   
+  if (process.client && process.dev && projects.value.length > 0) {
+    // eslint-disable-next-line no-console
+    console.log('ProjectsSection - First project structure:', JSON.stringify(projects.value[0], null, 2));
+  }
+  
   return projects.value.map(project => {
-    // Парсим project_features для извлечения houses, apps, floors
     let houses = null;
     let apps = null;
     let floors = null;
@@ -99,30 +107,52 @@ const projectsSlides = computed(() => {
         const lowerValue = value.toLowerCase();
         
         if (lowerValue.includes('дом')) {
-          // Извлекаем число из строки типа "2 дома"
           const match = value.match(/(\d+)/);
           if (match) houses = parseInt(match[1]);
         } else if (lowerValue.includes('квартир')) {
-          // Извлекаем число из строки типа "65 квартир"
           const match = value.match(/(\d+)/);
           if (match) apps = parseInt(match[1]);
         } else if (lowerValue.includes('этаж')) {
-          // Извлекаем число из строки типа "6 этажей"
           const match = value.match(/(\d+)/);
           if (match) floors = parseInt(match[1]);
         }
       });
     }
     
-    const projectId = project.id || project.title || project.name || '';
-    const videoUrl = project.video || 
-                     projectVideos[project.title] || 
-                     projectVideos[project.name] ||
-                     projectVideos[projectId] ||
-                     projectVideos.default;
+    const linkVideo = project.link_video !== undefined ? project.link_video : true;
+    let videoUrl = '';
+    let hasVideo = false;
+    
+    const videoField = project.video || project.popup_video || project.url_video;
+    
+    if (videoField) {
+      hasVideo = true;
+      if (linkVideo) {
+        if (typeof videoField === 'object' && videoField.url) {
+          videoUrl = videoField.url;
+        } else {
+          videoUrl = videoField;
+        }
+      } else {
+        videoUrl = getMediaUrl(videoField);
+      }
+    } else {
+      const projectId = project.id || project.title || project.name || '';
+      const fallbackVideo = projectVideos[project.title] || 
+                           projectVideos[project.name] ||
+                           projectVideos[projectId] ||
+                           projectVideos.default;
+      
+      if (fallbackVideo && fallbackVideo !== projectVideos.default) {
+        hasVideo = true;
+        videoUrl = fallbackVideo;
+      } else if (fallbackVideo === projectVideos.default) {
+        videoUrl = '';
+      }
+    }
     
     return {
-      id: project.id || projectId,
+      id: project.id || project.title || project.name || '',
       title: project.title || project.name || '',
       city: project.location || project.city || '',
       rented: project.date || project.rented || project.delivery_date || '',
@@ -132,6 +162,8 @@ const projectsSlides = computed(() => {
       floors,
       link: project.link || '#',
       videoUrl: videoUrl,
+      linkVideo: linkVideo,
+      hasVideo: hasVideo,
     };
   });
 });
@@ -141,12 +173,12 @@ const openDialogVideo = (slide) => {
     selectedVideo.value = {
       url: slide.videoUrl,
       title: slide.title || 'Видео проекта',
+      linkVideo: slide.linkVideo !== undefined ? slide.linkVideo : true,
     };
     showDialogVideo.value = true;
   }
 };
 
-// Загружаем проекты при монтировании
 onMounted(async () => {
   try {
     projects.value = await fetchAllProjects();

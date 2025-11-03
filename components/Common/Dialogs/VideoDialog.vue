@@ -80,10 +80,19 @@ const { getMediaUrl } = useMedia();
 
 const videoUrl = computed(() => {
   if (!props.video?.url) return '';
+
+  if (props.video?.linkVideo === true) {
+    return props.video.url;
+  }
+  
   return getMediaUrl(props.video.url);
 });
 
 const isDirectVideoFile = computed(() => {
+  if (props.video?.linkVideo !== undefined) {
+    return !props.video.linkVideo;
+  }
+  
   const url = videoUrl.value;
   if (!url) return false;
   
@@ -95,6 +104,10 @@ const isDirectVideoFile = computed(() => {
 const isEmbedVideo = computed(() => {
   const url = videoUrl.value;
   if (!url) return false;
+  
+  if (props.video?.linkVideo !== undefined) {
+    return props.video.linkVideo;
+  }
   
   if (isDirectVideoFile.value) {
     return false;
