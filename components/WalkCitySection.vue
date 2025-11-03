@@ -2,7 +2,7 @@
   <div class="walk-city-section section horizontal-section">
     <div class="walk-city-section__container container">
       <div class="walk-city-section__title-wrapper">
-        <h2 class="walk-city-section__title">Все для лучшей жизни</h2>
+        <h2 class="walk-city-section__title">{{ title }}</h2>
       </div>
       
       <DefaultSlider
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 
 const { getMediaUrl } = useMedia();
@@ -62,6 +62,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', checkScreenSize);
+});
+
+const title = computed(() => {
+  return props.data?.title || 'Все для лучшей жизни';
 });
 
 const slides = computed(() => {
@@ -99,14 +103,42 @@ const slides = computed(() => {
   ];
 
   if (!props.data) return hardcodedSlides;
-  
-  if (props.data.peculiarities && Array.isArray(props.data.peculiarities) && props.data.peculiarities.length > 0) {
-    return props.data.peculiarities;
+
+  const normalizeSlide = (item, index) => {
+    const image = item.image || item.bg_image || item.background_image;
+    
+    return {
+      id: item.id || index + 1,
+      title: item.title || item.name || '',
+      image: image ? getMediaUrl(image) : ''
+    };
+  };
+
+  if (props.data.card && Array.isArray(props.data.card) && props.data.card.length > 0) {
+    return props.data.card.map(normalizeSlide);
+  }
+
+  const possibleArrayFields = [
+    'peculiarities',
+    'slider',
+    'items',
+    'cards',
+    'benefit_cards',
+    'benefits',
+    'life_benefit_card'
+  ];
+
+  for (const field of possibleArrayFields) {
+    if (props.data[field] && Array.isArray(props.data[field]) && props.data[field].length > 0) {
+      return props.data[field].map(normalizeSlide);
+    }
   }
   
   if (props.data.osobennostis && Array.isArray(props.data.osobennostis)) {
     const allSlides = props.data.osobennostis.flatMap(tab => tab.peculiarities || []);
-    if (allSlides.length > 0) return allSlides;
+    if (allSlides.length > 0) {
+      return allSlides.map(normalizeSlide);
+    }
   }
   
   return hardcodedSlides;

@@ -114,6 +114,12 @@ export const useMainStore = defineStore('main', () => {
     )
   })
 
+  const getBestLifeBlock = computed(() => {
+    return mainData.value?.data?.blocks?.find(
+      block => block.__component === 'blocks.vse-dlya-luchshej-zhizni'
+    )
+  })
+
   return {
     mainData,
     loading,
@@ -134,5 +140,6 @@ export const useMainStore = defineStore('main', () => {
     getNewsBlock,
     getProjectsBlock,
     getEnvironmentBlock,
+    getBestLifeBlock,
   }
 })

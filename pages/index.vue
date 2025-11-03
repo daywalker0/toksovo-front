@@ -23,7 +23,7 @@
       <div ref="horizontalWrapper" class="horizontal-wrapper">
         <div class="horizontal-container">
           <NatureSection :data="natureLivingBlock1" />
-          <WalkCitySection :data="natureLivingBlock2" />
+          <WalkCitySection :data="bestLifeBlock" />
         </div>
       </div>
 
@@ -90,7 +90,7 @@ const calmNatureBlock = computed(() => mainStore.getCalmNatureBlock)
 const environmentBlock = computed(() => mainStore.getEnvironmentBlock)
 const locationsBlock = computed(() => mainStore.getLocationsBlock)
 const natureLivingBlock1 = computed(() => mainStore.getNatureLivingBlock.life_benefit_card[0])
-const natureLivingBlock2 = computed(() => mainStore.getNatureLivingBlock.life_benefit_card[1])
+const bestLifeBlock = computed(() => mainStore.getBestLifeBlock)
 const genplanBlock = computed(() => mainStore.getGenplanBlock)
 const styleLivingBlock = computed(() => mainStore.getStyleLivingBlock)
 const firstStepsBlock = computed(() => mainStore.getFirstStepsBlock)
