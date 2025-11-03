@@ -122,7 +122,19 @@ const currentCategory = ref(0); // текущая выбранная катег�
 const currentApartmentIndex = ref(0); // текущая квартира в категории
 const currentImageIndex = ref(0); // текущее изображение в слайдере
 
-// Категории квартир из API
+const formatCategoryName = (name) => {
+  if (!name) return 'Другие';
+  
+  const trimmed = name.trim();
+  const match = trimmed.match(/^к\s*(\d+)$/i);
+  
+  if (match) {
+    return `${match[1]}К`;
+  }
+  
+  return trimmed;
+};
+
 const apartmentCategories = computed(() => {
   const apartments = props.data?.plan_slider || props.data?.kvartiries || [];
   
@@ -130,11 +142,11 @@ const apartmentCategories = computed(() => {
     return [];
   }
 
-  // Группируем квартиры по категориям (студии, 1-комн, 2-комн и т.д.)
   const grouped = {};
   
   apartments.forEach(apt => {
-    const categoryName = apt.type || apt.category || 'Другие';
+    const rawCategoryName = apt.type || apt.category || 'Другие';
+    const categoryName = formatCategoryName(rawCategoryName);
     if (!grouped[categoryName]) {
       grouped[categoryName] = [];
     }
