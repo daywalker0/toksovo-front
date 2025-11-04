@@ -30,7 +30,7 @@
       <div class="header__contacts">
         <div class="header__tel">
           <AnimatedLink
-            href="tel:+3337767"
+            href="tel:+78123337767"
             text="333 77 67"
             customClass="header__tel-link"
             iconPosition="left"

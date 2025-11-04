@@ -38,7 +38,7 @@
           </div>
           <div class="footer__phone">
             <AnimatedLink
-              href="tel:88123337767"
+              href="tel:+78123337767"
               text="8 (812) 333 77 67"
               customClass="footer__phone-link"
               iconPosition="left"
