@@ -315,6 +315,13 @@ onBeforeUnmount(() => {
   @media (max-width: $breakpoint-x) {
     padding: 40px 0 60px;
   }
+
+  // Убираем боковые паддинги у контента заголовка "Локации рядом" на мобилке
+  @media (max-width: $breakpoint-x) {
+    :deep(.text-block-section .content) {
+      padding: 0;
+    }
+  }
 }
 
 .parallax-block {
@@ -322,7 +329,6 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  margin: 100px 0;
   overflow: visible;
 
   @media (max-width: $breakpoint-sm) {

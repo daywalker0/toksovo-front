@@ -56,7 +56,7 @@ function splitTextIntoLines(text, maxWidth) {
   measure.style.visibility = 'hidden';
   measure.style.whiteSpace = 'nowrap';
   measure.style.fontSize =
-    getComputedStyle(titleRef.value).getPropertyValue('--title-fs') || '118px';
+    getComputedStyle(titleRef.value).getPropertyValue('--title-fs') || '90px';
   measure.style.fontWeight = '400';
   measure.style.fontFamily = 'inherit';
   document.body.appendChild(measure);
@@ -311,7 +311,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  --title-fs: 118px;
+  --title-fs: 90px;
 
   @media (max-width: $breakpoint-lg) {
     --title-fs: 88px;

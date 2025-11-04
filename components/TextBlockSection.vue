@@ -56,14 +56,10 @@ defineProps({
 .subtitle-text-section {
   max-width: 422px;
   text-align: start;
-  margin: 60px auto 0;
+  margin: 32px auto 0;
   word-break: keep-all;
   overflow-wrap: break-word;
   hyphens: none;
-
-  @media (max-width: $breakpoint-md) {
-    margin: 32px auto 0;
-  }
 
   @media (max-width: $breakpoint-x) {
     max-width: 100%;

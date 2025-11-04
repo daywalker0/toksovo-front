@@ -223,7 +223,7 @@ const desktopBreakpoints = {
   &__title {
     width: 100%;
     text-align: left;
-    font-size: 118px;
+    font-size: 90px;
     font-weight: 400;
     line-height: 0.8;
     color: $text-color-primary;
