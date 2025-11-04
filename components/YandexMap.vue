@@ -49,7 +49,7 @@ onMounted(async () => {
       .custom-marker-wrapper {
         position: relative;
         display: inline-block;
-        cursor: pointer;
+        cursor: pointer !important;
         z-index: 1;
       }
       .custom-marker-icon {
@@ -59,11 +59,13 @@ onMounted(async () => {
         position: relative;
         z-index: 4;
         transition: transform 0.2s ease;
+        cursor: pointer !important;
       }
       .custom-marker-icon img {
         width: 100%;
         height: 100%;
         display: block;
+        cursor: pointer !important;
       }
       .custom-marker-wrapper:hover .custom-marker-icon {
         transform: scale(1.05);
@@ -398,7 +400,7 @@ function createPlacemarkFor(loc) {
       iconLayout: CustomLayout,
       iconShape: {
         type: 'Rectangle',
-        coordinates: [[-iconSize / 2, -iconSize / 2], [iconSize / 2, iconSize / 2]]
+        coordinates: [[-30, -30], [30, 30]]
       },
       hasHint: false,
       hasBalloon: false,
@@ -543,6 +545,12 @@ function zoomOut() {
   border-top: 1px solid #e0e0e0;
   border-bottom-left-radius: 50%;
   border-bottom-right-radius: 50%;
+}
+
+:deep(.custom-marker-wrapper),
+:deep(.custom-marker-icon),
+:deep(.custom-marker-icon img) {
+  cursor: pointer !important;
 }
 
 :deep(.custom-marker-wrapper) {
