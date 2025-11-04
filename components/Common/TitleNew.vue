@@ -324,6 +324,10 @@ onUnmounted(() => {
     --title-fs: 45px;
     min-height: 0;
   }
+  @media (max-width: 340px) {
+    --title-fs: 35px;
+    min-height: 0;
+  }
 }
 
 .title-lines {

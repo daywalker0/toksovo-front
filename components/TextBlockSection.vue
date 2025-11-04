@@ -55,7 +55,7 @@ defineProps({
 
 .subtitle-text-section {
   max-width: 422px;
-  text-align: start;
+  text-align: center;
   margin: 32px auto 0;
   word-break: keep-all;
   overflow-wrap: break-word;

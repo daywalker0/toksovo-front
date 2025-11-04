@@ -318,6 +318,9 @@ onBeforeUnmount(() => {
 
   // Убираем боковые паддинги у контента заголовка "Локации рядом" на мобилке
   @media (max-width: $breakpoint-x) {
+    :deep(.text-block-section) {
+      padding: 0;
+    }
     :deep(.text-block-section .content) {
       padding: 0;
     }
