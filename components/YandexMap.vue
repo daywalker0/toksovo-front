@@ -74,17 +74,18 @@ onMounted(async () => {
         position: absolute;
         left: 0;
         top: 50%;
-        transform: translateY(-50%) translateX(0);
+        transform: translateY(-50%) scaleX(0);
+        transform-origin: left center;
         background: white;
         padding: 8px 12px 8px 48px;
         border-radius: 50px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         white-space: nowrap;
-        opacity: 0;
-        max-width: 0;
+        max-width: 300px;
+        width: auto;
         overflow: hidden;
         pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 1;
       }
       .custom-marker-label span {
@@ -94,26 +95,15 @@ onMounted(async () => {
         font-weight: 700;
         line-height: 140%;
         color: #4C5E36;
-        opacity: 0;
-        transition: opacity 0.2s ease 0.1s;
+        opacity: 1;
       }
       .custom-marker-label.visible {
-        opacity: 1;
-        max-width: 300px;
-        transform: translateY(-50%) translateX(0);
+        transform: translateY(-50%) scaleX(1);
         pointer-events: auto;
       }
-      .custom-marker-label.visible span {
-        opacity: 1;
-      }
       .custom-marker-wrapper:hover .custom-marker-label {
-        opacity: 1 !important;
-        max-width: 300px !important;
-        transform: translateY(-50%) translateX(0) !important;
+        transform: translateY(-50%) scaleX(1) !important;
         pointer-events: auto !important;
-      }
-      .custom-marker-wrapper:hover .custom-marker-label span {
-        opacity: 1 !important;
       }
       .ymaps-2-1-79-hint,
       .ymaps-2-1-79-placemark-hint,
@@ -314,8 +304,8 @@ function createPlacemarkFor(loc) {
       <div class="custom-marker-icon" style="display: block; width: 40px; height: 40px; position: relative; z-index: 4; transition: transform 0.2s ease;">
         <img src="data:image/svg+xml;base64,${btoa(svg)}" alt="" style="width: 100%; height: 100%; display: block;" />
       </div>
-      <div class="custom-marker-label" data-marker-id="${markerId}" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%) translateX(0); background: white; padding: 8px 12px 8px 48px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); white-space: nowrap; opacity: 0; max-width: 0; overflow: hidden; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;">
-        <span style="display: block; font-family: 'Akrobat', sans-serif; font-size: 16px; font-weight: 700; line-height: 140%; color: #4C5E36; opacity: 0; transition: opacity 0.2s ease 0.1s;">${markerName}</span>
+      <div class="custom-marker-label" data-marker-id="${markerId}" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%) scaleX(0); transform-origin: left center; background: white; padding: 8px 12px 8px 48px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); white-space: nowrap; max-width: 300px; width: auto; overflow: hidden; pointer-events: none; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;">
+        <span style="display: block; font-family: 'Akrobat', sans-serif; font-size: 16px; font-weight: 700; line-height: 140%; color: #4C5E36; opacity: 1;">${markerName}</span>
       </div>
     </div>`,
     {
@@ -342,23 +332,15 @@ function createPlacemarkFor(loc) {
             const handleMouseEnter = (e) => {
               e.stopPropagation();
               labelEl.classList.add('visible');
-              labelEl.style.opacity = '1';
-              labelEl.style.maxWidth = '300px';
-              labelEl.style.transform = 'translateY(-50%) translateX(0)';
+              labelEl.style.transform = 'translateY(-50%) scaleX(1)';
               labelEl.style.pointerEvents = 'auto';
-              const spanEl = labelEl.querySelector('span');
-              if (spanEl) spanEl.style.opacity = '1';
             };
             
             const handleMouseLeave = (e) => {
               e.stopPropagation();
               labelEl.classList.remove('visible');
-              labelEl.style.opacity = '0';
-              labelEl.style.maxWidth = '0';
-              labelEl.style.transform = 'translateY(-50%) translateX(0)';
+              labelEl.style.transform = 'translateY(-50%) scaleX(0)';
               labelEl.style.pointerEvents = 'none';
-              const spanEl = labelEl.querySelector('span');
-              if (spanEl) spanEl.style.opacity = '0';
             };
             
             wrapper.addEventListener('mouseenter', handleMouseEnter);
@@ -413,12 +395,8 @@ function createPlacemarkFor(loc) {
     
     if (labelEl) {
       labelEl.classList.add('visible');
-      labelEl.style.opacity = '1';
-      labelEl.style.maxWidth = '300px';
-      labelEl.style.transform = 'translateY(-50%) translateX(0)';
+      labelEl.style.transform = 'translateY(-50%) scaleX(1)';
       labelEl.style.pointerEvents = 'auto';
-      const spanEl = labelEl.querySelector('span');
-      if (spanEl) spanEl.style.opacity = '1';
     }
   };
 
@@ -428,12 +406,8 @@ function createPlacemarkFor(loc) {
     
     if (labelEl) {
       labelEl.classList.remove('visible');
-      labelEl.style.opacity = '0';
-      labelEl.style.maxWidth = '0';
-      labelEl.style.transform = 'translateY(-50%) translateX(0)';
+      labelEl.style.transform = 'translateY(-50%) scaleX(0)';
       labelEl.style.pointerEvents = 'none';
-      const spanEl = labelEl.querySelector('span');
-      if (spanEl) spanEl.style.opacity = '0';
     }
   };
 
@@ -583,17 +557,18 @@ function zoomOut() {
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translateY(-50%) translateX(0);
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center;
   background: white;
   padding: 8px 12px 8px 48px;
   border-radius: 50px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
-  opacity: 0;
-  max-width: 0;
+  max-width: 300px;
+  width: auto;
   overflow: hidden;
   pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
   
   span {
@@ -603,19 +578,12 @@ function zoomOut() {
     font-weight: 700;
     line-height: 140%;
     color: #4C5E36;
-    opacity: 0;
-    transition: opacity 0.2s ease 0.1s;
+    opacity: 1;
   }
   
   &.visible {
-    opacity: 1;
-    max-width: 300px;
-    transform: translateY(-50%) translateX(0);
+    transform: translateY(-50%) scaleX(1);
     pointer-events: auto;
-    
-    span {
-      opacity: 1;
-    }
   }
 }
 
