@@ -1,9 +1,6 @@
 <template>
   <div class="yandex-map-wrapper">
     <div ref="mapContainer" class="map-container"></div>
-
-
-    <!-- Кастомные кнопки зума -->
     <div v-if="showZoomControls" class="custom-zoom">
       <button class="button-zoom button-plus" @click="zoomIn">+</button>
       <button class="button-zoom button-minus" @click="zoomOut">−</button>
@@ -40,26 +37,104 @@ const emit = defineEmits(['ready', 'error']);
 const mapContainer = ref(null);
 let map = null;
 let ymaps = null;
-
-// Список всех маркеров (по id)
 const allMarkers = new Map();
-
 
 onMounted(async () => {
   if (!process.client) return;
+
+  if (!document.getElementById('yandex-map-marker-styles')) {
+    const style = document.createElement('style');
+    style.id = 'yandex-map-marker-styles';
+    style.textContent = `
+      .custom-marker-wrapper {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        z-index: 1;
+      }
+      .custom-marker-icon {
+        display: block;
+        width: 40px;
+        height: 40px;
+        position: relative;
+        z-index: 4;
+        transition: transform 0.2s ease;
+      }
+      .custom-marker-icon img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .custom-marker-wrapper:hover .custom-marker-icon {
+        transform: scale(1.05);
+      }
+      .custom-marker-label {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%) translateX(0);
+        background: white;
+        padding: 8px 12px 8px 48px;
+        border-radius: 50px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        white-space: nowrap;
+        opacity: 0;
+        max-width: 0;
+        overflow: hidden;
+        pointer-events: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+      }
+      .custom-marker-label span {
+        display: block;
+        font-family: 'Akrobat', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 140%;
+        color: #4C5E36;
+        opacity: 0;
+        transition: opacity 0.2s ease 0.1s;
+      }
+      .custom-marker-label.visible {
+        opacity: 1;
+        max-width: 300px;
+        transform: translateY(-50%) translateX(0);
+        pointer-events: auto;
+      }
+      .custom-marker-label.visible span {
+        opacity: 1;
+      }
+      .custom-marker-wrapper:hover .custom-marker-label {
+        opacity: 1 !important;
+        max-width: 300px !important;
+        transform: translateY(-50%) translateX(0) !important;
+        pointer-events: auto !important;
+      }
+      .custom-marker-wrapper:hover .custom-marker-label span {
+        opacity: 1 !important;
+      }
+      .ymaps-2-1-79-hint,
+      .ymaps-2-1-79-placemark-hint,
+      .ymaps-2-1-79-hint__content,
+      .ymaps-2-1-79-hint__text {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
   const apiKey = 'f95ebb9f-42ae-4c53-be82-de5a3c134a71';
 
   const isMobile = window.innerWidth <= 599;
 
   try {
-    // Ждем, пока контейнер появится в DOM и получит свои размеры
     await new Promise((resolve, reject) => {
       let attempts = 0;
-      const maxAttempts = 100; // Увеличиваем время ожидания для мобильных устройств
+      const maxAttempts = 100;
 
       const checkContainer = () => {
-        // Принудительно устанавливаем размеры для мобильных устройств
         if (isMobile && mapContainer.value) {
           const parentElement = mapContainer.value.parentElement;
           if (parentElement) {
@@ -72,7 +147,6 @@ onMounted(async () => {
           }
         }
         
-        // Проверяем наличие ref и его размеры
         if (
           mapContainer.value &&
           mapContainer.value.offsetWidth > 0 &&
@@ -89,7 +163,6 @@ onMounted(async () => {
         }
       };
 
-      // Начинаем проверку после nextTick
       nextTick(() => {
         checkContainer();
       });
@@ -114,14 +187,13 @@ onMounted(async () => {
       center: props.center,
       zoom: props.zoom,
       controls: [],
-      suppressMapOpenBlock: true, // Скрываем кнопку "Открыть в Яндекс.Картах"
+      suppressMapOpenBlock: true,
     });
 
     map.behaviors.disable('scrollZoom');
     map.options.set('minZoom', 10);
     map.options.set('maxZoom', 19);
 
-    // Отключаем взаимодействие, если нужно (для превью)
     if (props.disableInteraction) {
       map.behaviors.disable(['drag', 'dblClickZoom', 'multiTouch']);
     }
@@ -129,10 +201,8 @@ onMounted(async () => {
     createPlacemarksFromLocations();
     updateVisibleMarkers();
 
-    // Принудительно обновляем размеры карты для мобильных устройств
     setTimeout(() => {
       if (map && mapContainer.value) {
-        // Принудительно устанавливаем размеры для мобильных устройств
         if (isMobile) {
           const parentElement = mapContainer.value.parentElement;
           if (parentElement) {
@@ -153,7 +223,6 @@ onMounted(async () => {
   } catch (err) {
     emit('error', err);
     
-    // Добавляем fallback для мобильных устройств
     if (mapContainer.value) {
       mapContainer.value.innerHTML = `
         <div style="
@@ -177,7 +246,6 @@ onMounted(async () => {
   }
 });
 
-// при изменении locations пересоздаём плейсмарки
 watch(
   () => props.locations,
   newLocs => {
@@ -187,7 +255,6 @@ watch(
   { deep: true }
 );
 
-// при изменении активных категорий обновляем отображение
 watch(
   () => props.activeCategories,
   () => updateVisibleMarkers(),
@@ -222,13 +289,13 @@ function recreatePlacemarks(newLocs) {
 }
 
 function createPlacemarkFor(loc) {
-  const iconSize = 40; // размер круга
-  const iconInnerSize = 20; // размер иконки внутри
+  const iconSize = 40;
+  const iconInnerSize = 20;
   const iconOffset = (iconSize - iconInnerSize) / 2;
-
-  const bgColor = loc.color || '#4C5E36'; // цвет круга
-  // предполагаем, что loc.icon — это строка SVG, где fill="white" для внутренних элементов
+  const bgColor = loc.color || '#4C5E36';
   const innerSvg = loc.icon || '';
+  const markerName = loc.name || loc.title || 'Локация';
+  const markerId = `marker-${loc.id || Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}" viewBox="0 0 ${iconSize} ${iconSize}">
@@ -240,18 +307,136 @@ function createPlacemarkFor(loc) {
     </svg>
   `;
 
-  const placemark = new ymaps.Placemark(
-    loc.coords,
+  const CustomLayout = ymaps.templateLayoutFactory.createClass(
+    `<div class="custom-marker-wrapper" data-marker-id="${markerId}" data-name="${markerName.replace(/"/g, '&quot;')}" style="position: relative; display: inline-block; cursor: pointer; z-index: 1;">
+      <div class="custom-marker-icon" style="display: block; width: 40px; height: 40px; position: relative; z-index: 4; transition: transform 0.2s ease;">
+        <img src="data:image/svg+xml;base64,${btoa(svg)}" alt="" style="width: 100%; height: 100%; display: block;" />
+      </div>
+      <div class="custom-marker-label" data-marker-id="${markerId}" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%) translateX(0); background: white; padding: 8px 12px 8px 48px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); white-space: nowrap; opacity: 0; max-width: 0; overflow: hidden; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;">
+        <span style="display: block; font-family: 'Akrobat', sans-serif; font-size: 16px; font-weight: 700; line-height: 140%; color: #4C5E36; opacity: 0; transition: opacity 0.2s ease 0.1s;">${markerName}</span>
+      </div>
+    </div>`,
     {
-      hintContent: loc.name || loc.title || 'Локация',
-    },
-    {
-      iconLayout: 'default#image',
-      iconImageHref: 'data:image/svg+xml;base64,' + btoa(svg),
-      iconImageSize: [iconSize, iconSize],
-      iconImageOffset: [-iconSize / 2, -iconSize / 2],
+      build: function() {
+        CustomLayout.superclass.build.call(this);
+        const layoutInstance = this;
+        
+        setTimeout(() => {
+          const parentElement = layoutInstance.getParentElement();
+          if (!parentElement) return;
+          
+          let wrapper = parentElement.querySelector('.custom-marker-wrapper');
+          if (!wrapper && parentElement.classList?.contains('custom-marker-wrapper')) {
+            wrapper = parentElement;
+          }
+          if (!wrapper) wrapper = parentElement;
+          
+          const labelEl = wrapper.querySelector?.('.custom-marker-label');
+          
+          if (labelEl) {
+            layoutInstance._labelEl = labelEl;
+            layoutInstance._wrapper = wrapper;
+            
+            const handleMouseEnter = (e) => {
+              e.stopPropagation();
+              labelEl.classList.add('visible');
+              labelEl.style.opacity = '1';
+              labelEl.style.maxWidth = '300px';
+              labelEl.style.transform = 'translateY(-50%) translateX(0)';
+              labelEl.style.pointerEvents = 'auto';
+              const spanEl = labelEl.querySelector('span');
+              if (spanEl) spanEl.style.opacity = '1';
+            };
+            
+            const handleMouseLeave = (e) => {
+              e.stopPropagation();
+              labelEl.classList.remove('visible');
+              labelEl.style.opacity = '0';
+              labelEl.style.maxWidth = '0';
+              labelEl.style.transform = 'translateY(-50%) translateX(0)';
+              labelEl.style.pointerEvents = 'none';
+              const spanEl = labelEl.querySelector('span');
+              if (spanEl) spanEl.style.opacity = '0';
+            };
+            
+            wrapper.addEventListener('mouseenter', handleMouseEnter);
+            wrapper.addEventListener('mouseleave', handleMouseLeave);
+            labelEl.addEventListener('mouseenter', handleMouseEnter);
+            labelEl.addEventListener('mouseleave', handleMouseLeave);
+            
+            layoutInstance._handlers = { 
+              handleMouseEnter, 
+              handleMouseLeave,
+              wrapper,
+              labelEl
+            };
+          }
+        }, 100);
+      },
+      
+      clear: function() {
+        if (this._handlers) {
+          const { handleMouseEnter, handleMouseLeave, wrapper, labelEl } = this._handlers;
+          if (wrapper) {
+            wrapper.removeEventListener('mouseenter', handleMouseEnter);
+            wrapper.removeEventListener('mouseleave', handleMouseLeave);
+          }
+          if (labelEl) {
+            labelEl.removeEventListener('mouseenter', handleMouseEnter);
+            labelEl.removeEventListener('mouseleave', handleMouseLeave);
+          }
+        }
+        CustomLayout.superclass.clear.call(this);
+      }
     }
   );
+
+  const placemark = new ymaps.Placemark(
+    loc.coords,
+    {},
+    {
+      iconLayout: CustomLayout,
+      iconShape: {
+        type: 'Rectangle',
+        coordinates: [[-iconSize / 2, -iconSize / 2], [iconSize / 2, iconSize / 2]]
+      },
+      hasHint: false,
+      hasBalloon: false,
+    }
+  );
+
+  const showLabel = () => {
+    const layout = placemark.options.get('iconLayout');
+    let labelEl = layout?._labelEl || mapContainer.value?.querySelector(`.custom-marker-label[data-marker-id="${markerId}"]`);
+    
+    if (labelEl) {
+      labelEl.classList.add('visible');
+      labelEl.style.opacity = '1';
+      labelEl.style.maxWidth = '300px';
+      labelEl.style.transform = 'translateY(-50%) translateX(0)';
+      labelEl.style.pointerEvents = 'auto';
+      const spanEl = labelEl.querySelector('span');
+      if (spanEl) spanEl.style.opacity = '1';
+    }
+  };
+
+  const hideLabel = () => {
+    const layout = placemark.options.get('iconLayout');
+    let labelEl = layout?._labelEl || mapContainer.value?.querySelector(`.custom-marker-label[data-marker-id="${markerId}"]`);
+    
+    if (labelEl) {
+      labelEl.classList.remove('visible');
+      labelEl.style.opacity = '0';
+      labelEl.style.maxWidth = '0';
+      labelEl.style.transform = 'translateY(-50%) translateX(0)';
+      labelEl.style.pointerEvents = 'none';
+      const spanEl = labelEl.querySelector('span');
+      if (spanEl) spanEl.style.opacity = '0';
+    }
+  };
+
+  placemark.events.add('mouseenter', showLabel);
+  placemark.events.add('mouseleave', hideLabel);
 
   placemark.events.add('click', () => {
     map.setCenter(loc.coords, 17, { duration: 300 });
@@ -275,7 +460,6 @@ function updateVisibleMarkers() {
   });
 }
 
-// --- Кастомный зум ---
 function zoomIn() {
   if (!map) return;
   map.setZoom(Math.min(map.getZoom() + 1, 19), { duration: 200 });
@@ -306,25 +490,15 @@ function zoomOut() {
     position: relative;
   }
 
-  // Скрываем кнопку "Открыть в Яндекс.Картах"
-  :deep(.ymaps-2-1-79-copyright) {
-    display: none !important;
-  }
-  
-  :deep(.ymaps-2-1-79-map-copyrights-promo) {
-    display: none !important;
-  }
-  
-  // Дополнительные селекторы для скрытия кнопки
-  :deep(.ymaps-2-1-79-copyrights-promo) {
-    display: none !important;
-  }
-  
-  :deep(.ymaps-2-1-79-copyrights-promo__link) {
-    display: none !important;
-  }
-  
-  :deep(.ymaps-2-1-79-copyrights-promo__text) {
+  :deep(.ymaps-2-1-79-copyright),
+  :deep(.ymaps-2-1-79-map-copyrights-promo),
+  :deep(.ymaps-2-1-79-copyrights-promo),
+  :deep(.ymaps-2-1-79-copyrights-promo__link),
+  :deep(.ymaps-2-1-79-copyrights-promo__text),
+  :deep(.ymaps-2-1-79-hint),
+  :deep(.ymaps-2-1-79-placemark-hint),
+  :deep(.ymaps-2-1-79-hint__content),
+  :deep(.ymaps-2-1-79-hint__text) {
     display: none !important;
   }
 }
@@ -369,6 +543,72 @@ function zoomOut() {
   border-top: 1px solid #e0e0e0;
   border-bottom-left-radius: 50%;
   border-bottom-right-radius: 50%;
+}
+
+:deep(.custom-marker-wrapper) {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  z-index: 1;
+}
+
+:deep(.custom-marker-icon) {
+  display: block;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  z-index: 4;
+  transition: transform 0.2s ease;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+:deep(.custom-marker-wrapper:hover .custom-marker-icon) {
+  transform: scale(1.05);
+}
+
+:deep(.custom-marker-label) {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(0);
+  background: white;
+  padding: 8px 12px 8px 48px;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  
+  span {
+    display: block;
+    font-family: 'Akrobat', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 140%;
+    color: #4C5E36;
+    opacity: 0;
+    transition: opacity 0.2s ease 0.1s;
+  }
+  
+  &.visible {
+    opacity: 1;
+    max-width: 300px;
+    transform: translateY(-50%) translateX(0);
+    pointer-events: auto;
+    
+    span {
+      opacity: 1;
+    }
+  }
 }
 
 </style>

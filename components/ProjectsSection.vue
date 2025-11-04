@@ -91,11 +91,6 @@ const projectsSlides = computed(() => {
     return [];
   }
   
-  if (process.client && process.dev && projects.value.length > 0) {
-    // eslint-disable-next-line no-console
-    console.log('ProjectsSection - First project structure:', JSON.stringify(projects.value[0], null, 2));
-  }
-  
   return projects.value.map(project => {
     let houses = null;
     let apps = null;
