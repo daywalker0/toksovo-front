@@ -402,6 +402,11 @@ onMounted(async () => {
     height: 180px;
   }
 
+  @media (max-width: 599px) {
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
   img {
     width: 100%;
     height: 100%;

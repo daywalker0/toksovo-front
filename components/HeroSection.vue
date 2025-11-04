@@ -9,7 +9,7 @@
           <div class="subtitle-text hero-section__subtitle" :aria-label="subtitleText">
             <span class="subtitle-animated">{{ subtitleText }}</span>
           </div>
-          <NuxtLink to="tel:+3337767" class="hero-section__button">
+          <NuxtLink to="tel:+78123337767" class="hero-section__button">
             <svg
               width="14"
               height="14"
