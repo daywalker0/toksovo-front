@@ -31,7 +31,8 @@
       
       <FeaturesSection :data="featuresBlock" />
 
-      <MasterPlanSection :data="genplanBlock" />
+      <!-- Генплан скрыт -->
+      <!-- <MasterPlanSection :data="genplanBlock" /> -->
 
       <section id="architecture">
         <TextBlockSection 
@@ -117,7 +118,7 @@ const updateActiveSection = () => {
   const sections = [
     { id: 'hero', element: document.getElementById('hero') },
     { id: 'about', element: document.getElementById('about') },
-    { id: 'master-plan', element: document.getElementById('master-plan') },
+    // { id: 'master-plan', element: document.getElementById('master-plan') },
     { id: 'architecture', element: document.getElementById('architecture') },
     { id: 'infrastructure', element: document.getElementById('infrastructure') },
     { id: 'layouts', element: document.getElementById('layouts') },

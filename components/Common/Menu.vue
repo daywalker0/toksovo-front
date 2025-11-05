@@ -154,7 +154,7 @@ const cursorY = ref(0);
 const menuItems = [
   { id: 1, title: 'ГЛАВНАЯ', link: '#hero' },
   { id: 2, title: 'О ПРОЕКТЕ', link: '#about' },
-  { id: 3, title: 'ГЕНПЛАН', link: '#master-plan' },
+  // { id: 3, title: 'ГЕНПЛАН', link: '#master-plan' }, // скрыто
   { id: 4, title: 'АРХИТЕКТУРА И ЛОББИ', link: '#architecture' },
   { id: 5, title: 'ИНФРАСТРУКТУРА', link: '#infrastructure' },
   { id: 6, title: 'ПЛАНИРОВКИ', link: '#layouts' },
