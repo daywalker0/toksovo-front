@@ -171,10 +171,9 @@ const pins = ref([
 ]);
 
 const defaultOffers = [
-  { type: 'Студия', price: '5 415 000 руб.' },
-  { type: '1-комн.', price: '6 890 000 руб.' },
-  { type: '2-комн.', price: '8 240 000 руб.' },
-  { type: '3-комн.', price: '10 990 000 руб.' },
+  { type: 'Студия', price: '7 908 000 руб.' },
+  { type: '1-комн.', price: '11 586 000 руб.' },
+  { type: '2-комн.', price: '15 912 000 руб.' },
 ];
 
 const handlePinEnter = (pin, index) => {
