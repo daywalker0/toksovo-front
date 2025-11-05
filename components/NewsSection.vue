@@ -50,21 +50,33 @@ const handleNewsClick = documentId => {
   router.push(`/news/${documentId}`);
 };
 
+// Функция для получения месяца в родительном падеже
+const getMonthGenitive = (date) => {
+  const months = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+  ];
+  return months[date.getMonth()];
+};
+
 // Получаем новости: сначала проверяем, есть ли они в props.data (из Strapi блока),
 // если нет - загружаем из store
 const newsSlides = computed(() => {
   // Если в блоке есть связанные новости - используем их
   if (props.data?.novostis && Array.isArray(props.data.novostis) && props.data.novostis.length > 0) {
-    return props.data.novostis.map(news => ({
-      ...news, // Сначала копируем все поля
-      numericId: news.id,
-      id: news.documentId, // Перезаписываем id на documentId
-      documentId: news.documentId,
-      text: news.title || news.text,
-      number: news.day || new Date(news.createdAt).getDate().toString(),
-      month: news.month || new Date(news.createdAt).toLocaleDateString('ru-RU', { month: 'long' }),
-      year: news.year || new Date(news.createdAt).getFullYear().toString(),
-    }));
+    return props.data.novostis.map(news => {
+      const newsDate = new Date(news.createdAt);
+      return {
+        ...news, // Сначала копируем все поля
+        numericId: news.id,
+        id: news.documentId, // Перезаписываем id на documentId
+        documentId: news.documentId,
+        text: news.title || news.text,
+        number: news.day || newsDate.getDate().toString(),
+        month: news.month || getMonthGenitive(newsDate),
+        year: news.year || newsDate.getFullYear().toString(),
+      };
+    });
   }
   
   // Иначе используем новости из store

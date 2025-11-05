@@ -170,7 +170,7 @@
           <div class="news-article__meta">
             <div class="news-article__date">
               <span class="date-number">{{ newsItem.number || newsItem.day || new Date(newsItem.createdAt).getDate() }}</span>
-              <span class="date-month">{{ newsItem.month || new Date(newsItem.createdAt).toLocaleDateString('ru-RU', { month: 'long' }) }}</span>
+              <span class="date-month">{{ newsItem.month || getMonthGenitive(new Date(newsItem.createdAt)) }}</span>
               <span class="date-year">{{ newsItem.year || new Date(newsItem.createdAt).getFullYear() }}</span>
             </div>
           </div>
@@ -397,6 +397,15 @@ const router = useRouter();
 const newsStore = useNewsStore();
 
 const { getMediaUrl } = useMedia();
+
+// Функция для получения месяца в родительном падеже
+const getMonthGenitive = (date) => {
+  const months = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+  ];
+  return months[date.getMonth()];
+};
 
 // Простая функция для форматирования markdown в HTML
 const formatMarkdown = (text) => {

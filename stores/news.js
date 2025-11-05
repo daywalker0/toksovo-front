@@ -22,6 +22,15 @@ export const useNewsStore = defineStore('news', {
     getLatestNews:
       state =>
       (limit = 4) => {
+        // Функция для получения месяца в родительном падеже
+        const getMonthGenitive = (date) => {
+          const months = [
+            'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+            'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+          ];
+          return months[date.getMonth()];
+        };
+
         // Преобразуем данные в нужный формат для слайдера
         const result = state.news.slice(0, limit).map(news => {
           // Используем date если есть, иначе createdAt
@@ -36,7 +45,7 @@ export const useNewsStore = defineStore('news', {
             text: news.title || news.text || news.description,
             description: news.description,
             number: dateToUse.getDate().toString(),
-            month: dateToUse.toLocaleDateString('ru-RU', { month: 'long' }),
+            month: getMonthGenitive(dateToUse),
             year: dateToUse.getFullYear().toString(),
           };
         });
