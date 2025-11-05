@@ -78,7 +78,9 @@
           </p>
           <div class="footer__documents">
             <AnimatedLink
-              href="#"
+              href="/proektnaya-decl.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               text="Проектная декларация"
               customClass="footer__section-item_text footer__doc-link"
             />

@@ -62,7 +62,7 @@
           <li class="menu__item menu__item--doc menu__item--doc-mobile">
             <div class="left-column__declaration menu--doc-link">
               <AnimatedLink
-                href="#"
+                href="/proektnaya-decl.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 text="Проектная декларация"
@@ -89,7 +89,7 @@
       <div class="right-column">
         <div class="left-column__declaration menu--doc-link">
           <AnimatedLink
-            href="#"
+            href="/proektnaya-decl.pdf"
             target="_blank"
             rel="noopener noreferrer"
             text="Проектная декларация"
