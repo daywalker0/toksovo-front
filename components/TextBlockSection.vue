@@ -32,8 +32,8 @@ defineProps({
   margin: 0 auto;
   background-size: cover;
   background-position: center;
-  padding-top: 120px;
-  padding-bottom: 80px;
+  padding-top: 80px;
+  padding-bottom: 40px;
   max-width: 940px;
   position: relative;
   z-index: 2;
@@ -54,9 +54,9 @@ defineProps({
 }
 
 .subtitle-text-section {
-  max-width: 422px;
+  max-width: 800px;
   text-align: center;
-  margin: 32px auto 0;
+  margin: 24px auto 40px;
   word-break: keep-all;
   overflow-wrap: break-word;
   hyphens: none;

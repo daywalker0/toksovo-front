@@ -96,11 +96,7 @@ onMounted(async () => {
 
 .news-section {
   &__container {
-    padding-bottom: 120px;
-
-    @media (max-width: $breakpoint-x) {
-      padding-bottom: 60px;
-    }
+    padding-bottom: 60px;
   }
   &__title {
     margin: 0 auto;

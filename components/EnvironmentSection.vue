@@ -950,7 +950,7 @@ onBeforeUnmount(() => {
   z-index: 15;
   display: flex;
   align-items: flex-end;
-  padding: 44px;
+  padding: 0 44px 44px;
   pointer-events: none;
 
   @media (max-width: $breakpoint-x) {

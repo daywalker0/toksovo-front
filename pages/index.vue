@@ -284,6 +284,12 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 100;
   background: rgba(248, 243, 237, 1);
+
+  @media (min-width: $breakpoint-x + 1) {
+    > *:not(.horizontal-wrapper) + *:not(.horizontal-wrapper) {
+      margin-top: 0px;
+    }
+  }
 }
 .horizontal-wrapper {
   width: 100vw;

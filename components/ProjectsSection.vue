@@ -217,9 +217,8 @@ onMounted(async () => {
 }
 
 .projects-section {
-  margin-bottom: 200px;
+  margin-bottom: 60px;
   @media (max-width: $breakpoint-x) {
-    margin-bottom: 60px;
 
     ::v-deep(.default-slider) {
       overflow: visible;

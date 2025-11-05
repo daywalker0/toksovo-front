@@ -184,7 +184,7 @@ const handleVideoClick = (video) => {
 @use '@/assets/styles/variables.scss' as *;
 
 .video-reviews-section {
-  padding: 0px 0 120px;
+  padding: 0px 0 60px;
   background: $bg-color-1;
 
   @media (max-width: $breakpoint-x) {
