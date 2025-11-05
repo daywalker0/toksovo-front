@@ -125,6 +125,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue';
+import { useNuxtApp } from '#app';
 import genPlanImg from '@/assets/img/gen-plan.jfif';
 
 const props = defineProps({
@@ -332,9 +333,47 @@ const panelStyle = computed(() => {
   };
 });
 
-const handleCatalogClick = () => {};
+const handleCatalogClick = async () => {
+  if (!process.client) return;
 
-const handleFilterClick = () => {};
+  // Обновляем hash без триггера навигации
+  if (window.location.hash !== '#layouts') {
+    window.history.replaceState(null, '', '#layouts');
+  }
+
+  await nextTick();
+  const target = document.getElementById('layouts');
+  if (target) {
+    const lenisInstance = $lenis?.getInstance?.();
+    if (lenisInstance) {
+      lenisInstance.scrollTo(target, { offset: -20 });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+};
+
+const { $lenis } = useNuxtApp();
+
+const handleFilterClick = async () => {
+  if (!process.client) return;
+
+  // Обновляем hash без триггера навигации
+  if (window.location.hash !== '#layouts') {
+    window.history.replaceState(null, '', '#layouts');
+  }
+
+  await nextTick();
+  const target = document.getElementById('layouts');
+  if (target) {
+    const lenisInstance = $lenis?.getInstance?.();
+    if (lenisInstance) {
+      lenisInstance.scrollTo(target, { offset: -20 });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+};
 
 const scrollLeft = () => {
   if (scrollContainer.value) {
