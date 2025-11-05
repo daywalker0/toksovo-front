@@ -37,11 +37,7 @@ defineProps({
   max-width: 940px;
   position: relative;
   z-index: 2;
-
-  @media (max-width: $breakpoint-md) {
-    padding-top: 80px;
-  }
-  @media (max-width: $breakpoint-x) {
+  @media (max-width: $breakpoint-sm) {
     padding-top: 40px;
     padding-bottom: 20px;
   }

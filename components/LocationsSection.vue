@@ -335,7 +335,7 @@ onBeforeUnmount(() => {
   overflow: visible;
 
   @media (max-width: $breakpoint-sm) {
-    margin: 180px 0 -300px;
+    margin: 0px 0 -50px;
     min-height: 1200px;
     align-items: flex-start;
   }

@@ -201,6 +201,10 @@ const handleVideoClick = (video) => {
   margin-bottom: 60px;
   text-align: left;
 
+  @media (max-width: $breakpoint-sm) {
+    margin-top: 40px;
+  }
+
   @media (max-width: $breakpoint-x) {
     margin-bottom: 40px;
   }
