@@ -306,7 +306,7 @@ onBeforeUnmount(() => {
 @use '@/assets/styles/variables.scss' as *;
 
 .locations-section {
-  padding: 60px 0;
+  padding: 0;
 
   @media (max-width: $breakpoint-sm) {
     padding: 60px 0 120px;

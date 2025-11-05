@@ -198,7 +198,7 @@ const handleVideoClick = (video) => {
 }
 
 .section-title {
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   text-align: left;
 
   @media (max-width: $breakpoint-sm) {

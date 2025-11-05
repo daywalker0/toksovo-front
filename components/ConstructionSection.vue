@@ -124,7 +124,7 @@ onMounted(() => {
   }
   &__title {
     margin: 0 auto;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
     font-size: 88px;
 
     @media (max-width: $breakpoint-x) {
