@@ -187,6 +187,10 @@ const handleVideoClick = (video) => {
   padding: 0px 0 60px;
   background: $bg-color-1;
 
+  @media (max-width: $breakpoint-lg) {
+    padding: 40px 0 20px;
+  }
+
   @media (max-width: $breakpoint-x) {
     padding: 40px 0 20px;
   }
@@ -200,10 +204,6 @@ const handleVideoClick = (video) => {
 .section-title {
   margin-bottom: 40px;
   text-align: left;
-
-  @media (max-width: $breakpoint-sm) {
-    margin-top: 40px;
-  }
 
   @media (max-width: $breakpoint-x) {
     margin-bottom: 40px;
