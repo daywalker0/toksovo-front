@@ -51,18 +51,19 @@
   </Dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 import Dialog from './Dialog.vue';
+const config = useRuntimeConfig();
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-});
+const props = defineProps<{ modelValue: boolean }>();
+const emit = defineEmits<{
+  (e: 'update:modelValue', v: boolean): void;
+  (e: 'sent', payload: { leadId?: number; contactId?: number }): void;
+}>();
 
-const emit = defineEmits(['update:modelValue']);
+/** URL эндпоинта Strapi */
+const API_URL = config.public.apiUrl;
 
 const form = ref({
   name: '',
@@ -70,52 +71,90 @@ const form = ref({
   agreement: false,
 });
 
-// Computed свойство для проверки, можно ли отправить форму
-const isFormValid = computed(() => {
-  return (
-    form.value.name.trim() !== '' && form.value.phone.trim() !== '' && form.value.agreement === true
-  );
+const isLoading = ref(false);
+const errorMsg = ref<string | null>(null);
+const isSent = ref(false);
+
+/** Оставляем только цифры, 8XXXXXXXXXX → 7XXXXXXXXXX */
+function cleanPhone(input: string): string {
+  let digits = (input || '').replace(/\D+/g, '');
+  if (digits.length === 11 && digits.startsWith('8')) digits = '7' + digits.slice(1);
+  return digits;
+}
+
+/** Валидация телефона по цифрам */
+const isPhoneValid = computed(() => {
+  const digits = cleanPhone(form.value.phone);
+  return digits.length === 11 && digits.startsWith('7');
 });
 
-const formatPhone = event => {
-  let value = event.target.value.replace(/\D/g, '');
+/** Форма валидна когда все поля ок */
+const isFormValid = computed(
+  () => form.value.name.trim() !== '' && isPhoneValid.value && form.value.agreement === true
+);
 
-  if (value.startsWith('7') || value.startsWith('8')) {
-    value = value.substring(1);
-  }
+/** Маска +7 (XXX) XXX-XX-XX */
+const formatPhone = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  let digits = target.value.replace(/\D+/g, '');
 
-  let formattedValue = '+7 (';
+  // убираем ведущую 7/8, т.к. мы добавим +7 сами
+  if (digits.startsWith('7') || digits.startsWith('8')) digits = digits.slice(1);
+  digits = digits.slice(0, 10);
 
-  if (value.length > 0) {
-    formattedValue += value.substring(0, 3);
-  }
-  if (value.length > 3) {
-    formattedValue += ') ' + value.substring(3, 6);
-  }
-  if (value.length > 6) {
-    formattedValue += '-' + value.substring(6, 8);
-  }
-  if (value.length > 8) {
-    formattedValue += '-' + value.substring(8, 10);
-  }
+  let out = '+7';
+  if (digits.length) out += ' (' + digits.slice(0, 3);
+  if (digits.length >= 3) out += ') ' + digits.slice(3, 6);
+  if (digits.length >= 6) out += '-' + digits.slice(6, 8);
+  if (digits.length >= 8) out += '-' + digits.slice(8, 10);
 
-  form.value.phone = formattedValue;
+  form.value.phone = out;
 };
 
-const handleSubmit = () => {
-  // Проверяем валидность формы перед отправкой
-  if (!isFormValid.value) {
-    return;
+/** Отправка в Strapi → amoCRM (через ваш кастомный контроллер) */
+const handleSubmit = async () => {
+  if (!isFormValid.value || isLoading.value) return;
+  isLoading.value = true;
+  errorMsg.value = null;
+  isSent.value = false;
+
+  try {
+    const payload = {
+      name: form.value.name.trim(),
+      phone: cleanPhone(form.value.phone),
+    };
+
+    // ✅ Через $fetch с baseURL
+    const data = await $fetch('/api/amocrm/leads', {
+      baseURL: API_URL,
+      method: 'POST',
+      body: payload,
+    });
+
+    // Ожидаем, что контроллер вернёт { ok: true, leadId, contactId } — подстройте под свой ответ
+    const ok = (data as any)?.ok ?? true;
+    if (!ok) {
+      const amoErr =
+        (data as any)?.error?.title ||
+        (data as any)?.error?.message ||
+        'Не удалось отправить заявку';
+      throw new Error(amoErr);
+    }
+
+    isSent.value = true;
+    emit('sent', { leadId: (data as any)?.leadId, contactId: (data as any)?.contactId });
+    emit('update:modelValue', false);
+
+    // сброс формы
+    form.value = { name: '', phone: '', agreement: false };
+  } catch (e: any) {
+    errorMsg.value = e?.message || 'Ошибка отправки. Попробуйте ещё раз.';
+  } finally {
+    isLoading.value = false;
   }
-
-  emit('update:modelValue', false);
-
-  form.value = {
-    name: '',
-    phone: '',
-    agreement: false,
-  };
 };
+
+defineExpose({ isLoading, isSent, errorMsg, isFormValid, formatPhone, handleSubmit, form });
 </script>
 
 <style lang="scss" scoped>
@@ -307,10 +346,10 @@ const handleSubmit = () => {
 /* Стили для кнопки закрытия - только мобильная версия */
 @media (max-width: 599px) {
   :deep(.dialog-close) {
-    border: 1px solid #2C322C !important;
-    
+    border: 1px solid #2c322c !important;
+
     svg path {
-      fill: #2C322C !important;
+      fill: #2c322c !important;
     }
   }
 }
@@ -332,7 +371,8 @@ const handleSubmit = () => {
     max-height: calc(100vh - env(safe-area-inset-bottom)) !important;
     margin: 0 !important;
     border-radius: 0 !important;
-    padding: calc(40px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)) 20px !important;
+    padding: calc(40px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom))
+      20px !important;
     background: $bg-color-1 !important;
   }
 }
