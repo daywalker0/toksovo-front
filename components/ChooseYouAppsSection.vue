@@ -24,7 +24,7 @@
               </svg>
             </div>
           </button>
-          <button class="mobile-button">
+          <button class="mobile-button" @click="openProfitbase">
             <span class="button-title">Каталог квартир</span>
             <div class="button-action">
               <span>Перейти</span>
@@ -81,6 +81,7 @@
               class="button button-right"
               :class="{ light: !isOnDarkBg, dark: isOnDarkBg }"
               :style="{ opacity: buttonsOpacity }"
+              @click="openProfitbase"
             >
               Каталог квартир
             </button>
@@ -119,6 +120,12 @@ const scrollToMasterPlan = () => {
       window.history.replaceState(window.history.state, '', window.location.pathname);
     },
   });
+};
+
+const openProfitbase = () => {
+  if (typeof window !== 'undefined' && window.widget) {
+    window.widget.open();
+  }
 };
 
 const handleScroll = () => {
