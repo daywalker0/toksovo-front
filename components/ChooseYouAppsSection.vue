@@ -123,9 +123,8 @@ const scrollToMasterPlan = () => {
 };
 
 const openProfitbase = () => {
-  if (typeof window !== 'undefined' && window.widget) {
-    window.widget.open();
-  }
+  const profitbaseUrl = 'https://smart-catalog.profitbase.ru/eco';
+  window.open(profitbaseUrl, '_blank');
 };
 
 const handleScroll = () => {
