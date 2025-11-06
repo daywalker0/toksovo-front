@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import Dialog from './Dialog.vue';
 const config = useRuntimeConfig();
 
@@ -60,6 +60,7 @@ const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void;
   (e: 'sent', payload: { leadId?: number; contactId?: number }): void;
+  (e: 'success'): void;
 }>();
 
 /** URL эндпоинта Strapi */
@@ -143,7 +144,9 @@ const handleSubmit = async () => {
 
     isSent.value = true;
     emit('sent', { leadId: (data as any)?.leadId, contactId: (data as any)?.contactId });
-    emit('update:modelValue', false);
+    
+    // Эмитим событие успеха - родительский компонент закроет попап и откроет попап успеха
+    emit('success');
 
     // сброс формы
     form.value = { name: '', phone: '', agreement: false };

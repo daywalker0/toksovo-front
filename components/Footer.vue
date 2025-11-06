@@ -119,21 +119,34 @@
       </div>
     </div>
 
-    <DialogCallback v-model="showDialogCallback">
+    <DialogCallback v-model="showDialogCallback" @success="handleSuccess">
       <div>диалог тут</div>
     </DialogCallback>
+    
+    <DialogSuccess v-model="showDialogSuccess" />
   </footer>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import DialogCallback from './Common/Dialogs/DialogCallback.vue';
+import DialogSuccess from './Common/Dialogs/DialogSuccess.vue';
 import AnimatedLink from './Common/AnimatedLink.vue';
 
 const showDialogCallback = ref(false);
+const showDialogSuccess = ref(false);
 
 const openDialogCallback = () => {
   showDialogCallback.value = true;
+};
+
+const handleSuccess = async () => {
+  // Явно закрываем попап формы
+  showDialogCallback.value = false;
+  // Ждем обновления DOM
+  await nextTick();
+  // Открываем попап успеха
+  showDialogSuccess.value = true;
 };
 </script>
 
