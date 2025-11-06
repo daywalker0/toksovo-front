@@ -38,6 +38,7 @@ defineEmits<{
 
   @media (max-width: $breakpoint-x) {
     max-width: 100%;
+    align-items: center;
   }
 }
 
@@ -56,6 +57,10 @@ defineEmits<{
   margin-bottom: 20px;
   font-family: 'Bona Nova SC';
   max-width: 50%;
+  @media (max-width: $breakpoint-x) {
+    max-width: 100%;
+    text-align: center;
+  }
 }
 
 .success-text {
@@ -65,6 +70,10 @@ defineEmits<{
   color: #2C322C;
   font-family: 'Akrobat';
   max-width: 80%;
+  @media (max-width: $breakpoint-x) {
+    max-width: 100%;
+    text-align: center;
+  }
 }
 
 :deep(.dialog-overlay:has(.success-dialog)) {
