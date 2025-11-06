@@ -27,7 +27,13 @@
               </ul>
             </div>
 
-          <button class="more-btn">ПОДРОБНЕЕ</button>
+          <button 
+            class="more-btn" 
+            @click="handleMoreClick"
+            :disabled="!currentApartment?.btn_link"
+          >
+            ПОДРОБНЕЕ
+          </button>
         </div>
       </div>
 
@@ -163,6 +169,7 @@ const apartmentCategories = computed(() => {
       features: mappedFeatures,
       image: getMediaUrl(apt.image),
       floors: apt.floor || apt.floors || '',
+      btn_link: apt.btn_link || '',
     });
   });
   
@@ -195,6 +202,13 @@ const switchCategory = categoryIndex => {
 const switchApartment = apartmentIndex => {
   currentApartmentIndex.value = apartmentIndex;
   currentImageIndex.value = 0; // сбрасываем на первое изображение
+};
+
+// Функция обработки клика на кнопку "Подробнее"
+const handleMoreClick = () => {
+  if (currentApartment.value?.btn_link) {
+    window.open(currentApartment.value.btn_link, '_blank');
+  }
 };
 </script>
 
@@ -592,13 +606,19 @@ const switchApartment = apartmentIndex => {
     z-index: -1;
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     color: $text-color-white;
     border-radius: 7px;
 
     &::before {
       left: 0;
     }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: $text-color-secondary;
   }
 }
 
