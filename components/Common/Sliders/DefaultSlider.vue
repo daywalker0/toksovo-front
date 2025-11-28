@@ -256,16 +256,17 @@ const mobileConfig = computed(() => {
   if (!isMobile.value) {
     return null;
   }
-
-  // Иначе - один слайд на весь экран
+  const slidesPerView = typeof props.slidesPerView === 'string' 
+    ? parseFloat(props.slidesPerView) 
+    : (props.slidesPerView || 1);
+  
   return {
-    slidesPerView: 1,
-    spaceBetween: 16,
-    centeredSlides: false,
+    slidesPerView: slidesPerView,
+    spaceBetween: props.spaceBetween || 16,
+    centeredSlides: props.centeredSlides || false,
   };
 });
 
-// Объединяем конфиг с мобильными параметрами
 const effectiveSlidesPerView = computed(() => {
   const value = mobileConfig.value ? mobileConfig.value.slidesPerView : props.slidesPerView;
   return typeof value === 'string' ? parseFloat(value) : value;
@@ -357,14 +358,14 @@ onMounted(() => {
 
   :deep(img) {
     width: 100%;
-    aspect-ratio: 1 / 1 !important;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
   }
 
   :deep(.card-img) {
-    aspect-ratio: 1 / 1 !important;
-    height: auto !important;
+    aspect-ratio: 1 / 1;
+    height: auto;
   }
 }
 

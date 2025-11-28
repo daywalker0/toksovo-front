@@ -7,10 +7,11 @@
       <div v-if="isMobile" class="mobile-slider">
         <DefaultSlider
           :slides="slides"
-          :slides-per-view="2"
+          :slides-per-view="1.33"
           :space-between="8"
           :show-navigation="true"
           :hide-navigation-on-mobile="true"
+          :breakpoints="mobileBreakpoints"
         >
           <template #slide="{ slide }">
             <div class="card mobile-card">
@@ -151,6 +152,17 @@ const slides = computed(() => {
   const cols = locationsByColumn.value;
   return [...cols.left, ...cols.center, ...cols.right];
 });
+
+const mobileBreakpoints = computed(() => ({
+  0: {
+    slidesPerView: 1.33,
+    spaceBetween: 8,
+  },
+  600: {
+    slidesPerView: 2,
+    spaceBetween: 8,
+  },
+}));
 
 let triggers = [];
 let resizeTimer = null;
@@ -426,7 +438,7 @@ onBeforeUnmount(() => {
 
 .mobile-slider {
   .card-img {
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 4 !important;
     height: auto;
   }
 }
@@ -535,7 +547,7 @@ onBeforeUnmount(() => {
 
     .card-img {
       width: 100%;
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 3 / 4 !important;
       height: auto;
       object-fit: cover;
     }
