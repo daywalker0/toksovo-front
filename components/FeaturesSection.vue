@@ -227,7 +227,8 @@ const setActiveTab = (tabId) => {
   width: 100%;
 
   @media (max-width: $breakpoint-x) {
-    height: 338px;
+    aspect-ratio: 3 / 4;
+    height: auto;
   }
 }
 
