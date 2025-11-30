@@ -452,13 +452,13 @@ onBeforeUnmount(() => {
 
   &__title {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     font-size: 24px;
     font-weight: 700;
     text-transform: uppercase;
     font-family: 'Akrobat';
     line-height: 1.2;
-    gap: 1rem;
+    gap: 4px;
     margin-bottom: 4px;
 
     @media (max-width: 1280px) {
@@ -498,7 +498,6 @@ onBeforeUnmount(() => {
     font-size: 20px;
     font-weight: 400;
     line-height: 80%;
-    white-space: nowrap;
 
     @media (max-width: 1280px) {
       font-size: 20px;
