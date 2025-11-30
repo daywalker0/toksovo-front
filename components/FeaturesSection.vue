@@ -61,11 +61,11 @@ const tabs = computed(() => props.data.osobennostis)
 const activeTab = ref(tabs.value[0].id);
 
 const customBreakpoints = {
-  320: {
-    slidesPerView: 1,
+  0: {
+    slidesPerView: 1.33,
     spaceBetween: 8
   },
-  599: {
+  600: {
     slidesPerView: 2,
     spaceBetween: 8
   },
