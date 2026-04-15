@@ -30,12 +30,13 @@ export default defineNuxtConfig({
           name: 'keywords',
           content: 'Токсово, жилой комплекс, квартиры, новостройки, Ленинградская область',
         },
-        { property: 'og:title', content: 'ПОИНТ ТОКСОВО - Жилой комплекс в Токсово' },
-        {
-          property: 'og:description',
-          content:
-            'Современный жилой комплекс ПОИНТ ТОКСОВО в Токсово. Квартиры, планировки, инфраструктура.',
-        },
+        { property: 'og:title', content: 'ПОИНТ ТОКСОВО — Жилой комплекс в Токсово' },
+        { property: 'og:description', content: 'Современный жилой комплекс в Токсово. Квартиры, планировки, инфраструктура.' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: 'https://point-toksovo.ru' },
+        { property: 'og:image', content: 'https://point-toksovo.ru/1200x630.jpg' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
         { property: 'og:type', content: 'website' },
       ],
       link: [

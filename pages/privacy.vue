@@ -1,4 +1,14 @@
 <template>
+  <template>
+    <div>
+      <NuxtPage />
+      <noscript>
+        <div>
+          <img src="https://mc.yandex.ru/watch/106936269" style="position:absolute; left:-9999px;" alt="" />
+        </div>
+      </noscript>
+    </div>
+  </template>
   <div class="privacy-page">
     <AppHeader />
 
@@ -6,17 +16,10 @@
       <div class="container">
         <button @click="router.push('/')" class="back-button">
           <div class="back-button__icon">
-            <svg
-              width="7"
-              height="12"
-              viewBox="0 0 7 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M5.50637 0.450573L6.125 1.0692L1.50412 5.69007C1.42187 5.7732 1.37637 5.88257 1.37637 5.99982C1.37637 6.11707 1.42187 6.22645 1.50412 6.30957L6.125 10.9304L5.50637 11.5491L0.885499 6.9282C0.637874 6.68057 0.501375 6.3507 0.501375 5.99982C0.501375 5.64895 0.637874 5.31995 0.885499 5.07145L5.50637 0.450573Z"
-                fill="#2C322C"
-              />
+                fill="#2C322C" />
             </svg>
           </div>
           <div class="back-button__text">

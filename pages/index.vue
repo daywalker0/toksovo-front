@@ -1,21 +1,25 @@
 <template>
+  <template>
+    <div>
+      <NuxtPage />
+      <noscript>
+        <div>
+          <img src="https://mc.yandex.ru/watch/106936269" style="position:absolute; left:-9999px;" alt="" />
+        </div>
+      </noscript>
+    </div>
+  </template>
   <div>
+
     <AppHeader :active-section="activeSection" />
-    
+
     <section id="hero">
-      <HeroSection 
-        :title="heroBlock?.title"
-        :description="heroBlock?.description"
-        :image="heroBlock?.image"
-      />
+      <HeroSection :title="heroBlock?.title" :description="heroBlock?.description" :image="heroBlock?.image" />
     </section>
-    
+
     <div class="main-sections">
       <section id="about">
-        <TextBlockSection 
-          :text="calmNatureBlock?.title" 
-          :subtitle="calmNatureBlock?.subtitle" 
-        />
+        <TextBlockSection :text="calmNatureBlock?.title" :subtitle="calmNatureBlock?.subtitle" />
         <EnvironmentSection v-if="environmentBlock?.slider?.length" :data="environmentBlock" />
         <LocationsSection v-if="locationsBlock?.location_card?.length" :data="locationsBlock" />
       </section>
@@ -28,46 +32,34 @@
       </div>
 
       <VideoReviewsSection :data="videoReviewsBlock" />
-      
+
       <FeaturesSection :data="featuresBlock" />
 
       <!-- Генплан скрыт -->
       <!-- <MasterPlanSection :data="genplanBlock" /> -->
 
       <section id="architecture">
-        <TextBlockSection 
-          :text="styleLivingBlock?.title" 
-          :subtitle="styleLivingBlock?.subtitle" 
-        />
+        <TextBlockSection :text="styleLivingBlock?.title" :subtitle="styleLivingBlock?.subtitle" />
         <FullpageSlider :sections="styleLivingBlock?.slider || []" />
-        
-        <TextBlockSection 
-          :text="firstStepsBlock?.title" 
-          :subtitle="firstStepsBlock?.subtitle" 
-        />
+
+        <TextBlockSection :text="firstStepsBlock?.title" :subtitle="firstStepsBlock?.subtitle" />
         <FullpageSlider :sections="firstStepsBlock?.slider || []" />
       </section>
 
       <section id="infrastructure">
-        <TextBlockSection 
-          :text="mapBlock?.title" 
-          :subtitle="mapBlock?.subtitle" 
-        />
+        <TextBlockSection :text="mapBlock?.title" :subtitle="mapBlock?.subtitle" />
         <MapSection :zoom="16" :data="mapBlock" />
       </section>
 
       <section id="layouts" v-if="layoutsBlock?.plan_slider?.length">
-        <TextBlockSection
-          :text="layoutsBlock?.title"
-          :subtitle="layoutsBlock?.description"
-        />
+        <TextBlockSection :text="layoutsBlock?.title" :subtitle="layoutsBlock?.description" />
         <AppsLayoutsSection :data="layoutsBlock" />
       </section>
 
       <ConstructionSection :data="constructionBlock" />
       <NewsSection :data="newsBlock" />
       <ProjectsSection :data="projectsBlock" />
-      
+
       <ChooseYouAppsSection />
 
       <Footer />
@@ -147,7 +139,7 @@ const updateActiveSection = () => {
     if (heroElement) {
       const rect = heroElement.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      
+
       // Hero считается активным если он видим на экране (даже в нижней части)
       if (rect.top <= windowHeight && rect.bottom >= 0) {
         currentSection = 'hero';
@@ -264,10 +256,10 @@ onBeforeUnmount(() => {
     horizontalScrollTrigger.kill();
     horizontalScrollTrigger = null;
   }
-  
+
   // Очистка ScrollTrigger
   ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-  
+
   // Очистка event listeners
   if (handleScroll.value) {
     window.removeEventListener('scroll', handleScroll.value);
@@ -286,12 +278,13 @@ onBeforeUnmount(() => {
   z-index: 100;
   background: rgba(248, 243, 237, 1);
 
-  @media (min-width: $breakpoint-x + 1) {
-    > *:not(.horizontal-wrapper) + *:not(.horizontal-wrapper) {
+  @media (min-width: ($breakpoint-x + 1)) {
+    >*:not(.horizontal-wrapper)+*:not(.horizontal-wrapper) {
       margin-top: 0px;
     }
   }
 }
+
 .horizontal-wrapper {
   width: 100vw;
   height: 100vh;
@@ -330,7 +323,7 @@ onBeforeUnmount(() => {
     will-change: auto;
   }
 
-  > * {
+  >* {
     width: 100vw;
     height: 100vh;
     flex-shrink: 0;
