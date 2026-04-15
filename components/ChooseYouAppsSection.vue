@@ -123,7 +123,7 @@ const scrollToMasterPlan = () => {
 };
 
 const openProfitbase = () => {
-  const profitbaseUrl = 'https://smart-catalog.profitbase.ru/eco';
+  const profitbaseUrl = 'https://point-toksovo.ru/#/catalog/projects/houses?filter=property.status:AVAILABLE';
   window.open(profitbaseUrl, '_blank');
 };
 
