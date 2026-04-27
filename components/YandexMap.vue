@@ -468,6 +468,8 @@ function zoomOut() {
 
 
   :deep([class*="ymaps-2"][class*="-ground-pane"]) {
+    filter: sepia(0.62) saturate(0.48) brightness(1.08) contrast(0.9);
+    -webkit-filter: sepia(0.62) saturate(0.48) brightness(1.08) contrast(0.9);
     filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'beige\'><feColorMatrix type=\'matrix\' values=\'0.42 0.34 0.26 0 0.06 0.36 0.36 0.30 0 0.06 0.30 0.30 0.26 0 0.06 0 0 0 1 0\'/></filter></svg>#beige");
     -webkit-filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'beige\'><feColorMatrix type=\'matrix\' values=\'0.42 0.34 0.26 0 0.06 0.36 0.36 0.30 0 0.06 0.30 0.30 0.26 0 0.06 0 0 0 1 0\'/></filter></svg>#beige");
     -ms-filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'beige\'><feColorMatrix type=\'matrix\' values=\'0.42 0.34 0.26 0 0.06 0.36 0.36 0.30 0 0.06 0.30 0.30 0.26 0 0.06 0 0 0 1 0\'/></filter></svg>#beige");
