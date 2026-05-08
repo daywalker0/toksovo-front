@@ -59,13 +59,19 @@ const getMonthGenitive = (date) => {
   return months[date.getMonth()];
 };
 
-// Получаем новости: сначала проверяем, есть ли они в props.data (из Strapi блока),
-// если нет - загружаем из store
+const getNewsDate = (news) => {
+  const raw = news?.publishedAt || news?.createdAt || news?.updatedAt;
+  const d = raw ? new Date(raw) : null;
+  return d && !Number.isNaN(d.getTime()) ? d : new Date(0);
+};
+
+
 const newsSlides = computed(() => {
-  // Если в блоке есть связанные новости - используем их
   if (props.data?.novostis && Array.isArray(props.data.novostis) && props.data.novostis.length > 0) {
-    return props.data.novostis.map(news => {
-      const newsDate = new Date(news.createdAt);
+    return [...props.data.novostis]
+      .sort((a, b) => getNewsDate(b) - getNewsDate(a))
+      .map(news => {
+      const newsDate = getNewsDate(news);
       return {
         ...news, // Сначала копируем все поля
         numericId: news.id,
@@ -80,7 +86,7 @@ const newsSlides = computed(() => {
   }
   
   // Иначе используем новости из store
-  const news = newsStore.getLatestNews(4);
+  const news = newsStore.getLatestNews();
   return Array.isArray(news) ? news : [];
 });
 

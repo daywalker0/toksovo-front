@@ -31,10 +31,19 @@ export const useNewsStore = defineStore('news', {
           return months[date.getMonth()];
         };
 
+        const getNewsDate = (news) => {
+          const raw = news?.publishedAt || news?.createdAt || news?.updatedAt;
+          const d = raw ? new Date(raw) : null;
+          return d && !Number.isNaN(d.getTime()) ? d : new Date(0);
+        };
+
         // Преобразуем данные в нужный формат для слайдера
-        const result = state.news.slice(0, limit).map(news => {
+        const sorted = [...state.news].sort((a, b) => getNewsDate(b) - getNewsDate(a));
+        const sliced = typeof limit === 'number' ? sorted.slice(0, limit) : sorted;
+
+        const result = sliced.map(news => {
           // Используем date если есть, иначе createdAt
-          const dateToUse = news.date ? new Date(news.date) : new Date(news.createdAt);
+          const dateToUse = getNewsDate(news);
           
           // ВАЖНО: id должен быть documentId для навигации!
           return {
