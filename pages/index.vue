@@ -35,7 +35,6 @@
 
       <FeaturesSection :data="featuresBlock" />
 
-      <!-- Генплан скрыт -->
       <!-- <MasterPlanSection :data="genplanBlock" /> -->
 
       <section id="architecture">
@@ -48,7 +47,7 @@
 
       <section id="infrastructure">
         <TextBlockSection :text="mapBlock?.title" :subtitle="mapBlock?.subtitle" />
-        <MapSection :zoom="16" :data="mapBlock" />
+        <MapSection :zoom="12" :data="mapBlock" />
       </section>
 
       <section id="layouts" v-if="layoutsBlock?.plan_slider?.length">

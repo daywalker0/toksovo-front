@@ -38,6 +38,7 @@ const mapContainer = ref(null);
 let map = null;
 let ymaps = null;
 const allMarkers = new Map();
+let didInitialFit = false;
 
 onMounted(async () => {
   if (!process.client) return;
@@ -192,6 +193,7 @@ onMounted(async () => {
 
     createPlacemarksFromLocations();
     updateVisibleMarkers();
+    fitToVisibleMarkers();
 
     setTimeout(() => {
       if (map && mapContainer.value) {
@@ -243,13 +245,17 @@ watch(
   newLocs => {
     recreatePlacemarks(newLocs);
     updateVisibleMarkers();
+    fitToVisibleMarkers();
   },
   { deep: true }
 );
 
 watch(
   () => props.activeCategories,
-  () => updateVisibleMarkers(),
+  () => {
+    updateVisibleMarkers();
+    fitToVisibleMarkers();
+  },
   { deep: true }
 );
 
@@ -434,6 +440,46 @@ function updateVisibleMarkers() {
       markerData.added = false;
     }
   });
+}
+
+function fitToVisibleMarkers() {
+  if (!map || !ymaps || didInitialFit) return;
+
+  const coords = [];
+  allMarkers.forEach(markerData => {
+    if (!props.activeCategories.includes(markerData.category)) return;
+    const c = markerData?.placemark?.geometry?.getCoordinates?.();
+    if (Array.isArray(c) && c.length === 2) coords.push(c);
+  });
+
+  if (coords.length < 2) {
+    didInitialFit = true;
+    return;
+  }
+
+  let minLat = coords[0][0];
+  let maxLat = coords[0][0];
+  let minLng = coords[0][1];
+  let maxLng = coords[0][1];
+
+  for (let i = 1; i < coords.length; i++) {
+    const [lat, lng] = coords[i];
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+  }
+
+  const bounds = [
+    [minLat, minLng],
+    [maxLat, maxLng],
+  ];
+
+  const isMobile = window.innerWidth <= 599;
+  const zoomMargin = isMobile ? [48, 48, 72, 48] : [56, 56, 56, 380];
+
+  map.setBounds(bounds, { checkZoomRange: true, zoomMargin });
+  didInitialFit = true;
 }
 
 function zoomIn() {
