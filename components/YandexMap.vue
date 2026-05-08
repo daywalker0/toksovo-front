@@ -576,6 +576,7 @@ function zoomOut() {
 .map-container {
   width: 100%;
   height: 100%;
+  position: relative;
   
   @media (max-width: 599px) {
     width: 100vw !important;
@@ -593,6 +594,13 @@ function zoomOut() {
     -ms-filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'beige\'><feColorMatrix type=\'matrix\' values=\'0.42 0.34 0.26 0 0.06 0.36 0.36 0.30 0 0.06 0.30 0.30 0.26 0 0.06 0 0 0 1 0\'/></filter></svg>#beige");
     -moz-filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'beige\'><feColorMatrix type=\'matrix\' values=\'0.42 0.34 0.26 0 0.06 0.36 0.36 0.30 0 0.06 0.30 0.30 0.26 0 0.06 0 0 0 1 0\'/></filter></svg>#beige");
     -o-filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'beige\'><feColorMatrix type=\'matrix\' values=\'0.42 0.34 0.26 0 0.06 0.36 0.36 0.30 0 0.06 0.30 0.30 0.26 0 0.06 0 0 0 1 0\'/></filter></svg>#beige");
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    :deep([class*="ymaps-2"][class*="-ground-pane"]) {
+      filter: sepia(0.62) saturate(0.48) brightness(1.08) contrast(0.9) !important;
+      -webkit-filter: sepia(0.62) saturate(0.48) brightness(1.08) contrast(0.9) !important;
+    }
   }
 
   :deep(.ymaps-2-1-79-copyright),
