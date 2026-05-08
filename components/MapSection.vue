@@ -27,13 +27,11 @@
           >
             <div class="map__category-name">
               <div
-                v-html="categoryIcon(cat.key, !isMd && hoveredCategory === cat.key)"
                 class="map__icon"
-                :class="{
-                  'map__icon--inactive': !cat.active,
-                  'map__icon--hovered': !isMd && hoveredCategory === cat.key,
-                }"
-              />
+                :class="{ 'map__icon--inactive': !cat.active }"
+              >
+                <img v-if="cat.iconUrl" :src="cat.iconUrl" :alt="cat.name" />
+              </div>
               <AnimatedLink
                 :text="cat.name"
                 customClass="map__category-name-link"
@@ -173,6 +171,7 @@ import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import YandexMap from '~/components/YandexMap.vue';
 import AnimatedLink from './Common/AnimatedLink.vue';
 import MapDialog from './Common/Dialogs/MapDialog.vue';
+import { useMedia } from '~/composables/useMedia';
 
 const props = defineProps({
   data: {
@@ -184,6 +183,8 @@ const props = defineProps({
     default: 15,
   },
 });
+
+const { getMediaUrl } = useMedia();
 
 const cultureBlack = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_886_110)">
@@ -350,16 +351,7 @@ const categoryIconsMap = {
   services: { black: servicesBlack, white: servicesWhite },
 };
 
-const categories = ref([
-  { name: 'Культура и отдых', key: 'culture', icon: cultureBlack, active: true },
-  { name: 'Медицина', key: 'medicine', icon: medicineBlack, active: true },
-  { name: 'Образование', key: 'education', icon: educationBlack, active: true },
-  { name: 'Финансы', key: 'finance', icon: financeBlack, active: true },
-  { name: 'Торговля', key: 'torg', icon: torgBlack, active: true },
-  { name: 'Еда', key: 'food', icon: foodBlack, active: true },
-  { name: 'Спорт', key: 'sport', icon: sportBlack, active: true },
-  { name: 'Услуги', key: 'services', icon: servicesBlack, active: true },
-]);
+const categories = ref([]);
 
 const locations = ref([]);
 
@@ -394,19 +386,18 @@ const parseCoordinates = (coords) => {
   return null;
 };
 
-const getCategoryKeyFromName = (name) => {
-  const nameLower = name?.toLowerCase() || '';
-  
-  if (nameLower.includes('культур')) return 'culture';
-  if (nameLower.includes('медицин')) return 'medicine';
-  if (nameLower.includes('образован')) return 'education';
-  if (nameLower.includes('финанс')) return 'finance';
-  if (nameLower.includes('торг')) return 'torg';
-  if (nameLower.includes('еда') || nameLower.includes('еду')) return 'food';
-  if (nameLower.includes('спорт')) return 'sport';
-  if (nameLower.includes('услуг')) return 'services';
-  
-  return 'culture';
+const getCategoryKey = (group, index) => {
+  return String(
+    group?.documentId
+    || group?.id
+    || group?.slug
+    || group?.key
+    || `group-${index}`
+  );
+};
+
+const getAdminIconUrl = (entity) => {
+  return getMediaUrl(entity?.icon || entity?.iconUrl || entity?.icon_url);
 };
 
 const initializeData = () => {
@@ -420,13 +411,14 @@ const initializeData = () => {
     
     groups.forEach((group, groupIndex) => {
       const categoryName = group.name || group.title || 'Культура и отдых';
-      const categoryKey = getCategoryKeyFromName(categoryName);
-      const iconSet = categoryIconsMap[categoryKey] || categoryIconsMap.culture;
+      const categoryKey = getCategoryKey(group, groupIndex);
+      const categoryIconUrl = getAdminIconUrl(group);
       
       categoriesFromData.push({
         name: categoryName,
         key: categoryKey,
-        icon: iconSet.black,
+        iconUrl: categoryIconUrl,
+        color: group.color || '#4C5E36',
         active: true,
       });
       
@@ -449,9 +441,11 @@ const initializeData = () => {
           id: pin.id || pin.documentId || `${groupIndex}-${pinIndex}`,
           coords: coords,
           category: categoryKey,
-          icon: iconSet.white,
+          iconUrl: getAdminIconUrl(pin) || categoryIconUrl,
           color: pin.color || group.color || '#4C5E36',
           name: pin.name || pin.title || pin.nazvanie || 'Локация',
+          description: pin.description || pin.subtitle || pin.text || '',
+          address: pin.address || pin.adres || '',
         };
         
         allPins.push(location);

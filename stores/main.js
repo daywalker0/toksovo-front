@@ -10,7 +10,7 @@ export const useMainStore = defineStore('main', () => {
     error.value = null
     
     try {
-      const response = await get('/api/glavnaya?populate=deep,3')
+      const response = await get('/api/glavnaya?populate=deep,5')
       mainData.value = response
       return response
     } catch (err) {

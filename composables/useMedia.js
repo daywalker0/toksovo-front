@@ -14,14 +14,12 @@ export const useMedia = () => {
   const getMediaUrl = (media) => {
     if (!media) return ''
 
-    // Если передан объект медиа из Strapi (новый формат)
     if (typeof media === 'object') {
-      // Strapi v4 формат: { url: '...', formats: {...} }
-      const url = media.url || media.path || ''
+      const value = media.data?.attributes || media.data || media.attributes || media
+      const url = value.url || value.path || ''
       return getFullUrl(url)
     }
 
-    // Если передана строка
     return getFullUrl(media)
   }
 

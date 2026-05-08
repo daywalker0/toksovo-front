@@ -39,6 +39,32 @@ let map = null;
 let ymaps = null;
 const allMarkers = new Map();
 let didInitialFit = false;
+let pendingSync = false;
+
+function getMarkerSignature(loc) {
+  return [
+    loc.id,
+    loc.category,
+    loc.name,
+    loc.description,
+    loc.address,
+    loc.color,
+    loc.iconUrl,
+    Array.isArray(loc.coords) ? loc.coords.join(',') : '',
+  ].join('|');
+}
+
+function requestSync() {
+  if (!map || !ymaps) {
+    pendingSync = true;
+    return;
+  }
+
+  pendingSync = false;
+  recreatePlacemarks(props.locations || []);
+  updateVisibleMarkers();
+  fitToVisibleMarkers();
+}
 
 onMounted(async () => {
   if (!process.client) return;
@@ -195,6 +221,8 @@ onMounted(async () => {
     updateVisibleMarkers();
     fitToVisibleMarkers();
 
+    if (pendingSync) requestSync();
+
     setTimeout(() => {
       if (map && mapContainer.value) {
         if (isMobile) {
@@ -242,17 +270,14 @@ onMounted(async () => {
 
 watch(
   () => props.locations,
-  newLocs => {
-    recreatePlacemarks(newLocs);
-    updateVisibleMarkers();
-    fitToVisibleMarkers();
-  },
+  () => requestSync(),
   { deep: true }
 );
 
 watch(
   () => props.activeCategories,
   () => {
+    if (!map || !ymaps) return;
     updateVisibleMarkers();
     fitToVisibleMarkers();
   },
@@ -260,15 +285,23 @@ watch(
 );
 
 function createPlacemarksFromLocations() {
+  if (!map || !ymaps) return;
   props.locations.forEach(loc => {
     if (!allMarkers.has(loc.id)) {
       const placemark = createPlacemarkFor(loc);
-      allMarkers.set(loc.id, { id: loc.id, category: loc.category, placemark, added: false });
+      allMarkers.set(loc.id, {
+        id: loc.id,
+        category: loc.category,
+        placemark,
+        added: false,
+        signature: getMarkerSignature(loc),
+      });
     }
   });
 }
 
 function recreatePlacemarks(newLocs) {
+  if (!map || !ymaps) return;
   const newIds = new Set(newLocs.map(l => l.id));
 
   for (const [id, data] of allMarkers.entries()) {
@@ -279,11 +312,58 @@ function recreatePlacemarks(newLocs) {
   }
 
   newLocs.forEach(loc => {
+    const existing = allMarkers.get(loc.id);
+    const signature = getMarkerSignature(loc);
+
+    if (existing && existing.signature !== signature) {
+      if (existing.added) map.geoObjects.remove(existing.placemark);
+      allMarkers.delete(loc.id);
+    }
+
     if (!allMarkers.has(loc.id)) {
       const placemark = createPlacemarkFor(loc);
-      allMarkers.set(loc.id, { id: loc.id, category: loc.category, placemark, added: false });
+      allMarkers.set(loc.id, {
+        id: loc.id,
+        category: loc.category,
+        placemark,
+        added: false,
+        signature,
+      });
     }
   });
+}
+
+function normalizeSvgForEmbed(svgOrInner) {
+  if (typeof svgOrInner !== 'string') return '';
+  const s = svgOrInner
+    .replace(/<\?xml[\s\S]*?\?>/gi, '')
+    .replace(/<!doctype[\s\S]*?>/gi, '')
+    .trim();
+
+  const match = s.match(/<svg[^>]*>[\s\S]*<\/svg>/i);
+  const svg = match ? match[0] : s;
+
+  // Если это полноценный <svg>, подгоним размер под 20x20 (как у наших дефолтных иконок)
+  if (svg.toLowerCase().includes('<svg')) {
+    return svg
+      .replace(/<svg\b([^>]*)>/i, (m, attrs) => {
+        let a = attrs || '';
+        if (!/xmlns=/.test(a)) a = `${a} xmlns="http://www.w3.org/2000/svg"`;
+        a = a.replace(/\s(width|height)="[^"]*"/gi, '');
+        return `<svg${a} width="20" height="20">`;
+      });
+  }
+
+  return svg;
+}
+
+function base64EncodeUtf8(str) {
+  // btoa падает на unicode — конвертим в utf-8 байты
+  return btoa(
+    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+      String.fromCharCode(parseInt(p1, 16))
+    )
+  );
 }
 
 function createPlacemarkFor(loc) {
@@ -291,27 +371,19 @@ function createPlacemarkFor(loc) {
   const iconInnerSize = 20;
   const iconOffset = (iconSize - iconInnerSize) / 2;
   const bgColor = loc.color || '#4C5E36';
-  const innerSvg = loc.icon || '';
+  const iconUrl = loc.iconUrl || '';
   const markerName = loc.name || loc.title || 'Локация';
   const markerId = `marker-${loc.id || Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}" viewBox="0 0 ${iconSize} ${iconSize}">
-      <circle cx="${iconSize / 2}" cy="${iconSize / 2}" r="${iconSize / 2}" fill="${bgColor}" />
-      <circle cx="${iconSize / 2}" cy="${iconSize / 2}" r="${iconSize / 2 - 0.5}" fill="none" stroke="white" stroke-opacity="0.3"/>
-      <g transform="translate(${iconOffset}, ${iconOffset}) scale(${iconInnerSize / 20})">
-        ${innerSvg}
-      </g>
-    </svg>
-  `;
+  const markerDescription = loc.description || loc.address || '';
 
   const CustomLayout = ymaps.templateLayoutFactory.createClass(
     `<div class="custom-marker-wrapper" data-marker-id="${markerId}" data-name="${markerName.replace(/"/g, '&quot;')}" style="position: relative; display: inline-block; cursor: pointer; z-index: 1;">
-      <div class="custom-marker-icon" style="display: block; width: 40px; height: 40px; position: relative; z-index: 4; transition: transform 0.2s ease;">
-        <img src="data:image/svg+xml;base64,${btoa(svg)}" alt="" style="width: 100%; height: 100%; display: block;" />
+      <div class="custom-marker-icon" style="display: flex; align-items: center; justify-content: center; width: ${iconSize}px; height: ${iconSize}px; position: relative; z-index: 4; transition: transform 0.2s ease; border-radius: 50%; background: ${bgColor}; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);">
+        ${iconUrl ? `<img src="${iconUrl}" alt="" style="width:${iconInnerSize}px; height:${iconInnerSize}px; object-fit: contain; display:block; pointer-events:none; filter: brightness(0) invert(1);" />` : ''}
       </div>
       <div class="custom-marker-label" data-marker-id="${markerId}" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%) scaleX(0); transform-origin: left center; background: white; padding: 8px 12px 8px 48px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); white-space: nowrap; max-width: 300px; width: auto; overflow: hidden; pointer-events: none; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;">
         <span style="display: block; font-family: 'Akrobat', sans-serif; font-size: 16px; font-weight: 700; line-height: 140%; color: #4C5E36; opacity: 1;">${markerName}</span>
+        ${markerDescription ? `<span style="display: block; margin-top: 2px; font-family: 'Akrobat', sans-serif; font-size: 13px; font-weight: 500; line-height: 120%; color: #4C5E36; opacity: .75;">${String(markerDescription).replace(/"/g, '&quot;')}</span>` : ''}
       </div>
     </div>`,
     {
