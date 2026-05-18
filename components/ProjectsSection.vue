@@ -18,27 +18,27 @@
             <div class="content">
               <div class="content__body">
                 <div class="content--header">
-                <div>{{ slide.rented }}</div>
-                <div>{{ slide.city }}</div>
-              </div>
+                  <div>{{ slide.rented }}</div>
+                  <div>{{ slide.city }}</div>
+                </div>
 
-              <div class="content--title">
-                {{ slide.title }}
-              </div>
+                <div class="content--title">
+                  {{ slide.title }}
+                </div>
 
-              <div class="content--info">
-                <div v-if="slide.houses" class="content--info_text">
-                  <span>{{ slide.houses }} дома</span>
+                <div class="content--info">
+                  <div v-if="slide.houses" class="content--info_text">
+                    <span>{{ slide.houses }} дома</span>
+                  </div>
+                  <div v-if="slide.apps" class="content--info_text">
+                    <div v-if="slide.houses" class="content--info_dot"></div>
+                    <span>{{ slide.apps }} квартир</span>
+                  </div>
+                  <div v-if="slide.floors" class="content--info_text">
+                    <div v-if="slide.apps" class="content--info_dot"></div>
+                    <span>{{ slide.floors }} этажей</span>
+                  </div>
                 </div>
-                <div v-if="slide.apps" class="content--info_text">
-                  <div v-if="slide.houses" class="content--info_dot"></div>
-                  <span>{{ slide.apps }} квартир</span>
-                </div>
-                <div v-if="slide.floors" class="content--info_text">
-                  <div v-if="slide.apps" class="content--info_dot"></div>
-                  <span>{{ slide.floors }} этажей</span>
-                </div>
-              </div>
               </div>
 
               <div class="content__actions">
@@ -55,15 +55,15 @@
         </template>
       </DefaultSlider>
     </div>
-    <VideoDialog 
-      v-model="showDialogVideo" 
+    <VideoDialog
+      v-model="showDialogVideo"
       :video="selectedVideo"
     />
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 import VideoDialog from './Common/Dialogs/VideoDialog.vue';
 import TitleNew from './Common/TitleNew.vue';
@@ -94,17 +94,17 @@ const projectsSlides = computed(() => {
   if (!Array.isArray(projects.value) || projects.value.length === 0) {
     return [];
   }
-  
+
   return projects.value.map(project => {
     let houses = null;
     let apps = null;
     let floors = null;
-    
+
     if (project.project_features && Array.isArray(project.project_features)) {
       project.project_features.forEach(feature => {
         const value = feature.value || '';
         const lowerValue = value.toLowerCase();
-        
+
         if (lowerValue.includes('дом')) {
           const match = value.match(/(\d+)/);
           if (match) houses = parseInt(match[1]);
@@ -117,13 +117,13 @@ const projectsSlides = computed(() => {
         }
       });
     }
-    
+
     const linkVideo = project.link_video !== undefined ? project.link_video : true;
     let videoUrl = '';
     let hasVideo = false;
-    
+
     const videoField = project.video || project.popup_video || project.url_video;
-    
+
     if (videoField) {
       hasVideo = true;
       if (linkVideo) {
@@ -137,11 +137,11 @@ const projectsSlides = computed(() => {
       }
     } else {
       const projectId = project.id || project.title || project.name || '';
-      const fallbackVideo = projectVideos[project.title] || 
+      const fallbackVideo = projectVideos[project.title] ||
                            projectVideos[project.name] ||
                            projectVideos[projectId] ||
                            projectVideos.default;
-      
+
       if (fallbackVideo && fallbackVideo !== projectVideos.default) {
         hasVideo = true;
         videoUrl = fallbackVideo;
@@ -149,7 +149,7 @@ const projectsSlides = computed(() => {
         videoUrl = '';
       }
     }
-    
+
     return {
       id: project.id || project.title || project.name || '',
       title: project.title || project.name || '',
@@ -178,138 +178,33 @@ const openDialogVideo = (slide) => {
   }
 };
 
-const equalizeSlideHeights = () => {
-  if (!process.client) return;
-
-  const slides = document.querySelectorAll('.projects-section .swiper-slide');
-  if (!slides.length) return;
-
-  slides.forEach(slide => {
-    slide.style.height = '';
-  });
-
-  let maxHeight = 0;
-  slides.forEach(slide => {
-    maxHeight = Math.max(maxHeight, slide.offsetHeight);
-  });
-
-  if (maxHeight > 0) {
-    slides.forEach(slide => {
-      slide.style.height = `${maxHeight}px`;
-    });
-  }
-};
-
-const scheduleEqualizeSlideHeights = () => {
-  nextTick(() => {
-    requestAnimationFrame(equalizeSlideHeights);
-  });
-};
-
-const bindImageLoadEqualize = () => {
-  if (!process.client) return;
-
-  document
-    .querySelectorAll('.projects-section .slide-image')
-    .forEach(img => {
-      if (img.complete) return;
-      img.addEventListener('load', scheduleEqualizeSlideHeights, { once: true });
-    });
-};
-
-let slidesResizeObserver = null;
-
-const observeSlidesResize = () => {
-  if (!process.client) return;
-
-  const wrapper = document.querySelector('.projects-section .swiper-wrapper');
-  if (!wrapper || slidesResizeObserver) return;
-
-  slidesResizeObserver = new ResizeObserver(scheduleEqualizeSlideHeights);
-  slidesResizeObserver.observe(wrapper);
-};
-
 onMounted(async () => {
   try {
     projects.value = await fetchAllProjects();
   } catch {
     projects.value = [];
   }
-
-  scheduleEqualizeSlideHeights();
-  bindImageLoadEqualize();
-  observeSlidesResize();
-  window.addEventListener('resize', scheduleEqualizeSlideHeights);
-
-  setTimeout(scheduleEqualizeSlideHeights, 150);
-  setTimeout(scheduleEqualizeSlideHeights, 500);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', scheduleEqualizeSlideHeights);
-  slidesResizeObserver?.disconnect();
-  slidesResizeObserver = null;
-});
-
-watch(projectsSlides, () => {
-  scheduleEqualizeSlideHeights();
-  bindImageLoadEqualize();
 });
 </script>
 
 <style lang="scss" scoped>
 @use '@/assets/styles/variables.scss' as *;
 
+::v-deep(.swiper-slide) {
+  height: auto !important;
+  min-height: 300px;
+}
+
+::v-deep(.slide) {
+  min-height: 0 !important;
+}
+
 .projects-section {
-  ::v-deep(.default-swiper .swiper-wrapper) {
-    align-items: stretch;
-  }
-
-  ::v-deep(.swiper-slide) {
-    display: flex;
-    height: auto;
-    align-self: stretch;
-  }
-
-  ::v-deep(.slide) {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    width: 100%;
-    min-height: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-
-  @media (min-width: 600px) {
-    padding: 24px !important;
-    border: 1px solid rgba(44, 50, 44, 0.2) !important;
-    border-radius: 12px !important;
-    transition:
-      border-color 0.3s ease,
-      background-color 0.3s ease;
-
-    &:hover {
-      border: 1px solid $text-color-white !important;
-      background-color: $text-color-white !important;
-    }
-
-    @media (max-width: $breakpoint-x) {
-      &:hover {
-        border: 1px solid rgba(44, 50, 44, 0.2) !important;
-        background-color: transparent !important;
-      }
-    }
+  &__container {
+    padding-bottom: 60px;
   }
 
   @media (max-width: $breakpoint-x) {
-    padding: 0 !important;
-    border: none !important;
-  }
-  }
-
-  margin-bottom: 60px;
-  @media (max-width: $breakpoint-x) {
-
     ::v-deep(.default-slider) {
       overflow: visible;
     }
@@ -322,6 +217,7 @@ watch(projectsSlides, () => {
       overflow: visible;
     }
   }
+
   &__title {
     margin: 0 auto;
     margin-bottom: 40px;
@@ -336,41 +232,39 @@ watch(projectsSlides, () => {
 .custom-slide {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  width: 100%;
   height: 100%;
-  min-height: 100%;
-  min-width: 0;
+
+  @media (max-width: $breakpoint-x) {
+    min-height: 200px;
+    width: 100%;
+  }
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  margin-top: 24px;
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
+  justify-content: space-between;
+  height: 100%;
+  color: $text-color-primary;
+  font-family: 'Akrobat';
 
   &__body {
-    flex: 0 0 auto;
     min-width: 0;
   }
 
   &__actions {
-    margin-top: auto;
-    padding-top: 24px;
-    min-height: 48px;
+    margin-top: 24px;
     flex-shrink: 0;
     display: flex;
     align-items: flex-end;
 
     @media (max-width: $breakpoint-x) {
-      padding-top: 16px;
+      margin-top: 16px;
     }
-  }
 
-  @media (max-width: $breakpoint-x) {
-    margin-top: 12px;
+    &:empty {
+      display: none;
+    }
   }
 
   &--header {
@@ -381,6 +275,7 @@ watch(projectsSlides, () => {
     margin-bottom: 20px;
     font-size: 16px;
     line-height: 100%;
+    font-family: 'Bona Nova SC';
     min-width: 0;
 
     > div {
@@ -388,14 +283,7 @@ watch(projectsSlides, () => {
       overflow-wrap: anywhere;
     }
 
-    @media (max-width: $breakpoint-md) {
-      font-size: 14px;
-    }
-
     @media (max-width: $breakpoint-x) {
-      flex-direction: column-reverse;
-      gap: 4px;
-      align-items: flex-start;
       font-size: 14px;
       margin-bottom: 14px;
     }
@@ -406,6 +294,7 @@ watch(projectsSlides, () => {
     font-size: 32px;
     line-height: 80%;
     overflow-wrap: anywhere;
+    font-family: 'Bona Nova SC';
 
     @media (max-width: $breakpoint-lg) {
       font-size: 28px;
@@ -426,16 +315,17 @@ watch(projectsSlides, () => {
     flex-wrap: wrap;
     align-items: center;
     gap: 4px 0;
-    font-family: 'Akrobat';
     font-size: 18px;
     line-height: 140%;
-    margin-bottom: 0;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 16px;
     }
 
     @media (max-width: $breakpoint-x) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
       font-size: 14px;
     }
 
@@ -443,14 +333,21 @@ watch(projectsSlides, () => {
       display: flex;
       align-items: center;
     }
+
     &_dot {
       width: 4px;
       height: 4px;
       border-radius: 50%;
       background-color: $text-color-secondary;
       margin: 0 8px;
+      flex-shrink: 0;
+
+      @media (max-width: $breakpoint-x) {
+        display: none;
+      }
     }
   }
+
   &--button {
     margin: 0;
     flex-shrink: 0;
@@ -489,6 +386,7 @@ watch(projectsSlides, () => {
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 8px;
+  margin-bottom: 16px;
 
   @media (max-width: $breakpoint-lg) {
     height: 250px;
@@ -500,6 +398,7 @@ watch(projectsSlides, () => {
 
   @media (max-width: $breakpoint-x) {
     height: 180px;
+    margin-bottom: 12px;
   }
 
   @media (max-width: 599px) {
@@ -516,6 +415,4 @@ watch(projectsSlides, () => {
     display: block;
   }
 }
-
-
 </style>

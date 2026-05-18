@@ -99,15 +99,12 @@ defineEmits<{
   }
 }
 
-/* Позиционирование кнопки закрытия - только мобильная версия */
 @media (max-width: 599px) {
   :deep(.dialog-close) {
-    position: absolute !important;
     top: calc(20px + env(safe-area-inset-top)) !important;
     right: 20px !important;
     width: 40px !important;
     height: 40px !important;
-    z-index: 10 !important;
     border: 1px solid #2c322c !important;
 
     svg path {

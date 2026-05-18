@@ -465,8 +465,6 @@ defineExpose({ isLoading, isSent, errorMsg, isFormValid, formatPhone, handleSubm
   align-items: flex-start;
   gap: 8px;
   cursor: pointer;
-  font-size: 12px;
-  line-height: 1.4;
 }
 
 .checkbox-input {
@@ -499,13 +497,14 @@ defineExpose({ isLoading, isSent, errorMsg, isFormValid, formatPhone, handleSubm
 
 .checkbox-text {
   color: $text-color-secondary;
+  font-family: 'Akrobat', sans-serif;
   font-size: 16px;
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.4;
 
   @media (max-width: $breakpoint-x) {
     font-size: 13px;
-    line-height: 1.25;
+    line-height: 1.35;
   }
 }
 
@@ -803,7 +802,7 @@ defineExpose({ isLoading, isSent, errorMsg, isFormValid, formatPhone, handleSubm
     margin: 0 !important;
     margin-top: auto !important;
     border-radius: 16px 16px 0 0 !important;
-    padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom)) 16px !important;
+    padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom)) 24px !important;
     background: $bg-color-1 !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
@@ -814,14 +813,13 @@ defineExpose({ isLoading, isSent, errorMsg, isFormValid, formatPhone, handleSubm
 }
 
 @media (max-width: $breakpoint-x) {
-  :deep(.dialog-close) {
-    position: absolute !important;
+  :deep(.dialog-overlay:has(.callback-dialog) .dialog-close) {
     top: calc(12px + env(safe-area-inset-top)) !important;
     right: 12px !important;
     width: 40px !important;
     height: 40px !important;
-    z-index: 10 !important;
     border: 1px solid #2c322c !important;
+    background: transparent !important;
 
     svg path {
       fill: #2c322c !important;
@@ -879,7 +877,7 @@ defineExpose({ isLoading, isSent, errorMsg, isFormValid, formatPhone, handleSubm
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       touch-action: pan-y;
-      padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom)) 16px !important;
+      padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom)) 24px !important;
     }
   }
 }

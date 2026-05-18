@@ -1,5 +1,6 @@
 <template>
-  <Transition name="dialog">
+  <Teleport to="body">
+    <Transition name="dialog">
     <div
       v-if="isVisible"
       class="dialog-overlay"
@@ -13,25 +14,26 @@
         data-lenis-prevent-touch
         @click.stop
       >
-        <!-- Слот для контента -->
         <slot></slot>
       </div>
 
       <button
-        v-if="showCloseButton"
-        class="dialog-close"
-        @click="closeDialog()"
-        aria-label="Закрыть"
-      >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path
-            d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
-            fill="#F8F3ED"
-          />
-        </svg>
+          v-if="showCloseButton"
+          class="dialog-close"
+          type="button"
+          @click="closeDialog()"
+          aria-label="Закрыть"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path
+              d="M14 0.824833L13.1752 0L7 6.17517L0.824833 0L0 0.824833L6.17517 7L0 13.1752L0.824833 14L7 7.82483L13.1752 14L14 13.1752L7.82483 7L14 0.824833Z"
+              fill="#F8F3ED"
+            />
+          </svg>
       </button>
     </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
@@ -173,9 +175,11 @@ onUnmounted(() => {
 }
 
 .dialog-close {
-  position: absolute;
+  position: fixed;
   top: 24px;
   right: 24px;
+  z-index: 1000001;
+  pointer-events: auto;
   width: 48px;
   height: 48px;
   border: 1px solid $text-color-white;

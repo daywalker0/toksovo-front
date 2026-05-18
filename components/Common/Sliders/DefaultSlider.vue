@@ -2,6 +2,7 @@
   <div class="default-slider">
     <div class="slider-container">
       <Swiper
+        :key="swiperKey"
         :modules="modules"
         :slides-per-view="effectiveSlidesPerView"
         :space-between="effectiveSpaceBetween"
@@ -282,6 +283,8 @@ const effectiveCenteredSlides = computed(() => {
   return typeof value === 'string' ? value === 'true' : value;
 });
 
+const swiperKey = computed(() => `${isMobile.value}-${totalSlides.value}`);
+
 // Показывать ли навигацию
 const shouldShowNavigation = computed(() => {
   if (isMobile.value && props.hideNavigationOnMobile) {
@@ -300,20 +303,18 @@ const shouldShowPagination = computed(() => {
   return props.showPagination;
 });
 
+const checkMobile = () => {
+  if (!process.client) return;
+  isMobile.value = window.innerWidth <= 599;
+};
+
 onMounted(() => {
-  const checkMobile = () => {
-    const newIsMobile = window.innerWidth <= 599;
-    // Обновляем только если значение изменилось
-    if (isMobile.value !== newIsMobile) {
-      isMobile.value = newIsMobile;
-    }
-  };
-
+  checkMobile();
   window.addEventListener('resize', checkMobile);
+});
 
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', checkMobile);
-  });
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', checkMobile);
 });
 </script>
 
