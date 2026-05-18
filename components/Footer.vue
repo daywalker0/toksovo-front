@@ -119,9 +119,7 @@
       </div>
     </div>
 
-    <DialogCallback v-model="showDialogCallback" @success="handleSuccess">
-      <div>диалог тут</div>
-    </DialogCallback>
+    <DialogCallback v-model="showDialogCallback" @success="handleSuccess" />
     
     <DialogSuccess v-model="showDialogSuccess" />
   </footer>
@@ -133,11 +131,13 @@ import DialogCallback from './Common/Dialogs/DialogCallback.vue';
 import DialogSuccess from './Common/Dialogs/DialogSuccess.vue';
 import AnimatedLink from './Common/AnimatedLink.vue';
 
-const showDialogCallback = ref(false);
 const showDialogSuccess = ref(false);
 
+const { isDialogOpen: showDialogCallback, cancelAutoOpen, openDialog } = useCallbackPopupAutoOpen();
+
 const openDialogCallback = () => {
-  showDialogCallback.value = true;
+  cancelAutoOpen();
+  openDialog();
 };
 
 const handleSuccess = async () => {

@@ -1,7 +1,18 @@
 <template>
   <Transition name="dialog">
-    <div v-if="isVisible" class="dialog-overlay" @click="closeOnOverlay && closeDialog()">
-      <div class="dialog-content" @click.stop>
+    <div
+      v-if="isVisible"
+      class="dialog-overlay"
+      data-lenis-prevent
+      data-lenis-prevent-touch
+      @click="closeOnOverlay && closeDialog()"
+    >
+      <div
+        class="dialog-content"
+        data-lenis-prevent
+        data-lenis-prevent-touch
+        @click.stop
+      >
         <!-- Слот для контента -->
         <slot></slot>
       </div>
