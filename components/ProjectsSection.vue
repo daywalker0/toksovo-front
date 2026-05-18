@@ -16,7 +16,8 @@
               <img :src="slide.image" :alt="slide.title" class="slide-image" loading="lazy" />
             </div>
             <div class="content">
-              <div class="content--header">
+              <div class="content__body">
+                <div class="content--header">
                 <div>{{ slide.rented }}</div>
                 <div>{{ slide.city }}</div>
               </div>
@@ -38,14 +39,17 @@
                   <span>{{ slide.floors }} этажей</span>
                 </div>
               </div>
+              </div>
 
-              <button 
-                v-if="slide.hasVideo && slide.videoUrl" 
-                @click="openDialogVideo(slide)" 
-                class="content--button button"
-              >
-                Видео
-              </button>
+              <div class="content__actions">
+                <button
+                  v-if="slide.hasVideo && slide.videoUrl"
+                  @click.stop="openDialogVideo(slide)"
+                  class="content--button button"
+                >
+                  Видео
+                </button>
+              </div>
             </div>
           </div>
         </template>
@@ -59,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import DefaultSlider from './Common/Sliders/DefaultSlider.vue';
 import VideoDialog from './Common/Dialogs/VideoDialog.vue';
 import TitleNew from './Common/TitleNew.vue';
@@ -174,20 +178,107 @@ const openDialogVideo = (slide) => {
   }
 };
 
+const equalizeSlideHeights = () => {
+  if (!process.client) return;
+
+  const slides = document.querySelectorAll('.projects-section .swiper-slide');
+  if (!slides.length) return;
+
+  slides.forEach(slide => {
+    slide.style.height = '';
+  });
+
+  let maxHeight = 0;
+  slides.forEach(slide => {
+    maxHeight = Math.max(maxHeight, slide.offsetHeight);
+  });
+
+  if (maxHeight > 0) {
+    slides.forEach(slide => {
+      slide.style.height = `${maxHeight}px`;
+    });
+  }
+};
+
+const scheduleEqualizeSlideHeights = () => {
+  nextTick(() => {
+    requestAnimationFrame(equalizeSlideHeights);
+  });
+};
+
+const bindImageLoadEqualize = () => {
+  if (!process.client) return;
+
+  document
+    .querySelectorAll('.projects-section .slide-image')
+    .forEach(img => {
+      if (img.complete) return;
+      img.addEventListener('load', scheduleEqualizeSlideHeights, { once: true });
+    });
+};
+
+let slidesResizeObserver = null;
+
+const observeSlidesResize = () => {
+  if (!process.client) return;
+
+  const wrapper = document.querySelector('.projects-section .swiper-wrapper');
+  if (!wrapper || slidesResizeObserver) return;
+
+  slidesResizeObserver = new ResizeObserver(scheduleEqualizeSlideHeights);
+  slidesResizeObserver.observe(wrapper);
+};
+
 onMounted(async () => {
   try {
     projects.value = await fetchAllProjects();
   } catch {
     projects.value = [];
   }
+
+  scheduleEqualizeSlideHeights();
+  bindImageLoadEqualize();
+  observeSlidesResize();
+  window.addEventListener('resize', scheduleEqualizeSlideHeights);
+
+  setTimeout(scheduleEqualizeSlideHeights, 150);
+  setTimeout(scheduleEqualizeSlideHeights, 500);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', scheduleEqualizeSlideHeights);
+  slidesResizeObserver?.disconnect();
+  slidesResizeObserver = null;
+});
+
+watch(projectsSlides, () => {
+  scheduleEqualizeSlideHeights();
+  bindImageLoadEqualize();
 });
 </script>
 
 <style lang="scss" scoped>
 @use '@/assets/styles/variables.scss' as *;
 
-::v-deep(.slide) {
-  min-height: 0 !important;
+.projects-section {
+  ::v-deep(.default-swiper .swiper-wrapper) {
+    align-items: stretch;
+  }
+
+  ::v-deep(.swiper-slide) {
+    display: flex;
+    height: auto;
+    align-self: stretch;
+  }
+
+  ::v-deep(.slide) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 
   @media (min-width: 600px) {
     padding: 24px !important;
@@ -214,9 +305,8 @@ onMounted(async () => {
     padding: 0 !important;
     border: none !important;
   }
-}
+  }
 
-.projects-section {
   margin-bottom: 60px;
   @media (max-width: $breakpoint-x) {
 
@@ -244,25 +334,13 @@ onMounted(async () => {
 }
 
 .custom-slide {
-  height: 500px;
   display: flex;
   flex-direction: column;
-  min-height: 450px;
+  flex: 1;
   width: 100%;
-
-  @media (max-width: $breakpoint-lg) {
-    height: auto;
-  }
-
-  @media (max-width: $breakpoint-sm) {
-    min-height: 340px;
-  }
-
-  @media (max-width: $breakpoint-x) {
-    height: auto;
-    min-height: auto;
-    width: 100%;
-  }
+  height: 100%;
+  min-height: 100%;
+  min-width: 0;
 }
 
 .content {
@@ -270,10 +348,26 @@ onMounted(async () => {
   flex-direction: column;
   margin-top: 24px;
   flex: 1;
+  min-height: 0;
+  min-width: 0;
 
-  @media (max-width: $breakpoint-md) {
-      justify-content: space-between;
+  &__body {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  &__actions {
+    margin-top: auto;
+    padding-top: 24px;
+    min-height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+
+    @media (max-width: $breakpoint-x) {
+      padding-top: 16px;
     }
+  }
 
   @media (max-width: $breakpoint-x) {
     margin-top: 12px;
@@ -283,9 +377,16 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
     margin-bottom: 20px;
     font-size: 16px;
     line-height: 100%;
+    min-width: 0;
+
+    > div {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
 
     @media (max-width: $breakpoint-md) {
       font-size: 14px;
@@ -304,6 +405,7 @@ onMounted(async () => {
     margin-bottom: 16px;
     font-size: 32px;
     line-height: 80%;
+    overflow-wrap: anywhere;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 28px;
@@ -321,11 +423,13 @@ onMounted(async () => {
 
   &--info {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 4px 0;
     font-family: 'Akrobat';
     font-size: 18px;
     line-height: 140%;
-    margin-bottom: 50px;
+    margin-bottom: 0;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 16px;
@@ -333,7 +437,6 @@ onMounted(async () => {
 
     @media (max-width: $breakpoint-x) {
       font-size: 14px;
-      margin-bottom: 16px;
     }
 
     &_text {
@@ -349,18 +452,15 @@ onMounted(async () => {
     }
   }
   &--button {
-    margin-top: auto;
-    margin-bottom: 0;
+    margin: 0;
+    flex-shrink: 0;
+    align-self: flex-start;
     transition: 0.3s;
     min-height: 48px;
     padding: 12px 24px;
 
     &::before {
       display: none;
-    }
-
-    @media (max-width: $breakpoint-md) {
-      margin-top: 20px;
     }
 
     &:hover {
@@ -386,6 +486,7 @@ onMounted(async () => {
 .image-container {
   width: 100%;
   height: 300px;
+  flex-shrink: 0;
   overflow: hidden;
   border-radius: 8px;
 
@@ -406,9 +507,11 @@ onMounted(async () => {
     aspect-ratio: 1 / 1;
   }
 
-  img {
+  img,
+  .slide-image {
     width: 100%;
     height: 100%;
+    aspect-ratio: unset;
     object-fit: cover;
     display: block;
   }

@@ -11,6 +11,14 @@
       >
         <template #slide="{ slide, active }">
           <div :class="['custom-slide', { active }]" @click="handleNewsClick(slide.id)">
+            <div v-if="slide.previewImage" class="image-container">
+              <img
+                :src="slide.previewImage"
+                :alt="slide.text"
+                class="slide-image"
+                loading="lazy"
+              />
+            </div>
             <div class="content">
               <div class="content--text">{{ slide.text }}</div>
               <div class="content--date">
@@ -45,6 +53,7 @@ const title = computed(() => props.data?.title)
 
 const router = useRouter();
 const newsStore = useNewsStore();
+const { getPreviewImageUrl } = useNewsPreview();
 
 const handleNewsClick = documentId => {
   router.push(`/news/${documentId}`);
@@ -81,13 +90,19 @@ const newsSlides = computed(() => {
         number: news.day || newsDate.getDate().toString(),
         month: news.month || getMonthGenitive(newsDate),
         year: news.year || newsDate.getFullYear().toString(),
+        previewImage: getPreviewImageUrl(news),
       };
     });
   }
   
   // Иначе используем новости из store
   const news = newsStore.getLatestNews();
-  return Array.isArray(news) ? news : [];
+  if (!Array.isArray(news)) return [];
+
+  return news.map(item => ({
+    ...item,
+    previewImage: item.previewImage || getPreviewImageUrl(item),
+  }));
 });
 
 // Загружаем новости при монтировании компонента только если их нет в блоке
@@ -105,7 +120,8 @@ onMounted(async () => {
 @use '@/assets/styles/variables.scss' as *;
 
 ::v-deep(.swiper-slide) {
-  height: 300px !important;
+  height: auto !important;
+  min-height: 300px;
 }
 
 ::v-deep(.slide) {
@@ -193,7 +209,45 @@ onMounted(async () => {
   }
 }
 
+.image-container {
+  width: 100%;
+  height: 300px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 16px;
+
+  @media (max-width: $breakpoint-lg) {
+    height: 250px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    height: 200px;
+  }
+
+  @media (max-width: $breakpoint-x) {
+    height: 180px;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 599px) {
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  img,
+  .slide-image {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: unset;
+    object-fit: cover;
+    display: block;
+  }
+}
+
 .custom-slide {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   cursor: pointer;
   transition:
